@@ -27,35 +27,20 @@
 #++
 
 module Queries::Operators
-  module DatetimeRangeClauses
-    include DateLimits
+  module DateLimits
+    # Technically dates in PostgreSQL can be up to 5874897 AD, but limit to
+    # timestamp range, as dates are used to query for timestamps too
+    #
+    # https://www.postgresql.org/docs/current/datatype-datetime.html
+    PG_DATE_FROM = ::Date.new(-4713, 1, 1)
+    PG_DATE_TO_EXCLUSIVE = ::Date.new(294276 + 1, 1, 1)
 
-    def datetime_range_clause(table, field, from, to)
-      s = []
+    def date_too_small?(date)
+      date < PG_DATE_FROM
+    end
 
-      if from
-        s << case
-             when date_too_small?(from)
-               "1 = 1"
-             when date_too_big?(from)
-               "1 <> 1"
-             else
-               "#{table}.#{field} >= '#{connection.quoted_date(from)}'"
-             end
-      end
-
-      if to
-        s << case
-             when date_too_small?(to)
-               "1 <> 1"
-             when date_too_big?(to)
-               "1 = 1"
-             else
-               "#{table}.#{field} <= '#{connection.quoted_date(to)}'"
-             end
-      end
-
-      s.join(" AND ")
+    def date_too_big?(date)
+      date >= PG_DATE_TO_EXCLUSIVE
     end
   end
 end

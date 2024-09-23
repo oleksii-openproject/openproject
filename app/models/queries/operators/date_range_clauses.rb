@@ -28,6 +28,8 @@
 
 module Queries::Operators
   module DateRangeClauses
+    include DateLimits
+
     # Returns a SQL clause for a date or datetime field for a relative range from
     # the end of the day of yesterday + from until the end of today + to.
     def relative_date_range_clause(table, field, from, to)
@@ -45,11 +47,25 @@ module Queries::Operators
       s = []
 
       if from
-        s << ("#{table}.#{field} > '%s'" % [quoted_date_from_utc(from.yesterday)])
+        s << case
+             when date_too_small?(from)
+               "1 = 1"
+             when date_too_big?(from)
+               "1 <> 1"
+             else
+               "#{table}.#{field} > '#{quoted_date_from_utc(from.yesterday)}'"
+             end
       end
 
       if to
-        s << ("#{table}.#{field} <= '%s'" % [quoted_date_from_utc(to)])
+        s << case
+             when date_too_small?(to)
+               "1 <> 1"
+             when date_too_big?(to)
+               "1 = 1"
+             else
+               "#{table}.#{field} <= '#{quoted_date_from_utc(to)}'"
+             end
       end
 
       s.join(" AND ")
