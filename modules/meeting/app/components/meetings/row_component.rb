@@ -68,17 +68,23 @@ module Meetings
 
     def action_menu
       render(Primer::Alpha::ActionMenu.new) do |menu|
-        menu.with_show_button(icon: "kebab-horizontal", "aria-label": "More", scheme: :invisible)
-
-        menu.with_item(label: I18n.t(:label_meeting_copy),
-                       href: copy_meeting_path(model), # ???
-                       content_arguments: {
-                         data: {
-                           turbo: model.is_a?(StructuredMeeting),
-                           turbo_stream: true
-                         }
-                       }) do |item|
-          item.with_leading_visual_icon(icon: :copy)
+        menu.with_show_button(icon: "kebab-horizontal",
+                              "aria-label": "More",
+                              scheme: :invisible,
+                              data: {
+                                "test-selector": "more-button"
+                              })
+        if copy_allowed?
+          menu.with_item(label: I18n.t(:label_meeting_copy),
+                         href: copy_meeting_path(model),
+                         content_arguments: {
+                           data: {
+                             turbo: model.is_a?(StructuredMeeting),
+                             turbo_stream: true
+                           }
+                         }) do |item|
+            item.with_leading_visual_icon(icon: :copy)
+          end
         end
 
         menu.with_item(label: I18n.t(:label_icalendar_download),
@@ -104,6 +110,10 @@ module Meetings
 
     def delete_allowed?
       User.current.allowed_in_project?(:delete_meetings, model.project)
+    end
+
+    def copy_allowed?
+      User.current.allowed_in_project?(:create_meetings, model.project)
     end
   end
 end

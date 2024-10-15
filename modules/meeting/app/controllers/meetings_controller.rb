@@ -110,11 +110,7 @@ class MeetingsController < ApplicationController
       end
       flash[:notice] = text.html_safe # rubocop:disable Rails/OutputSafety
 
-      respond_to do |format|
-        format.html do
-          redirect_to status: :see_other, action: "show", id: @meeting
-        end
-      end
+      redirect_to status: :see_other, action: "show", id: @meeting
     else
       respond_to do |format|
         format.html do
@@ -122,8 +118,14 @@ class MeetingsController < ApplicationController
         end
 
         format.turbo_stream do
-          update_via_turbo_stream(component: Meetings::Index::FormComponent.new(meeting: @meeting, project: @project, type:),
-                                  status: :bad_request)
+          update_via_turbo_stream(
+            component: Meetings::Index::FormComponent.new(
+              meeting: @meeting,
+              project: @project,
+              type: @copy_from || :new
+            ),
+            status: :bad_request
+          )
 
           respond_with_turbo_streams
         end

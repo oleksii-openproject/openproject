@@ -52,23 +52,44 @@ module Pages::Meetings
       expect(page).not_to have_test_selector("add-meeting-button")
     end
 
-    def expect_no_create_new_buttons
-      expect(page).not_to have_test_selector("add-meeting-button")
-
-      within "#main-menu" do
-        expect(page).not_to have_test_selector "meeting--create-button"
-      end
-    end
-
     def expect_create_new_button
       expect(page).to have_test_selector("add-meeting-button")
     end
 
-    def expect_create_new_buttons
-      expect(page).to have_test_selector("add-meeting-button")
+    def expect_create_new_types
+      click_on("add-meeting-button")
 
-      within "#main-menu" do
-        expect(page).to have_test_selector "meeting--create-button"
+      expect(page).to have_link("Classic")
+      expect(page).to have_link("One-time")
+    end
+
+    def expect_copy_action(meeting)
+      within more_menu(meeting) do
+        expect(page).to have_link("Copy meeting")
+      end
+    end
+
+    def expect_no_copy_action(meeting)
+      within more_menu(meeting) do
+        expect(page).to have_no_link("Copy meeting")
+      end
+    end
+
+    def expect_delete_action(meeting)
+      within more_menu(meeting) do
+        expect(page).to have_button("Delete meeting")
+      end
+    end
+
+    def expect_no_delete_action(meeting)
+      within more_menu(meeting) do
+        expect(page).to have_no_button("Delete meeting")
+      end
+    end
+
+    def expect_ical_action(meeting)
+      within more_menu(meeting) do
+        expect(page).to have_link("Download iCalendar event")
       end
     end
 
@@ -84,17 +105,17 @@ module Pages::Meetings
     end
 
     def expect_meetings_listed_in_order(*meetings)
-      within ".generic-table tbody" do
-        listed_meeting_titles = all("tr td.title").map(&:text)
+      within "[data-test-selector='Meetings::TableComponent']" do
+        listed_meeting_titles = all("li div.title").map(&:text)
 
         expect(listed_meeting_titles).to eq(meetings.map(&:title))
       end
     end
 
     def expect_meetings_listed(*meetings)
-      within ".generic-table tbody" do
+      within "[data-test-selector='Meetings::TableComponent']" do
         meetings.each do |meeting|
-          expect(page).to have_css("td.title",
+          expect(page).to have_css("div.title",
                                    text: meeting.title)
         end
       end
@@ -103,7 +124,7 @@ module Pages::Meetings
     def expect_meetings_not_listed(*meetings)
       within "#content-wrapper" do
         meetings.each do |meeting|
-          expect(page).to have_no_css("td.title",
+          expect(page).to have_no_css("div.title",
                                       text: meeting.title)
         end
       end
@@ -120,7 +141,7 @@ module Pages::Meetings
     def expect_plaintext_meeting_location(meeting)
       within "#content-wrapper" do
         within row_for(meeting) do
-          expect(page).to have_css("td.location", text: meeting.location)
+          expect(page).to have_css("div.location", text: meeting.location)
           expect(page).to have_no_link meeting.location
         end
       end
@@ -129,20 +150,8 @@ module Pages::Meetings
     def expect_no_meeting_location(meeting)
       within "#content-wrapper" do
         within row_for(meeting) do
-          expect(page).to have_css("td.location", text: "")
+          expect(page).to have_css("div.location", text: "")
         end
-      end
-    end
-
-    def expect_to_be_on_page(number)
-      expect(page)
-        .to have_css(".op-pagination--item_current",
-                     text: number)
-    end
-
-    def to_page(number)
-      within ".op-pagination--pages" do
-        click_on number.to_s
       end
     end
 
@@ -171,7 +180,17 @@ module Pages::Meetings
     private
 
     def row_for(meeting)
-      find("td.title", text: meeting.title).ancestor("tr")
+      find("div.title", text: meeting.title).ancestor("li")
+    end
+
+    def more_menu(meeting)
+      within "#content-wrapper" do
+        within row_for(meeting) do
+          click_on("more-button")
+
+          find("li", text: "Download iCalendar event").ancestor("ul")
+        end
+      end
     end
 
     def submenu
