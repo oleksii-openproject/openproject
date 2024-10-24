@@ -70,19 +70,34 @@ module Meetings
       render(Primer::Alpha::ActionMenu.new) do |menu|
         menu.with_show_button(icon: "kebab-horizontal", "aria-label": "More", scheme: :invisible)
 
-        menu.with_item(label: I18n.t(:label_meeting_open_this_meeting),
-                       href: project_meeting_path(model.project, model),
+        menu.with_item(label: I18n.t(:label_meeting_copy),
+                       href: copy_meeting_path(model), # ???
+                       content_arguments: {
+                         data: {
+                           turbo: model.is_a?(StructuredMeeting),
+                           turbo_stream: true
+                         }
+                       }) do |item|
+          item.with_leading_visual_icon(icon: :copy)
+        end
+
+        menu.with_item(label: I18n.t(:label_icalendar_download),
+                       href: download_ics_meeting_path(model),
                        content_arguments: {
                          data: { turbo: false }
-                       })
+                       }) do |item|
+          item.with_leading_visual_icon(icon: :download)
+        end
 
         if delete_allowed?
-          menu.with_item(label: t("label_meeting_index_delete"),
+          menu.with_item(label: I18n.t(:label_meeting_delete),
                          scheme: :danger,
                          href: meeting_path(model),
                          form_arguments: {
-                           method: :delete, data: { confirm: t("text_are_you_sure"), turbo: "false" }
-                         })
+                           method: :delete, data: { confirm: I18n.t("text_are_you_sure"), turbo: false }
+                         }) do |item|
+            item.with_leading_visual_icon(icon: :trash)
+          end
         end
       end
     end

@@ -26,14 +26,14 @@
 # See COPYRIGHT and LICENSE files for more details.
 #++
 
-class Meeting::Location < ApplicationForm
+class Meeting::CopiedFrom < ApplicationForm
   form do |meeting_form|
-    meeting_form.text_field(
-      name: :location,
-      placeholder: Meeting.human_attribute_name(:location),
-      label: Meeting.human_attribute_name(:location),
-      visually_hide_label: false,
-      leading_visual: { icon: :location }
-    )
+    meeting_form.hidden(name: "copied_from_meeting_id", value: @id)
   end
+
+  # rubocop:disable Lint/MissingSuper
+  def initialize(id:)
+    @id = id
+  end
+  # rubocop:enable Lint/MissingSuper
 end

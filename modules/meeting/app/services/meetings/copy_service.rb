@@ -42,9 +42,10 @@ module Meetings
       self.contract_class = contract_class
     end
 
-    def call(send_notifications: nil, save: true, copy_agenda: true, copy_attachments: false, attributes: {})
+    def call(send_notifications: nil, save: true, copy_agenda: true, copy_attachments: false, copy_participants: true,
+             attributes: {})
       if save
-        create(meeting, attributes, send_notifications:, copy_agenda:, copy_attachments:)
+        create(meeting, attributes, send_notifications:, copy_agenda:, copy_attachments:, copy_participants:)
       else
         build(meeting, attributes)
       end
@@ -52,13 +53,14 @@ module Meetings
 
     protected
 
-    def create(meeting, attribute_overrides, send_notifications:, copy_agenda:, copy_attachments:)
+    def create(meeting, attribute_overrides, send_notifications:, copy_agenda:, copy_attachments:, copy_participants:)
       Meetings::CreateService
         .new(user:, contract_class:)
         .call(**copied_attributes(meeting, attribute_overrides).merge(send_notifications:).symbolize_keys)
         .on_success do |call|
         copy_meeting_agenda(call.result) if copy_agenda
         copy_meeting_attachment(call.result) if copy_attachments
+        copy_structured_meeting_participants(call.result) if meeting.is_a?(StructuredMeeting) && copy_participants
       end
     end
 
@@ -74,7 +76,7 @@ module Meetings
       meeting
         .attributes
         .slice(*writable_meeting_attributes(meeting))
-        .merge("start_time" => meeting.start_time + 1.week)
+        .merge("start_time" => meeting.start_time + 1.day)
         .merge("author" => user)
         .merge("state" => "open")
         .merge("participants_attributes" => copied_participants)
@@ -127,6 +129,14 @@ module Meetings
           text: meeting.agenda&.text,
           journal_notes: I18n.t("meeting.copied", id: meeting.id)
         )
+      end
+    end
+
+    def copy_structured_meeting_participants(copy)
+      meeting.participants.each do |participant|
+        copied_participant = participant.dup
+        copied_participant.meeting_id = copy.id
+        copy.participants << copied_participant
       end
     end
   end

@@ -39,7 +39,7 @@
         menu.with_item(label: t(:button_copy),
                        href: copy_meeting_path(@meeting),
                        content_arguments: {
-                         data: { turbo: false }
+                         data: { turbo_stream: true }
                        }) do |item|
           item.with_leading_visual_icon(icon: :copy)
         end

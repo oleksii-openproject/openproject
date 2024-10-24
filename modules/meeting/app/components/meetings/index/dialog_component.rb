@@ -26,14 +26,33 @@
 # See COPYRIGHT and LICENSE files for more details.
 #++
 
-class Meeting::Location < ApplicationForm
-  form do |meeting_form|
-    meeting_form.text_field(
-      name: :location,
-      placeholder: Meeting.human_attribute_name(:location),
-      label: Meeting.human_attribute_name(:location),
-      visually_hide_label: false,
-      leading_visual: { icon: :location }
-    )
+module Meetings
+  class Index::DialogComponent < ApplicationComponent
+    include ApplicationHelper
+    include OpenProject::FormTagHelper
+    include OpTurbo::Streamable
+    include OpPrimer::ComponentHelpers
+
+    def initialize(meeting:, project:, type:)
+      super
+
+      @meeting = meeting
+      @project = project
+      @type = type
+    end
+
+    private
+
+    def render?
+      if @project
+        User.current.allowed_in_project?(:create_meetings, @project)
+      else
+        User.current.allowed_in_any_project?(:create_meetings)
+      end
+    end
+
+    def title
+      @type == :new ? I18n.t("label_meeting_new_one_time") : "Copy meeting"
+    end
   end
 end

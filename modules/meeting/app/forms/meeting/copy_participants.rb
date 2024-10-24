@@ -26,14 +26,12 @@
 # See COPYRIGHT and LICENSE files for more details.
 #++
 
-class Meeting::Location < ApplicationForm
+class Meeting::CopyParticipants < ApplicationForm
   form do |meeting_form|
-    meeting_form.text_field(
-      name: :location,
-      placeholder: Meeting.human_attribute_name(:location),
-      label: Meeting.human_attribute_name(:location),
-      visually_hide_label: false,
-      leading_visual: { icon: :location }
+    meeting_form.check_box(
+      name: "copy_participants",
+      label: "Copy list of participants",
+      checked: true
     )
   end
 end
