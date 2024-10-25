@@ -1,0 +1,33 @@
+<%= render(Primer::Alpha::Dialog.new(
+  title: I18n.t("js.work_packages.table_configuration.modal_title"),
+  size: :xlarge,
+  id: MODAL_ID
+)) do |dialog| %>
+  <% dialog.with_header(variant: :large) %>
+  <% dialog.with_body do %>
+    <%= render(Primer::Alpha::UnderlinePanels.new(label: "Test navigation")) do |component|
+      tabs.each do |tab|
+        component.with_tab(selected: tab[:id] == "columns", id: "tab-#{tab[:id]}") do |tab_content|
+          tab_content.with_text { "#{tab[:name]}" }
+          tab_content.with_panel do
+            if tab[:component].present?
+              helpers.angular_component_tag tab[:component], inputs: tab[:inputs]
+            else
+              "Panel #{tab[:name]}"
+            end
+          end
+        end
+      end
+    end %>
+
+  <% end %>
+  <% dialog.with_footer do %>
+    <%= render(Primer::ButtonComponent.new(data: { "close-dialog-id": MODAL_ID })) { I18n.t(:button_cancel) } %>
+    <%= render(Primer::ButtonComponent.new(
+      data: {
+        "close-dialog-id": MODAL_ID,
+      },
+      scheme: :primary,
+      type: :submit)) { I18n.t(:button_apply) } %>
+  <% end %>
+<% end %>

@@ -48,8 +48,8 @@
       menu.with_item(
         tag: :a,
         label: t(:'queries.configure_view.heading'),
-        href: "TODO",
-        content_arguments: { data: { controller: "async-dialog" }}
+        href: @project.present? ? configure_view_dialog_project_work_packages_path(@project) : configure_view_dialog_work_packages_path(),
+        content_arguments: { data: { controller: "async-dialog" }, rel: "nofollow" }
       ) do |item|
         item.with_leading_visual_icon(icon: :gear)
       end
@@ -102,7 +102,7 @@
           label: t(:button_delete),
           scheme: :danger,
           href: "TODO",
-          content_arguments: { data: { controller: "async-dialog" }}
+          content_arguments: { data: { controller: "async-dialog" }, rel: "nofollow"}
         ) do |item|
           item.with_leading_visual_icon(icon: 'trash')
         end

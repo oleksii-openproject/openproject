@@ -40,12 +40,14 @@ class WorkPackagesController < ApplicationController
                 :project, only: :show
   before_action :check_allowed_export,
                 :protect_from_unauthorized_export, only: %i[index export_dialog]
-  before_action :find_optional_project, only: %i[split_view split_create baseline_dialog include_projects_dialog]
+  before_action :find_optional_project,
+                only: %i[split_view split_create baseline_dialog include_projects_dialog configure_view_dialog]
   before_action :load_and_authorize_in_optional_project, only: %i[index export_dialog new copy]
   authorization_checked! :index, :show, :new, :copy, :export_dialog, :split_view, :split_create, :baseline_dialog,
-                         :include_projects_dialog
+                         :include_projects_dialog, :configure_view_dialog
 
-  before_action :load_and_validate_query, only: %i[index split_view split_create copy baseline_dialog include_projects_dialog]
+  before_action :load_and_validate_query,
+                only: %i[index split_view split_create copy baseline_dialog include_projects_dialog configure_view_dialog]
   before_action :load_work_packages, only: :index, if: -> { request.format.atom? }
   before_action :load_and_validate_query_for_export, only: :export_dialog
 
@@ -140,6 +142,11 @@ class WorkPackagesController < ApplicationController
     respond_with_dialog WorkPackages::IncludeProjects::ModalDialogComponent.new(query: @query,
                                                                                 project: @project,
                                                                                 title: params[:title])
+  end
+
+  def configure_view_dialog
+    respond_with_dialog WorkPackages::ConfigureView::ModalDialogComponent.new(query: @query,
+                                                                              project: @project)
   end
 
   protected
