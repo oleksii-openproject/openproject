@@ -402,22 +402,19 @@ export default class IndexController extends Controller {
     this.addEventListenersToCkEditorInstance();
 
     if (this.isMobile()) {
-      this.scrollInputContainerIntoView(300);
+      this.scrollInputContainerIntoView(200);
+      this.focusEditor(100); // increased timeout on mobile due to iOS related focus issues
     } else if (this.sortingValue === 'asc' && journalsContainerAtBottom) {
       // scroll to (new) bottom if sorting is ascending and journals container was already at bottom before showing the form
       this.scrollJournalContainer(this.journalsContainerTarget, true);
-    }
-
-    const ckEditorInstance = this.getCkEditorInstance();
-    if (ckEditorInstance) {
-      setTimeout(() => ckEditorInstance.editing.view.focus(), 10);
+      this.focusEditor();
     }
   }
 
-  focusEditor() {
+  focusEditor(timeout:number = 10) {
     const ckEditorInstance = this.getCkEditorInstance();
     if (ckEditorInstance) {
-      setTimeout(() => ckEditorInstance.editing.view.focus(), 10);
+      setTimeout(() => ckEditorInstance.editing.view.focus(), timeout);
     }
   }
 
