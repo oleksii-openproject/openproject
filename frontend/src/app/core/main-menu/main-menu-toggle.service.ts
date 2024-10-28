@@ -72,6 +72,8 @@ export class MainMenuToggleService {
     public injector:Injector,
     readonly deviceService:DeviceService,
   ) {
+    // Add resize event listener
+    window.addEventListener('resize', this.onWindowResize.bind(this));
   }
 
   public initializeMenu():void {
@@ -97,6 +99,12 @@ export class MainMenuToggleService {
 
     // small desktop version default: hide menu on initialization
     this.closeWhenOnSmallDesktop();
+  }
+
+  private onWindowResize():void {
+    if (window.innerWidth < 1012) {
+      this.closeMenu();
+    }
   }
 
   // click on arrow or hamburger icon
