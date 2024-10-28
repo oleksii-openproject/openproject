@@ -4,19 +4,13 @@
                 align_items: :center,
                 style: "gap: 0.5rem;") do |meta_information_row|
     meta_information_row.with_column do
-      render(Primer::Beta::Text.new(font_size: :small,
-                                  font_weight: :bold,
-                                  color: :muted)) { "#{work_package.type.name.upcase}" }
-    end
-
-    meta_information_row.with_column do
-      render(Primer::Beta::Text.new(font_size: :small,
-                                    color: :muted)) { "##{work_package.id}" }
+      render(WorkPackages::HighlightedTypeComponent.new(work_package: @work_package, font_size: :small))
     end
     meta_information_row.with_column do
-      render(Primer::Beta::Text.new(classes: "__hl_inline_status_#{work_package.status.id}")) do
-        work_package.status.name
-      end
+      render(Primer::Beta::Text.new(font_size: :small,color: :muted)) { "##{work_package.id}" }
+    end
+    meta_information_row.with_column do
+      render WorkPackages::StatusBadgeComponent.new(status: work_package.status)
     end
   end
 
