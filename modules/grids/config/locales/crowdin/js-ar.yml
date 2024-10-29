@@ -27,9 +27,6 @@ ar:
         project_description:
           title: 'وصف المشروع'
           no_results: "No description has been written yet. One can be provided in the 'Project settings'."
-        project_details:
-          title: 'تفاصيل المشروع'
-          no_results: 'No custom fields have been defined for projects.'
         project_status:
           title: 'حالة المشروع'
           not_started: 'Not started'

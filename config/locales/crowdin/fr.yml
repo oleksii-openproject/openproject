@@ -221,10 +221,10 @@ fr:
           heading: Pour tous les projets
           description: Ce champ personnalisé est activé dans tous les projets, car l'option « Pour tous les projets » est cochée. Il ne peut pas être désactivé pour les projets individuels.
       items:
+        actions: "Item actions"
         blankslate:
           title: "Votre liste d'articles est vide"
           description: "Commencez par ajouter des éléments au champ personnalisé de type hiérarchie. Chaque élément peut être utilisé pour créer une hiérarchie en dessous de lui. Pour naviguer et créer des sous-éléments à l'intérieur d'une hiérarchie, cliquez sur l'élément créé."
-        actions: "Item actions"
         placeholder:
           label: "Item label"
           short: "Short name"
@@ -495,6 +495,15 @@ fr:
       priority_color_text: |
         Cliquez pour assigner ou modifier la couleur de cette priorité.
         Elle peut être utilisée pour mettre en évidence les lots de travaux dans le tableau.
+  reactions:
+    action_title: "React"
+    add_reaction: "Add reaction"
+    react_with: "React with %{reaction}"
+    and_user: "and %{user}"
+    and_others:
+      one: and 1 other
+      other: and %{count} others
+    reaction_by: "%{reaction} by"
   reportings:
     index:
       no_results_title_text: Il n'y a actuellement aucun rapport d'état.
@@ -788,7 +797,6 @@ fr:
         consented_at: "Consenti à"
       user_preference:
         comments_sorting: "Afficher les commentaires"
-        hide_mail: "Masquer mon adresse courriel"
         impaired: "Mode d'accessibilité"
         time_zone: "Fuseau horaire"
         auto_hide_popups: "Masquer automatiquement les notifications de succès"
@@ -878,6 +886,7 @@ fr:
         not_available: "n'est pas disponible en raison d'une configuration système."
         not_deletable: "ne peut pas être supprimé"
         not_current_user: "n'est pas l'utilisateur actuel."
+        not_found: "not found."
         not_a_date: "n'est pas une date valide."
         not_a_datetime: "n'est pas une heure valide."
         not_a_number: "n'est pas un nombre."
@@ -2827,9 +2836,6 @@ fr:
   notice_successful_update_custom_fields_added_to_project: |
     Mise à jour réussie. Les champs personnalisés des types activés sont automatiquement activés
     sur le formulaire du lot de travaux. <a href="%{url}" target="_blank">Voir plus</a>.
-  notice_successful_update_custom_fields_added_to_type: |
-    Mise à jour réussie. Les champs personnalisés actifs sont automatiquement activés pour
-    les projets associés de ce type.
   notice_to_many_principals_to_display: "Il y a trop de résultats.\nLimitez la recherche en tapant le nom du nouveau membre (ou groupe)."
   notice_user_missing_authentication_method: L'utilisateur n'a pas encore choisi de mot de passe ou un autre moyen de s'authentifier.
   notice_user_invitation_resent: Une invitation a été envoyée à %{email}.
@@ -3243,7 +3249,6 @@ fr:
   setting_registration_footer: "Pied de page d’inscription"
   setting_repositories_automatic_managed_vendor: "Type de fournisseur de dépôt automatique"
   setting_repositories_encodings: "Encodages de référentiels"
-  setting_repository_authentication_caching_enabled: "Activer la mise en cache pour la requête d'authentification du logiciel de contrôle de version"
   setting_repository_storage_cache_minutes: "Cache de l'espace disque du dépôt"
   setting_repository_checkout_display: "Afficher les instructions de « checkout »"
   setting_repository_checkout_base_url: "URL de base de « checkout »"

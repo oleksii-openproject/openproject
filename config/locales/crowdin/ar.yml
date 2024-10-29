@@ -221,10 +221,10 @@ ar:
           heading: For all projects
           description: This custom field is enabled in all projects since the "For all projects" option is checked. It cannot be deactivated for individual projects.
       items:
+        actions: "Item actions"
         blankslate:
           title: "Your list of items is empty"
           description: "Start by adding items to the custom field of type hierarchy. Each item can be used to create a hierarchy bellow it. To navigate and create sub-items inside a hierarchy click on the created item."
-        actions: "Item actions"
         placeholder:
           label: "Item label"
           short: "Short name"
@@ -519,6 +519,19 @@ ar:
       priority_color_text: |
         Click to assign or change the color of this priority.
         It can be used for highlighting work packages in the table.
+  reactions:
+    action_title: "React"
+    add_reaction: "Add reaction"
+    react_with: "React with %{reaction}"
+    and_user: "and %{user}"
+    and_others:
+      zero: and %{count} others
+      one: and 1 other
+      two: and %{count} others
+      few: and %{count} others
+      many: and %{count} others
+      other: and %{count} others
+    reaction_by: "%{reaction} by"
   reportings:
     index:
       no_results_title_text: لا يوجد حالياً تقارير حالة.
@@ -817,7 +830,6 @@ ar:
         consented_at: "Consented at"
       user_preference:
         comments_sorting: "عرض التعليقات"
-        hide_mail: "إخفاء عنوان البريد الإلكتروني الخاص بي"
         impaired: "نمط إمكانية الدخول"
         time_zone: "المنطقة الزمنية"
         auto_hide_popups: "Auto-hide success notifications"
@@ -907,6 +919,7 @@ ar:
         not_available: "is not available due to a system configuration."
         not_deletable: "cannot be deleted."
         not_current_user: "is not the current user."
+        not_found: "not found."
         not_a_date: "is not a valid date."
         not_a_datetime: "is not a valid date time."
         not_a_number: "ليس رقماً."
@@ -2972,9 +2985,6 @@ ar:
   notice_successful_update_custom_fields_added_to_project: |
     Successful update. The custom fields of the activated types are automatically activated
     on the work package form. <a href="%{url}" target="_blank">See more</a>.
-  notice_successful_update_custom_fields_added_to_type: |
-    Successful update. The active custom fields are automatically activated for
-    the associated projects of this type.
   notice_to_many_principals_to_display: "هناك الكثير من النتائج. تضييق البحث عن طريق كتابة اسم العضو الجديد (أو المجموعة)."
   notice_user_missing_authentication_method: على المستخدم اختيار كلمة مرور أو طريقة أخرى لتسجيل الدخول.
   notice_user_invitation_resent: An invitation has been sent to %{email}.
@@ -3390,7 +3400,6 @@ ar:
   setting_registration_footer: "Registration footer"
   setting_repositories_automatic_managed_vendor: "نوع المورد مستودع التلقائي"
   setting_repositories_encodings: "ترميزات مستودعات"
-  setting_repository_authentication_caching_enabled: "تمكين التخزين المؤقت لطلب مصادقة لبرنامج التحكم في الإصدار"
   setting_repository_storage_cache_minutes: "Repository disk size cache"
   setting_repository_checkout_display: "إظهار تعليمات الخروج"
   setting_repository_checkout_base_url: "محدد موقع المعلومات الأساسي الخروجURL"

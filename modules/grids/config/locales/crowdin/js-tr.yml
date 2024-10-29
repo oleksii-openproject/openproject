@@ -27,9 +27,6 @@ tr:
         project_description:
           title: 'Proje tanımı'
           no_results: "Henüz bir açıklama yazılmadı. Biri 'Proje ayarları' içinde sağlanabilir."
-        project_details:
-          title: 'Proje detayları'
-          no_results: 'Projeler için özel alan tanımlanmadı.'
         project_status:
           title: 'Proje Durumu'
           not_started: 'Başlatılmadı'

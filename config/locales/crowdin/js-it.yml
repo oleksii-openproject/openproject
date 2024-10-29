@@ -716,7 +716,6 @@ it:
     project:
       required_outside_context: >
         Scegli un progetto per creare una macro-attività e vederne tutti gli attributi. Puoi selezionare solo progetti che hanno il tipo sopra indicato attivato.
-      details_activity: "Attività dei dettagli del progetto"
       context: "Contesto del progetto"
       click_to_switch_to_project: "Progetto: %{projectname}"
       confirm_template_load: "Cambiare il modello ricaricherà la pagina e perderai tutti gli input in questo modulo. Continuare?"

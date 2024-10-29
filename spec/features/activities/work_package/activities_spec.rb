@@ -901,6 +901,32 @@ RSpec.describe "Work package activity", :js, :with_cuprite, with_flag: { primeri
     end
   end
 
+  describe "images in the comment",
+           with_cuprite: false,
+           with_settings: { journal_aggregation_time_minutes: 0, show_work_package_attachments: false } do
+    let(:work_package) { create(:work_package, project:, author: admin) }
+    let(:image_fixture) { UploadedFile.load_from("spec/fixtures/files/image.png") }
+    let(:editor) { Components::WysiwygEditor.new }
+
+    context "if work package attachments are deactivated in project" do
+      it "shows the inline image and have it uploaded to the work package", :aggregate_failures do
+        login_as admin
+
+        wp_page.visit!
+        wp_page.wait_for_activity_tab
+
+        page.find_test_selector("op-open-work-package-journal-form-trigger").click
+        editor.drag_attachment(image_fixture.path, "", scroll: false)
+        editor.wait_until_upload_progress_toaster_cleared
+
+        page.find_test_selector("op-submit-work-package-journal-form").click
+
+        expect(find_test_selector("op-journal-notes-body")).to have_css("img")
+        expect(page).to have_test_selector("op-journal-detail-description", text: "File image.png added as attachment")
+      end
+    end
+  end
+
   describe "retracted journal entries" do
     let(:work_package) { create(:work_package, project:, author: admin) }
     let!(:first_comment_by_admin) do

@@ -27,9 +27,6 @@ fr:
         project_description:
           title: 'Description du projet'
           no_results: "Aucune description n'a encore été écrite. Vous pouvez en trouver une dans les \"Paramètres du projet\"."
-        project_details:
-          title: 'Détails du projet'
-          no_results: 'Aucun champ personnalisé n''a été défini pour les projets.'
         project_status:
           title: 'Statut du projet'
           not_started: 'Non démarré'

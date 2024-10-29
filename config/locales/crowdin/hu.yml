@@ -220,10 +220,10 @@ hu:
           heading: For all projects
           description: This custom field is enabled in all projects since the "For all projects" option is checked. It cannot be deactivated for individual projects.
       items:
+        actions: "Item actions"
         blankslate:
           title: "Your list of items is empty"
           description: "Start by adding items to the custom field of type hierarchy. Each item can be used to create a hierarchy bellow it. To navigate and create sub-items inside a hierarchy click on the created item."
-        actions: "Item actions"
         placeholder:
           label: "Item label"
           short: "Short name"
@@ -494,6 +494,15 @@ hu:
       priority_color_text: |
         Ide kattintva rendelhet vagy változtathatja meg a színét az állapotnak.
         Az állapot gomb látható és kiemelhető a feladatcsoport táblázatban.
+  reactions:
+    action_title: "React"
+    add_reaction: "Add reaction"
+    react_with: "React with %{reaction}"
+    and_user: "and %{user}"
+    and_others:
+      one: and 1 other
+      other: and %{count} others
+    reaction_by: "%{reaction} by"
   reportings:
     index:
       no_results_title_text: Jelenleg nincsenek állapot jelentések.
@@ -786,7 +795,6 @@ hu:
         consented_at: "Ehhez hozzájárult a"
       user_preference:
         comments_sorting: "Hozzászólások megjelenítése"
-        hide_mail: "E-mail címem elrejtése"
         impaired: "Kisegítő mód"
         time_zone: "Idő zóna"
         auto_hide_popups: "Siker értesítések automatikus elrejtése"
@@ -876,6 +884,7 @@ hu:
         not_available: "nem érhető el a rendszer konfigurációja miatt.\n"
         not_deletable: "nem törölhető"
         not_current_user: "nem az aktuális felhasználó"
+        not_found: "not found."
         not_a_date: "nem érvényes dátum."
         not_a_datetime: "ez nem érvényes dátum."
         not_a_number: "ez nem egy szám."
@@ -2824,9 +2833,6 @@ hu:
   notice_successful_update_custom_fields_added_to_project: |
     Sikeres frissítés. Az aktivált típusok egyéni mezői automatikusan aktiválódnak
     a munkacsomag űrlapon. <a href="%{url}" target="_blank">További információ</a>.
-  notice_successful_update_custom_fields_added_to_type: |
-    Sikeres frissítés. Az aktív egyéni mezők automatikusan aktiválódnak
-    az ilyen típusú kapcsolódó projektek.
   notice_to_many_principals_to_display: "Túl sok a találat. Szűkítse le a keresést  az új tagok (vagy csoport) nevének beírásával."
   notice_user_missing_authentication_method: A felhasználónak még jelszót kell választani, vagy más módon kell bejelentkeznie.
   notice_user_invitation_resent: Meghívó elküldve a %{email} címre.
@@ -3240,7 +3246,6 @@ hu:
   setting_registration_footer: "Regisztráció lábléc"
   setting_repositories_automatic_managed_vendor: "Automatikus tároló típus"
   setting_repositories_encodings: "Tárolók kódolásai"
-  setting_repository_authentication_caching_enabled: "A hitelesítési kérelem gyorsítótárazásának engedélyezése a vezérlő szoftver verzióban"
   setting_repository_storage_cache_minutes: "Tároló lemezgyorsítótár méret"
   setting_repository_checkout_display: "Checkout utasítások megjelenítése"
   setting_repository_checkout_base_url: "Checkout alap URL-címe"

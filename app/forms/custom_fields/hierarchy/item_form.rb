@@ -28,9 +28,9 @@
 
 module CustomFields
   module Hierarchy
-    class NewItemForm < ApplicationForm
-      form do |new_item_form|
-        new_item_form.group(layout: :horizontal) do |input_group|
+    class ItemForm < ApplicationForm
+      form do |item_form|
+        item_form.group(layout: :horizontal) do |input_group|
           input_group.text_field(
             name: :label,
             label: "Label",
@@ -51,7 +51,7 @@ module CustomFields
           )
         end
 
-        new_item_form.group(layout: :horizontal) do |button_group|
+        item_form.group(layout: :horizontal) do |button_group|
           button_group.button(name: :cancel,
                               tag: :a,
                               label: I18n.t(:button_cancel),
@@ -62,9 +62,10 @@ module CustomFields
         end
       end
 
-      def initialize(custom_field:, label:, short:)
+      def initialize(custom_field:, hierarchy_item:, label:, short:)
         super()
         @custom_field = custom_field
+        @hierarchy_item = hierarchy_item
         @label = label
         @short = short
       end
@@ -72,11 +73,8 @@ module CustomFields
       private
 
       def validation_message_for(attribute)
-        @custom_field
-          .errors
-          .messages_for(attribute)
-          .to_sentence
-          .presence
+        @hierarchy_item.errors.messages_for(attribute).to_sentence.presence ||
+          @custom_field.errors.messages_for(attribute).to_sentence.presence
       end
     end
   end

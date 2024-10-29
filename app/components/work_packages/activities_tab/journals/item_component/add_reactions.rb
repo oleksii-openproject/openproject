@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) the OpenProject GmbH
+# Copyright (C) 2012-2023 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -26,39 +26,31 @@
 # See COPYRIGHT and LICENSE files for more details.
 #++
 
-require "support/pages/page"
+module WorkPackages
+  module ActivitiesTab
+    module Journals
+      class ItemComponent::AddReactions < ApplicationComponent
+        include ApplicationHelper
+        include OpPrimer::ComponentHelpers
+        include OpTurbo::Streamable
 
-module Pages
-  class CustomFields < Page
-    def path
-      "/custom_fields"
-    end
+        def initialize(journal:)
+          super
 
-    def visit_tab(name)
-      visit!
-      within_test_selector("custom-fields--tab-nav") do
-        click_link name.to_s
+          @journal = journal
+        end
+
+        def render?
+          User.current.allowed_in_work_package?(:add_work_package_notes, work_package)
+        end
+
+        private
+
+        attr_reader :journal
+
+        def work_package = journal.journable
+        def wrapper_uniq_by = journal.id
       end
-    end
-
-    def select_format(label)
-      select label, from: "custom_field_field_format"
-    end
-
-    def set_name(name)
-      find_by_id("custom_field_name").set name
-    end
-
-    def set_default_value(value)
-      fill_in "custom_field[default_value]", with: value
-    end
-
-    def set_all_projects(value)
-      find_by_id("custom_field_is_for_all").set value
-    end
-
-    def has_form_element?(name)
-      page.has_css? "label.form--label", text: name
     end
   end
 end

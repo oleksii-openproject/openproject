@@ -219,10 +219,10 @@ ja:
           heading: For all projects
           description: This custom field is enabled in all projects since the "For all projects" option is checked. It cannot be deactivated for individual projects.
       items:
+        actions: "Item actions"
         blankslate:
           title: "Your list of items is empty"
           description: "Start by adding items to the custom field of type hierarchy. Each item can be used to create a hierarchy bellow it. To navigate and create sub-items inside a hierarchy click on the created item."
-        actions: "Item actions"
         placeholder:
           label: "Item label"
           short: "Short name"
@@ -487,6 +487,14 @@ ja:
       priority_color_text: |
         この優先順位の色を割り当てたり変更する場合にクリックします。
         テーブル内のワークパッケージを強調表示するために使用できます。
+  reactions:
+    action_title: "React"
+    add_reaction: "Add reaction"
+    react_with: "React with %{reaction}"
+    and_user: "and %{user}"
+    and_others:
+      other: and %{count} others
+    reaction_by: "%{reaction} by"
   reportings:
     index:
       no_results_title_text: 現在、ステータス報告はありません。
@@ -778,7 +786,6 @@ ja:
         consented_at: "同意しました。"
       user_preference:
         comments_sorting: "コメントの表示"
-        hide_mail: "電子メールアドレスを未公開"
         impaired: "アクセシビリティモード"
         time_zone: "タイムゾーン"
         auto_hide_popups: "成功通知を自動的に隠す"
@@ -868,6 +875,7 @@ ja:
         not_available: "is not available due to a system configuration."
         not_deletable: "削除できません。"
         not_current_user: "現在のユーザーではありません。"
+        not_found: "not found."
         not_a_date: "は有効な日付ではありません。"
         not_a_datetime: "は有効な日時ではありません。"
         not_a_number: "は数値にしてください。"
@@ -2788,9 +2796,6 @@ ja:
   notice_successful_update_custom_fields_added_to_project: |
     Successful update. The custom fields of the activated types are automatically activated
     on the work package form. <a href="%{url}" target="_blank">See more</a>.
-  notice_successful_update_custom_fields_added_to_type: |
-    Successful update. The active custom fields are automatically activated for
-    the associated projects of this type.
   notice_to_many_principals_to_display: "検索結果が多すぎです。新たにメンバー名（またはグループ名）を入力して検索を絞り込んでください。"
   notice_user_missing_authentication_method: ユーザーは、サインインのパスワードまたは別の方法を選択する必要があります。
   notice_user_invitation_resent: '%{email} に招待状が送信されました。'
@@ -3203,7 +3208,6 @@ ja:
   setting_registration_footer: "登録フッター"
   setting_repositories_automatic_managed_vendor: "自動リポジトリ ベンダー種類"
   setting_repositories_encodings: "リポジトリのエンコーディング"
-  setting_repository_authentication_caching_enabled: "バージョン管理ソフトウェアの認証要求に対してキャッシュを有効"
   setting_repository_storage_cache_minutes: "リポジトリ ディスクサイズのキャッシュ"
   setting_repository_checkout_display: "チェックアウトの手順を表示"
   setting_repository_checkout_base_url: "チェック アウト ベース URL"

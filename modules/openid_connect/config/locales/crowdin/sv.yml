@@ -9,7 +9,7 @@ sv:
       openid_connect/provider:
         name: Namn
         display_name: Visningsnamn
-        client_id: Client ID
+        client_id: Klient-ID
         client_secret: Client secret
         secret: Hemlighet
         scope: Omfattning

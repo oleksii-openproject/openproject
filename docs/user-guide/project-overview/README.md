@@ -143,19 +143,6 @@ The description can be added or changed in the [project settings](../projects/pr
 
 ![project description widget](image-20191112143652698.png)
 
-### Project details widget
-
-> [!IMPORTANT]
-> Project details widget was replaced by [Project attributes](#project-attributes) in [OpenProject 14.0](../../release-notes/14-0-0/) and will be removed in the future.
-
-The project details widget displays all custom fields for projects, e.g. project owner, project due date, project number, or any other custom field for this project.
-
-The custom fields can be adapted in the [project settings](../projects/project-settings/). As a system administrator you can [create new custom fields for projects](../../system-admin-guide/custom-fields/custom-fields-projects/).
-
-![project details widget](image-20191112144557906.png)
-
-New custom fields for projects can be created in the [system administration](../../system-admin-guide/).
-
 ### Project status widget
 
 Add your project status as a widget to display at a glance whether your project is on track, off track or at risk.

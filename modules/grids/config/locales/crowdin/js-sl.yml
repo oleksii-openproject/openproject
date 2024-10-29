@@ -27,9 +27,6 @@ sl:
         project_description:
           title: 'Opis projekta'
           no_results: "Opis še ni bil napisan. Lahko ga dodate v 'Projektnih nastavitvah'. "
-        project_details:
-          title: 'Podrobnosti projekta'
-          no_results: 'Za projekte niso bila definirana nobena polja po meri. '
         project_status:
           title: 'Status projekta'
           not_started: 'Ni začeto'

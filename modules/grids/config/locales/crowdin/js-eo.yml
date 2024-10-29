@@ -27,9 +27,6 @@ eo:
         project_description:
           title: 'Priskribo de projekto'
           no_results: "No description has been written yet. One can be provided in the 'Project settings'."
-        project_details:
-          title: 'Project details'
-          no_results: 'No custom fields have been defined for projects.'
         project_status:
           title: 'Projekta stato'
           not_started: 'Nekomencita'

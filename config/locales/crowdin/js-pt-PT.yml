@@ -716,7 +716,6 @@ pt-PT:
     project:
       required_outside_context: >
         Por favor escolha um projeto onde criar o pacote de trabalho de forma a ver todos os atributos. Só pode selecionar projetos com o tipo acima ativado.
-      details_activity: "Atividade de detalhes do projeto"
       context: "Contexto do projeto"
       click_to_switch_to_project: "Projeto: %{projectname}"
       confirm_template_load: "Mudar o modelo irá recarregar a página e vai perder todas as entradas feitas neste formulário. Continuar?"

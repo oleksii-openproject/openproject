@@ -218,10 +218,10 @@ zh-CN:
           heading: 适用于所有项目
           description: 由于选中了 "适用于所有项目 "选项，因此所有项目都启用了该自定义字段。单个项目无法停用。
       items:
+        actions: "项目操作"
         blankslate:
           title: "您的条目列表为空"
           description: "首先，将条目添加到类型层次结构的自定义字段中。每个条目都可以用于在其下方创建一个层次结构。要导航并在层次结构中创建子条目，请点击已创建的条目。"
-        actions: "项目操作"
         placeholder:
           label: "项目标签"
           short: "短名"
@@ -486,6 +486,14 @@ zh-CN:
       priority_color_text: |
         单击可以分配或更改此优先级的颜色。
         颜色可用于突出显示表中的工作包。
+  reactions:
+    action_title: "回应"
+    add_reaction: "添加回应"
+    react_with: "使用 %{reaction} 进行回应"
+    and_user: "和 %{user}"
+    and_others:
+      other: 和 %{count} 其他
+    reaction_by: "由 %{reaction}"
   reportings:
     index:
       no_results_title_text: 目前没有状态报告。
@@ -777,7 +785,6 @@ zh-CN:
         consented_at: "同意在"
       user_preference:
         comments_sorting: "显示评论"
-        hide_mail: "隐藏我的电子邮件地址"
         impaired: "辅助功能模式"
         time_zone: "时区"
         auto_hide_popups: "自动隐藏成功通知"
@@ -867,6 +874,7 @@ zh-CN:
         not_available: "因系统配置而不可用。"
         not_deletable: "无法删除。"
         not_current_user: "不是当前用户。"
+        not_found: "未找到"
         not_a_date: "不是有效的日期。"
         not_a_datetime: "不是有效的日期时间。"
         not_a_number: "不是一个数字。"
@@ -2784,8 +2792,6 @@ zh-CN:
   notice_successful_update: "成功更新。"
   notice_successful_update_custom_fields_added_to_project: |
     更新成功。已激活类型的自定义字段在工作包表单上自动激活。<a href="%{url}" target="_blank">了解详情</a>。
-  notice_successful_update_custom_fields_added_to_type: |
-    更新成功。会为此类型的关联项目自动激活有效的自定义字段。
   notice_to_many_principals_to_display: "搜索结果数量过多。\n请键入新成员 (或组) 的名字来缩小搜索范围。"
   notice_user_missing_authentication_method: 用户尚未选择密码或另一种方式登录。
   notice_user_invitation_resent: 邀请已发送到 %{email}。
@@ -3196,7 +3202,6 @@ zh-CN:
   setting_registration_footer: "注册页脚"
   setting_repositories_automatic_managed_vendor: "自动存储库提供商类型"
   setting_repositories_encodings: "存储库编码"
-  setting_repository_authentication_caching_enabled: "启用版本控制软件的身份验证请求缓存"
   setting_repository_storage_cache_minutes: "存储库磁盘大小缓存"
   setting_repository_checkout_display: "显示检出说明"
   setting_repository_checkout_base_url: "检出根 URL"

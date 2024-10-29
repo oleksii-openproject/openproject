@@ -27,9 +27,6 @@ id:
         project_description:
           title: 'Deskripsi Proyek'
           no_results: "Belum ada deskripsi yang ditulis. Deskripsi dapat disediakan dalam 'Pengaturan proyek'."
-        project_details:
-          title: 'Rincian proyek'
-          no_results: 'Tidak ada bidang khusus yang ditentukan untuk proyek.'
         project_status:
           title: 'Project status'
           not_started: 'Belum mulai'

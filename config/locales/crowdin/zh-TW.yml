@@ -220,10 +220,10 @@ zh-TW:
           heading: 對所有的專案
           description: 由於已勾選「適用於所有專案」選項，因此所有專案都會啟用此自訂欄位。個別專案無法停用。
       items:
+        actions: "自訂動作"
         blankslate:
           title: "您的欄位清單是空的"
           description: "首先將項目新增至層次結構的自訂欄位。每個項目都可用於在其下方建立一個層次結構。若要在層次結構內導覽和建立子項目，請按一下已建立的項目。"
-        actions: "自訂動作"
         placeholder:
           label: "項目標籤"
           short: "簡稱"
@@ -488,6 +488,14 @@ zh-TW:
       priority_color_text: |
         按一下以分配或更改此優先順序的顏色。
         它可用於突出顯示表中的工作項目。
+  reactions:
+    action_title: "反應"
+    add_reaction: "加入反應"
+    react_with: "使用 %{reaction} 進行反應"
+    and_user: "和 %{user}"
+    and_others:
+      other: 與其他 %{count} 個
+    reaction_by: "%{reaction} 由"
   reportings:
     index:
       no_results_title_text: 目前沒有狀態可以回報
@@ -519,7 +527,7 @@ zh-TW:
         is_readonly: "唯讀"
         excluded_from_totals: "不包括在總計中"
   themes:
-    dark: "Dark"
+    dark: "深色主題"
     light: "白色主題"
     light_high_contrast: "高對比白色主題"
   types:
@@ -779,7 +787,6 @@ zh-TW:
         consented_at: "同意在"
       user_preference:
         comments_sorting: "顯示留言"
-        hide_mail: "隱藏我的電子郵件地址"
         impaired: "協助工具模式"
         time_zone: "時區"
         auto_hide_popups: "提醒後自動隱藏"
@@ -869,6 +876,7 @@ zh-TW:
         not_available: "由於系統配置所以不可用"
         not_deletable: "無法刪除"
         not_current_user: "不是目前使用者。"
+        not_found: "未找到"
         not_a_date: "不是有效的日期。"
         not_a_datetime: "不是有效的日期時間。"
         not_a_number: "不是數字"
@@ -2787,8 +2795,6 @@ zh-TW:
   notice_successful_update: "更新成功"
   notice_successful_update_custom_fields_added_to_project: |
     更新成功。相關類型之專案，此客製欄位會自動啟動。<a href="%{url}" target="_blank">看更多</a>。
-  notice_successful_update_custom_fields_added_to_type: |
-    更新成功。相關類型之專案，此客製欄位會自動啟用。
   notice_to_many_principals_to_display: "搜尋的結果太多。\n請透過輸入新成員 (群組) 的名稱來縮小搜尋的範圍。"
   notice_user_missing_authentication_method: 用戶尚未選擇密碼或其他方式登錄。
   notice_user_invitation_resent: 已向 %{email} 發送邀請。
@@ -3201,7 +3207,6 @@ zh-TW:
   setting_registration_footer: "註冊頁腳"
   setting_repositories_automatic_managed_vendor: "自動版本控制類型"
   setting_repositories_encodings: "儲存庫編碼"
-  setting_repository_authentication_caching_enabled: "啟用版本控制軟體的驗證請求的快取機制"
   setting_repository_storage_cache_minutes: "版本庫磁碟空間快取"
   setting_repository_checkout_display: "顯示 Checkout 指令說明"
   setting_repository_checkout_base_url: "Checkout base URL"

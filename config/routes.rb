@@ -195,7 +195,7 @@ Rails.application.routes.draw do
                  only: :destroy
         resources :items,
                   controller: "/admin/custom_fields/hierarchy/items",
-                  only: %i[index new create destroy] do
+                  except: %i[show] do
           get :deletion_dialog, on: :member
         end
       end
@@ -601,6 +601,7 @@ Rails.application.routes.draw do
     resources :activities, controller: "work_packages/activities_tab", only: %i[index create edit update] do
       member do
         get :cancel_edit
+        put :toggle_reaction
       end
       collection do
         get :update_streams
@@ -717,9 +718,9 @@ Rails.application.routes.draw do
 
   scope controller: "sys" do
     match "/sys/repo_auth", action: "repo_auth", via: %i[get post]
-    get "/sys/projects", action: "projects"
-    get "/sys/fetch_changesets", action: "fetch_changesets"
-    get "/sys/projects/:id/repository/update_storage", action: "update_required_storage"
+    match "/sys/projects", to: proc { [410, {}, [""]] }, via: :all
+    match "/sys/fetch_changesets", to: proc { [410, {}, [""]] }, via: :all
+    match "/sys/projects/:id/repository/update_storage", to: proc { [410, {}, [""]] }, via: :all
   end
 
   # alternate routes for the current user

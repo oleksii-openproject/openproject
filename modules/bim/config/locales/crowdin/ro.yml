@@ -51,7 +51,7 @@ ro:
         import_statuses_as: 'Setați toate aceste statusuri la'
         import_priorities_as: 'Setați toate aceste priorități pentru'
         invite_as_members_with_role: 'Invitați-i ca membri în proiectul "%{project}" cu rolul'
-        add_as_members_with_role: 'Adăugați-i ca membri în proiectul "%{project}" cu rolul'
+        add_as_members_with_role: 'Adăugă-i ca membri în proiectul "%{project}" cu rolul'
         no_type_provided: 'Nici un tip furnizat'
         no_status_provided: 'Nu este furnizat niciun statut'
         no_priority_provided: 'Nu se acordă prioritate'

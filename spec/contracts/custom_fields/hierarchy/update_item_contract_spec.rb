@@ -49,6 +49,7 @@ RSpec.describe CustomFields::Hierarchy::UpdateItemContract do
         [
           { item: luke, label: "Luke Skywalker", short: "LS" },
           { item: luke, label: "Luke Skywalker" },
+          { item: luke, label: "luke", short: "lu" },
           { item: luke, short: "LS" },
           { item: luke, short: "lo" },
           { item: luke }

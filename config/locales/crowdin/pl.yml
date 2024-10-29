@@ -218,10 +218,10 @@ pl:
           heading: Dla wszystkich projektów
           description: To pole niestandardowe jest włączone we wszystkich projektach, ponieważ jest zaznaczona opcja „Dla wszystkich projektów”. Nie można go wyłączyć dla poszczególnych projektów.
       items:
+        actions: "Item actions"
         blankslate:
           title: "Twoja lista elementów jest pusta"
           description: "Zacznij od dodawania elementów do pola niestandardowego typu hierarchii. Każdy element może być użyty do tworzenia hierarchii poniżej niego. Aby nawigować i tworzyć podelementy wewnątrz hierarchii, kliknij utworzony element."
-        actions: "Item actions"
         placeholder:
           label: "Item label"
           short: "Short name"
@@ -504,6 +504,17 @@ pl:
       priority_color_text: |
         Kliknij, aby przypisać lub zmienić kolor tego priorytetu.
         Można go używać do wyróżniania pakietów roboczych w tabeli.
+  reactions:
+    action_title: "React"
+    add_reaction: "Add reaction"
+    react_with: "React with %{reaction}"
+    and_user: "and %{user}"
+    and_others:
+      one: and 1 other
+      few: and %{count} others
+      many: and %{count} others
+      other: and %{count} others
+    reaction_by: "%{reaction} by"
   reportings:
     index:
       no_results_title_text: Nie ma aktualnie żadnego statusu żądania.
@@ -800,7 +811,6 @@ pl:
         consented_at: "Zgodę na"
       user_preference:
         comments_sorting: "Wyświetlanie komentarzy"
-        hide_mail: "Ukryj mój adres e-mail"
         impaired: "Ułatwienia dostępu"
         time_zone: "Strefa czasowa"
         auto_hide_popups: "Automatyczne ukrycie powiadomień o sukcesie"
@@ -890,6 +900,7 @@ pl:
         not_available: "jest niedostępne z powodu konfiguracji systemu."
         not_deletable: "— nie można usunąć."
         not_current_user: "nie jest bieżącym użytkownikiem."
+        not_found: "not found."
         not_a_date: "nie jest poprawną datą."
         not_a_datetime: "nie jest poprawną datą i czasem."
         not_a_number: "nie jest liczbą."
@@ -2896,9 +2907,6 @@ pl:
   notice_successful_update_custom_fields_added_to_project: |
     Pomyślna aktualizacja. Pola własne aktywowanych typów są automatycznie włączane
     do formularza pakietu roboczego. <a href="%{url}" target="_blank">Zobacz więcej</a>.
-  notice_successful_update_custom_fields_added_to_type: |
-    Pomyślna aktualizacja. Aktywne pola własne są automatycznie włączane do
-    powiązanych projektów tego typu.
   notice_to_many_principals_to_display: "Istnieje zbyt wiele wyników.\nNależy zawęzić wyszukiwanie przez wpisanie w nazwy użytkownika (lub grupy)."
   notice_user_missing_authentication_method: Użytkownik jeszcze nie wybrał sposobu logowania przez hasło lub inaczej.
   notice_user_invitation_resent: Zaproszenie wysłano do %{email}.
@@ -3312,7 +3320,6 @@ pl:
   setting_registration_footer: "Rejestracja stopki"
   setting_repositories_automatic_managed_vendor: "Typ automatycznego producenta repozytorium"
   setting_repositories_encodings: "Kodowanie repozytorium"
-  setting_repository_authentication_caching_enabled: "Włącz buforowanie dla żądania uwierzytelnienia oprogramowania do kontroli wersji"
   setting_repository_storage_cache_minutes: "Rozmiar pamięci podręcznej dysku repozytorium"
   setting_repository_checkout_display: "Pokaż polecenie sprawdzenia"
   setting_repository_checkout_base_url: "Sprawdzenie bazowego adresu URL"

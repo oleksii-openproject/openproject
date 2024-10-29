@@ -27,9 +27,6 @@ ru:
         project_description:
           title: 'Описание проекта'
           no_results: "Описания еще нет. Его можно добавить в настройках проекта."
-        project_details:
-          title: 'Детали проекта'
-          no_results: 'Для проектов не определены настраиваемые поля.'
         project_status:
           title: 'Статус проекта'
           not_started: 'Не начат'

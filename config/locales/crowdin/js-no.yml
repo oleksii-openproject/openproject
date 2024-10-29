@@ -716,7 +716,6 @@
     project:
       required_outside_context: >
         Velg et prosjekt for å opprette arbeidspakken og se alle egenskaper. Du kan bare velge prosjekter som har typen ovenfor aktivert.
-      details_activity: "Aktivitet for prosjektdetaljer"
       context: "Prosjekt kontekst"
       click_to_switch_to_project: "Prosjekt: %{projectname}"
       confirm_template_load: "Bytte av mal vil laste siden på nytt, og du vil miste alle data på dette skjemaet. Vil du fortsette?"

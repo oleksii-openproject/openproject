@@ -221,10 +221,10 @@ tr:
           heading: For all projects
           description: This custom field is enabled in all projects since the "For all projects" option is checked. It cannot be deactivated for individual projects.
       items:
+        actions: "Item actions"
         blankslate:
           title: "Öğeler listeniz boş"
           description: "Start by adding items to the custom field of type hierarchy. Each item can be used to create a hierarchy bellow it. To navigate and create sub-items inside a hierarchy click on the created item."
-        actions: "Item actions"
         placeholder:
           label: "Item label"
           short: "Short name"
@@ -495,6 +495,15 @@ tr:
       priority_color_text: |
         Bu önceliğin rengini atamak veya değiştirmek için tıklayın.
         Tablodaki iş paketlerini vurgulamak için kullanılabilir.
+  reactions:
+    action_title: "React"
+    add_reaction: "Add reaction"
+    react_with: "React with %{reaction}"
+    and_user: "and %{user}"
+    and_others:
+      one: and 1 other
+      other: and %{count} others
+    reaction_by: "%{reaction} by"
   reportings:
     index:
       no_results_title_text: Halen durum bildirimleri yok.
@@ -788,7 +797,6 @@ tr:
         consented_at: "Rızanın alınması"
       user_preference:
         comments_sorting: "Yorumları görüntüle"
-        hide_mail: "E-mail adresimi gizle"
         impaired: "Erişilebilirlik modu"
         time_zone: "Zaman dilimi"
         auto_hide_popups: "Başarılı bildirimleri otomatik olarak gizle"
@@ -878,6 +886,7 @@ tr:
         not_available: "Sistem yapılandırması nedeniyle kullanılamaz.\n"
         not_deletable: "kaldırılamadı."
         not_current_user: "mevcut kullanıcı değil."
+        not_found: "not found."
         not_a_date: "geçerli bir tarih değil."
         not_a_datetime: "geçerli bir zaman değil."
         not_a_number: "bir sayı değil."
@@ -2825,8 +2834,6 @@ tr:
   notice_successful_update: "Güncelleme başarılı."
   notice_successful_update_custom_fields_added_to_project: |
     Başarılı güncelleme. Etkinleştirilen türlerin özel alanları, iş paketi formunda otomatik olarak etkinleştirilir. <a href="%{url}" target="_blank">Daha fazlasını görün</a>.
-  notice_successful_update_custom_fields_added_to_type: |
-    Başarılı güncelleme. Etkin özel alanlar, bu türdeki ilgili projeler için otomatik olarak etkinleştirilir.
   notice_to_many_principals_to_display: "Çok fazla sonuç var. Yeni üyenin (veya grubun) adını yazarak aramayı daraltın."
   notice_user_missing_authentication_method: Kullanıcı henüz şifre veya oturum açmak için başka bir yol seçmemiştir.
   notice_user_invitation_resent: '%{email} adresine bir davet gönderildi.'
@@ -3240,7 +3247,6 @@ tr:
   setting_registration_footer: "Kayıt alt bilgisi"
   setting_repositories_automatic_managed_vendor: "Otomatik depo satıcısı türü"
   setting_repositories_encodings: "Depolar kodlamaları"
-  setting_repository_authentication_caching_enabled: "Sürüm denetimi yazılımının kimlik doğrulama isteği için ön belleği etkinleştir"
   setting_repository_storage_cache_minutes: "Depo disk boyutu önbelleği"
   setting_repository_checkout_display: "Ödeme talimatlarını göster"
   setting_repository_checkout_base_url: "Satın alma tabanı URL'si"

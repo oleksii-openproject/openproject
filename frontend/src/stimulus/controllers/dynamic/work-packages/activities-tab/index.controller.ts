@@ -23,12 +23,13 @@ export default class IndexController extends Controller {
     notificationCenterPathName: String,
   };
 
-  static targets = ['journalsContainer', 'buttonRow', 'formRow', 'form'];
+  static targets = ['journalsContainer', 'buttonRow', 'formRow', 'form', 'reactionButton'];
 
   declare readonly journalsContainerTarget:HTMLElement;
   declare readonly buttonRowTarget:HTMLInputElement;
   declare readonly formRowTarget:HTMLElement;
   declare readonly formTarget:HTMLFormElement;
+  declare readonly reactionButtonTargets:HTMLElement[];
 
   declare updateStreamsUrlValue:string;
   declare sortingValue:string;
@@ -160,6 +161,10 @@ export default class IndexController extends Controller {
 
     this.updateInProgress = true;
 
+    // Unfocus any reaction buttons that may have been focused
+    // otherwise the browser will perform an auto scroll to the before focused button after the stream update was applied
+    this.unfocusReactionButtons();
+
     const journalsContainerAtBottom = this.isJournalsContainerScrolledToBottom(this.journalsContainerTarget);
 
     void this.performUpdateStreamsRequest(this.prepareUpdateStreamsUrl())
@@ -170,6 +175,10 @@ export default class IndexController extends Controller {
     }).finally(() => {
       this.updateInProgress = false;
     });
+  }
+
+  private unfocusReactionButtons() {
+    this.reactionButtonTargets.forEach((button) => button.blur());
   }
 
   private prepareUpdateStreamsUrl():string {

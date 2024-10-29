@@ -215,10 +215,10 @@ id:
           heading: For all projects
           description: This custom field is enabled in all projects since the "For all projects" option is checked. It cannot be deactivated for individual projects.
       items:
+        actions: "Item actions"
         blankslate:
           title: "Your list of items is empty"
           description: "Start by adding items to the custom field of type hierarchy. Each item can be used to create a hierarchy bellow it. To navigate and create sub-items inside a hierarchy click on the created item."
-        actions: "Item actions"
         placeholder:
           label: "Item label"
           short: "Short name"
@@ -483,6 +483,14 @@ id:
       priority_color_text: |
         Klik untuk menetapkan atau merubah warna dari prioritas ini
         Ini dapat digunakan untuk menyorot paket pekerjaan dalam tabel
+  reactions:
+    action_title: "React"
+    add_reaction: "Add reaction"
+    react_with: "React with %{reaction}"
+    and_user: "and %{user}"
+    and_others:
+      other: and %{count} others
+    reaction_by: "%{reaction} by"
   reportings:
     index:
       no_results_title_text: There are currently no status reportings.
@@ -775,7 +783,6 @@ id:
         consented_at: "Setuju pada"
       user_preference:
         comments_sorting: "Tampilan komentar"
-        hide_mail: "Sembunyikan email saya"
         impaired: "Mode aksesibel"
         time_zone: "Time Zone"
         auto_hide_popups: "Pemberitahuan Auto-hide sukses"
@@ -865,6 +872,7 @@ id:
         not_available: "tidak tersedia karena konfigurasi sistem."
         not_deletable: "tidak dapat dihapus."
         not_current_user: "bukan pengguna saat ini."
+        not_found: "not found."
         not_a_date: "bukan tanggal yang valid."
         not_a_datetime: "bukan tanggal waktu yang valid."
         not_a_number: "harus diisi angka."
@@ -2784,8 +2792,6 @@ id:
   notice_successful_update: "Berhasil diperbarui."
   notice_successful_update_custom_fields_added_to_project: |
     Pembaruan berhasil. Bidang kustom dari jenis yang diaktifkan secara otomatis diaktifkan pada formulir paket pekerjaan. <a href="%{url}" target="_blank">Lihat selengkapnya</a>.
-  notice_successful_update_custom_fields_added_to_type: |
-    Pembaruan berhasil. Bidang kustom aktif secara otomatis diaktifkan untuk proyek terkait jenis ini.
   notice_to_many_principals_to_display: "Ada terlalu banyak hasil. Persempit pencarian dengan mengetik nama member baru (atau grup)."
   notice_user_missing_authentication_method: User has yet to choose a password or another way to sign in.
   notice_user_invitation_resent: Sebuah undangan telah dikirim ke %{email}.
@@ -3196,7 +3202,6 @@ id:
   setting_registration_footer: "Footer pendaftaran"
   setting_repositories_automatic_managed_vendor: "Automatic repository vendor type"
   setting_repositories_encodings: "Encoding repositori"
-  setting_repository_authentication_caching_enabled: "Hidupkan cache untuk otentikasi permintaan dari version control software"
   setting_repository_storage_cache_minutes: "Besar cache pada disk untuk repository"
   setting_repository_checkout_display: "Show checkout instructions"
   setting_repository_checkout_base_url: "Checkout base URL"

@@ -716,7 +716,6 @@ ca:
     project:
       required_outside_context: >
         Si us plau, selecciona un projecte on crear el paquet de treball per a veure tots els atributs. Només pots seleccionar projectes que tinguin activat la classe indicada anteriorment.
-      details_activity: "Detalls de l'activitat del projecte"
       context: "Context del projecte"
       click_to_switch_to_project: "Projecte: %{projectname}"
       confirm_template_load: "Canviar la plantilla tornarà a carregar la pàgina i perdràs totes les dades del formulari. Continuar?"

@@ -1,4 +1,3 @@
-#!/usr/bin/env ruby
 #-- copyright
 # OpenProject is an open source project management software.
 # Copyright (C) the OpenProject GmbH
@@ -27,26 +26,23 @@
 # See COPYRIGHT and LICENSE files for more details.
 #++
 
-warn <<~EOS
-    [DEPRECATION] The functionality provided by reposman.rb has been integrated into OpenProject.
-    Please remove any existing cronjobs that still use this script.
-  #{'  '}
-    You can create repositories explicitly on the filesystem using managed repositories.
-    Enable managed repositories for each SCM vendor individually using the templates
-    defined in configuration.yml.
-  #{'  '}
-    If you want to convert existing repositories previously created (by reposman.rb or manually)
-    into managed repositories, use the following command:
-  #{'  '}
-        $ bundle exec rake scm:migrate:managed[URL prefix (, URL prefix, ...)]
-    Where URL prefix denotes a common prefix of repositories whose status should be upgraded to :managed.
-    Example:
-  #{'  '}
-    If you have executed reposman.rb with the following parameters:
-  #{'  '}
-      $ reposman.rb [...] --svn-dir "/opt/svn" --url "file:///opt/svn"
-  #{'  '}
-    Then you can pass a URL prefix of 'file:///opt/svn' and the rake task will migrate all repositories
-    matching this prefix to :managed.
-    You may pass more than one URL prefix to the task.
-EOS
+require "spec_helper"
+require "contracts/shared/model_contract_shared_context"
+
+RSpec.describe EmojiReactions::DeleteContract do
+  include_context "ModelContract shared context"
+
+  let(:contract) { described_class.new(emoji_reaction, current_user) }
+  let(:current_user) { build_stubbed(:admin) }
+  let(:emoji_reaction) { build_stubbed(:emoji_reaction, user: current_user) }
+
+  context "when user is different from the one that created the reaction" do
+    let(:another_user) { build_stubbed(:admin) }
+
+    before { emoji_reaction.user = another_user }
+
+    it_behaves_like "contract user is unauthorized"
+  end
+
+  include_examples "contract reuses the model errors"
+end

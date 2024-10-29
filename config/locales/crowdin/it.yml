@@ -218,10 +218,10 @@ it:
           heading: Per tutti i progetti
           description: Questo campo personalizzato è attivato in tutti i progetti, poiché l'opzione "Per tutti i progetti" è selezionata. Non può essere disattivato per i singoli progetti.
       items:
+        actions: "Item actions"
         blankslate:
           title: "La tua lista di elementi è vuota"
           description: "Inizia aggiungendo elementi al campo personalizzato di tipo gerarchia. Ogni elemento può essere utilizzato per creare una gerarchia sottostante. Per navigare e creare sottoelementi all'interno di una gerarchia, fai clic sull'elemento creato."
-        actions: "Item actions"
         placeholder:
           label: "Item label"
           short: "Short name"
@@ -492,6 +492,15 @@ it:
       priority_color_text: |
         Clicca per assegnare o modificare il colore di questa priorità.
         Può essere utilizzato per evidenziare le macro-attività nella tabella.
+  reactions:
+    action_title: "React"
+    add_reaction: "Add reaction"
+    react_with: "React with %{reaction}"
+    and_user: "and %{user}"
+    and_others:
+      one: and 1 other
+      other: and %{count} others
+    reaction_by: "%{reaction} by"
   reportings:
     index:
       no_results_title_text: Al momento non vi sono relazioni sullo stato.
@@ -786,7 +795,6 @@ it:
         consented_at: "Consenso a"
       user_preference:
         comments_sorting: "Mostra commenti"
-        hide_mail: "Nascondi il mio indirizzo email"
         impaired: "Modalità di accesso facilitato"
         time_zone: "Fuso orario"
         auto_hide_popups: "Nascondi automaticamente le notifiche di successo"
@@ -876,6 +884,7 @@ it:
         not_available: "non è disponibile a causa di una configurazione di sistema."
         not_deletable: "non può essere eliminato."
         not_current_user: "non è l'utente attuale."
+        not_found: "not found."
         not_a_date: "non è una data valida."
         not_a_datetime: "non è un'orario valido."
         not_a_number: "non è un numero."
@@ -2825,9 +2834,6 @@ it:
   notice_successful_update_custom_fields_added_to_project: |
     Aggiornamento riuscito. I campi personalizzati dei tipi attivati ​​vengono attivati ​​automaticamente
     sul modulo della macro-attività. <a href="%{url}" target="_blank">Maggiori dettagli</a>.
-  notice_successful_update_custom_fields_added_to_type: |
-    Aggiornamento riuscito. I campi personalizzati attivi vengono automaticamente attivati ​​per
-    i progetti associati di questo tipo.
   notice_to_many_principals_to_display: "Ci sono troppi risultati.\nAffina la ricerca digitando il nome del nuovo membro (o gruppo)."
   notice_user_missing_authentication_method: L'utente deve ancora scegliere una password o un altro sistema di autenticazione.
   notice_user_invitation_resent: Un invito è stato inviato a %{email}.
@@ -3241,7 +3247,6 @@ it:
   setting_registration_footer: "Piè di pagina registrazione"
   setting_repositories_automatic_managed_vendor: "Tipo automatico di gestore dell'archivio di progetto"
   setting_repositories_encodings: "Codifiche degli archivi di progetto (repository)"
-  setting_repository_authentication_caching_enabled: "Abilitare la cache per la richiesta di autenticazione del software di controllo versione"
   setting_repository_storage_cache_minutes: "Dimensione della cache dello spazio di archiviazione su disco"
   setting_repository_checkout_display: "Visualizza le istruzioni di check-out"
   setting_repository_checkout_base_url: "URL di base per il checkout"

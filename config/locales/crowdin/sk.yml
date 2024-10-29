@@ -221,10 +221,10 @@ sk:
           heading: For all projects
           description: This custom field is enabled in all projects since the "For all projects" option is checked. It cannot be deactivated for individual projects.
       items:
+        actions: "Item actions"
         blankslate:
           title: "Your list of items is empty"
           description: "Start by adding items to the custom field of type hierarchy. Each item can be used to create a hierarchy bellow it. To navigate and create sub-items inside a hierarchy click on the created item."
-        actions: "Item actions"
         placeholder:
           label: "Item label"
           short: "Short name"
@@ -507,6 +507,17 @@ sk:
       priority_color_text: |
         Kliknite na položku priradiť alebo zmeniť farbu tejto priority.
         Je možné použiť na zvýraznenie pracovných balíčkov v tabuľke.
+  reactions:
+    action_title: "React"
+    add_reaction: "Add reaction"
+    react_with: "React with %{reaction}"
+    and_user: "and %{user}"
+    and_others:
+      one: and 1 other
+      few: and %{count} others
+      many: and %{count} others
+      other: and %{count} others
+    reaction_by: "%{reaction} by"
   reportings:
     index:
       no_results_title_text: Momentálne nie sú žiadne nahlásené stavy.
@@ -803,7 +814,6 @@ sk:
         consented_at: "Povolené na"
       user_preference:
         comments_sorting: "Zobraziť komentáre"
-        hide_mail: "Skryť svoju emailovú adresu"
         impaired: "Režim zjednodušeného ovládania"
         time_zone: "Časové pásmo"
         auto_hide_popups: "Automaticky skryť upozornenia o úspešných akciách"
@@ -893,6 +903,7 @@ sk:
         not_available: "is not available due to a system configuration."
         not_deletable: "cannot be deleted."
         not_current_user: "is not the current user."
+        not_found: "not found."
         not_a_date: "nie je platný dátum."
         not_a_datetime: "nie je platný dátum a čas."
         not_a_number: "nie je číslo."
@@ -2899,9 +2910,6 @@ sk:
   notice_successful_update_custom_fields_added_to_project: |
     Successful update. The custom fields of the activated types are automatically activated
     on the work package form. <a href="%{url}" target="_blank">See more</a>.
-  notice_successful_update_custom_fields_added_to_type: |
-    Successful update. The active custom fields are automatically activated for
-    the associated projects of this type.
   notice_to_many_principals_to_display: "Existuje príliš veľa výsledkov.\nUpresnite vyhľadávanie zadaním názvu nového člena (alebo skupiny)."
   notice_user_missing_authentication_method: Užívateľ si ešte nevybral heslo alebo iný spôsob, ako sa prihlásiť.
   notice_user_invitation_resent: Pozvánka bola odoslaná na %{email}.
@@ -3317,7 +3325,6 @@ sk:
   setting_registration_footer: "Registrácia zápätia"
   setting_repositories_automatic_managed_vendor: "Automatický typ poskytovateľa úložiska"
   setting_repositories_encodings: "Kódovania znakov vrámci repozitárov"
-  setting_repository_authentication_caching_enabled: "Aktivujte vyrovnávaciu pamäť pre autentifikáciu pomocou softvéru na riadenie verzií"
   setting_repository_storage_cache_minutes: "Odkladací priestor disku veľkosť vyrovnávacej pamäte"
   setting_repository_checkout_display: "Zobraziť overovacie inštrukcie"
   setting_repository_checkout_base_url: "Overiť základnú URL"

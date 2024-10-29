@@ -29,9 +29,9 @@
 require "spec_helper"
 
 RSpec.describe "Invite user modal", :js, :with_cuprite do
-  shared_let(:standard) { create(:standard_global_role) }
-  shared_let(:project) { create(:project) }
-  shared_let(:work_package) { create(:work_package, project:) }
+  let!(:standard) { create(:standard_global_role) }
+  let!(:project) { create(:project) }
+  let!(:work_package) { create(:work_package, project:) }
 
   let(:permissions) { %i[view_work_packages edit_work_packages manage_members work_package_assigned] }
   let(:global_permissions) { %i[] }
@@ -93,6 +93,51 @@ RSpec.describe "Invite user modal", :js, :with_cuprite do
 
         expect(ActionMailer::Base.deliveries[overall_index].body.encoded)
           .to include role.name
+      end
+    end
+  end
+
+  describe "searching for users in the auto completer" do
+    let!(:principal) do
+      create(:user,
+             firstname: "Nonproject firstname",
+             lastname: "nonproject lastname")
+    end
+
+    let(:wp_page) { Pages::FullWorkPackage.new(work_package, project) }
+
+    before do
+      wp_page.visit!
+
+      find(".op-app-menu--item-action.op-quick-add-menu--button").click
+      find(".invite-user-menu-item.op-menu--item-action", text: "Invite user", wait: 5).click
+    end
+
+    it "does show you all users email address" do
+      modal.expect_open
+      modal.project_step
+      select = modal.open_select_in_step "op-ium-principal-search", ""
+
+      # Mail address of other users is visible to us
+      expect(select).to have_text(principal.firstname)
+      expect(select).to have_text(principal.mail)
+    end
+
+    context "without permission" do
+      let!(:standard) { create(:empty_global_role) }
+
+      it "does not show you the email address of other users" do
+        modal.expect_open
+        modal.project_step
+        select = modal.open_select_in_step "op-ium-principal-search", ""
+
+        # Our own mail address is visible
+        expect(select).to have_text(current_user.firstname)
+        expect(select).to have_text(current_user.mail)
+
+        # But the mail address of another user is not visible to us
+        expect(select).to have_text(principal.firstname)
+        expect(select).to have_no_text(principal.mail)
       end
     end
   end

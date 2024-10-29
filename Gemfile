@@ -137,7 +137,7 @@ gem "rack-protection", "~> 3.2.0"
 gem "rack-attack", "~> 6.7.0"
 
 # CSP headers
-gem "secure_headers", "~> 6.7.0"
+gem "secure_headers", "~> 7.0.0"
 
 # Browser detection for incompatibility checks
 gem "browser", "~> 6.0.0"
@@ -227,7 +227,7 @@ gem "lookbook", "~> 2.3.3"
 # Require factory_bot for usage with openproject plugins testing
 gem "factory_bot", "~> 6.5.0", require: false
 # require factory_bot_rails for convenience in core development
-gem "factory_bot_rails", "~> 6.4.0", require: false
+gem "factory_bot_rails", "~> 6.4.4", require: false
 
 gem "turbo_power", "~> 0.6.2"
 gem "turbo-rails", "~> 2.0.0"
@@ -399,4 +399,4 @@ end
 
 gem "openproject-octicons", "~>19.19.0"
 gem "openproject-octicons_helper", "~>19.19.0"
-gem "openproject-primer_view_components", "~>0.48.1"
+gem "openproject-primer_view_components", "~>0.48.2"

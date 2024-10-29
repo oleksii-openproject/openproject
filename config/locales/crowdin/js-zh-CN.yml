@@ -714,7 +714,6 @@ zh-CN:
     project:
       required_outside_context: >
         请选择要创建工作包的项目以查看所有属性。 您只能选择已激活上述类型的项目。
-      details_activity: "项目细节活动"
       context: "项目上下文"
       click_to_switch_to_project: "项目: %{projectname}"
       confirm_template_load: "切换模板将重新加载页面，您将丢失此表单上的所有输入。是否继续？"

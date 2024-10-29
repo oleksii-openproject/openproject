@@ -289,12 +289,12 @@ class CustomField < ApplicationRecord
     field_format == "bool"
   end
 
-  def multi_value_possible?
-    version? || user? || list?
-  end
-
   def field_format_hierarchy?
     field_format == "hierarchy"
+  end
+
+  def multi_value_possible?
+    version? || user? || list? || field_format_hierarchy?
   end
 
   def allow_non_open_versions_possible?

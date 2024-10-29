@@ -220,10 +220,10 @@ sl:
           heading: For all projects
           description: This custom field is enabled in all projects since the "For all projects" option is checked. It cannot be deactivated for individual projects.
       items:
+        actions: "Item actions"
         blankslate:
           title: "Your list of items is empty"
           description: "Start by adding items to the custom field of type hierarchy. Each item can be used to create a hierarchy bellow it. To navigate and create sub-items inside a hierarchy click on the created item."
-        actions: "Item actions"
         placeholder:
           label: "Item label"
           short: "Short name"
@@ -506,6 +506,17 @@ sl:
       priority_color_text: |
         Kliknite, če želite dodeliti ali spremeniti barvo te prioritete.
         Lahko se uporablja za označevanje delovnih paketov v tabeli.
+  reactions:
+    action_title: "React"
+    add_reaction: "Add reaction"
+    react_with: "React with %{reaction}"
+    and_user: "and %{user}"
+    and_others:
+      one: and 1 other
+      two: and %{count} others
+      few: and %{count} others
+      other: and %{count} others
+    reaction_by: "%{reaction} by"
   reportings:
     index:
       no_results_title_text: Trenutno ni poročil o stanju.
@@ -800,7 +811,6 @@ sl:
         consented_at: "Soglasje ob"
       user_preference:
         comments_sorting: "Prikaži komentarje"
-        hide_mail: "Skrij moj e-naslov"
         impaired: "Dostopnost"
         time_zone: "Časovni pas"
         auto_hide_popups: "Samodejno skrij obvestila o uspehu"
@@ -890,6 +900,7 @@ sl:
         not_available: "is not available due to a system configuration."
         not_deletable: "se ne da izbrisati."
         not_current_user: "ni trenutni uporabnik."
+        not_found: "not found."
         not_a_date: "ni veljaven datum"
         not_a_datetime: "ni veljaven datum."
         not_a_number: "ni število."
@@ -2897,9 +2908,6 @@ sl:
   notice_successful_update_custom_fields_added_to_project: |
     Successful update. The custom fields of the activated types are automatically activated
     on the work package form. <a href="%{url}" target="_blank">See more</a>.
-  notice_successful_update_custom_fields_added_to_type: |
-    Successful update. The active custom fields are automatically activated for
-    the associated projects of this type.
   notice_to_many_principals_to_display: "Preveč je rezultatov.\nZmanjšajte iskanje tako, da vtipkate ime novega člana (ali skupine)."
   notice_user_missing_authentication_method: Uporabnik rabi izbrati geslo ali kakšen drug način, da se prijavi.
   notice_user_invitation_resent: Povabilo je bilo poslano na %{email}.
@@ -3314,7 +3322,6 @@ sl:
   setting_registration_footer: "Noga za registracijo"
   setting_repositories_automatic_managed_vendor: "Samodejni tip prodajalca odlagališča"
   setting_repositories_encodings: "Kodiranje odlagališča"
-  setting_repository_authentication_caching_enabled: "Omogoči predpomnjenje za zahtevo za preverjanje pristnosti programske opreme za različico nadzora"
   setting_repository_storage_cache_minutes: "Predpomnilnik velikosti diska v odlagališču"
   setting_repository_checkout_display: "Prikaži navodila za prevzem"
   setting_repository_checkout_base_url: "Osnovni URL za prevzem"

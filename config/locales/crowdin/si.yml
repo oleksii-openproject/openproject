@@ -221,10 +221,10 @@ si:
           heading: For all projects
           description: This custom field is enabled in all projects since the "For all projects" option is checked. It cannot be deactivated for individual projects.
       items:
+        actions: "Item actions"
         blankslate:
           title: "Your list of items is empty"
           description: "Start by adding items to the custom field of type hierarchy. Each item can be used to create a hierarchy bellow it. To navigate and create sub-items inside a hierarchy click on the created item."
-        actions: "Item actions"
         placeholder:
           label: "Item label"
           short: "Short name"
@@ -495,6 +495,15 @@ si:
       priority_color_text: |
         මෙම ප්රමුඛතාවයේ වර්ණය පැවරීම හෝ වෙනස් කිරීම සඳහා ක්ලික් කරන්න.
         වගුවේ වැඩ පැකේජ අවධාරණය කිරීම සඳහා එය භාවිතා කළ හැකිය.
+  reactions:
+    action_title: "React"
+    add_reaction: "Add reaction"
+    react_with: "React with %{reaction}"
+    and_user: "and %{user}"
+    and_others:
+      one: and 1 other
+      other: and %{count} others
+    reaction_by: "%{reaction} by"
   reportings:
     index:
       no_results_title_text: දැනට තත්ව වාර්තා නොමැත.
@@ -789,7 +798,6 @@ si:
         consented_at: "එකඟ විය"
       user_preference:
         comments_sorting: "අදහස් පෙන්වන්න"
-        hide_mail: "මෙම වි-නිස්-නිස්න"
         impaired: "ප්රවේශ්යතා ප්රකාරය"
         time_zone: "වේලා කලාපය"
         auto_hide_popups: "ස්වයං සඟවන්න සාර්ථකත්වය දැනුම්දීම්"
@@ -879,6 +887,7 @@ si:
         not_available: "is not available due to a system configuration."
         not_deletable: "cannot be deleted."
         not_current_user: "is not the current user."
+        not_found: "not found."
         not_a_date: "වලංගු දිනයක් නොවේ."
         not_a_datetime: "වලංගු දිනය කාලය නොවේ."
         not_a_number: "අංකයක් නොවේ."
@@ -2828,9 +2837,6 @@ si:
   notice_successful_update_custom_fields_added_to_project: |
     Successful update. The custom fields of the activated types are automatically activated
     on the work package form. <a href="%{url}" target="_blank">See more</a>.
-  notice_successful_update_custom_fields_added_to_type: |
-    Successful update. The active custom fields are automatically activated for
-    the associated projects of this type.
   notice_to_many_principals_to_display: "බොහෝ ප්රතිඵල ඇත.\nනව සාමාජිකයාගේ (හෝ කණ්ඩායමේ) නමින් ටයිප් කිරීමෙන් සෙවුම අඩු කරන්න."
   notice_user_missing_authentication_method: පරිශීලකයාට මුරපදයක් හෝ පුරනය වීමට වෙනත් ක්රමයක් තෝරා ගැනීමට තවමත් නොමැත.
   notice_user_invitation_resent: '%{email}වෙත ආරාධනයක් යවා ඇත.'
@@ -3244,7 +3250,6 @@ si:
   setting_registration_footer: "ලියාපදිංචි පාදකය"
   setting_repositories_automatic_managed_vendor: "ස්වයංක්රීය ගබඩාව විකුණුම්කරුගේ වර්ගය"
   setting_repositories_encodings: "එන්කෝඩින් ගබඩාවලදී"
-  setting_repository_authentication_caching_enabled: "අනුවාද පාලන මෘදුකාංගයේ සත්යාපන ඉල්ලීම සඳහා හැච් කිරීම සක්රීය කරන්න"
   setting_repository_storage_cache_minutes: "ගබඩා තැටි ප්රමාණය හැඹිලි"
   setting_repository_checkout_display: "පිරික්සුම් උපදෙස් පෙන්වන්න"
   setting_repository_checkout_base_url: "පිරික්සුම් පදනම URL"

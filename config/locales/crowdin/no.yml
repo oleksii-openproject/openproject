@@ -221,10 +221,10 @@
           heading: For alle prosjekter
           description: Dette egendefinerte feltet er aktivert i alle prosjekter siden "For alle prosjekter" alternativet er sjekket. Den kan ikke deaktiveres for enkeltprosjekter.
       items:
+        actions: "Item actions"
         blankslate:
           title: "Din liste over elementer er tom"
           description: "Start ved å legge elementer til i det tilpassede feltet av typehierarkiet. Hvert element kan brukes til å opprette et hierarkisk buk på det. For å navigere og opprette underelementer i et hierarki, klikk på det opprettede elementet."
-        actions: "Item actions"
         placeholder:
           label: "Item label"
           short: "Short name"
@@ -495,6 +495,15 @@
       priority_color_text: |
         Klikk for å tildele eller endre fargen for denne prioriteten.
         Det kan brukes til å fremheve arbeidspakker i tabellen.
+  reactions:
+    action_title: "React"
+    add_reaction: "Add reaction"
+    react_with: "React with %{reaction}"
+    and_user: "and %{user}"
+    and_others:
+      one: and 1 other
+      other: and %{count} others
+    reaction_by: "%{reaction} by"
   reportings:
     index:
       no_results_title_text: Det finnes ingen statusrapporter for øyeblikket.
@@ -788,7 +797,6 @@
         consented_at: "Godkjent"
       user_preference:
         comments_sorting: "Vis kommentarer"
-        hide_mail: "Skjul min e-postadresse"
         impaired: "Tilgjengelighetsmodus"
         time_zone: "Tidssone"
         auto_hide_popups: "Auto-skjul suksessvarsler"
@@ -878,6 +886,7 @@
         not_available: "er ikke tilgjengelig på grunn av en systemkonfigurasjon."
         not_deletable: "kan ikke slettes."
         not_current_user: "er ikke gjeldende bruker."
+        not_found: "not found."
         not_a_date: "er ikke en gyldig dato."
         not_a_datetime: "er ikke et gyldig tidspunkt for datoen."
         not_a_number: "er ikke et tall."
@@ -2827,9 +2836,6 @@
   notice_successful_update_custom_fields_added_to_project: |
     Vellykket oppdatering. Spesifikke felter for aktiverte typer blir automatisk aktivert
     på arbeidspakkeskjema. <a href="%{url}" target="_blank">Se mer</a>.
-  notice_successful_update_custom_fields_added_to_type: |
-    Vellykket oppdatering. De aktive egendefinerte feltene aktiveres automatisk for
-    de tilknyttede prosjektene av denne typen.
   notice_to_many_principals_to_display: "Det er for mange resultater.\nForsøk å innskrenke søket ved å skrive inn navnet på det nye medlemmet (eller gruppen)."
   notice_user_missing_authentication_method: Brukeren har ikke valgt et passord eller en annen måte å logge på.
   notice_user_invitation_resent: En invitasjon er sendt til %{email}.
@@ -3243,7 +3249,6 @@
   setting_registration_footer: "Registrerings bunntekst"
   setting_repositories_automatic_managed_vendor: "Automatisk kodelager leverandørtype"
   setting_repositories_encodings: "Koding av pakkebrønner"
-  setting_repository_authentication_caching_enabled: "Aktiver mellomlagring for autentiseringsforspørsler fra programmer for versjonskontroll"
   setting_repository_storage_cache_minutes: "Mellomlagring for lagringsplass"
   setting_repository_checkout_display: "Vis utsjekkingsinstruksjoner"
   setting_repository_checkout_base_url: "Utsjekking grunn-URL"

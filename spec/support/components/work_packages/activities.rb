@@ -68,7 +68,7 @@ module Components
       end
 
       def expect_journal_changed_attribute(text:)
-        expect(page).to have_test_selector("op-journal-detail-description", text:)
+        expect(page).to have_test_selector("op-journal-detail-description", text:, wait: 10)
       end
 
       def expect_no_journal_changed_attribute(text: nil)

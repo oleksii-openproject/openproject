@@ -715,7 +715,6 @@ vi:
     project:
       required_outside_context: >
         Vui lòng chọn một dự án để tạo gói công việc nhằm xem tất cả các thuộc tính. Bạn chỉ có thể chọn các dự án mà loại trên đã được kích hoạt.
-      details_activity: "Hoạt động chi tiết dự án"
       context: "Ngữ cảnh dự án"
       click_to_switch_to_project: "Dự án: %{projectname}"
       confirm_template_load: "Việc chuyển đổi mẫu sẽ tải lại trang và bạn sẽ mất tất cả dữ liệu đã nhập vào biểu mẫu này. Tiếp tục?"

@@ -28,10 +28,13 @@ See COPYRIGHT and LICENSE files for more details.
 ++#%>
 
 <%=
-  primer_form_with(
-    url: custom_field_items_path(@custom_field),
-    method: :post,
-  ) do |f|
-    render(CustomFields::Hierarchy::NewItemForm.new(f, custom_field: @custom_field, label: @label, short: @short))
+  primer_form_with(url: @url, method: @method, data: { test_selector: "op-custom-fields--new-item-form" }) do |f|
+    render(CustomFields::Hierarchy::ItemForm.new(
+             f,
+             custom_field: @custom_field,
+             hierarchy_item: @hierarchy_item,
+             label: @label,
+             short: @short
+           ))
   end
 %>

@@ -45,7 +45,12 @@ module CustomFields
       rule(:label) do
         next unless key?
 
-        if CustomField::Hierarchy::Item.exists?(parent_id: values[:item].parent_id, label: value)
+        label_already_exists = CustomField::Hierarchy::Item
+          .where(parent_id: values[:item].parent_id, label: value)
+          .where.not(id: values[:item].id)
+          .exists?
+
+        if label_already_exists
           key.failure("must be unique at the same hierarchical level")
         end
       end

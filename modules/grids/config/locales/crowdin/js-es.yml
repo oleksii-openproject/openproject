@@ -27,9 +27,6 @@ es:
         project_description:
           title: 'Descripción del proyecto'
           no_results: "Aún no se ha escrito ninguna descripción. Puede proporcionar una descripción en la configuración del proyecto."
-        project_details:
-          title: 'Detalles del proyecto'
-          no_results: 'No se han definido campos personalizados para los proyectos.'
         project_status:
           title: 'Estado del proyecto'
           not_started: 'No empezado'

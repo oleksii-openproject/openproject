@@ -44,7 +44,7 @@ module CustomFields
       )
 
       details_form.check_box(
-        name: :required,
+        name: :is_required,
         label: I18n.t("activerecord.attributes.custom_field.is_required"),
         caption: I18n.t("custom_fields.instructions.is_required")
       )

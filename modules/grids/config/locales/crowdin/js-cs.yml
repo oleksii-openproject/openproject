@@ -27,9 +27,6 @@ cs:
         project_description:
           title: 'Popis projektu'
           no_results: "Zatím nebyl napsán žádný popis. Můžete ho uvést v \"Nastavení projektu\"."
-        project_details:
-          title: 'Detaily projektu'
-          no_results: 'Pro projekty nebyla definována žádná vlastní pole.'
         project_status:
           title: 'Stav projektu'
           not_started: 'Nezahájeno'

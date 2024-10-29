@@ -220,10 +220,10 @@ ms:
           heading: For all projects
           description: This custom field is enabled in all projects since the "For all projects" option is checked. It cannot be deactivated for individual projects.
       items:
+        actions: "Item actions"
         blankslate:
           title: "Your list of items is empty"
           description: "Start by adding items to the custom field of type hierarchy. Each item can be used to create a hierarchy bellow it. To navigate and create sub-items inside a hierarchy click on the created item."
-        actions: "Item actions"
         placeholder:
           label: "Item label"
           short: "Short name"
@@ -488,6 +488,14 @@ ms:
       priority_color_text: |
         Klik untuk menugaskan atau menukar warna untuk keutamaan ini.
         Ia boleh digunakan untuk menyoroti pakej kerja dalam jadual ini.
+  reactions:
+    action_title: "React"
+    add_reaction: "Add reaction"
+    react_with: "React with %{reaction}"
+    and_user: "and %{user}"
+    and_others:
+      other: and %{count} others
+    reaction_by: "%{reaction} by"
   reportings:
     index:
       no_results_title_text: Tiada laporan status buat masa ini.
@@ -780,7 +788,6 @@ ms:
         consented_at: "Dipersetujui di"
       user_preference:
         comments_sorting: "Paparkan komen"
-        hide_mail: "Sembunyikan alamat e-mel saya"
         impaired: "Mod ketercapaian"
         time_zone: "Zon waktu"
         auto_hide_popups: "Pemberitahuan kejayaan auto-sembunyi"
@@ -870,6 +877,7 @@ ms:
         not_available: "adalah tidak tersedia kerana konfigurasi sistem."
         not_deletable: "tidak dapat dipadamkan."
         not_current_user: "adalah bukan pengguna semasa."
+        not_found: "not found."
         not_a_date: "bukan tarikh yang sah."
         not_a_datetime: "bukan tarikh masa yang sah."
         not_a_number: "bukan nombor."
@@ -2789,8 +2797,6 @@ ms:
   notice_successful_update: "Kemas kini berjaya."
   notice_successful_update_custom_fields_added_to_project: |
     Naik taraf berjaya. Jenis ruang tersuai yang aktif telah diaktifkan di borang pakej kerja secara automatik. <a href="%{url}" target="_blank">Lihat lebih lagi</a>.
-  notice_successful_update_custom_fields_added_to_type: |
-    Naik taraf berjaya. Ruang tersuai yang aktif untuk projek yang berkaitan dengan jenis ini telah diaktifkan secara automatik.
   notice_to_many_principals_to_display: "Terlalu banyak hasil.\nSpesifikasikan pencarian dengan masukkan nama ahli baru (atau kumpulan)."
   notice_user_missing_authentication_method: Pengguna masih belum memilih kata laluan atau cara lain untuk log masuk.
   notice_user_invitation_resent: Jemputan telah dihantar ke %{email}.
@@ -3203,7 +3209,6 @@ ms:
   setting_registration_footer: "Pengaki pendaftaran"
   setting_repositories_automatic_managed_vendor: "Jenis vendor repositori automatik"
   setting_repositories_encodings: "Pengekodan repositori"
-  setting_repository_authentication_caching_enabled: "Benarkan caching untuk permintaan pengesahan perisian kawalan versi"
   setting_repository_storage_cache_minutes: "Saiz cache cakera repositori"
   setting_repository_checkout_display: "Paparkan arahan pengeluaran"
   setting_repository_checkout_base_url: "URL pangkalan pengeluaran"

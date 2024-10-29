@@ -245,10 +245,10 @@ en:
           heading: For all projects
           description: This custom field is enabled in all projects since the "For all projects" option is checked. It cannot be deactivated for individual projects.
       items:
+        actions: "Item actions"
         blankslate:
           title: "Your list of items is empty"
           description: "Start by adding items to the custom field of type hierarchy. Each item can be used to create a hierarchy bellow it. To navigate and create sub-items inside a hierarchy click on the created item."
-        actions: "Item actions"
         placeholder:
           label: "Item label"
           short: "Short name"
@@ -545,6 +545,16 @@ en:
       priority_color_text: |
         Click to assign or change the color of this priority.
         It can be used for highlighting work packages in the table.
+
+  reactions:
+    action_title: "React"
+    add_reaction: "Add reaction"
+    react_with: "React with %{reaction}"
+    and_user: "and %{user}"
+    and_others:
+      one: and 1 other
+      other: and %{count} others
+    reaction_by: "%{reaction} by"
 
   reportings:
     index:
@@ -867,7 +877,6 @@ en:
         consented_at: "Consented at"
       user_preference:
         comments_sorting: "Display comments"
-        hide_mail: "Hide my email address"
         impaired: "Accessibility mode"
         time_zone: "Time zone"
         auto_hide_popups: "Auto-hide success notifications"
@@ -958,6 +967,7 @@ en:
         not_available: "is not available due to a system configuration."
         not_deletable: "cannot be deleted."
         not_current_user: "is not the current user."
+        not_found: "not found."
         not_a_date: "is not a valid date."
         not_a_datetime: "is not a valid date time."
         not_a_number: "is not a number."
@@ -2960,9 +2970,6 @@ en:
   notice_successful_update_custom_fields_added_to_project: |
     Successful update. The custom fields of the activated types are automatically activated
     on the work package form. <a href="%{url}" target="_blank">See more</a>.
-  notice_successful_update_custom_fields_added_to_type: |
-    Successful update. The active custom fields are automatically activated for
-    the associated projects of this type.
   notice_to_many_principals_to_display: "There are too many results.\nNarrow down the search by typing in the name of the new member (or group)."
   notice_user_missing_authentication_method: User has yet to choose a password or another way to sign in.
   notice_user_invitation_resent: An invitation has been sent to %{email}.
@@ -3412,7 +3419,6 @@ en:
   setting_registration_footer: "Registration footer"
   setting_repositories_automatic_managed_vendor: "Automatic repository vendor type"
   setting_repositories_encodings: "Repositories encodings"
-  setting_repository_authentication_caching_enabled: "Enable caching for authentication request of version control software"
   setting_repository_storage_cache_minutes: "Repository disk size cache"
   setting_repository_checkout_display: "Show checkout instructions"
   setting_repository_checkout_base_url: "Checkout base URL"

@@ -83,7 +83,9 @@ end %>
   component.with_header(title: I18n.t(:label_system))
 
   @checklist.each do |label, result|
-    value = icon_wrapper((result ? 'icon-context icon-checkmark' : 'icon-context icon-bug'), (result ? t(:general_text_Yes) : t(:general_text_No)))
+    aria_label = result ? t(:general_text_Yes) : t(:general_text_No)
+    icon = result ? 'check-circle-fill' : 'circle'
+    value = render Primer::Beta::Octicon.new(icon:, "aria-label": aria_label)
     component.with_attribute(key: I18n.t(label), value:)
   end
 end %>

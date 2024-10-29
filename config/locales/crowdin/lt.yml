@@ -218,10 +218,10 @@ lt:
           heading: For all projects
           description: This custom field is enabled in all projects since the "For all projects" option is checked. It cannot be deactivated for individual projects.
       items:
+        actions: "Item actions"
         blankslate:
           title: "Your list of items is empty"
           description: "Start by adding items to the custom field of type hierarchy. Each item can be used to create a hierarchy bellow it. To navigate and create sub-items inside a hierarchy click on the created item."
-        actions: "Item actions"
         placeholder:
           label: "Item label"
           short: "Short name"
@@ -504,6 +504,17 @@ lt:
       priority_color_text: |
         Spauskite, kad priskirtumėte arba pakeistumėte šio prioriteto spalvą.
         Ji gali būti naudojama paryškinti darbo paketus lentelėje.
+  reactions:
+    action_title: "React"
+    add_reaction: "Add reaction"
+    react_with: "React with %{reaction}"
+    and_user: "and %{user}"
+    and_others:
+      one: and 1 other
+      few: and %{count} others
+      many: and %{count} others
+      other: and %{count} others
+    reaction_by: "%{reaction} by"
   reportings:
     index:
       no_results_title_text: Šiuo metu nėra jokių būklės ataskaitų.
@@ -800,7 +811,6 @@ lt:
         consented_at: "Sutikimo laikas"
       user_preference:
         comments_sorting: "Rodyti komentarus"
-        hide_mail: "Slėpti mano el. pašto adresą"
         impaired: "Pritaikymas neįgaliesiems"
         time_zone: "Laiko juosta"
         auto_hide_popups: "Automatiškai slėpti sėkmės pranešimus"
@@ -890,6 +900,7 @@ lt:
         not_available: "yra nepasiekiamas dėl sistemos konfigūracijos"
         not_deletable: "negali būti pašalintas."
         not_current_user: "nėra dabartinis naudotojas"
+        not_found: "not found."
         not_a_date: "nėra tinkama data."
         not_a_datetime: "nėra tinkama data ir laikas."
         not_a_number: "nėra skaičius."
@@ -2896,8 +2907,6 @@ lt:
   notice_successful_update: "Sėkmingai atnaujinta."
   notice_successful_update_custom_fields_added_to_project: |
     Sėkmingas atnaujinimas. Savi aktyvuotų tipų laukai automatiškai aktivuoti darbo paketų formose. <a href="%{url}" target="_blank">Skaitykite daugiau</a>.
-  notice_successful_update_custom_fields_added_to_type: |
-    Sėkmingas atnaujinimas. Aktyvūs savi laukai automatiškai aktyvuoti susijusiems šio tipo projektams.
   notice_to_many_principals_to_display: "Per daug rezultatų. Susiaurinkite paiešką pradėdami įvesti naujo nario (ar grupės) pavadinimą."
   notice_user_missing_authentication_method: Vartotojas dar nepasirinko slaptažodžio ar kitokio būdo prisijungimui.
   notice_user_invitation_resent: Pakvietimas buvo nusiųstas į %{email}.
@@ -3311,7 +3320,6 @@ lt:
   setting_registration_footer: "Registracijos poraštė"
   setting_repositories_automatic_managed_vendor: "Automatinis repozitorijos tiekėjo tipas"
   setting_repositories_encodings: "Duomenų saugyklų koduotės"
-  setting_repository_authentication_caching_enabled: "Leisti versijos kontrolės programinės įrangos autentifikacijos prašymų talpinimą talpykloje"
   setting_repository_storage_cache_minutes: "Repozitorijos disko dydžio talpykla"
   setting_repository_checkout_display: "Rodyti kopijos nuskaitymo instrukcijas"
   setting_repository_checkout_base_url: "Kopijos nuskaitymo bazinis URL"

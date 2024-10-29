@@ -27,9 +27,6 @@ sv:
         project_description:
           title: 'Projektbeskrivning'
           no_results: "Ingen beskrivning har skrivits ännu. Den kan anges i 'Projektinställningar'."
-        project_details:
-          title: 'Projektinformation'
-          no_results: 'Inga anpassade fält har definierats för projekt.'
         project_status:
           title: 'Projektstatus'
           not_started: 'Inte påbörjad'

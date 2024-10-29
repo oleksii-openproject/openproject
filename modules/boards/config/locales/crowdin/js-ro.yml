@@ -23,20 +23,20 @@ ro:
         locked: 'Blocat'
         closed: 'Închis'
       new_board: 'Bord nou'
-      add_list: 'Adăugați lista la bord'
-      add_card: 'Adăugați cardul'
+      add_list: 'Adaugă lista la planșă'
+      add_card: 'Adaugă card'
       error_attribute_not_writable: "Nu se poate muta pachetul de lucru, %{attribute} nu este inscriptibil."
       error_loading_the_list: "Eroare la încărcarea listei: %{error_message}"
       error_permission_missing: "Lipsește permisiunea de a crea interogări publice"
       error_cannot_move_into_self: "Nu puteți muta un pachet de lucru în coloana sa proprie."
       text_hidden_list_warning: "Nu toate listele sunt afișate deoarece nu aveți permisiunea. Contactați administratorul pentru mai multe informații."
-      click_to_remove_list: "Faceți clic pentru a elimina această listă"
+      click_to_remove_list: "Fă clic pentru a elimina această listă"
       board_type:
         text: 'Tipul de placă'
         free: 'De baza'
         select_board_type: 'Vă rugăm să alegeți tipul de placă de care aveți nevoie.'
         free_text: >
-          Începeți de la zero cu o planșă albă. Adăugați manual cărți și coloane pe această planșă.
+          Începe de la zero cu o planșă albă. Adaugă manual cărți și coloane pe această planșă.
         action: 'Consiliul de acțiune'
         action_by_attribute: 'Tablă de acțiune (%{attribute})'
         action_text: >
@@ -78,7 +78,7 @@ ro:
             Fie nu există niciunul, fie toate au fost deja adăugate la bord.</br>
           assignee: Nu există niciun membru care să se potrivească cu valoarea filtrului dumneavoastră <br>
           no_member: Acest proiect nu are în prezent niciun membru care să poată fi adăugat. <br>
-          add_members: <a href="%{link}">Adăugați un nou membru la acest proiect</a> pentru a selecta din nou utilizatorii.
+          add_members: <a href="%{link}">Adaugă un nou membru la acest proiect</a> pentru a selecta din nou utilizatorii.
       configuration_modal:
         title: 'Configurați această placă'
         display_settings:

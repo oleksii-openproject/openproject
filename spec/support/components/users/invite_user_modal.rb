@@ -89,7 +89,7 @@ module Components
       end
 
       def open_select_in_step(selector, query = "")
-        select_field = modal_element.find(selector)
+        select_field = modal_element.find(selector, wait: 5)
 
         search_autocomplete select_field,
                             query:,

@@ -27,9 +27,6 @@ ms:
         project_description:
           title: 'Deskripsi projek'
           no_results: "Tiada deskripsi yang tertulis lagi. Deskripsi boleh diberikan di 'Tetapan Projek'."
-        project_details:
-          title: 'Butiran projek'
-          no_results: 'Tiada ruang tersuai telah ditakrifkan untuk projek.'
         project_status:
           title: 'Status projek'
           not_started: 'Belum dimulakan'

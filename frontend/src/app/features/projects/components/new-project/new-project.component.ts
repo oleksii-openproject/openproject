@@ -51,13 +51,15 @@ export class NewProjectComponent extends UntilDestroyedMixin implements OnInit {
     .add('user_action', '=', ['projects/copy']) // no null values
     .add('templated', '=', true);
 
-  templateOptions$:Observable<ProjectTemplateOption[]> =
-  this
+  templateOptions$:Observable<ProjectTemplateOption[]> = this
     .apiV3Service
     .projects
     .filtered(
       this.copyableTemplateFilter,
-      { pageSize: '-1' },
+      {
+        pageSize: '-1',
+        select: 'elements/id, elements/name, elements/identifier, elements/self, elements/ancestors, total, count, pageSize',
+      },
     )
     .get()
     .pipe(

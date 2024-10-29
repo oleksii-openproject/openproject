@@ -220,10 +220,10 @@ ru:
           heading: Для всех проектов
           description: Это пользовательское поле включено во всех проектах, так как отмечена опция «Для всех проектов». Его нельзя отключить для отдельных проектов.
       items:
+        actions: "Действия с элементом"
         blankslate:
           title: "Ваш список элементов пуст"
           description: "Начните с добавления элементов в настраиваемое поле иерархии. Каждый элемент может быть использован для создания иерархии ниже его. Чтобы переместить и создать подпункты внутри иерархии, нажмите на созданный элемент."
-        actions: "Действия с элементом"
         placeholder:
           label: "Название элемента"
           short: "Краткое имя"
@@ -506,6 +506,17 @@ ru:
       priority_color_text: |
         Щелкните, чтобы задать или изменить цвет этого приоритета.
         Этот цвет может использоваться для выделения пакетов работ в таблице.
+  reactions:
+    action_title: "React"
+    add_reaction: "Add reaction"
+    react_with: "React with %{reaction}"
+    and_user: "and %{user}"
+    and_others:
+      one: and 1 other
+      few: and %{count} others
+      many: and %{count} others
+      other: and %{count} others
+    reaction_by: "%{reaction} by"
   reportings:
     index:
       no_results_title_text: В данный момент статусы отчётов отсутствуют.
@@ -802,7 +813,6 @@ ru:
         consented_at: "Согласен с"
       user_preference:
         comments_sorting: "Показывать комментарии"
-        hide_mail: "Скрывать мой адрес электронной почты"
         impaired: "Режим отображения для людей с ограниченными возможностями"
         time_zone: "Часовой пояс"
         auto_hide_popups: "Автоматически скрывать успешные уведомления"
@@ -892,6 +902,7 @@ ru:
         not_available: "недоступно из-за конфигурации системы."
         not_deletable: "не может быть удален."
         not_current_user: "не является текущим пользователем."
+        not_found: "not found."
         not_a_date: "не является допустимой датой."
         not_a_datetime: "дата и время не являются допустимыми."
         not_a_number: "не является числом."
@@ -2898,9 +2909,6 @@ ru:
   notice_successful_update_custom_fields_added_to_project: |
     Успешное обновление. Пользовательские поля активированных типов автоматически активируются
     в форме пакета работ. <a href="%{url}" target="_blank">Подробнее</a>.
-  notice_successful_update_custom_fields_added_to_type: |
-    Успешное обновление. Активные настраиваемые поля автоматически активируются для
-    связанных проектов этого типа.
   notice_to_many_principals_to_display: "Слишком много результатов. Сузьте поиск, введя имя нового участника (или группы)."
   notice_user_missing_authentication_method: Пользователь еще не выбрал пароль или другой способ авторизации.
   notice_user_invitation_resent: Приглашение было отправлено на %{email}.
@@ -3314,7 +3322,6 @@ ru:
   setting_registration_footer: "Нижний колонтитул регистрации"
   setting_repositories_automatic_managed_vendor: "Автоматический тип поставщика репозитория"
   setting_repositories_encodings: "Кодировка репозиториев"
-  setting_repository_authentication_caching_enabled: "Разрешить кэширование при аутентификации в программе управления версиями ПО"
   setting_repository_storage_cache_minutes: "Размер кеша на диске репозитория"
   setting_repository_checkout_display: "Показать инструкции проверки"
   setting_repository_checkout_base_url: "Проверить основной URL"

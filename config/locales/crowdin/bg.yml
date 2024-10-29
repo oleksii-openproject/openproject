@@ -221,10 +221,10 @@ bg:
           heading: For all projects
           description: This custom field is enabled in all projects since the "For all projects" option is checked. It cannot be deactivated for individual projects.
       items:
+        actions: "Item actions"
         blankslate:
           title: "Your list of items is empty"
           description: "Start by adding items to the custom field of type hierarchy. Each item can be used to create a hierarchy bellow it. To navigate and create sub-items inside a hierarchy click on the created item."
-        actions: "Item actions"
         placeholder:
           label: "Item label"
           short: "Short name"
@@ -495,6 +495,15 @@ bg:
       priority_color_text: |
         Щракнете, за да зададете или промените цвета на този приоритет.
         Той може да се използва за подчертаване на работните пакети в таблицата.
+  reactions:
+    action_title: "React"
+    add_reaction: "Add reaction"
+    react_with: "React with %{reaction}"
+    and_user: "and %{user}"
+    and_others:
+      one: and 1 other
+      other: and %{count} others
+    reaction_by: "%{reaction} by"
   reportings:
     index:
       no_results_title_text: В момента няма отчети за статуси.
@@ -789,7 +798,6 @@ bg:
         consented_at: "Съгласие в"
       user_preference:
         comments_sorting: "Покажи коментарите"
-        hide_mail: "Скрий моя имейл адрес"
         impaired: "Достъпен режим"
         time_zone: "Часова зона"
         auto_hide_popups: "Автоматично скриване на успешните известия"
@@ -879,6 +887,7 @@ bg:
         not_available: "не е наличен поради системна конфигурация."
         not_deletable: "не може да бъде изтрито."
         not_current_user: "не е текущият потребител."
+        not_found: "not found."
         not_a_date: "е невалидна дата"
         not_a_datetime: "не е валидна дата и час."
         not_a_number: "не е число."
@@ -2828,9 +2837,6 @@ bg:
   notice_successful_update_custom_fields_added_to_project: |
     Успешна актуализация. Потребителските полета на активираните типове се активират автоматично
     във формуляра на работния пакет. <a href="%{url}" target="_blank">Вижте още.</a>
-  notice_successful_update_custom_fields_added_to_type: |
-    Successful update. The active custom fields are automatically activated for
-    the associated projects of this type.
   notice_to_many_principals_to_display: "Има твърде много резултати. Стесните търсенето, като въведете името на нов член (или група)."
   notice_user_missing_authentication_method: Потребителят все още не е избрал парола или друг начин за влизане.
   notice_user_invitation_resent: An invitation has been sent to %{email}.
@@ -3244,7 +3250,6 @@ bg:
   setting_registration_footer: "Registration footer"
   setting_repositories_automatic_managed_vendor: "Automatic repository vendor type"
   setting_repositories_encodings: "Repositories encodings"
-  setting_repository_authentication_caching_enabled: "Enable caching for authentication request of version control software"
   setting_repository_storage_cache_minutes: "Repository disk size cache"
   setting_repository_checkout_display: "Show checkout instructions"
   setting_repository_checkout_base_url: "Checkout base URL"

@@ -26,22 +26,18 @@
 # See COPYRIGHT and LICENSE files for more details.
 #++
 
-module Admin
+require "support/pages/page"
+
+module Pages
   module CustomFields
-    module Hierarchy
-      class NewItemFormComponent < ApplicationComponent
-        include OpTurbo::Streamable
+    class NewPage < Page
+      def path
+        "/custom_fields/new?type=#{@type}"
+      end
 
-        def initialize(custom_field:, label: nil, short: nil)
-          super
-          @custom_field = custom_field
-          @label = label
-          @short = short
-        end
-
-        def items_path
-          custom_field_items_path(@custom_field)
-        end
+      def initialize(type = "WorkPackageCustomField")
+        super()
+        @type = type
       end
     end
   end

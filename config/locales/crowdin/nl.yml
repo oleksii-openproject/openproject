@@ -218,10 +218,10 @@ nl:
           heading: For all projects
           description: This custom field is enabled in all projects since the "For all projects" option is checked. It cannot be deactivated for individual projects.
       items:
+        actions: "Item actions"
         blankslate:
           title: "Your list of items is empty"
           description: "Start by adding items to the custom field of type hierarchy. Each item can be used to create a hierarchy bellow it. To navigate and create sub-items inside a hierarchy click on the created item."
-        actions: "Item actions"
         placeholder:
           label: "Item label"
           short: "Short name"
@@ -492,6 +492,15 @@ nl:
       priority_color_text: |
         Klik op toewijzen of wijzigen van de kleur van deze prioriteit.
         het kan worden gebruikt voor het benadrukken van de werkpakketten in de tabel.
+  reactions:
+    action_title: "React"
+    add_reaction: "Add reaction"
+    react_with: "React with %{reaction}"
+    and_user: "and %{user}"
+    and_others:
+      one: and 1 other
+      other: and %{count} others
+    reaction_by: "%{reaction} by"
   reportings:
     index:
       no_results_title_text: Er zijn momenteel geen status rapporten.
@@ -786,7 +795,6 @@ nl:
         consented_at: "Ingestemd op"
       user_preference:
         comments_sorting: "Toon reacties"
-        hide_mail: "Verberg mijn e-mailadres"
         impaired: "Toegankelijkheidsmodus"
         time_zone: "Tijdzone"
         auto_hide_popups: "Automatisch verbergen geslaagd-meldingen"
@@ -876,6 +884,7 @@ nl:
         not_available: "is niet beschikbaar vanwege een systeemconfiguratie."
         not_deletable: "kan niet worden verwijderd."
         not_current_user: "is niet de huidige gebruiker."
+        not_found: "not found."
         not_a_date: "is geen geldige datum."
         not_a_datetime: "is geen geldige datum tijd."
         not_a_number: "is geen getal."
@@ -2824,9 +2833,6 @@ nl:
   notice_successful_update_custom_fields_added_to_project: |
     Succesvolle update. Aangepaste velden van de geactiveerde types worden automatisch geactiveerd
     op het werkpakket formulier. <a href="%{url}" target="_blank">Meer</a>.
-  notice_successful_update_custom_fields_added_to_type: |
-    Update geslaagd. De actieve aangepaste velden worden automatisch geactiveerd voor
-    de bijbehorende projecten van dit type.
   notice_to_many_principals_to_display: "Er zijn te veel resultaten. Beperk het zoekbereik door een naam in te geven van een nieuw lid (of groep)."
   notice_user_missing_authentication_method: Gebruiker dient nog een wachtwoord te kiezen of een andere manier om in te loggen te bepalen.
   notice_user_invitation_resent: Een nieuwe uitnodiging is verstuurd naar %{email}.
@@ -3240,7 +3246,6 @@ nl:
   setting_registration_footer: "Registratie voettekst"
   setting_repositories_automatic_managed_vendor: "Automatisch repostiroy leveranciers type"
   setting_repositories_encodings: "Repositories coderingen"
-  setting_repository_authentication_caching_enabled: "Voor de verificatieaanvraag van versiebeheersoftware caching inschakelen"
   setting_repository_storage_cache_minutes: "De schijfcache grootte van de repository"
   setting_repository_checkout_display: "Geef checkout instructies weer"
   setting_repository_checkout_base_url: "Checkout URL"

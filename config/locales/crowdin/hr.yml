@@ -221,10 +221,10 @@ hr:
           heading: For all projects
           description: This custom field is enabled in all projects since the "For all projects" option is checked. It cannot be deactivated for individual projects.
       items:
+        actions: "Item actions"
         blankslate:
           title: "Your list of items is empty"
           description: "Start by adding items to the custom field of type hierarchy. Each item can be used to create a hierarchy bellow it. To navigate and create sub-items inside a hierarchy click on the created item."
-        actions: "Item actions"
         placeholder:
           label: "Item label"
           short: "Short name"
@@ -501,6 +501,16 @@ hr:
       priority_color_text: |
         Click to assign or change the color of this priority.
         It can be used for highlighting work packages in the table.
+  reactions:
+    action_title: "React"
+    add_reaction: "Add reaction"
+    react_with: "React with %{reaction}"
+    and_user: "and %{user}"
+    and_others:
+      one: and 1 other
+      few: and %{count} others
+      other: and %{count} others
+    reaction_by: "%{reaction} by"
   reportings:
     index:
       no_results_title_text: Trenutno ne postoje izvješća statusa projekta.
@@ -796,7 +806,6 @@ hr:
         consented_at: "Pristanak na"
       user_preference:
         comments_sorting: "Prikaži komentare"
-        hide_mail: "Sakriji moju e-mail adresu"
         impaired: "Mod dostupnosti"
         time_zone: "Vremenska zona"
         auto_hide_popups: "Auto-hide success notifications"
@@ -886,6 +895,7 @@ hr:
         not_available: "is not available due to a system configuration."
         not_deletable: "cannot be deleted."
         not_current_user: "is not the current user."
+        not_found: "not found."
         not_a_date: "is not a valid date."
         not_a_datetime: "is not a valid date time."
         not_a_number: "nije tip podataka number."
@@ -2864,9 +2874,6 @@ hr:
   notice_successful_update_custom_fields_added_to_project: |
     Successful update. The custom fields of the activated types are automatically activated
     on the work package form. <a href="%{url}" target="_blank">See more</a>.
-  notice_successful_update_custom_fields_added_to_type: |
-    Successful update. The active custom fields are automatically activated for
-    the associated projects of this type.
   notice_to_many_principals_to_display: "Prikazano je previše rezultata.\nSužite rezultate pretrage na način da unesete ime novog člana (ili grupe)."
   notice_user_missing_authentication_method: Korisnik mora odabrati lozinku ili drugi način prijave.
   notice_user_invitation_resent: An invitation has been sent to %{email}.
@@ -3281,7 +3288,6 @@ hr:
   setting_registration_footer: "Registration footer"
   setting_repositories_automatic_managed_vendor: "Automatski repozitorij tip vendora"
   setting_repositories_encodings: "Postavke kodiranja repozitorija"
-  setting_repository_authentication_caching_enabled: "Enable caching for authentication request of version control software"
   setting_repository_storage_cache_minutes: "Veličina disk cachea repozitorija"
   setting_repository_checkout_display: "Prikaži instrukcije za provjeru"
   setting_repository_checkout_base_url: "Provjera temeljnog URL-a"

@@ -216,10 +216,10 @@ uk:
           heading: Для всіх проєктів
           description: Це користувацьке поле активовано в усіх проєктах, оскільки встановлено прапорець «Для всіх проєктів». Його не можна деактивувати для окремих проєктів.
       items:
+        actions: "Item actions"
         blankslate:
           title: "Ваш список елементів порожній"
           description: "Спочатку додайте елементи до користувацького поля ієрархії типів. Створити ієрархію можна для кожного елемента. Щоб переходити між піделементами ієрархії і додавати\nїх, натисніть створений елемент."
-        actions: "Item actions"
         placeholder:
           label: "Item label"
           short: "Short name"
@@ -502,6 +502,17 @@ uk:
       priority_color_text: |
         Натисніть, щоб призначити або змінити колір цього пріоритету.
         Його можна використовувати для виділення робочих пакетів у таблиці.
+  reactions:
+    action_title: "React"
+    add_reaction: "Add reaction"
+    react_with: "React with %{reaction}"
+    and_user: "and %{user}"
+    and_others:
+      one: and 1 other
+      few: and %{count} others
+      many: and %{count} others
+      other: and %{count} others
+    reaction_by: "%{reaction} by"
   reportings:
     index:
       no_results_title_text: Наразі немає повідомлень про статус.
@@ -797,7 +808,6 @@ uk:
         consented_at: "Згоден на"
       user_preference:
         comments_sorting: "Відображення коментарів"
-        hide_mail: "Приховувати мій email"
         impaired: "Режим спеціальних можливостей"
         time_zone: "Часовий пояс"
         auto_hide_popups: "Автоматичне приховування сповіщень про успіх"
@@ -887,6 +897,7 @@ uk:
         not_available: "– недоступно через налаштування системи."
         not_deletable: "не можна видалити."
         not_current_user: "не поточний користувач."
+        not_found: "not found."
         not_a_date: "не є дійсною датою."
         not_a_datetime: "не є дійсним датою."
         not_a_number: "не є числом"
@@ -2892,8 +2903,6 @@ uk:
   notice_successful_update: "Успішно оновлено."
   notice_successful_update_custom_fields_added_to_project: |
     Оновлення завершено. Користувацькі поля активованих типів автоматично активовано у формі пакета робіт. <a href="%{url}" target="_blank">Докладніше</a>.
-  notice_successful_update_custom_fields_added_to_type: |
-    Оновлення завершено. Активні користувацькі поля автоматично активовано для пов’язаних проєктів цього типу.
   notice_to_many_principals_to_display: "Є занадто багато результатів.\nЗвузити пошук ввівши назву нового елемента (або групи)."
   notice_user_missing_authentication_method: Користувач ще не вибрав пароль або інший спосіб входу.
   notice_user_invitation_resent: Надіслано запрошення %{email}.
@@ -3309,7 +3318,6 @@ uk:
   setting_registration_footer: "Реєстраційний колонтитул"
   setting_repositories_automatic_managed_vendor: "Тип автоматичного сховища"
   setting_repositories_encodings: "Кодування сховищ"
-  setting_repository_authentication_caching_enabled: "Включити кешування для запиту перевірки автентичності програмного забезпечення контролю версій"
   setting_repository_storage_cache_minutes: "Кеш розміру диска в сховищі"
   setting_repository_checkout_display: "Показувати інструкції щодо оформлення замовлення"
   setting_repository_checkout_base_url: "Перевірити URL"

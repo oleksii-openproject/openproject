@@ -219,10 +219,10 @@ pt-PT:
           heading: Para todos os projetos
           description: Este campo personalizado é ativado em todos os projetos, uma vez que a opção "Para todos os projetos" está assinalada. Não pode ser desativado para projetos individuais.
       items:
+        actions: "Item actions"
         blankslate:
           title: "A sua lista de itens está vazia"
           description: "Comece por adicionar itens ao campo personalizado do tipo hierarquia. Cada item pode ser utilizado para criar uma hierarquia abaixo dele. Para navegar e criar subitens dentro de uma hierarquia, clique no item criado."
-        actions: "Item actions"
         placeholder:
           label: "Item label"
           short: "Short name"
@@ -493,6 +493,15 @@ pt-PT:
       priority_color_text: |
         Clique para atribuir ou alterar a cor desta prioridade.
         Pode ser usada para destacar os pacotes de trabalho na tabela.
+  reactions:
+    action_title: "React"
+    add_reaction: "Add reaction"
+    react_with: "React with %{reaction}"
+    and_user: "and %{user}"
+    and_others:
+      one: and 1 other
+      other: and %{count} others
+    reaction_by: "%{reaction} by"
   reportings:
     index:
       no_results_title_text: Atualmente, não existem comunicações de estado.
@@ -787,7 +796,6 @@ pt-PT:
         consented_at: "Consentiu em"
       user_preference:
         comments_sorting: "Exibir comentários"
-        hide_mail: "Ocultar meu endereço de e-mail"
         impaired: "Modo de acessibilidade"
         time_zone: "Fuso horário"
         auto_hide_popups: "Ocultar automaticamente notificações de sucesso"
@@ -877,6 +885,7 @@ pt-PT:
         not_available: "não está disponível devido a uma configuração do sistema."
         not_deletable: "não pode ser eliminado"
         not_current_user: "não é o utilizador atual."
+        not_found: "not found."
         not_a_date: "não é uma data válida."
         not_a_datetime: "não é uma data/hora válida."
         not_a_number: "não é um número."
@@ -2825,9 +2834,6 @@ pt-PT:
   notice_successful_update_custom_fields_added_to_project: |
     Atualização bem-sucedida. Os campos personalizados dos tipos ativados são ativados automaticamente
     no formulário de pacote de trabalho. <a href="%{url}" target="_blank">Veja mais</a>.
-  notice_successful_update_custom_fields_added_to_type: |
-    Atualização bem-sucedida. Os campos personalizados ativos são ativados automaticamente para
-    os projetos associados deste tipo.
   notice_to_many_principals_to_display: "Existem demasiados resultados. Reduza a busca digitando o nome do novo membro (ou grupo)."
   notice_user_missing_authentication_method: O utilizador ainda tem que escolher uma senha ou outro modo de iniciar a sessão.
   notice_user_invitation_resent: Foi enviado um convite para %{email}.
@@ -3239,7 +3245,6 @@ pt-PT:
   setting_registration_footer: "Rodapé de registo"
   setting_repositories_automatic_managed_vendor: "Tipo de fornecedor de repositório automático"
   setting_repositories_encodings: "Codificações de repositórios"
-  setting_repository_authentication_caching_enabled: "Habilitar o cache para uma solicitação de autenticação do software de controle de versão"
   setting_repository_storage_cache_minutes: "Tamanho de cache do disco de repositório"
   setting_repository_checkout_display: "Exibir instruções de checkout"
   setting_repository_checkout_base_url: "Checkout base URL"

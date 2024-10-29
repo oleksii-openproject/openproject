@@ -218,10 +218,10 @@ ca:
           heading: For all projects
           description: This custom field is enabled in all projects since the "For all projects" option is checked. It cannot be deactivated for individual projects.
       items:
+        actions: "Item actions"
         blankslate:
           title: "Your list of items is empty"
           description: "Start by adding items to the custom field of type hierarchy. Each item can be used to create a hierarchy bellow it. To navigate and create sub-items inside a hierarchy click on the created item."
-        actions: "Item actions"
         placeholder:
           label: "Item label"
           short: "Short name"
@@ -492,6 +492,15 @@ ca:
       priority_color_text: |
         Cliqueu per assignar o canviar el color d'aquesta prioritat.
         Pot fer-se servir per a destacar paquets de treball en la taula.
+  reactions:
+    action_title: "React"
+    add_reaction: "Add reaction"
+    react_with: "React with %{reaction}"
+    and_user: "and %{user}"
+    and_others:
+      one: and 1 other
+      other: and %{count} others
+    reaction_by: "%{reaction} by"
   reportings:
     index:
       no_results_title_text: Actualment no hi ha cap informe d'estat.
@@ -785,7 +794,6 @@ ca:
         consented_at: "Consentit a"
       user_preference:
         comments_sorting: "Mostra els comentaris"
-        hide_mail: "Oculta la meva adreça de correu electrònic"
         impaired: "Mode d'accessibilitat"
         time_zone: "Zona horària"
         auto_hide_popups: "Oculta automàticament les notificacions de succés"
@@ -875,6 +883,7 @@ ca:
         not_available: "no és disponible degut a la configuració del sistema."
         not_deletable: "no es pot eliminar."
         not_current_user: "no és l'usuari actual."
+        not_found: "not found."
         not_a_date: "no és una data vàlida."
         not_a_datetime: "no és una data-i-hora vàlida."
         not_a_number: "no és un número."
@@ -2820,8 +2829,6 @@ ca:
   notice_successful_update: "S'ha modificat correctament."
   notice_successful_update_custom_fields_added_to_project: |
     Actualitzat correctament. Els camps personalitzats dels estils activats s'activen automàticament en el formulari del paquet de treball. <a href="%{url}" target="_blank">Veure més</a>.
-  notice_successful_update_custom_fields_added_to_type: |
-    Actualitzat correctament. Els camps personalitzats s'activen automàticament pels projectes associats amb aquesta classe.
   notice_to_many_principals_to_display: "Hi ha massa resultats.\nAfini la cerca escrivint el nom del nou membre (o grup)."
   notice_user_missing_authentication_method: L'usuari encara ha de triar una contrassenya o una altra manera d'iniciar la sessió.
   notice_user_invitation_resent: Una invitació s'ha enviat a %{email}.
@@ -3233,7 +3240,6 @@ ca:
   setting_registration_footer: "Peu de pàgina del registre"
   setting_repositories_automatic_managed_vendor: "Tipus de proveïdor de repositori automàtic"
   setting_repositories_encodings: "Codificacions dels repositoris"
-  setting_repository_authentication_caching_enabled: "Habilitar la memòria cau per les peticions d'autenticació del programari de control de versions"
   setting_repository_storage_cache_minutes: "Mida de la caché de disc del repositori"
   setting_repository_checkout_display: "Mostra les instruccions de checkout"
   setting_repository_checkout_base_url: "URL base de checkout"
