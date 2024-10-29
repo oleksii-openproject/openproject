@@ -1091,6 +1091,16 @@ RSpec.describe "Projects index page", :js, :with_cuprite, with_settings: { login
           .to have_no_css("td", text: news.created_at.strftime("%m/%d/%Y"))
       end
     end
+
+    it "can see zen-mode button" do
+      login_as(simple_member)
+      visit projects_path
+
+      projects_page.page.find_test_selector("projects-lists-zen-mode-button").click
+      expect(page).to have_css(".zen-mode")
+      projects_page.page.find_test_selector("projects-lists-zen-mode-button").click
+      expect(page).to have_no_css(".zen-mode")
+    end
   end
 
   describe "order" do

@@ -14,6 +14,7 @@
         page_title
       end
       header.with_breadcrumbs(breadcrumb_items, selected_item_font_weight: current_breadcrumb_element == page_title ? :bold : :normal)
+      header.with_action_zen_mode_button(data: {'test-selector': 'projects-lists-zen-mode-button'})
 
       if can_save?
         header_save_action(
