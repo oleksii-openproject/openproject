@@ -8,7 +8,7 @@ ro:
       export: 'Exportă'
       export_bcf_xml_file: 'Exportați fișierul BCF XML (BCF versiunea 2.1)'
       viewpoint: 'Punct de vedere'
-      add_viewpoint: 'Adăugați un punct de vedere'
+      add_viewpoint: 'Adaugă un punct de vedere'
       show_viewpoint: 'Arată punctul de vedere'
       delete_viewpoint: 'Ștergeți punctul de vedere'
       management: 'Managementul BCF'
