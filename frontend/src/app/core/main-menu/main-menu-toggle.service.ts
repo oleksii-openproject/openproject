@@ -98,12 +98,18 @@ export class MainMenuToggleService {
     }
 
     // small desktop version default: hide menu on initialization
-    this.closeWhenOnSmallDesktop();
+    this.adjustMenuVisibility();
   }
 
   private onWindowResize():void {
-    if (window.innerWidth < 1012) {
-      this.closeMenu();
+    this.adjustMenuVisibility();
+  }
+
+  private adjustMenuVisibility():void {
+    if (window.innerWidth >= 1012) {
+      this.setWidth(this.defaultWidth); // Open menu if the screen is wider than 1012px
+    } else {
+      this.closeMenu(); // Close menu if the screen is narrower
     }
   }
 
@@ -141,13 +147,6 @@ export class MainMenuToggleService {
     jQuery('.searchable-menu--search-input').blur();
   }
 
-  public closeWhenOnSmallDesktop():void {
-    if (this.deviceService.isSmallDesktop) {
-      this.closeMenu();
-      window.OpenProject.guardedLocalStorage(this.localStorageStateKey, 'false');
-    }
-  }
-
   public saveWidth(width?:number):void {
     this.setWidth(width);
     window.OpenProject.guardedLocalStorage(this.localStorageKey, String(this.elementWidth));
@@ -158,11 +157,7 @@ export class MainMenuToggleService {
     if (width !== undefined) {
       // Leave a minimum amount of space for space for the content
       const maxMenuWidth = this.deviceService.isSmallDesktop ? window.innerWidth - 120 : window.innerWidth - 520;
-      if (width > maxMenuWidth) {
-        this.elementWidth = maxMenuWidth;
-      } else {
-        this.elementWidth = width as number;
-      }
+      this.elementWidth = Math.min(width as number, maxMenuWidth);
     }
 
     this.snapBack();
@@ -172,7 +167,6 @@ export class MainMenuToggleService {
     this.global.showNavigation = this.showNavigation;
     this.htmlNode.style.setProperty('--main-menu-width', `${this.elementWidth}px`);
 
-    // Send change event when size of menu is changing (menu toggled or resized)
     const changeEvent = jQuery.Event('change');
     this.changeData.next(changeEvent);
   }
