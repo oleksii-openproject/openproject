@@ -167,6 +167,7 @@ export class MainMenuToggleService {
     this.global.showNavigation = this.showNavigation;
     this.htmlNode.style.setProperty('--main-menu-width', `${this.elementWidth}px`);
 
+    // Send change event when size of menu is changing (menu toggled or resized)
     const changeEvent = jQuery.Event('change');
     this.changeData.next(changeEvent);
   }
