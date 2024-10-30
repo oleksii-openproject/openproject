@@ -3,7 +3,6 @@ sidebar_navigation:
   title: Backlogs settings
   priority: 200
 description: Backlogs settings.
-robots: index, follow
 keywords: backlogs settings
 ---
 # Backlogs settings
@@ -21,4 +20,3 @@ Press the blue **Save** button to apply your changes.
 ![manage backlogs settings](image-20200211134305495.png)
 
 The **Rebuild positions button** for the backlogs re-calculates the position of a work package in the product backlog.
-

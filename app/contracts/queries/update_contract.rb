@@ -1,13 +1,12 @@
-#-- encoding: UTF-8
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -24,10 +23,10 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'queries/base_contract'
+require "queries/base_contract"
 
 module Queries
   class UpdateContract < BaseContract
@@ -38,15 +37,17 @@ module Queries
     def user_allowed_to_change
       # Check user self-saving their own queries
       # or user saving public queries
-      if model.is_public?
+      if model.public_was
         user_allowed_to_change_public
+        user_allowed_to_change_query_to_private if model.public_changed?
       else
         user_allowed_to_change_query
+        user_allowed_to_change_public if model.public?
       end
     end
 
     def user_allowed_to_change_query
-      unless (model.user == user || model.user.nil?) && user_allowed_to_save_queries?
+      unless model.user == user && user_allowed_to_save_queries?
         errors.add :base, :error_unauthorized
       end
     end
@@ -58,11 +59,21 @@ module Queries
     end
 
     def user_allowed_to_edit_work_packages?
-      user.allowed_to?(:edit_work_packages, model.project, global: model.project.nil?)
+      user.allowed_in_any_work_package?(:edit_work_packages, in_project: model.project)
     end
 
     def user_allowed_to_save_queries?
-      user.allowed_to?(:save_queries, model.project, global: model.project.nil?)
+      if model.project
+        user.allowed_in_project?(:save_queries, model.project)
+      else
+        user.allowed_in_any_project?(:save_queries)
+      end
+    end
+
+    def user_allowed_to_change_query_to_private
+      if model.user.is_a? DeletedUser
+        errors.add :base, :error_unauthorized
+      end
     end
   end
 end

@@ -1,14 +1,12 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -25,39 +23,32 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
+require "mini_magick"
+
 module WorkPackage::PDFExport::Attachments
-  ##
-  # Creates cells for each attachment of the work package
-  #
-  def make_attachments_cells(attachments)
-    # Distribute all attachments on one line, this will work well with up to ~5 attachments.
-    # more than that will be resized further
-    available_width = (pdf.bounds.width / attachments.length) * 0.98
+  def resize_image(file_path)
+    tmp_file = Tempfile.new(["temp_image", File.extname(file_path)])
+    @resized_images = [] if @resized_images.nil?
 
-    attachments
-      .map { |attachment| make_attachment_cell attachment, available_width }
-      .compact
+    @resized_images << tmp_file
+    resized_file_path = tmp_file.path
+
+    image = MiniMagick::Image.open(file_path)
+    image.resize("x800>")
+    image.write(resized_file_path)
+
+    resized_file_path
   end
 
-  private
-
-  def make_attachment_cell(attachment, available_width)
-    # We can only include JPG and PNGs, maybe we want to add a text box for other attachments here
-    return nil unless pdf_embeddable?(attachment)
-
-    # Access the local file. For Carrierwave attachments, this will be blocking.
-    file_path = attachment.file.local_file.path
-    # Fit the image roughly in the center of each cell
-    pdf.make_cell(image: file_path, fit: [available_width, 125], position: :center)
-  rescue => e
-    Rails.logger.error { "Failed to attach work package image to PDF: #{e} #{e.message}" }
-    nil
+  def pdf_embeddable?(content_type)
+    %w[image/jpeg image/png].include?(content_type)
   end
 
-  def pdf_embeddable?(attachment)
-    %w[image/jpeg image/png].include?(attachment.content_type)
+  def delete_all_resized_images
+    @resized_images&.each(&:close!)
+    @resized_images = []
   end
 end

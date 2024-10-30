@@ -21,11 +21,11 @@
 
     <% if @project.descendants.active.any? %>
       <div class="form--space"></div>
-      <%= hidden_field_tag 'with_subprojects', 0 %>
       <div class="form--field -trailing-label -no-margin">
         <%= styled_label_tag "with-subprojects", t(:label_subproject_plural) %>
 
         <div class="form--field-container">
+          <%= hidden_field_tag 'with_subprojects', 0 %>
           <%= styled_check_box_tag 'with_subprojects', 1, @with_subprojects, id: 'with-subprojects' %>
         </div>
       </div>
@@ -33,7 +33,7 @@
 
     <div class="form--space"></div>
 
-    <div><%= submit_tag t(:button_apply), class: 'button -small -alt-highlight', name: nil %></div>
+    <div><%= submit_tag t(:button_apply), class: 'button -small -primary', name: nil %></div>
 
   </fieldset>
 <% end %>

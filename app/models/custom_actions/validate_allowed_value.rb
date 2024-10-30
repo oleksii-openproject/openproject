@@ -16,7 +16,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module CustomActions::ValidateAllowedValue
@@ -25,7 +25,7 @@ module CustomActions::ValidateAllowedValue
   def validate_allowed_value(errors, attribute)
     return unless values.any?
 
-    allowed_ids = allowed_values.map { |v| v[:value] }
+    allowed_ids = allowed_values.pluck(:value)
     if values.to_set != (allowed_ids & values).to_set
       errors.add attribute,
                  :inclusion,

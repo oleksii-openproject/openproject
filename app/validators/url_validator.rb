@@ -8,15 +8,16 @@ class UrlValidator < ActiveModel::EachValidator
     if url.nil?
       record.errors.add(attribute, :invalid_url)
     elsif !allowed_protocols.include?(url.scheme)
-      record.errors.add(attribute, :invalid_url_scheme, allowed_schemes: allowed_protocols.join(', '))
+      record.errors.add(attribute, :invalid_url_scheme, allowed_schemes: allowed_protocols.join(", "))
     end
   end
 
   def parse(value)
-    url = URI.parse(value)
-  rescue => e
+    URI.parse(value.to_s.strip)
+  rescue StandardError
     nil
   end
+
   def allowed_protocols
     options.fetch(:allowed_protocols, %w(http https))
   end

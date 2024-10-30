@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module API
@@ -32,16 +32,17 @@ module API
       class AvailableRelationCandidatesAPI < ::API::OpenProjectAPI
         helpers do
           def combined_params
-            { filters: filters_param, pageSize: params[:pageSize] }.with_indifferent_access
+            params
+              .merge({ filters: filters_param }.with_indifferent_access)
           end
 
           def filters_param
-            JSON::parse(params[:filters] || '[]')
+            JSON::parse(params[:filters] || "[]")
               .concat([string_filter, type_filter])
           end
 
           def string_filter
-            filter_param(:subject_or_id, '**', params[:query])
+            filter_param(:typeahead, "**", params[:query])
           end
 
           def type_filter
@@ -49,30 +50,25 @@ module API
           end
 
           def filter_param(key, operator, values)
-            { key => { operator: operator, values: values } }.with_indifferent_access
+            { key => { operator:, values: } }.with_indifferent_access
           end
         end
 
         resources :available_relation_candidates do
           params do
-            requires :query, type: String # either WP ID or part of its subject
+            requires :query, type: String # part of the WP ID and/or part of its subject and/or part of the projects name
             optional :type, type: String, default: ::Relation::TYPE_RELATES # relation type
             optional :pageSize, type: Integer, default: 10
           end
+
           get do
-            service = WorkPackageCollectionFromQueryParamsService
-                      .new(current_user)
-                      .call(combined_params)
-
-            if service.success?
-              service.result
-            else
-              api_errors = service.errors.full_messages.map do |message|
-                ::API::Errors::InvalidQuery.new(message)
-              end
-
-              raise ::API::Errors::MultipleErrors.create_if_many api_errors
+            call = raise_invalid_query_on_service_failure do
+              WorkPackageCollectionFromQueryParamsService
+                        .new(current_user)
+                        .call(combined_params)
             end
+
+            call.result
           end
         end
       end

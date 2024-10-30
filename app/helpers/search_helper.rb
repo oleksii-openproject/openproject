@@ -1,13 +1,12 @@
-#-- encoding: UTF-8
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -24,38 +23,47 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module SearchHelper
-  def highlight_tokens(text, tokens)
-    return text unless text && tokens && !tokens.empty?
-    re_tokens = tokens.map { |t| Regexp.escape(t) }
-    regexp = Regexp.new "(#{re_tokens.join('|')})", Regexp::IGNORECASE
-    result = ''
-    text.split(regexp).each_with_index do |words, i|
+  def highlight_tokens(text, tokens, text_on_not_found: false)
+    split_text = text_split_by_token(text, tokens)
+
+    return nil unless split_text.length > 1 || text_on_not_found
+
+    result = ""
+    split_text.each_with_index do |words, i|
       if result.length > 1200
         # maximum length of the preview reached
-        result << '...'
+        result << "..."
         break
       end
-      if i.even?
-        result << h(words.length > 100 ? "#{words.slice(0..44)} ... #{words.slice(-45..-1)}" : words)
-      else
-        t = (tokens.index(words.downcase) || 0) % 4
-        result << content_tag('span', h(words), class: "search-highlight token-#{t}")
-      end
+
+      result << if i.even?
+                  abbreviated_text(words)
+                else
+                  token_span(tokens, words)
+                end
     end
     result.html_safe
   end
 
-  def highlight_first(texts, tokens)
-    texts.each do |text|
-      if has_tokens? text, tokens
-        return highlight_tokens text, tokens
-      end
-    end
-    highlight_tokens texts[-1], tokens
+  def highlight_tokens_in_event(event, tokens)
+    # This way, the attachments are only loaded in case the tokens are not found inside
+    # the journal notes.
+    highlight_tokens(last_journal(event).try(:notes), tokens) or
+      highlight_tokens(attachment_fulltexts(event), tokens) or
+      highlight_tokens(attachment_filenames(event), tokens) or
+      highlight_tokens(event.event_description, tokens, text_on_not_found: true)
+  end
+
+  def text_split_by_token(text, tokens)
+    return [text].compact unless text && tokens && !tokens.empty?
+
+    re_tokens = tokens.map { |t| Regexp.escape(t) }
+    regexp = Regexp.new "(#{re_tokens.join('|')})", Regexp::IGNORECASE
+    text.split(regexp)
   end
 
   def has_tokens?(text, tokens)
@@ -75,23 +83,15 @@ module SearchHelper
   def notes_anchor(event)
     version = event.version.to_i
 
-    version > 1 ? "note-#{version - 1}" : ''
+    version > 1 ? "note-#{version - 1}" : ""
   end
 
   def with_notes_anchor(event, tokens)
     if has_tokens? last_journal(event).try(:notes), tokens
-      event.event_url.merge anchor: notes_anchor(last_journal event)
+      event.event_url.merge anchor: notes_anchor(last_journal(event))
     else
       event.event_url
     end
-  end
-
-  def attachment_fulltexts(event)
-    attachment_strings_for(:fulltext, event)
-  end
-
-  def attachment_filenames(event)
-    attachment_strings_for(:filename, event)
   end
 
   def type_label(t)
@@ -100,8 +100,8 @@ module SearchHelper
 
   def current_scope
     params[:scope] ||
-      ('subprojects' unless @project.nil? || @project.descendants.active.empty?) ||
-      ('current_project' unless @project.nil?)
+      ("subprojects" unless @project.nil? || @project.descendants.active.empty?) ||
+      ("current_project" unless @project.nil?)
   end
 
   def link_to_previous_search_page(pagination_previous_date)
@@ -109,7 +109,7 @@ module SearchHelper
                            @search_params.merge(previous: 1,
                                                 project_id: @project.try(:identifier),
                                                 offset: pagination_previous_date.to_r.to_s),
-                           class: 'navigate-left')
+                           class: "navigate-left")
   end
 
   def link_to_next_search_page(pagination_next_date)
@@ -117,14 +117,51 @@ module SearchHelper
                            @search_params.merge(previous: nil,
                                                 project_id: @project.try(:identifier),
                                                 offset: pagination_next_date.to_r.to_s),
-                           class: 'navigate-right')
+                           class: "navigate-right")
   end
 
   private
 
-  def attachment_strings_for(attribute_name, event)
-    if EnterpriseToken.allows_to?(:attachment_filters) && OpenProject::Database.allows_tsv? && event.respond_to?(:attachments)
-      event.attachments&.map(&attribute_name)&.join(' ')
+  def attachment_fulltexts(event)
+    only_if_tsv_supported(event) do
+      Attachment.where(id: event.attachment_ids).pluck(:fulltext).join(" ")
     end
+  end
+
+  def attachment_filenames(event)
+    only_if_tsv_supported(event) do
+      event.attachments&.map(&:filename)&.join(" ")
+    end
+  end
+
+  def only_if_tsv_supported(event)
+    if OpenProject::Database.allows_tsv? && event.respond_to?(:attachments)
+      yield
+    end
+  end
+
+  def token_span(tokens, words)
+    t = (tokens.index(words.downcase) || 0) % 4
+    content_tag("span", h(words), class: "search-highlight token-#{t}")
+  end
+
+  def abbreviated_text(words)
+    formatted_words = truncate_formatted_text(words, length: nil)
+
+    abbreviated_words = if formatted_words.length > 100
+                          "#{formatted_words.slice(0..44)} ... #{formatted_words.slice(-44..-1)}"
+                        else
+                          formatted_words
+                        end
+
+    if words[0] == " "
+      abbreviated_words = " #{abbreviated_words}"
+    end
+
+    if words[-1] == " " && words.length > 1
+      abbreviated_words = "#{abbreviated_words} "
+    end
+
+    abbreviated_words
   end
 end

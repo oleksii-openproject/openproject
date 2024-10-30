@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,34 +23,33 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'spec_helper'
+require "spec_helper"
 
-describe 'Navigate to dashboard', type: :feature, js: true do
-  let(:project) { FactoryBot.create(:project) }
+RSpec.describe "Navigate to dashboard", :js do
+  let(:project) { create(:project) }
   let(:permissions) { [:view_dashboards] }
   let(:user) do
-    FactoryBot.create(:user,
-                      member_in_project: project,
-                      member_with_permissions: permissions)
+    create(:user,
+           member_with_permissions: { project => permissions })
   end
 
   before do
     login_as user
   end
 
-  it 'can visit the dashboard' do
+  it "can visit the dashboard" do
     visit project_path(project)
 
-    within '#menu-sidebar' do
+    within "#menu-sidebar" do
       click_link "Dashboard"
     end
 
-    within '#content' do
+    within "#content" do
       expect(page)
-        .to have_content('Dashboard')
+        .to have_content("Dashboard")
     end
   end
 end

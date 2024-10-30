@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,14 +23,14 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module Report::QueryUtils
   Infinity = 1.0 / 0
   include Engine
 
-  delegate :quoted_false, :quoted_true, to: 'engine.reporting_connection'
+  delegate :quoted_false, :quoted_true, to: "engine.reporting_connection"
   attr_writer :engine
 
   include Costs::NumberHelper
@@ -42,6 +42,7 @@ module Report::QueryUtils
   # @return [Object] Quoted version
   def quote_string(str)
     return str unless str.respond_to? :to_str
+
     engine.reporting_connection.quote_string(str)
   end
 
@@ -56,7 +57,7 @@ module Report::QueryUtils
   # @param [#flatten] *values Ruby collection
   # @return [String] SQL collection
   def collection(*values)
-    return '' if values.empty?
+    return "" if values.empty?
 
     v = if values.is_a?(Array)
           values.flatten.each_with_object([]) do |str, l|
@@ -73,7 +74,7 @@ module Report::QueryUtils
     # From ruby doc:
     # When the input str is empty an empty Array is returned as the string is
     # considered to have no fields to split.
-    str.to_s.empty? ? '' : str.to_s.split(',')
+    str.to_s.empty? ? "" : str.to_s.split(",")
   end
 
   ##
@@ -111,6 +112,7 @@ module Report::QueryUtils
   # @return [String] The table name.
   def table_name_for(object)
     return object.table_name if object.respond_to? :table_name
+
     object.to_s.tableize
   end
 
@@ -121,19 +123,17 @@ module Report::QueryUtils
   #   field_name_for nil                            # => 'NULL'
   #   field_name_for 'foo'                          # => 'foo'
   #   field_name_for [Issue, 'project_id']          # => 'issues.project_id'
-  #   field_name_for [:issue, 'project_id'], :entry # => 'issues.project_id'
-  #   field_name_for 'project_id', :entry           # => 'entries.project_id'
+  #   field_name_for [:issue, 'project_id']         # => 'issues.project_id'
   #
   # @param [Array, Object] arg Object to generate field name for.
   # @param [Object, optional] default_table Table name to use if no table name is given.
   # @return [String] Field name.
-  def field_name_for(arg, default_table = nil)
-    return 'NULL' unless arg
-    return field_name_for(arg.keys.first, default_table) if arg.is_a? Hash
-    return arg if arg.is_a? String and arg =~ /\.| |\(.*\)/
-    return table_name_for(arg.first || default_table) + '.' << arg.last.to_s if arg.is_a? Array and arg.size == 2
-    return arg.to_s unless default_table
-    field_name_for [default_table, arg]
+  def field_name_for(arg)
+    return "NULL" unless arg
+    return field_name_for(arg.keys.first) if arg.is_a? Hash
+    return "#{table_name_for(arg.first)}.#{arg.last}" if arg.is_a? Array and arg.size == 2
+
+    arg.to_s
   end
 
   ##
@@ -155,14 +155,12 @@ module Report::QueryUtils
   # @param [Hash] options Condition => Result.
   # @return [String] Case statement.
   def switch(options)
-    desc = "#{__method__} #{options.inspect[1..-2]}".gsub(/(Cost|Time)Entry\([^\)]*\)/, '\1Entry')
     options = options.with_indifferent_access
     else_part = options.delete :else
-    "-- #{desc}\n\t" \
-    "CASE #{options.map { |k, v|
+    "CASE #{options.map do |k, v|
       "\n\t\tWHEN #{field_name_for k}\n\t\t" \
-    "THEN #{field_name_for v}"
-    }.join(', ')}\n\t\tELSE #{field_name_for else_part}\n\tEND"
+        "THEN #{field_name_for v}"
+    end.join(', ')}\n\t\tELSE #{field_name_for else_part}\n\tEND"
   end
 
   ##
@@ -181,7 +179,7 @@ module Report::QueryUtils
 
   def map_field(key, value)
     case key.to_s
-    when 'tweek', 'tmonth', 'tweek' then value.to_i
+    when "tweek", "tmonth", "tweek" then value.to_i
     else convert_unless_nil(value, &:to_s)
     end
   end
@@ -208,12 +206,10 @@ module Report::QueryUtils
     "#{safe_value}::#{type}"
   end
 
-  def iso_year_week(field, default_table = nil)
-    field_name = field_name_for(field, default_table)
-
+  def iso_year_week(field_name)
     "(EXTRACT(isoyear from #{field_name})*100 + \n\t\t" \
-    "EXTRACT(week from #{field_name} - \n\t\t" \
-    "(EXTRACT(dow FROM #{field_name})::int+6)%7))"
+      "EXTRACT(week from #{field_name} - \n\t\t" \
+      "(EXTRACT(dow FROM #{field_name})::int+6)%7))"
   end
 
   def self.cache

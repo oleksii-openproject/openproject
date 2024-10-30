@@ -1,14 +1,12 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -25,16 +23,16 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'spec_helper'
-require_relative './shared_contract_examples'
+require "spec_helper"
+require_relative "shared_contract_examples"
 
-describe Messages::UpdateContract do
-  it_behaves_like 'message contract' do
+RSpec.describe Messages::UpdateContract do
+  it_behaves_like "message contract" do
     let(:message) do
-      FactoryBot.build_stubbed(:message).tap do |message|
+      build_stubbed(:message).tap do |message|
         message.forum = message_forum
         message.parent = message_parent
         message.subject = message_subject
@@ -46,8 +44,8 @@ describe Messages::UpdateContract do
     end
     subject(:contract) { described_class.new(message, current_user) }
 
-    context 'if the author is changed' do
-      it 'is invalid' do
+    context "if the author is changed" do
+      it "is invalid" do
         message.author = other_user
         expect_valid(false, author_id: %i(error_readonly))
       end

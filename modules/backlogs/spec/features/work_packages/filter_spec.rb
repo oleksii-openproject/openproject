@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,48 +23,48 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'spec_helper'
+require "spec_helper"
 
-describe 'Filter by backlog type', js: true do
+RSpec.describe "Filter by backlog type", :js do
   let(:story_type) do
-    type = FactoryBot.create(:type_feature)
+    type = create(:type_feature)
     project.types << type
 
     type
   end
 
   let(:task_type) do
-    type = FactoryBot.create(:type_task)
+    type = create(:type_task)
     project.types << type
 
     type
   end
 
-  let(:user) { FactoryBot.create :admin }
-  let(:project) { FactoryBot.create :project }
+  let(:user) { create(:admin) }
+  let(:project) { create(:project) }
 
-  let(:wp_table) { ::Pages::WorkPackagesTable.new(project) }
-  let(:filters) { ::Components::WorkPackages::Filters.new }
+  let(:wp_table) { Pages::WorkPackagesTable.new(project) }
+  let(:filters) { Components::WorkPackages::Filters.new }
 
   let(:member) do
-    FactoryBot.create(:member,
-                      user: user,
-                      project: project,
-                      roles: [FactoryBot.create(:role)])
+    create(:member,
+           user:,
+           project:,
+           roles: [create(:project_role)])
   end
 
   let(:work_package_with_story_type) do
-    FactoryBot.create(:work_package,
-                      type: story_type,
-                      project: project)
+    create(:work_package,
+           type: story_type,
+           project:)
   end
   let(:work_package_with_task_type) do
-    FactoryBot.create(:work_package,
-                      type: task_type,
-                      project: project)
+    create(:work_package,
+           type: task_type,
+           project:)
   end
 
   before do
@@ -74,23 +74,23 @@ describe 'Filter by backlog type', js: true do
 
     allow(Setting)
       .to receive(:plugin_openproject_backlogs)
-      .and_return('story_types' => [story_type.id.to_s],
-                  'task_type' => task_type.id.to_s)
+      .and_return("story_types" => [story_type.id.to_s],
+                  "task_type" => task_type.id.to_s)
 
     wp_table.visit!
   end
 
-  it 'allows filtering, saving and retaining the filter' do
+  it "allows filtering, saving and retaining the filter" do
     filters.open
 
-    filters.add_filter_by('Backlog type', 'is', 'Story', 'backlogsWorkPackageType')
+    filters.add_filter_by("Backlog type", "is (OR)", "Story", "backlogsWorkPackageType")
 
     wp_table.expect_work_package_listed work_package_with_story_type
     wp_table.ensure_work_package_not_listed! work_package_with_task_type
 
-    wp_table.save_as('Some query name')
+    wp_table.save_as("Some query name")
 
-    filters.remove_filter 'backlogsWorkPackageType'
+    filters.remove_filter "backlogsWorkPackageType"
 
     wp_table.expect_work_package_listed work_package_with_story_type, work_package_with_task_type
 
@@ -103,6 +103,6 @@ describe 'Filter by backlog type', js: true do
 
     filters.open
 
-    filters.expect_filter_by('Backlog type', 'is', 'Story', 'backlogsWorkPackageType')
+    filters.expect_filter_by("Backlog type", "is (OR)", "Story", "backlogsWorkPackageType")
   end
 end

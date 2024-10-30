@@ -1,14 +1,12 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -25,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module API
@@ -40,12 +38,16 @@ module API
           @env = env
           @options = {}
         end
+
+        def error!(message, status = nil, headers = nil, backtrace = nil, original_exception = nil)
+          super
+        end
       end
 
       def grape_error_for(env, api)
         GrapeError.new(env).tap do |e|
           e.options[:content_types] = api.content_types
-          e.options[:format] = 'hal+json'
+          e.options[:format] = "hal+json"
         end
       end
 
@@ -56,12 +58,12 @@ module API
           if error.nil?
             error_response_lambda
           else
-            lambda { |e| instance_exec error.new(e.message), &error_response_lambda }
+            lambda { |e| instance_exec error.new(e.message, exception: e), &error_response_lambda }
           end
 
         # We do this lambda business because #rescue_from behaves differently
         # depending on the number of parameters the passed block accepts.
-        rescue_from rescued_error, rescue_subclasses: rescue_subclasses, &response
+        rescue_from rescued_error, rescue_subclasses:, &response
       end
 
       def default_error_response(headers, log)
@@ -69,7 +71,7 @@ module API
           original_exception = $!
           representer = error_representer.new e
           resp_headers = instance_exec &headers
-          env['api.format'] = error_content_type
+          resp_headers["Content-Type"] = error_content_type
 
           if log == true
             OpenProject.logger.error original_exception, reference: :APIv3
@@ -77,7 +79,7 @@ module API
             log.call(original_exception)
           end
 
-          error_response status: e.code, message: representer.to_json, headers: resp_headers
+          error!(representer.to_json, e.code, resp_headers)
         }
       end
     end

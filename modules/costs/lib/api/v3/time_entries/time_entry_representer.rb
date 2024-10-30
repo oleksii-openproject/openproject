@@ -1,14 +1,12 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -25,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module API
@@ -37,7 +35,7 @@ module API
         include API::Decorators::DateProperty
         extend ::API::V3::Utilities::CustomFieldInjector::RepresenterClass
 
-        self_link title_getter: ->(*) { nil }
+        self_link title_getter: ->(*) {}
 
         defaults render_nil: true
 
@@ -76,6 +74,8 @@ module API
 
         property :id
 
+        property :ongoing
+
         formattable_property :comments,
                              as: :comment,
                              plain: true
@@ -88,10 +88,8 @@ module API
                    datetime_formatter.format_duration_from_hours(represented.hours) if represented.hours
                  end
 
-        date_time_property :created_on,
-                           as: 'createdAt'
-        date_time_property :updated_on,
-                           as: 'updatedAt'
+        date_time_property :created_at
+        date_time_property :updated_at
 
         associated_resource :project
 
@@ -108,31 +106,33 @@ module API
                                 .new(represented,
                                      path: :time_entries_activity,
                                      property_name: :time_entries_activity,
-                                     namespace: 'time_entries/activities',
+                                     namespace: "time_entries/activities",
                                      getter: :activity_id,
                                      setter: :"activity_id=")
                                 .from_hash(fragment)
                             }
 
         def _type
-          'TimeEntry'
+          "TimeEntry"
         end
 
         def update_allowed?
-          current_user_allowed_to(:edit_time_entries, context: represented.project) ||
-            represented.user_id == current_user.id &&
-              current_user_allowed_to(:edit_own_time_entries, context: represented.project)
-        end
-
-        def current_user_allowed_to(permission, context:)
-          current_user.allowed_to?(permission, context)
+          @update_allowed ||= begin
+            contract = ::TimeEntries::UpdateContract.new(represented, current_user)
+            contract.user_allowed_to_update?
+          end
         end
 
         def hours=(value)
           represented.hours = datetime_formatter.parse_duration_to_hours(value,
-                                                                         'hours',
+                                                                         "hours",
                                                                          allow_nil: true)
         end
+
+        self.to_eager_load = [:work_package,
+                              :user,
+                              :activity,
+                              { project: :enabled_modules }]
       end
     end
   end

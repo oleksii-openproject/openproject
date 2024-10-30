@@ -1,10 +1,10 @@
 #-- copyright
 #OpenProject is an open source project management software.
-#Copyright (C) 2012-2020 the OpenProject GmbH
+#Copyright (C) the OpenProject GmbH
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License version 3.
 #OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-#Copyright (C) 2006-2017 Jean-Philippe Lang
+#Copyright (C) 2006-2013 Jean-Philippe Lang
 #Copyright (C) 2010-2013 the ChiliProject Team
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License
@@ -17,15 +17,16 @@
 #You should have received a copy of the GNU General Public License
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-#See docs/COPYRIGHT.rdoc for more details.
+#See COPYRIGHT and LICENSE files for more details.
 #++
 uk:
+  plugin_openproject_backlogs:
+    name: "Невиконані завдання в OpenProject"
+    description: "Цей модуль додає функції, завдяки яким agile-команди можуть працювати над проєктами Scrum в OpenProject."
   activerecord:
     attributes:
       work_package:
         position: "Позиція"
-        remaining_hours: "Залишилися години"
-        remaining_time: "Залишилися години"
         story_points: "Точки історії"
         backlogs_work_package_type: "Тип Backlog-у"
     errors:
@@ -35,17 +36,14 @@ uk:
             blocks_ids:
               can_only_contain_work_packages_of_current_sprint: "може містити лише ідентифікатори робочих пакетів у поточному спринті."
               must_block_at_least_one_work_package: "повинен містити ідентифікатор принаймні одного ticket-а."
-            parent_id:
-              parent_child_relationship_across_projects: "є недійсним, оскільки робочий пакет '%{work_package_name}' є завданням backlog-у і тому не може мати батька поза поточним проектом."
-              type_must_be_one_of_the_following: "Тип має бути одним з наступних: %{type_names}."
             version_id:
-              task_version_must_be_the_same_as_story_version: "має бути така сама як батьківська версія історії."
+              task_version_must_be_the_same_as_story_version: "Повинно збігатись з версією батьківської історії"
         sprint:
           cannot_end_before_it_starts: "Спринт не може закінчитися, перш ніж він почне працювати."
   backlogs:
     add_new_story: "Новий сюжет"
     any: "будь-який"
-    backlog_settings: "Backlogs settings"
+    backlog_settings: "Налаштування Backlog"
     burndown_graph: "Графік Burndown"
     card_paper_size: "Розмір паперу для друку карт"
     chart_options: "Параметри діаграми"
@@ -66,8 +64,8 @@ uk:
     properties: "Властивості"
     rebuild: "Перебудувати"
     rebuild_positions: "Перебудувати позиції"
-    remaining_hours: "Залишилися години"
-    remaining_hours_ideal: "Решта годин (ідеально)"
+    remaining_hours: "Залишок роботи"
+    remaining_hours_ideal: "Залишок роботи (ідеальний)"
     show_burndown_chart: "Графік Burndown"
     story: "Історія"
     story_points: "Точки історії"
@@ -78,7 +76,6 @@ uk:
     x_more: "%{count} більше..."
   backlogs_active: "активний"
   backlogs_any: "будь-який"
-  backlogs_card_specification: "Типи міток для друку карт"
   backlogs_inactive: "Проект не показує активності"
   backlogs_points_burn_direction: "Бали спалюються вгору/вниз"
   backlogs_product_backlog: "Backlog продукту"
@@ -99,6 +96,7 @@ uk:
   backlogs_empty_title: "Не визначено жодних версій для використання у backlogs"
   backlogs_empty_action_text: "Щоб розпочати роботу з backlogs, створіть нову версію та призначте її у стовпці backlogs."
   button_edit_wiki: "Редагувати wiki-сторінку"
+  error_backlogs_task_cannot_be_story: "Налаштування недійсні. Вибраний тип завдання не може також бути історією."
   error_intro_plural: "Сталися такі помилки:"
   error_intro_singular: "Сталася така помилка:"
   error_outro: "Виправте наведені вище помилки перед повторним поданням."
@@ -136,19 +134,20 @@ uk:
   label_wiki: "Wiki"
   permission_view_master_backlog: "Перегляд головного backlog-у"
   permission_view_taskboards: "Перегляд панелі завдань"
+  permission_select_done_statuses: "Виберіть завершені статуси"
   permission_update_sprints: "Оновлення спринту"
   points_accepted: "пунктів прийнято"
   points_committed: "пунктів зафіксовано"
   points_resolved: "вирішено зафіксованих пунктів"
   points_to_accept: "пунктів не прийнято"
   points_to_resolve: "пункти не вирішені"
-  project_module_backlogs: "Backlogs"
+  project_module_backlogs: "Відставання"
   rb_label_copy_tasks: "Копіювання робочих пакетів"
   rb_label_copy_tasks_all: "Всі"
-  rb_label_copy_tasks_none: "Жодного"
+  rb_label_copy_tasks_none: "Нічого"
   rb_label_copy_tasks_open: "Відкрити"
   rb_label_link_to_original: "Включіть посилання на оригінальну історію"
-  remaining_hours: "залишилися години"
+  remaining_hours: "залишок роботи"
   required_burn_rate_hours: "необхідна швидкість запису (години)"
   required_burn_rate_points: "необхідна швидкість запису (пункти)"
   todo_work_package_description: "%{summary}: %{url}\n%{description}"

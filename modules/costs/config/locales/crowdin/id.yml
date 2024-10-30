@@ -1,10 +1,10 @@
 #-- copyright
 #OpenProject is an open source project management software.
-#Copyright (C) 2012-2020 the OpenProject GmbH
+#Copyright (C) the OpenProject GmbH
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License version 3.
 #OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-#Copyright (C) 2006-2017 Jean-Philippe Lang
+#Copyright (C) 2006-2013 Jean-Philippe Lang
 #Copyright (C) 2010-2013 the ChiliProject Team
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License
@@ -17,13 +17,16 @@
 #You should have received a copy of the GNU General Public License
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-#See docs/COPYRIGHT.rdoc for more details.
+#See COPYRIGHT and LICENSE files for more details.
 #++
 id:
+  plugin_costs:
+    name: "Waktu dan biaya"
+    description: "This module adds features for planning and tracking costs of projects."
   activerecord:
     attributes:
       cost_entry:
-        work_package: "Paket-Penugasan"
+        work_package: "Work Package"
         overridden_costs: "Overridden costs"
         spent: "Dihabiskan"
         spent_on: "Tanggal"
@@ -79,7 +82,7 @@ id:
   label_costlog: "Catatan biaya unit"
   label_cost_plural: "Biaya"
   label_cost_type_plural: "Jenis biaya"
-  label_cost_type_specific: "Cost type #%{id}: %{name}"
+  label_cost_type_specific: "Jenis biaya #%{id}: %{name}"
   label_costs_per_page: "Tampilan biaya perhalaman"
   label_currency: "Mata Uang"
   label_currency_format: "Format mata uang"
@@ -107,6 +110,7 @@ id:
   label_rate: "Rate"
   label_rate_plural: "Rate"
   label_status_finished: "Selesai"
+  label_show: "Show"
   label_units: "Biaya unit"
   label_user: "User"
   label_until: "hingga"
@@ -129,7 +133,7 @@ id:
   permission_view_own_cost_entries: "Tampilkan booked biaya sendiri"
   permission_view_own_hourly_rate: "Tampilkan rate per-jam diri sendiri"
   permission_view_own_time_entries: "Tampilan jumlah waktu diri sendiri"
-  project_module_costs: "Time and costs"
+  project_module_costs: "Waktu dan biaya"
   text_assign_time_and_cost_entries_to_project: "Masukkan laporan per-jam dan laporan biaya ke proyek"
   text_destroy_cost_entries_question: "%{cost_entries} digunakan pada work package yang akan dihapus. Keputusan anda?"
   text_destroy_time_and_cost_entries: "Hapus jumlah jam dan biaya yang terlapor"
@@ -138,4 +142,4 @@ id:
   text_warning_hidden_elements: "Beberapa entri mungkin tidak dipakai oleh agregasi yang dilakukan."
   week: "minggu"
   js:
-    text_are_you_sure: "Anda yakin?"
+    text_are_you_sure: "Apakah anda yakin?"

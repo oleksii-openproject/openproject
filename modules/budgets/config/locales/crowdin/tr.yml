@@ -1,10 +1,10 @@
 #-- copyright
 #OpenProject is an open source project management software.
-#Copyright (C) 2012-2020 the OpenProject GmbH
+#Copyright (C) the OpenProject GmbH
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License version 3.
 #OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-#Copyright (C) 2006-2017 Jean-Philippe Lang
+#Copyright (C) 2006-2013 Jean-Philippe Lang
 #Copyright (C) 2010-2013 the ChiliProject Team
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License
@@ -17,23 +17,23 @@
 #You should have received a copy of the GNU General Public License
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-#See docs/COPYRIGHT.rdoc for more details.
+#See COPYRIGHT and LICENSE files for more details.
 #++
 tr:
+  plugin_budgets_engine:
+    name: 'Bütçe'
   activerecord:
     attributes:
       budget:
         author: "Sahibi"
         available: "Uygun"
         budget: "Planlanmış"
-        budget_ratio: "Harcanma (oranı)"
-        created_on: "Oluşturma tarihi"
+        budget_ratio: "Harcanan (oran)"
         description: "Açıklama"
         spent: "Harcanan"
         status: "Durum"
         subject: "Konu"
         type: "Maliyet türü"
-        updated_on: "Güncelleme tarihi"
         labor_budget: "Planlanan işçilik maliyetleri"
         material_budget: "Planlanan birim maliyetleri"
       work_package:
@@ -41,6 +41,9 @@ tr:
     models:
       budget: "Bütçe"
       material_budget_item: "Birim"
+  activity:
+    filter:
+      budget: "Bütçe"
   attributes:
     budget: "Bütçe"
   button_add_budget_item: "Planlanan maliyetlere ekle"
@@ -62,11 +65,14 @@ tr:
   label_budget_plural: "Bütçeler"
   label_budget_id: "Bütçe #%{id}"
   label_deliverable: "Bütçe"
-  label_example_placeholder: 'e.g., %{decimal}'
+  label_example_placeholder: 'ör. %{decimal}'
   label_view_all_budgets: "Tüm bütçeleri görüntüle"
   label_yes: "Evet"
-  notice_budget_conflict: "WorkPackages aynı projede olmalıdır."
+  notice_budget_conflict: "İş paketleri aynı projeye ait olmalıdır."
   notice_no_budgets_available: "Hiçbir bütçe yok."
   permission_edit_budgets: "Bütçeleri düzenleme"
   permission_view_budgets: "Bütçeleri görüntüle"
   project_module_budgets: "Bütçeler"
+  text_budget_reassign_to: "Bu bütçeye yeniden ata:"
+  text_budget_delete: "Bütçeyi tüm çalışma paketlerinden sil"
+  text_budget_destroy_assigned_wp: "Bu bütçeye atanmış %{count} çalışma paketi bulunmakta. Ne yapmak istersiniz?"

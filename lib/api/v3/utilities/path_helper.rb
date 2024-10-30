@@ -1,13 +1,12 @@
-#-- encoding: UTF-8
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -24,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module API
@@ -42,38 +41,39 @@ module API
             path ||= plural_name
 
             define_singleton_method(plural_name) do
-              "#{root}/#{path}"
+              RequestStore.store[:"cached_#{plural_name}"] ||= "#{root}/#{path}"
             end
           end
           private_class_method :index
 
-          def self.show(name)
-            define_singleton_method(name) do |id|
-              "#{send(name.to_s.pluralize)}/#{id}"
-            end
+          def self.show(name, path = name)
+            define_singleton_method(name) { |id| build_path(path, id) }
           end
           private_class_method :show
 
           def self.create_form(name)
             define_singleton_method(:"create_#{name}_form") do
-              "#{send(name.to_s.pluralize)}/form"
+              RequestStore.store[:"cached_create_#{name}_form"] ||= build_path(name, "form")
             end
           end
           private_class_method :create_form
 
           def self.update_form(name)
-            define_singleton_method(:"#{name}_form") do |id|
-              "#{send(name, id)}/form"
-            end
+            define_singleton_method(:"#{name}_form") { |id| build_path(name, id, "form") }
           end
           private_class_method :update_form
 
           def self.schema(name)
             define_singleton_method(:"#{name}_schema") do
-              "#{send(name.to_s.pluralize)}/schema"
+              RequestStore.store[:"cached_#{name}_schema"] ||= build_path(name, "schema")
             end
           end
           private_class_method :schema
+
+          def self.build_path(name, *kwargs)
+            [root, name.to_s.pluralize, *kwargs].compact.join("/")
+          end
+          private_class_method :build_path
 
           def self.resources(name,
                              except: [],
@@ -93,11 +93,21 @@ module API
           end
 
           def self.root
-            "#{root_path}api/v3"
+            RequestStore.store[:cached_root] ||= "#{root_path}api/v3"
           end
 
-          def self.activity(id)
-            "#{root}/activities/#{id}"
+          def self.same_origin?(url)
+            url.to_s.start_with? root_url
+          end
+
+          index :action
+          show :action
+
+          index :activity
+          show :activity
+
+          def self.api_spec
+            "#{root}/spec.json"
           end
 
           index :attachment
@@ -134,12 +144,12 @@ module API
             "#{root}/attachments/#{attachment_id}/uploaded"
           end
 
-          def self.available_assignees(project_id)
+          def self.available_assignees_in_project(project_id)
             "#{project(project_id)}/available_assignees"
           end
 
-          def self.available_responsibles(project_id)
-            "#{project(project_id)}/available_responsibles"
+          def self.available_assignees_in_work_package(work_package_id)
+            "#{work_package(work_package_id)}/available_assignees"
           end
 
           def self.available_watchers(work_package_id)
@@ -150,17 +160,22 @@ module API
             "#{work_package(work_package_id)}/available_projects"
           end
 
-          def self.available_projects_on_create(type_id)
-            if type_id.to_i.zero?
-              "#{work_packages}/available_projects"
-            else
-              "#{work_packages}/available_projects?for_type=#{type_id}"
-            end
+          def self.available_projects_on_create
+            "#{work_packages}/available_projects"
           end
 
           def self.available_relation_candidates(work_package_id)
             "#{work_package(work_package_id)}/available_relation_candidates"
           end
+
+          index :capability
+          show :capability
+
+          def self.capabilities_contexts_global
+            "#{capabilities}/contexts/global"
+          end
+
+          index :backup
 
           index :category
           show :category
@@ -189,6 +204,30 @@ module API
             "#{root}/custom_options/#{id}"
           end
 
+          def self.day(date)
+            "#{days}/#{date}"
+          end
+
+          def self.days
+            "#{root}/days"
+          end
+
+          def self.days_week
+            "#{days}/week"
+          end
+
+          def self.days_week_day(day)
+            "#{days_week}/#{day}"
+          end
+
+          def self.days_non_working
+            "#{root}/days/non_working"
+          end
+
+          def self.days_non_working_day(date)
+            "#{days_non_working}/#{date}"
+          end
+
           index :help_text
           show :help_text
 
@@ -203,13 +242,38 @@ module API
           index :message
           show :message
 
-          index :my_preferences
-
           index :newses, :news
+          show :news
 
           def self.news(id)
             "#{newses}/#{id}"
           end
+
+          index :notification
+          show :notification
+
+          def self.notification_bulk_read_ian
+            "#{notifications}/read_ian"
+          end
+
+          def self.notification_bulk_unread_ian
+            "#{notifications}/unread_ian"
+          end
+
+          def self.notification_read_ian(id)
+            "#{notification(id)}/read_ian"
+          end
+
+          def self.notification_unread_ian(id)
+            "#{notification(id)}/unread_ian"
+          end
+
+          def self.notification_detail(notification_id, detail_id)
+            "#{notification(notification_id)}/details/#{detail_id}"
+          end
+
+          index :placeholder_user
+          show :placeholder_user
 
           index :post
           show :post
@@ -224,7 +288,13 @@ module API
             alias :issue_priority :priority
           end
 
+          show :oauth_application
+
+          show :oauth_client_credentials
+
           resources :project
+
+          show :project_status
 
           def self.projects_available_parents
             "#{projects}/available_parent_projects"
@@ -232,6 +302,14 @@ module API
 
           def self.projects_schema
             "#{projects}/schema"
+          end
+
+          def self.project_copy(id)
+            "#{project(id)}/copy"
+          end
+
+          def self.project_copy_form(id)
+            "#{project(id)}/copy/form"
           end
 
           resources :query
@@ -254,6 +332,10 @@ module API
 
           def self.query_order(id)
             "#{query(id)}/order"
+          end
+
+          def self.query_ical_url(id)
+            "#{query(id)}/ical_url"
           end
 
           def self.query_column(name)
@@ -322,9 +404,21 @@ module API
           index :role
           show :role
 
+          index :project_role, "roles"
+          show :project_role, "role"
+
+          index :global_role, "roles"
+          show :global_role, "role"
+
+          index :work_package_role, "roles"
+          show :work_package_role, "roles"
+
           def self.show_revision(project_id, identifier)
             show_revision_project_repository_path(project_id, identifier)
           end
+
+          index :shares
+          show :share
 
           def self.show_user(user_id)
             user_path(user_id)
@@ -363,22 +457,35 @@ module API
             "#{project(project_id)}/types"
           end
 
-          index :user
-          show :user
-
-          class << self
-            alias :groups :users
-          end
+          resources :user
 
           def self.user_lock(id)
             "#{user(id)}/lock"
           end
 
-          def self.group(id)
-            "#{root}/groups/#{id}"
+          def self.user_preferences(id)
+            "#{user(id)}/preferences"
+          end
+
+          def self.my_preferences
+            "#{root}/my_preferences"
+          end
+
+          index :group
+          show :group
+
+          def self.value_schema(property)
+            "#{root}/values/schemas/#{property}"
           end
 
           resources :version
+
+          index :view
+          show :view
+
+          def self.views_type(type)
+            "#{views}/#{type}"
+          end
 
           def self.versions_available_projects
             "#{versions}/available_projects"
@@ -402,6 +509,13 @@ module API
 
           resources :work_package, except: :schema
 
+          def self.work_package(id, timestamps: nil)
+            "#{root}/work_packages/#{id}" + \
+            if (param_value = timestamps_to_param_value(timestamps)).present? && Array(timestamps).any?(&:historic?)
+              "?#{{ timestamps: param_value }.to_query}"
+            end.to_s
+          end
+
           def self.work_package_schema(project_id, type_id)
             "#{root}/work_packages/schemas/#{project_id}-#{type_id}"
           end
@@ -418,8 +532,9 @@ module API
             "#{work_package_relations(work_package_id)}/#{id}"
           end
 
-          def self.work_package_available_relation_candidates(id)
-            "#{work_package(id)}/available_relation_candidates"
+          def self.work_package_available_relation_candidates(id, type: nil)
+            query = "?type=#{type}" if type
+            "#{work_package(id)}/available_relation_candidates#{query}"
           end
 
           def self.work_package_revisions(id)
@@ -435,7 +550,7 @@ module API
                 "#{project_id}-#{type_id}"
               end
 
-              filter = [{ id: { operator: '=', values: values } }]
+              filter = [{ id: { operator: "=", values: } }]
 
               path + "?filters=#{CGI.escape(filter.to_s)}"
             end
@@ -453,12 +568,23 @@ module API
             "#{project(project_id)}/work_packages"
           end
 
-          def self.path_for(path, filters: nil, sort_by: nil, page_size: nil)
+          def self.timestamps_to_param_value(timestamps)
+            Array(timestamps).map { |timestamp| Timestamp.parse(timestamp).absolute }.join(",")
+          end
+
+          def self.path_for(path, filters: nil, sort_by: nil, group_by: nil, page_size: nil, offset: nil,
+                            select: nil, timestamps: nil)
+            timestamps = timestamps_to_param_value(timestamps)
+
             query_params = {
               filters: filters&.to_json,
               sortBy: sort_by&.to_json,
-              pageSize: page_size
-            }.reject { |_, v| v.blank? }
+              groupBy: group_by,
+              pageSize: page_size,
+              offset:,
+              select:,
+              timestamps:
+            }.compact_blank
 
             if query_params.any?
               "#{send(path)}?#{query_params.to_query}"
@@ -476,7 +602,7 @@ module API
 
             root_url = OpenProject::StaticRouting::StaticUrlHelpers.new.root_url
 
-            root_url.gsub(duplicate_regexp, '') + send(path, arguments)
+            root_url.gsub(duplicate_regexp, "") + send(path, arguments)
           end
         end
 

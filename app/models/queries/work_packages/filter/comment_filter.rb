@@ -1,14 +1,12 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -25,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 class Queries::WorkPackages::Filter::CommentFilter < Queries::WorkPackages::Filter::WorkPackageFilter
@@ -35,21 +33,22 @@ class Queries::WorkPackages::Filter::CommentFilter < Queries::WorkPackages::Filt
     :text
   end
 
-  def join_condition
+  private
+
+  def where_condition
     <<-SQL
-     #{join_table_alias}.journable_id = #{WorkPackage.table_name}.id
-	   AND #{join_table_alias}.journable_type = '#{WorkPackage.name}'
+     SELECT 1 FROM #{journal_table}
+     WHERE #{journal_table}.journable_id = #{WorkPackage.table_name}.id
+	   AND #{journal_table}.journable_type = '#{WorkPackage.name}'
      AND #{notes_condition}
     SQL
   end
 
-  private
-
-  def join_table
-    Journal.table_name
+  def notes_condition
+    Queries::Operators::Contains.sql_for_field(values, journal_table, "notes")
   end
 
-  def notes_condition
-    Queries::Operators::Contains.sql_for_field(values, join_table_alias, 'notes')
+  def journal_table
+    Journal.table_name
   end
 end

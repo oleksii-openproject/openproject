@@ -1,45 +1,52 @@
 #!/bin/bash
 
-# This script is used to migrate an OpenProject (<= 8) database in MySQL to 10.x in Postgres.
+# This script is used to migrate an OpenProject (<= 8) database in MySQL to the latest version in Postgres.
 # All that's needed is docker. The result will be a SQL dump to the current directory.
 #
 # We do the MySQL-to-Postgres migration because in the old OpenProject packages MySQL
 # used to be the standard database. If you are already running on Postgres this script won't work as it is.
 # For it to work it you will have to use postgres in every step and remove the line
 # containing MYSQL_DATABASE_URL.
-#
-# We may adapt the script in the future so it supports both scenarios out-of-the-box.
 
 if [[ -z "$1" ]] || [[ -z "$2" ]]; then
   echo
-  echo "  usage: bash migrate-from-pre-8.sh <docker host IP> <MySQL dump>"
+  echo "  usage: bash migrate-from-pre-8.sh <docker host IP> <MySQL dump> [dump format = sql|custom (default)]"
   echo
   echo "  example: bash migrate-from-pre-8.sh 192.168.1.42 /var/db/openproject/backups/dump.sql"
   echo
   exit 1
 fi
 
+CURRENT_OP_MAJOR_VERSION="14"
+
 SECONDS=0
 
 DOCKER_HOST_IP=$1
 MYSQL_DUMP_FILE=$2
+DUMP_FORMAT=${3:-custom}
 
 MYSQL_CONTAINER=opmysql
 POSTGRES_CONTAINER=oppostgres
+POSTGRES_VERSION=13
 OP7_CONTAINER=op7
 OP8_CONTAINER=op8
 OP10_CONTAINER=op10
+MIGRATE_CONTAINER=migrate8to10
 
 REMOVE_CONTAINERS=true
 
 POSTGRES_PORT=5439
 MYSQL_PORT=3305 # has to be free on localhost
 MYSQL_USER=root
-export MYSQL_PWD=root # export to be used by mysql client
+MYSQL_PWD=root
 DATABASE=openproject
 
-SKIP_STEP_1=false
+SKIP_STEP_1=${SKIP_STEP_1:-false}
 MIGRATION_TIMEOUT_S=600 # wait at most 10 minutes for the migration from 8 to 10 to finish
+
+docker stop $MYSQL_CONTAINER || true
+docker stop $POSTGRES_CONTAINER || true
+docker stop $MIGRATE_CONTAINER || true
 
 if [[ ! "$SKIP_STEP_1" = "true" ]]; then
   # STEP 1: Migrate from current (7) to 8 still in a MySQL database
@@ -49,7 +56,7 @@ if [[ ! "$SKIP_STEP_1" = "true" ]]; then
   echo
   echo "1.1) Starting mysql database..."
   if [[ ! `docker ps | grep $MYSQL_CONTAINER` ]]; then
-    docker run -p $MYSQL_PORT:3306 -d --name $MYSQL_CONTAINER -e MYSQL_ROOT_PASSWORD=$MYSQL_PWD mysql:5.6
+    docker run --rm -p $MYSQL_PORT:3306 -d --name $MYSQL_CONTAINER -e MYSQL_ROOT_PASSWORD=$MYSQL_PWD mysql:5.6
     if [[ $? -gt 0 ]]; then exit 1; fi
     sleep 10
     echo "  database started"
@@ -60,7 +67,7 @@ if [[ ! "$SKIP_STEP_1" = "true" ]]; then
   echo
   echo "1.2) Starting OpenProject 7"
   if [[ ! `docker ps | grep $OP7_CONTAINER` ]]; then
-    docker run -d --name $OP7_CONTAINER openproject/community:7 # can use `run -it` directly because the image doesn't support it yet in version 8
+    docker run --rm -d --name $OP7_CONTAINER openproject/openproject:7 bash -c 'sleep 7200'
     if [[ $? -gt 0 ]]; then exit 1; fi
     echo "  OpenProject started"
   else
@@ -70,7 +77,7 @@ if [[ ! "$SKIP_STEP_1" = "true" ]]; then
   echo
   echo "1.3) Starting OpenProject 8"
   if [[ ! `docker ps | grep $OP8_CONTAINER` ]]; then
-    docker run -d --name $OP8_CONTAINER openproject/community:8-mysql # can use `run -it` directly because the image doesn't support it yet in version 8
+    docker run --rm -d --name $OP8_CONTAINER openproject/openproject:8-mysql # can use `run -it` directly because the image doesn't support it yet in version 8
     if [[ $? -gt 0 ]]; then exit 1; fi
     echo "  OpenProject started"
   else
@@ -79,7 +86,7 @@ if [[ ! "$SKIP_STEP_1" = "true" ]]; then
 
   echo
   echo "1.4) Creating MySQL database for migration from OP 7 to 8"
-  echo "drop database if exists $DATABASE; create database $DATABASE;" | mysql -uroot -h 127.0.0.1 -P $MYSQL_PORT
+  echo "drop database if exists $DATABASE; create database $DATABASE;" | docker exec -i $MYSQL_CONTAINER mysql -p$MYSQL_PWD
 
   if [[ $? -gt 0 ]]; then
     echo "  Could not create database"
@@ -91,7 +98,7 @@ if [[ ! "$SKIP_STEP_1" = "true" ]]; then
   echo
   echo "1.5) Importing MySQL dump ($MYSQL_DUMP_FILE)"
 
-  cat $MYSQL_DUMP_FILE | mysql -uroot -h 127.0.0.1 -P $MYSQL_PORT $DATABASE
+  cat $MYSQL_DUMP_FILE | docker exec -i $MYSQL_CONTAINER mysql -p$MYSQL_PWD $DATABASE
 
   if [[ $? -gt 0 ]]; then
     echo "  Could not import database"
@@ -147,7 +154,7 @@ if [[ ! "$SKIP_STEP_1" = "true" ]]; then
   echo
   echo "1.8) Dumping intermediate database in version 8 ..."
 
-  mysqldump -uroot -h 127.0.0.1 -P $MYSQL_PORT $DATABASE > $DATABASE-dump-8.sql
+  docker exec -it $MYSQL_CONTAINER mysqldump -p$MYSQL_PWD $DATABASE > $DATABASE-mysql-dump-8.sql
 
   if [[ $? -gt 0 ]]; then
     echo "  Could not dump database"
@@ -161,11 +168,49 @@ fi
 echo
 echo "2) Migrate from 8 to 10 and from MySQL to Postgres"
 
+if [[ "$SKIP_STEP_1" = "true" ]]; then
+  # Start the MySQL database now as the first step was skipped
+  echo
+  echo "2.1) Starting mysql database..."
+  docker ps || true
+  if [[ ! `docker ps | grep $MYSQL_CONTAINER` ]]; then
+    docker run --rm -p $MYSQL_PORT:3306 -d --name $MYSQL_CONTAINER -e MYSQL_ROOT_PASSWORD=$MYSQL_PWD mysql:5.6
+    if [[ $? -gt 0 ]]; then exit 1; fi
+    docker exec -it $MYSQL_CONTAINER mysqladmin ping -u root --password=$MYSQL_PWD --wait=30
+    echo "  database started"
+  else
+    echo "  already running"
+  fi
+
+  echo
+  echo "2.2) Creating MySQL database for migration from OP 8"
+  echo "drop database if exists $DATABASE; create database $DATABASE;" | docker exec -i $MYSQL_CONTAINER mysql -p$MYSQL_PWD
+
+  if [[ $? -gt 0 ]]; then
+    echo "  Could not create database"
+    exit 1
+  else
+    echo "  Created database"
+  fi
+
+  echo
+  echo "2.3) Importing MySQL dump ($MYSQL_DUMP_FILE)"
+
+  cat $MYSQL_DUMP_FILE | docker exec -i $MYSQL_CONTAINER mysql -p$MYSQL_PWD $DATABASE
+
+  if [[ $? -gt 0 ]]; then
+    echo "  Could not import database"
+    exit 1
+  else
+    echo "  Imported database"
+  fi
+fi
+
 echo
-echo "2.1) Starting postgres database"
+echo "2.4) Starting postgres database"
 
 if [[ ! `docker ps | grep $POSTGRES_CONTAINER` ]]; then
-  docker run -p $POSTGRES_PORT:5432 -d --name $POSTGRES_CONTAINER -e POSTGRES_PASSWORD=postgres postgres:9.6
+  docker run --rm -p $POSTGRES_PORT:5432 -d --name $POSTGRES_CONTAINER -e POSTGRES_PASSWORD=postgres postgres:$POSTGRES_VERSION
   if [[ $? -gt 0 ]]; then exit 1; fi
   sleep 10
   echo "  database started"
@@ -174,15 +219,16 @@ else
 fi
 
 echo
-echo "2.2) Migrating from MySQL to Postgres (and 8 to 10)"
+echo "2.5) Migrating from MySQL to Postgres (and 8 to 10)"
 
 docker run \
   --rm \
-  --name migrate8to10 \
+  -v $PWD:/data \
+  --name $MIGRATE_CONTAINER \
   -e MYSQL_DATABASE_URL="mysql2://$MYSQL_USER:$MYSQL_PWD@$DOCKER_HOST_IP:$MYSQL_PORT/$DATABASE" \
   -e DATABASE_URL="postgresql://postgres:postgres@$DOCKER_HOST_IP:$POSTGRES_PORT/$DATABASE" \
   -e FORCE_YES=true \
-  -t openproject/community:b007c71494a76924396ad0b168ba733471e3e326 \
+  -t openproject/openproject:b007c71494a76924396ad0b168ba733471e3e326 \
   > migration.log &
 
 # wait for migration to finish...
@@ -197,9 +243,9 @@ else
 fi
 
 echo
-echo "2.3) Moving dangling tables from $DATABASE to public"
+echo "2.6) Moving dangling tables from $DATABASE to public"
 
-read -r -d '' MOVE_SCHEMA_FN <<EOF
+MOVE_SCHEMA_FN=$(cat <<-SQLFUNC
 CREATE OR REPLACE FUNCTION move_schema_to_public(old_schema varchar) RETURNS void LANGUAGE plpgsql VOLATILE AS
 \$\$
 DECLARE
@@ -211,14 +257,13 @@ BEGIN
     END LOOP;
 END;
 \$\$;
-EOF
+SQLFUNC
+)
 
-docker exec -e PGPASSWORD=postgres -it migrate8to10 psql \
-  -h $DOCKER_HOST_IP \
-  -p $POSTGRES_PORT \
+docker exec -it $POSTGRES_CONTAINER psql \
   -U postgres \
   -d $DATABASE \
-  -c "$(echo $MOVE_SCHEMA_FN); SELECT * FROM move_schema_to_public('$DATABASE');"
+  -c "$(echo $MOVE_SCHEMA_FN); SELECT * FROM move_schema_to_public('$DATABASE'); DROP SCHEMA IF EXISTS openproject;"
 
 if [[ $? -gt 0 ]]; then
   echo "  Could not move tables from $DATABASE to public. You may have to do this yourself."
@@ -228,16 +273,87 @@ else
 fi
 
 echo
-echo "2.4) Dumping migrated database to $DATABASE-migrated.sql"
+echo "2.7) Making sure needed postgres extensions are installed"
 
-# using the running docker image to dump the database to ensure we use the same
-# postgres client version and also so that a postgres client is not necessary to run this script
-docker exec -e PGPASSWORD=postgres -it migrate8to10 pg_dump \
-  -h $DOCKER_HOST_IP \
-  -p $POSTGRES_PORT \
+docker exec -it $POSTGRES_CONTAINER psql \
   -U postgres \
   -d $DATABASE \
-  > $DATABASE-migrated.sql
+  -c "create extension if not exists pg_trgm with schema public; create extension if not exists btree_gist with schema public;"
+
+if [[ $? -gt 0 ]]; then
+  echo "  Could not create postgres extensions. You may have to do this yourself."
+  exit 1
+else
+  echo "  Created needed postgres extensions."
+fi
+
+echo
+echo "2.8) Making extra sure primary keys are named correctly"
+
+docker exec -it $MIGRATE_CONTAINER \
+  bundle exec rake db:migrate:redo VERSION=20190502102512
+
+if [[ $? -gt 0 ]]; then
+  echo "  Failed to rename primary keys. You may have to do this yourself."
+  exit 1
+else
+  echo "  Ensured correct primary key names."
+fi
+
+echo
+echo "2.9) Migrating from 10 to current ($CURRENT_OP_MAJOR_VERSION)"
+
+docker pull openproject/openproject:$CURRENT_OP_MAJOR_VERSION
+
+docker run \
+  --rm \
+  -v $PWD:/data \
+  --name migrate10tocurrent \
+  -e DATABASE_URL="postgresql://postgres:postgres@$DOCKER_HOST_IP:$POSTGRES_PORT/$DATABASE" \
+  -it openproject/openproject:$CURRENT_OP_MAJOR_VERSION \
+  bundle exec rake db:migrate > migration.log
+
+MIGRATION_STATUS=$?
+
+if [[ $MIGRATION_STATUS -gt 0 ]]; then
+  echo "  migration unsuccessful. Please check migration.log"
+  exit 1
+else
+  echo "  migration SUCCESSFUL!"
+fi
+
+EXT="dump"
+if [[ "$DUMP_FORMAT" = "sql" ]]; then
+  EXT="sql"
+fi
+
+echo
+echo "2.10) Dumping migrated database to $DATABASE-migrated.$EXT"
+
+OUTPUT_PARAMS="-F custom -f /data/$DATABASE-migrated.dump"
+OUTPUT_FILE="/dev/stdout"
+
+if [[ "$DUMP_FORMAT" = "sql" ]]; then
+  OUTPUT_PARAMS=""
+  OUTPUT_FILE="./$DATABASE-migrated.sql"
+fi
+
+# Using the running docker image to dump the database to ensure we use the same
+# postgres client version and also so that a postgres client is not necessary to run this script.
+# We are not using the latest container since the Postgres version might have changed in it.
+docker run \
+  --rm \
+  -e PGPASSWORD=postgres \
+  -v /tmp:/data \
+  -it openproject/openproject:$CURRENT_OP_MAJOR_VERSION pg_dump \
+    -h $DOCKER_HOST_IP \
+    -p $POSTGRES_PORT \
+    -U postgres \
+    -d $DATABASE \
+    -n public \
+    -x -O \
+    $OUTPUT_PARAMS \
+    > $OUTPUT_FILE
 
 if [[ $? -gt 0 ]]; then
   echo "  Could not dump database"
@@ -250,14 +366,9 @@ if [[ ! "$REMOVE_CONTAINERS" = "false" ]]; then
   echo
   echo "Cleaning up used docker containers..."
 
-  # ... and then kill it (there is no one-off command for the migration in the docker container yet
-  # and running it via docker run doesn't work since the user has to be root and not the app user)
-  docker stop migrate8to10
-
-  docker stop $MYSQL_CONTAINER && docker rm $MYSQL_CONTAINER
-  docker stop $OP7_CONTAINER && docker rm $OP7_CONTAINER
-  docker stop $OP8_CONTAINER && docker rm $OP8_CONTAINER
-  docker stop $POSTGRES_CONTAINER && docker rm $POSTGRES_CONTAINER
+  docker stop $MYSQL_CONTAINER
+  docker stop $POSTGRES_CONTAINER
+  docker stop $MIGRATE_CONTAINER
 fi
 
 echo "Finished after $(($SECONDS / 60)) minutes."

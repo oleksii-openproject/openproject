@@ -1,10 +1,10 @@
 #-- copyright
 #OpenProject is an open source project management software.
-#Copyright (C) 2012-2020 the OpenProject GmbH
+#Copyright (C) the OpenProject GmbH
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License version 3.
 #OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-#Copyright (C) 2006-2017 Jean-Philippe Lang
+#Copyright (C) 2006-2013 Jean-Philippe Lang
 #Copyright (C) 2010-2013 the ChiliProject Team
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License
@@ -17,30 +17,33 @@
 #You should have received a copy of the GNU General Public License
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-#See docs/COPYRIGHT.rdoc for more details.
+#See COPYRIGHT and LICENSE files for more details.
 #++
 es:
+  plugin_budgets_engine:
+    name: 'Presupuestos'
   activerecord:
     attributes:
       budget:
         author: "Autor"
         available: "Disponible"
         budget: "Planeado"
-        budget_ratio: "Gastado (cociente)"
-        created_on: "Creado en"
+        budget_ratio: "Gastado (proporción)"
         description: "Descripción"
-        spent: "Pasado"
+        spent: "Gastado"
         status: "Estado"
         subject: "Asunto"
         type: "Tipo de costo"
-        updated_on: "Actualizada el"
-        labor_budget: "Costos laborales previstos"
-        material_budget: "Costos unitarios previstos"
+        labor_budget: "Costos laborales planeados"
+        material_budget: "Costos unitarios planeados"
       work_package:
         budget_subject: "Título de presupuesto"
     models:
       budget: "Presupuesto"
       material_budget_item: "Unidad"
+  activity:
+    filter:
+      budget: "Presupuestos"
   attributes:
     budget: "Presupuesto"
   button_add_budget_item: "Añadir los costos previstos"
@@ -65,8 +68,11 @@ es:
   label_example_placeholder: 'Por ejemplo, %{decimal}'
   label_view_all_budgets: "Ver todos los presupuestos"
   label_yes: "Sí"
-  notice_budget_conflict: "Paquetes de trabajo deben de estar en un mismo proyecto."
+  notice_budget_conflict: "Los paquetes de trabajo deben ser del mismo proyecto."
   notice_no_budgets_available: "No hay presupuestos disponibles."
   permission_edit_budgets: "Editar presupuestos"
   permission_view_budgets: "Ver los presupuestos"
   project_module_budgets: "Presupuestos"
+  text_budget_reassign_to: "Reasígnelos al siguiente presupuesto:"
+  text_budget_delete: "Eliminar el presupuesto de todos los paquetes de trabajo."
+  text_budget_destroy_assigned_wp: "Hay %{count} paquetes de trabajo asignados a este presupuesto. ¿Qué desea hacer?"

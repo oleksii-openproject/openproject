@@ -2,14 +2,13 @@
 fr:
   js:
     boards:
+      create_new: 'Créer un nouveau tableau'
       label_unnamed_board: 'Tableau sans nom'
       label_unnamed_list: 'Liste sans nom'
       label_board_type: 'Type de tableau'
       upsale:
-        teaser_text: 'Améliorez votre gestion de projet agile avec cette vue des tableaux flexible. Créez autant de tableaux que vous voulez pour tout ce que vous souhaitez conserver.'
-        upgrade_to_ee_text: 'Les tableaux sont une fonctionnalité du plan Enterprise. Veuillez passer à un forfait payant.'
+        teaser_text: 'Voulez-vous automatiser vos flux de travail avec des tableaux ? Les tableaux avancés sont un add-on Entreprise. Veuillez passer à une offre payante.'
         upgrade: 'Passer au plan supérieur'
-        personal_demo: 'Obtenir une démo personnelle'
       lists:
         delete: 'Supprimer la liste'
       version:
@@ -22,7 +21,7 @@ fr:
         edit_version: 'Éditer la version'
         show_version: 'Afficher la version'
         locked: 'Verrouillé'
-        closed: 'Clôturé'
+        closed: 'Fermé'
       new_board: 'Nouveau tableau'
       add_list: 'Ajouter une liste au tableau'
       add_card: 'Ajouter une carte'
@@ -30,6 +29,7 @@ fr:
       error_loading_the_list: "Erreur lors du chargement de la liste : %{error_message}"
       error_permission_missing: "La permission pour créer des requêtes publiques est manquante"
       error_cannot_move_into_self: "Vous ne pouvez pas déplacer un lot de travaux vers sa propre colonne."
+      text_hidden_list_warning: "Toutes les listes ne sont pas affichées parce que vous n'avez pas la permission. Contactez votre administrateur pour plus d'informations."
       click_to_remove_list: "Cliquez pour supprimer cette liste"
       board_type:
         text: 'Type de tableau'
@@ -50,13 +50,20 @@ fr:
         action_text_assignee: >
           Tableau avec colonnes automatisées basées sur des utilisateurs assignés. Idéal pour envoyer des lots de travaux.
         action_text_version: >
-          Tableau avec colonnes automatiques basées sur l'attribut de version. Idéal pour la planification des versions de logiciels.
+          Tableau avec des colonnes automatisées basées sur l'attribut de version. Idéal pour planifier le développement d'un produit.
         action_type:
           assignee: responsable
           status: état
           version: version
           subproject: Sous-projet
-          subtasks: Parent Enfant
+          subtasks: parent-enfant
+        board_type_title:
+          assignee: Assigné à
+          status: Statut
+          version: Version
+          subproject: Sous-projet
+          subtasks: Parent-enfant
+          basic: Basique
         select_attribute: "Attribut d'action"
       add_list_modal:
         labels:
@@ -69,8 +76,8 @@ fr:
           status: |
             Il n'y a actuellement aucun statut disponible. <br>
             Soit il n'y en a aucun ou ils ont tous déjà été ajoutés au tableau.
-          assignee: There isn't any member matched with your filter value.  <br>
-          no_member: This project currently does not have any members that can be added.  <br>
+          assignee: Aucun membre ne correspond à votre valeur de filtre.  <br>
+          no_member: Ce projet n'a actuellement aucun membre à ajouter. <br>
           add_members: <a href="%{link}">Ajoutez un nouveau membre à ce projet</a> pour sélectionner à nouveau les utilisateurs.
       configuration_modal:
         title: 'Configurer ce tableau'

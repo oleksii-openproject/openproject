@@ -1,14 +1,12 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -25,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module API
@@ -44,7 +42,7 @@ module API
         end
 
         link :update do
-          next unless current_user_allowed_to(:manage_members, context: represented.project)
+          next unless current_user.allowed_in_project?(:manage_members, represented.project)
 
           {
             href: api_v3_paths.membership_form(represented.id),
@@ -53,7 +51,7 @@ module API
         end
 
         link :updateImmediately do
-          next unless current_user_allowed_to(:manage_members, context: represented.project)
+          next unless current_user.allowed_in_project?(:manage_members, represented.project)
 
           {
             href: api_v3_paths.membership(represented.id),
@@ -66,14 +64,17 @@ module API
         associated_resource :project
 
         associated_resource :principal,
-                            getter: ::API::V3::Principals::AssociatedSubclassLambda.getter(:principal),
-                            setter: ::API::V3::Principals::AssociatedSubclassLambda.setter(:user),
-                            link: ::API::V3::Principals::AssociatedSubclassLambda.link(:principal, getter: 'user_id')
+                            getter: ::API::V3::Principals::PrincipalRepresenterFactory
+                                      .create_getter_lambda(:principal),
+                            setter: ::API::V3::Principals::PrincipalRepresenterFactory
+                                      .create_setter_lambda(:user),
+                            link: ::API::V3::Principals::PrincipalRepresenterFactory
+                                    .create_link_lambda(:principal, getter: "user_id")
 
         associated_resources :roles,
                              getter: ->(*) do
                                unmarked_roles.map do |role|
-                                 API::V3::Roles::RoleRepresenter.new(role, current_user: current_user)
+                                 API::V3::Roles::RoleRepresenter.new(role, current_user:)
                                end
                              end,
                              link: ->(*) do
@@ -88,15 +89,15 @@ module API
                                end
                              end
 
-        date_time_property :created_on,
-                           as: 'createdAt'
+        date_time_property :created_at
+        date_time_property :updated_at
 
-        self.to_eager_load = %i[principal
-                                project
-                                roles]
+        self.to_eager_load = [:principal,
+                              { project: :enabled_modules },
+                              { member_roles: :role }]
 
         def _type
-          'Membership'
+          "Membership"
         end
 
         def unmarked_roles

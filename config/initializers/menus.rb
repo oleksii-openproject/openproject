@@ -1,13 +1,12 @@
-#-- encoding: UTF-8
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -24,370 +23,678 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'redmine/menu_manager'
+require "redmine/menu_manager"
 
 Redmine::MenuManager.map :top_menu do |menu|
   # projects menu will be added by
   # Redmine::MenuManager::TopMenuHelper#render_projects_top_menu_node
   menu.push :projects,
-            { controller: '/projects', project_id: nil, action: 'index' },
+            { controller: "/projects", project_id: nil, action: "index" },
             context: :modules,
-            caption: I18n.t('label_projects_menu'),
+            caption: I18n.t("label_projects_menu"),
+            icon: "project",
             if: Proc.new {
-              (User.current.logged? || !Setting.login_required?)
+              User.current.logged? || !Setting.login_required?
             }
-  menu.push :work_packages,
-            { controller: '/work_packages', project_id: nil, state: nil, action: 'index' },
+
+  menu.push :activity,
+            { controller: "/activities", action: "index" },
             context: :modules,
-            caption: I18n.t('label_work_package_plural'),
+            icon: "history"
+
+  menu.push :work_packages,
+            { controller: "/work_packages", project_id: nil, state: nil, action: "index" },
+            context: :modules,
+            caption: I18n.t("label_work_package_plural"),
+            icon: "op-view-list",
             if: Proc.new {
               (User.current.logged? || !Setting.login_required?) &&
-                User.current.allowed_to?(:view_work_packages, nil, global: true)
+                User.current.allowed_in_any_work_package?(:view_work_packages)
             }
   menu.push :news,
-            { controller: '/news', project_id: nil, action: 'index' },
+            { controller: "/news", project_id: nil, action: "index" },
             context: :modules,
-            caption: I18n.t('label_news_plural'),
+            caption: I18n.t("label_news_plural"),
+            icon: "megaphone",
             if: Proc.new {
               (User.current.logged? || !Setting.login_required?) &&
-                User.current.allowed_to?(:view_news, nil, global: true)
+                User.current.allowed_in_any_project?(:view_news)
             }
+
   menu.push :help,
             OpenProject::Static::Links.help_link,
             last: true,
-            caption: '',
-            icon: 'icon5 icon-help',
+            caption: "",
+            icon: "question",
             html: { accesskey: OpenProject::AccessKeys.key_for(:help),
-                    title: I18n.t('label_help'),
-                    class: 'menu-item--help',
-                    target: '_blank' }
+                    title: I18n.t("label_help"),
+                    target: "_blank" }
+end
+
+Redmine::MenuManager.map :quick_add_menu do |menu|
+  menu.push :new_project,
+            Proc.new { |project|
+              { controller: "/projects", action: :new, project_id: nil, parent_id: project&.id }
+            },
+            caption: ->(*) { Project.model_name.human },
+            icon: "plus",
+            html: {
+              aria: { label: I18n.t(:label_project_new) },
+              title: I18n.t(:label_project_new)
+            },
+            if: ->(project) {
+              User.current.allowed_globally?(:add_project) ||
+                User.current.allowed_in_project?(:add_subprojects, project)
+            }
+
+  menu.push :invite_user,
+            nil,
+            caption: :label_invite_user,
+            icon: "person-add",
+            html: {
+              "invite-user-modal-augment": "invite-user-modal-augment"
+            },
+            if: Proc.new { User.current.allowed_in_any_project?(:manage_members) }
 end
 
 Redmine::MenuManager.map :account_menu do |menu|
+  menu.push :timers,
+            { controller: "/my/timer", action: "show" },
+            partial: "/my/timer/menu"
   menu.push :my_page,
             :my_page_path,
-            caption: I18n.t('js.my_page.label'),
+            caption: I18n.t("js.my_page.label"),
+            if: Proc.new { User.current.logged? }
+  menu.push :my_profile,
+            { controller: "/users", action: "show", id: "me" },
+            caption: :label_my_activity,
             if: Proc.new { User.current.logged? }
   menu.push :my_account,
-            { controller: '/my', action: 'account' },
+            { controller: "/my", action: "account" },
             if: Proc.new { User.current.logged? }
   menu.push :administration,
-            { controller: '/admin', action: 'index' },
-            if: Proc.new { User.current.admin? }
+            { controller: "/admin", action: "index" },
+            if: Proc.new {
+              User.current.allowed_globally?({ controller: "/admin", action: "index" })
+            }
   menu.push :logout,
             :signout_path,
             if: Proc.new { User.current.logged? }
 end
 
-Redmine::MenuManager.map :application_menu do |menu|
+Redmine::MenuManager.map :global_menu do |menu|
+  # Homescreen
+  menu.push :home,
+            { controller: "/homescreen", action: "index" },
+            icon: "home",
+            first: true
+
+  # Projects
+  menu.push :projects,
+            { controller: "/projects", project_id: nil, action: "index" },
+            caption: I18n.t("label_projects_menu"),
+            icon: "project",
+            after: :home,
+            if: Proc.new {
+              User.current.logged? || !Setting.login_required?
+            }
+
+  menu.push :projects_query_select,
+            { controller: "/projects", project_id: nil, action: "index" },
+            parent: :projects,
+            partial: "projects/menus/menu"
+
+  # Activity
+  menu.push :activity,
+            { controller: "/activities", action: "index" },
+            icon: "history",
+            after: :projects
+
+  menu.push :activity_filters,
+            { controller: "/activities", action: "index" },
+            parent: :activity,
+            partial: "activities/filters_menu"
+
+  # Work packages
+  menu.push :work_packages,
+            { controller: "/work_packages", action: "index" },
+            caption: :label_work_package_plural,
+            icon: "op-view-list",
+            after: :activity
+
   menu.push :work_packages_query_select,
-            { controller: '/work_packages', action: 'index' },
+            { controller: "/work_packages", action: "index" },
             parent: :work_packages,
-            partial: 'work_packages/menu_query_select',
-            last: true
+            partial: "work_packages/menus/menu"
+
+  # News
+  menu.push :news,
+            { controller: "/news", project_id: nil, action: "index" },
+            caption: I18n.t("label_news_plural"),
+            icon: "megaphone",
+            after: :boards,
+            if: Proc.new {
+              (User.current.logged? || !Setting.login_required?) &&
+                User.current.allowed_in_any_project?(:view_news)
+            }
+end
+
+Redmine::MenuManager.map :notifications_menu do |menu|
+  menu.push :notification_grouping_select,
+            { controller: "/my", action: "notifications" },
+            partial: "notifications/menus/menu"
 end
 
 Redmine::MenuManager.map :my_menu do |menu|
-  menu_push = menu.push :account,
-                        { controller: '/my', action: 'account' },
-                        caption: :label_profile,
-                        icon: 'icon2 icon-user'
-  menu_push
+  menu.push :account,
+            { controller: "/my", action: "account" },
+            caption: :label_profile,
+            icon: "person-fill"
   menu.push :settings,
-            { controller: '/my', action: 'settings' },
+            { controller: "/my", action: "settings" },
             caption: :label_setting_plural,
-            icon: 'icon2 icon-settings2'
+            icon: "gear"
   menu.push :password,
-            { controller: '/my', action: 'password' },
+            { controller: "/my", action: "password" },
             caption: :button_change_password,
             if: Proc.new { User.current.change_password_allowed? },
-            icon: 'icon2 icon-locked'
+            icon: "lock"
   menu.push :access_token,
-            { controller: '/my', action: 'access_token' },
-            caption: I18n.t('my_account.access_tokens.access_token'),
-            icon: 'icon2 icon-key'
-  menu.push :mail_notifications,
-            { controller: '/my', action: 'mail_notifications' },
-            caption: I18n.t('activerecord.attributes.user.mail_notification'),
-            icon: 'icon2 icon-news'
+            { controller: "/my", action: "access_token" },
+            caption: I18n.t("my_account.access_tokens.access_tokens"),
+            icon: "key"
+  menu.push :sessions,
+            { controller: "/my/sessions", action: :index },
+            caption: :"users.sessions.title",
+            icon: "op-installation-services"
+  menu.push :notifications,
+            { controller: "/my", action: "notifications" },
+            caption: I18n.t("js.notifications.settings.title"),
+            icon: "bell"
+  menu.push :reminders,
+            { controller: "/my", action: "reminders" },
+            caption: I18n.t("js.reminders.settings.title"),
+            icon: "unread"
 
   menu.push :delete_account, :delete_my_account_info_path,
-            caption: I18n.t('account.delete'),
+            caption: I18n.t("account.delete"),
             param: :user_id,
             if: Proc.new { Setting.users_deletable_by_self? },
             last: :delete_account,
-            icon: 'icon2 icon-delete'
+            icon: "trash"
 end
 
 Redmine::MenuManager.map :admin_menu do |menu|
   menu.push :admin_overview,
-            { controller: '/admin' },
+            { controller: "/admin", action: :index },
+            if: Proc.new { User.current.admin? },
             caption: :label_overview,
-            icon: 'icon2 icon-home',
+            icon: "home",
             first: true
 
+  menu.push :users,
+            { controller: "/users" },
+            if: Proc.new {
+              !User.current.admin? &&
+                (User.current.allowed_globally?(:manage_user) || User.current.allowed_globally?(:create_user))
+            },
+            caption: :label_user_plural,
+            icon: "people"
+
+  menu.push :placeholder_users,
+            { controller: "/placeholder_users" },
+            if: Proc.new { !User.current.admin? && User.current.allowed_globally?(:manage_placeholder_user) },
+            caption: :label_placeholder_user_plural,
+            icon: "people"
+
   menu.push :users_and_permissions,
-            { controller: '/users' },
+            { controller: "/users" },
+            if: Proc.new { User.current.admin? },
             caption: :label_user_and_permission,
-            icon: 'icon2 icon-group'
+            icon: "people"
 
   menu.push :user_settings,
-            { controller: '/users_settings' },
-            caption: :label_setting_plural,
+            { controller: "/admin/settings/users_settings", action: :show },
+            if: Proc.new { User.current.admin? },
+            caption: :label_users_settings,
             parent: :users_and_permissions
 
   menu.push :users,
-            { controller: '/users' },
+            { controller: "/users" },
+            if: Proc.new { User.current.admin? },
             caption: :label_user_plural,
             parent: :users_and_permissions
 
+  menu.push :placeholder_users,
+            { controller: "/placeholder_users" },
+            if: Proc.new { User.current.admin? },
+            caption: :label_placeholder_user_plural,
+            parent: :users_and_permissions,
+            enterprise_feature: "placeholder_users"
+
   menu.push :groups,
-            { controller: '/groups' },
+            { controller: "/groups" },
+            if: Proc.new { User.current.admin? },
             caption: :label_group_plural,
             parent: :users_and_permissions
 
   menu.push :roles,
-            { controller: '/roles' },
+            { controller: "/roles" },
+            if: Proc.new { User.current.admin? },
             caption: :label_role_and_permissions,
             parent: :users_and_permissions
 
+  menu.push :permissions_report,
+            { controller: "/roles", action: "report" },
+            if: Proc.new { User.current.admin? },
+            caption: :label_permissions_report,
+            parent: :users_and_permissions
+
   menu.push :user_avatars,
-            { controller: '/settings', action: 'plugin', id: :openproject_avatars },
+            { controller: "/admin/settings", action: "show_plugin", id: :openproject_avatars },
+            if: Proc.new { User.current.admin? },
             caption: :label_avatar_plural,
             parent: :users_and_permissions
 
   menu.push :admin_work_packages,
-            { controller: '/work_packages/settings' },
+            { controller: "/admin/settings/work_packages_general", action: :show },
+            if: Proc.new { User.current.admin? },
             caption: :label_work_package_plural,
-            icon: 'icon2 icon-view-timeline'
+            icon: "op-view-list"
 
-  menu.push :work_packages_setting,
-            { controller: '/work_packages/settings' },
-            caption: :label_setting_plural,
+  menu.push :work_packages_general,
+            { controller: "/admin/settings/work_packages_general", action: :show },
+            if: Proc.new { User.current.admin? },
+            caption: :label_general,
             parent: :admin_work_packages
 
   menu.push :types,
-            { controller: '/types' },
+            { controller: "/types" },
+            if: Proc.new { User.current.admin? },
             caption: :label_type_plural,
             parent: :admin_work_packages
 
   menu.push :statuses,
-            { controller: '/statuses' },
+            { controller: "/statuses" },
+            if: Proc.new { User.current.admin? },
             caption: :label_status,
-            parent: :admin_work_packages,
-            html: { class: 'statuses' }
+            parent: :admin_work_packages
+
+  menu.push :progress_tracking,
+            { controller: "/admin/settings/progress_tracking", action: :show },
+            if: Proc.new { User.current.admin? },
+            caption: :label_progress_tracking,
+            parent: :admin_work_packages
 
   menu.push :workflows,
-            { controller: '/workflows', action: 'edit' },
+            { controller: "/workflows", action: "edit" },
+            if: Proc.new { User.current.admin? },
             caption: Proc.new { Workflow.model_name.human },
             parent: :admin_work_packages
 
+  menu.push :admin_projects_settings,
+            { controller: "/admin/settings/project_custom_fields", action: :index },
+            if: Proc.new { User.current.admin? },
+            caption: :label_project_plural,
+            icon: "project"
+
+  menu.push :project_custom_fields_settings,
+            { controller: "/admin/settings/project_custom_fields", action: :index },
+            if: Proc.new { User.current.admin? },
+            caption: :label_project_attributes_plural,
+            parent: :admin_projects_settings
+
+  menu.push :new_project_settings,
+            { controller: "/admin/settings/new_project_settings", action: :show },
+            if: Proc.new { User.current.admin? },
+            caption: :label_project_new,
+            parent: :admin_projects_settings
+
+  menu.push :project_lists_settings,
+            { controller: "/admin/settings/projects_settings", action: :show },
+            if: Proc.new { User.current.admin? },
+            caption: :label_project_list_plural,
+            parent: :admin_projects_settings
+
   menu.push :custom_fields,
-            { controller: '/custom_fields' },
+            { controller: "/custom_fields" },
+            if: Proc.new { User.current.admin? },
             caption: :label_custom_field_plural,
-            icon: 'icon2 icon-custom-fields',
-            html: { class: 'custom_fields' }
+            icon: "op-custom-fields",
+            html: { class: "custom_fields" }
 
   menu.push :custom_actions,
-            { controller: '/custom_actions' },
-            caption: :'custom_actions.plural',
-            parent: :admin_work_packages
+            { controller: "/custom_actions" },
+            if: Proc.new { User.current.admin? },
+            caption: :"custom_actions.plural",
+            parent: :admin_work_packages,
+            enterprise_feature: "custom_actions"
 
   menu.push :attribute_help_texts,
-            { controller: '/attribute_help_texts' },
-            caption: :'attribute_help_texts.label_plural',
-            icon: 'icon2 icon-help2',
-            if: Proc.new {
-              EnterpriseToken.allows_to?(:attribute_help_texts)
-            }
+            { controller: "/attribute_help_texts" },
+            caption: :"attribute_help_texts.label_plural",
+            icon: "question",
+            if: Proc.new { User.current.allowed_globally?(:edit_attribute_help_texts) }
 
   menu.push :enumerations,
-            { controller: '/enumerations' },
-            icon: 'icon2 icon-enumerations'
+            { controller: "/enumerations" },
+            if: Proc.new { User.current.admin? },
+            icon: "multi-select"
+
+  menu.push :calendars_and_dates,
+            { controller: "/admin/settings/working_days_and_hours_settings", action: :show },
+            if: Proc.new { User.current.admin? },
+            caption: :label_calendars_and_dates,
+            icon: "calendar"
+
+  menu.push :working_days_and_hours,
+            { controller: "/admin/settings/working_days_and_hours_settings", action: :show },
+            if: Proc.new { User.current.admin? },
+            caption: :label_working_days_and_hours,
+            parent: :calendars_and_dates
+
+  menu.push :date_format,
+            { controller: "/admin/settings/date_format_settings", action: :show },
+            if: Proc.new { User.current.admin? },
+            caption: :label_date_format,
+            parent: :calendars_and_dates
+
+  menu.push :icalendar,
+            { controller: "/admin/settings/icalendar_settings", action: :show },
+            if: Proc.new { User.current.admin? },
+            caption: :label_calendar_subscriptions,
+            parent: :calendars_and_dates
 
   menu.push :settings,
-            { controller: '/settings/general', action: 'show' },
+            { controller: "/admin/settings/general_settings", action: :show },
+            if: Proc.new { User.current.admin? },
             caption: :label_system_settings,
-            icon: 'icon2 icon-settings2'
+            icon: "gear"
 
-  SettingsHelper.system_settings_tabs.each do |node|
-    menu.push :"settings_#{node[:name]}",
-              node[:action],
-              caption: node[:label],
-              parent: :settings
-  end
+  menu.push :settings_general,
+            { controller: "/admin/settings/general_settings", action: :show },
+            if: Proc.new { User.current.admin? },
+            caption: :label_general,
+            parent: :settings
 
-  menu.push :email,
-            { controller: '/admin/mail_notifications', action: 'show' },
-            caption: :'attributes.mail',
-            icon: 'icon2 icon-mail1'
+  menu.push :settings_languages,
+            { controller: "/admin/settings/languages_settings", action: :show },
+            if: Proc.new { User.current.admin? },
+            caption: :label_languages,
+            parent: :settings
+
+  menu.push :settings_repositories,
+            { controller: "/admin/settings/repositories_settings", action: :show },
+            if: Proc.new { User.current.admin? },
+            caption: :label_repository_plural,
+            parent: :settings
+
+  menu.push :settings_experimental,
+            { controller: "/admin/settings/experimental_settings", action: :show },
+            if: Proc.new { User.current.admin? && Rails.env.development? },
+            caption: :label_experimental,
+            parent: :settings
+
+  menu.push :mail_and_notifications,
+            { controller: "/admin/settings/aggregation_settings", action: :show },
+            if: Proc.new { User.current.admin? },
+            caption: :"menus.admin.mails_and_notifications",
+            icon: "mail"
+
+  menu.push :notification_settings,
+            { controller: "/admin/settings/aggregation_settings", action: :show },
+            if: Proc.new { User.current.admin? },
+            caption: :"menus.admin.aggregation",
+            parent: :mail_and_notifications
 
   menu.push :mail_notifications,
-            { controller: '/admin/mail_notifications', action: 'show' },
-            caption: :'activerecord.attributes.user.mail_notification',
-            parent: :email
+            { controller: "/admin/settings/mail_notifications_settings", action: :show },
+            if: Proc.new { User.current.admin? },
+            caption: :"menus.admin.mail_notification",
+            parent: :mail_and_notifications
 
   menu.push :incoming_mails,
-            { controller: '/admin/incoming_mails', action: 'show' },
+            { controller: "/admin/settings/incoming_mails_settings", action: :show },
+            if: Proc.new { User.current.admin? },
             caption: :label_incoming_emails,
-            parent: :email
+            parent: :mail_and_notifications
+
+  menu.push :api_and_webhooks,
+            { controller: "/admin/settings/api_settings", action: :show },
+            if: Proc.new { User.current.admin? },
+            caption: :"menus.admin.api_and_webhooks",
+            icon: "op-relations"
+
+  menu.push :api,
+            { controller: "/admin/settings/api_settings", action: :show },
+            if: Proc.new { User.current.admin? },
+            caption: :label_api_access_key_type,
+            parent: :api_and_webhooks
 
   menu.push :authentication,
-            { controller: '/authentication', action: 'authentication_settings' },
+            { controller: "/admin/settings/authentication_settings", action: :show },
+            if: Proc.new { User.current.admin? },
             caption: :label_authentication,
-            icon: 'icon2 icon-two-factor-authentication'
+            icon: "shield-lock"
 
   menu.push :authentication_settings,
-            { controller: '/authentication', action: 'authentication_settings' },
-            caption: :label_setting_plural,
+            { controller: "/admin/settings/authentication_settings", action: :show },
+            if: Proc.new { User.current.admin? },
+            caption: :label_authentication_settings,
             parent: :authentication
 
   menu.push :ldap_authentication,
-            { controller: '/ldap_auth_sources', action: 'index' },
+            { controller: "/ldap_auth_sources", action: "index" },
+            if: Proc.new { User.current.admin? && !OpenProject::Configuration.disable_password_login? },
             parent: :authentication,
-            html: { class: 'server_authentication' },
-            last: true,
-            if: proc { !OpenProject::Configuration.disable_password_login? }
+            caption: :label_ldap_auth_source_plural,
+            html: { class: "server_authentication" },
+            last: true
 
   menu.push :oauth_applications,
-            { controller: '/oauth/applications', action: 'index' },
+            { controller: "/oauth/applications", action: "index" },
+            if: Proc.new { User.current.admin? },
             parent: :authentication,
-            caption: :'oauth.application.plural',
-            html: { class: 'oauth_applications' }
+            caption: :"oauth.application.plural",
+            html: { class: "oauth_applications" }
 
   menu.push :announcements,
-            { controller: '/announcements', action: 'edit' },
+            { controller: "/announcements", action: "edit" },
+            if: Proc.new { User.current.admin? },
             caption: :label_announcement,
-            icon: 'icon2 icon-news'
+            icon: "megaphone"
 
   menu.push :plugins,
-            { controller: '/admin', action: 'plugins' },
+            { controller: "/admin", action: "plugins" },
+            if: Proc.new { User.current.admin? },
             last: true,
-            icon: 'icon2 icon-plugins'
+            icon: "plug"
+
+  menu.push :backups,
+            { controller: "/admin/backups", action: "show" },
+            if: Proc.new { OpenProject::Configuration.backup_enabled? && User.current.allowed_globally?(Backup.permission) },
+            caption: :label_backup,
+            last: true,
+            icon: "op-save"
 
   menu.push :info,
-            { controller: '/admin', action: 'info' },
+            { controller: "/admin", action: "info" },
+            if: Proc.new { User.current.admin? },
             caption: :label_information_plural,
             last: true,
-            icon: 'icon2 icon-info1'
+            icon: "info"
 
   menu.push :custom_style,
-            { controller: '/custom_styles', action: 'show' },
+            { controller: "/custom_styles", action: :show },
+            if: Proc.new { User.current.admin? },
             caption: :label_custom_style,
-            icon: 'icon2 icon-design'
+            icon: "paintbrush",
+            enterprise_feature: "define_custom_style"
 
   menu.push :colors,
-            { controller: '/colors', action: 'index' },
-            caption: :'timelines.admin_menu.colors',
-            icon: 'icon2 icon-status'
+            { controller: "/colors", action: "index" },
+            if: Proc.new { User.current.admin? },
+            caption: :label_color_plural,
+            icon: "meter"
 
   menu.push :enterprise,
-            { controller: '/enterprises', action: 'show' },
+            { controller: "/enterprises", action: :show },
             caption: :label_enterprise_edition,
-            icon: 'icon2 icon-headset',
-            if: proc { OpenProject::Configuration.ee_manager_visible? }
+            icon: "op-enterprise-addons",
+            if: proc { User.current.admin? && OpenProject::Configuration.ee_manager_visible? }
 
   menu.push :admin_costs,
-            { controller: '/settings', action: 'plugin', id: :costs },
+            { controller: "/admin/settings", action: "show_plugin", id: :costs },
+            if: Proc.new { User.current.admin? },
             caption: :project_module_costs,
-            icon: 'icon2 icon-budget'
+            icon: "op-cost-reports"
 
   menu.push :costs_setting,
-            { controller: '/settings', action: 'plugin', id: :costs },
+            { controller: "/admin/settings", action: "show_plugin", id: :costs },
+            if: Proc.new { User.current.admin? },
             caption: :label_setting_plural,
             parent: :admin_costs
 
   menu.push :admin_backlogs,
-            { controller: '/settings', action: 'plugin', id: :openproject_backlogs },
+            { controller: "/backlogs_settings", action: :show },
+            if: Proc.new { User.current.admin? },
             caption: :label_backlogs,
-            icon: 'icon2 icon-backlogs'
-
-  menu.push :backlogs_settings,
-            { controller: '/settings', action: 'plugin', id: :openproject_backlogs },
-            caption: :label_setting_plural,
-            parent: :admin_backlogs
+            icon: "op-backlogs"
 end
 
 Redmine::MenuManager.map :project_menu do |menu|
   menu.push :activity,
-            { controller: '/activities', action: 'index' },
-            param: :project_id,
-            if: Proc.new { |p| p.module_enabled?('activity') },
-            icon: 'icon2 icon-checkmark'
+            { controller: "/activities", action: "index" },
+            if: Proc.new { |p| p.module_enabled?("activity") },
+            icon: "history"
+
+  menu.push :activity_filters,
+            { controller: "/activities", action: "index" },
+            if: Proc.new { |p| p.module_enabled?("activity") },
+            parent: :activity,
+            partial: "activities/filters_menu"
 
   menu.push :roadmap,
-            { controller: '/versions', action: 'index' },
-            param: :project_id,
+            { controller: "/versions", action: "index" },
             if: Proc.new { |p| p.shared_versions.any? },
-            icon: 'icon2 icon-roadmap'
+            icon: "milestone"
 
   menu.push :work_packages,
-            { controller: '/work_packages', action: 'index' },
-            param: :project_id,
+            { controller: "/work_packages", action: "index" },
             caption: :label_work_package_plural,
-            icon: 'icon2 icon-view-timeline',
+            if: Proc.new { |p| p.module_enabled?("work_package_tracking") },
+            icon: "op-view-list",
             html: {
-              id: 'main-menu-work-packages',
-              :'wp-query-menu' => 'wp-query-menu'
+              id: "main-menu-work-packages",
+              "wp-query-menu": "wp-query-menu"
             }
 
   menu.push :work_packages_query_select,
-            { controller: '/work_packages', action: 'index' },
-            param: :project_id,
+            { controller: "/work_packages", action: "index" },
             parent: :work_packages,
-            partial: 'work_packages/menu_query_select',
+            partial: "work_packages/menus/menu",
             last: true,
             caption: :label_all_open_wps
 
-  menu.push :calendar,
-            { controller: '/work_packages/calendars', action: 'index' },
-            param: :project_id,
-            caption: :label_calendar,
-            icon: 'icon2 icon-calendar'
-
   menu.push :news,
-            { controller: '/news', action: 'index' },
-            param: :project_id,
+            { controller: "/news", action: "index" },
             caption: :label_news_plural,
-            icon: 'icon2 icon-news'
+            icon: "megaphone"
 
   menu.push :forums,
-            { controller: '/forums', action: 'index', id: nil },
-            param: :project_id,
+            { controller: "/forums", action: "index", id: nil },
             caption: :label_forum_plural,
-            icon: 'icon2 icon-ticket-note'
+            icon: "op-file-comment"
 
   menu.push :repository,
-            { controller: '/repositories', action: 'show' },
-            param: :project_id,
+            { controller: "/repositories", action: :show },
             if: Proc.new { |p| p.repository && !p.repository.new_record? },
-            icon: 'icon2 icon-folder-open'
+            icon: "file-directory-open-fill"
 
   # Wiki menu items are added by WikiMenuItemHelper
 
   menu.push :members,
-            { controller: '/members', action: 'index' },
-            param: :project_id,
+            { controller: "/members", action: "index" },
             caption: :label_member_plural,
             before: :settings,
-            icon: 'icon2 icon-group'
+            icon: "people"
+
+  menu.push :members_menu,
+            { controller: "/members", action: "index" },
+            parent: :members,
+            partial: "members/menus/menu",
+            caption: :label_member_plural
 
   menu.push :settings,
-            { controller: '/project_settings/generic', action: 'show' },
+            { controller: "/projects/settings/general", action: :show },
             caption: :label_project_settings,
             last: true,
-            icon: 'icon2 icon-settings2',
+            icon: "gear",
             allow_deeplink: true
 
-  ProjectSettingsHelper.project_settings_tabs.each do |node|
-    menu.push :"settings_#{node[:name]}",
-              node[:action],
-              caption: node[:label],
-              parent: :settings,
-              last: node[:last],
-              if: node[:if]
+  project_menu_items = {
+    general: :label_information_plural,
+    project_custom_fields: :label_project_attributes_plural,
+    modules: :label_module_plural,
+    types: :label_work_package_types,
+    custom_fields: :label_custom_field_plural,
+    versions: :label_version_plural,
+    categories: :label_work_package_category_plural,
+    repository: :label_repository,
+    time_entry_activities: :enumeration_activities,
+    storage: :label_required_disk_storage
+  }
+
+  project_menu_items.each do |key, caption|
+    menu.push :"settings_#{key}",
+              { controller: "/projects/settings/#{key}", action: "show" },
+              caption:,
+              parent: :settings
   end
+end
+
+Redmine::MenuManager.map :work_package_split_view do |menu|
+  menu.push :overview,
+            { tab: :overview },
+            skip_permissions_check: true,
+            caption: :"js.work_packages.tabs.overview"
+  menu.push :activity,
+            { tab: :activity },
+            skip_permissions_check: true,
+            badge: ->(work_package:, **) {
+                     Notification.where(recipient: User.current,
+                                        read_ian: false,
+                                        resource: work_package)
+                                 .where.not(reason: %i[date_alert_start_date date_alert_due_date])
+                                 .count
+                   },
+            caption: :"js.work_packages.tabs.activity"
+  menu.push :files,
+            { tab: :files },
+            skip_permissions_check: true,
+            badge: ->(work_package:, **) {
+              count = Storages::FileLink.where(container_type: "WorkPackage", container_id: work_package).count
+              unless work_package.hide_attachments?
+                count += work_package.attachments.count
+              end
+              count
+            },
+            caption: :"js.work_packages.tabs.files"
+  menu.push :relations,
+            { tab: :relations },
+            skip_permissions_check: true,
+            badge: ->(work_package:, **) {
+              work_package.relations.count + work_package.children.count
+            },
+            caption: :"js.work_packages.tabs.relations"
+  menu.push :watchers,
+            { tab: :watchers },
+            skip_permissions_check: true,
+            badge: ->(work_package:, **) {
+              work_package.watchers.count
+            },
+            caption: :"js.work_packages.tabs.watchers"
 end

@@ -1,10 +1,10 @@
 #-- copyright
 #OpenProject is an open source project management software.
-#Copyright (C) 2012-2020 the OpenProject GmbH
+#Copyright (C) the OpenProject GmbH
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License version 3.
 #OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-#Copyright (C) 2006-2017 Jean-Philippe Lang
+#Copyright (C) 2006-2013 Jean-Philippe Lang
 #Copyright (C) 2010-2013 the ChiliProject Team
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License
@@ -17,15 +17,16 @@
 #You should have received a copy of the GNU General Public License
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-#See docs/COPYRIGHT.rdoc for more details.
+#See COPYRIGHT and LICENSE files for more details.
 #++
 el:
+  plugin_openproject_backlogs:
+    name: "OpenProject Backlogs"
+    description: "This module adds features enabling agile teams to work with OpenProject in Scrum projects."
   activerecord:
     attributes:
       work_package:
         position: "Θέση"
-        remaining_hours: "Υπολειπόμενες ώρες"
-        remaining_time: "Υπολειπόμενες ώρες"
         story_points: "Πόντοι Ιστορίας"
         backlogs_work_package_type: "Τύπος backlog"
     errors:
@@ -35,9 +36,6 @@ el:
             blocks_ids:
               can_only_contain_work_packages_of_current_sprint: "μπορεί να περιέχει μόνο ταυτότητες πακέτων εργασία του τρέχοντος sprint."
               must_block_at_least_one_work_package: "πρέπει να περιέχει την ταυτότητα από τουλάχιστον ένα ticket."
-            parent_id:
-              parent_child_relationship_across_projects: "δεν είναι έγκυρο επειδή το πακέτο εργασίας '%{work_package_name}' είναι μια εργασία backlog επομένως δεν μπορεί να έχει γονέα εκτός του τρέχοντος έργου."
-              type_must_be_one_of_the_following: "Ο τύπος πρέπει να είναι ένας από τους παρακάτω: %{type_names}."
             version_id:
               task_version_must_be_the_same_as_story_version: "πρέπει να είναι το ίδιο με την έκδοση ιστορίας του γονέα."
         sprint:
@@ -66,8 +64,8 @@ el:
     properties: "Ιδιότητες"
     rebuild: "Ανοικοδόμηση"
     rebuild_positions: "Ανοικοδόμηση θέσεων"
-    remaining_hours: "Υπολειπόμενες ώρες"
-    remaining_hours_ideal: "Υπολειπόμενες ώρες (ιδανικά)"
+    remaining_hours: "Remaining work"
+    remaining_hours_ideal: "Remaining work (ideal)"
     show_burndown_chart: "Διάγραμμα Burndown"
     story: "Ιστορία"
     story_points: "Πόντοι Ιστορίας"
@@ -78,7 +76,6 @@ el:
     x_more: "%{count} ακόμα..."
   backlogs_active: "ενεργό"
   backlogs_any: "οποιoδήποτε"
-  backlogs_card_specification: "Μέγεθος ετικέτας για εκτύπωση καρτών"
   backlogs_inactive: "Το έργο δεν φαίνεται να έχει δραστηριότητα"
   backlogs_points_burn_direction: "Points burn up/down"
   backlogs_product_backlog: "Backlog προϊόντος"
@@ -99,6 +96,7 @@ el:
   backlogs_empty_title: "Δεν έχουν οριστεί εκδόσεις που μπορούν να χρησιμοποιηθούν σε backlogs"
   backlogs_empty_action_text: "Για να ξεκινήσετε με τα backlogs, δημιουργήστε μια καινούργια έκδοση και αναθέστε την σε μια στήλη backlog."
   button_edit_wiki: "Επεξεργασία σελίδας wiki"
+  error_backlogs_task_cannot_be_story: "Οι ρυθμίσεις δεν είναι έγκυρες. Ο επιλεγμένος τύπος εργασίας δεν μπορεί να είναι επίσης ένας τύπος ιστορίας."
   error_intro_plural: "Παρουσιάστηκαν τα ακόλουθα σφάλματα:"
   error_intro_singular: "Συναντήθηκε το ακόλουθο σφάλμα:"
   error_outro: "Παρακαλούμε διορθώστε τα παραπάνω σφάλματα πριν το ξαναυποβάλλετε."
@@ -136,6 +134,7 @@ el:
   label_wiki: "Wiki"
   permission_view_master_backlog: "Εμφάνιση του κύριου backlog"
   permission_view_taskboards: "Εμφάνιση πινάκων εργασίας"
+  permission_select_done_statuses: "Select done statuses"
   permission_update_sprints: "Ενημέρωση των sprints"
   points_accepted: "πόντοι που έγιναν αποδεκτοί"
   points_committed: "πόντοι που δεσμεύτηκαν"
@@ -148,7 +147,7 @@ el:
   rb_label_copy_tasks_none: "Κανένα"
   rb_label_copy_tasks_open: "Ανοιχτό"
   rb_label_link_to_original: "Συμπερίληψη συνδέσμου για την αρχική ιστορία"
-  remaining_hours: "υπολειπόμενες ώρες"
+  remaining_hours: "remaining work"
   required_burn_rate_hours: "απαιτούμενο burn rate (ώρες)"
   required_burn_rate_points: "απαιτούμενο burn rate (πόντοι)"
   todo_work_package_description: "%{summary}: %{url}\n%{description}"

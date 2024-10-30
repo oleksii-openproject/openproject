@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,18 +23,18 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module UserInvitation
   module Events
     class << self
       def user_invited
-        'user_invited'
+        "user_invited"
       end
 
       def user_reinvited
-        'user_reinvited'
+        "user_reinvited"
       end
     end
   end
@@ -54,18 +54,20 @@ module UserInvitation
   # @return The invited user. If the invitation failed, calling `#registered?`
   #         on the returned user will yield `false`. Check for validation errors
   #         in that case.
-  def invite_new_user(email:, login: nil, first_name: nil, last_name: nil)
-    user = User.new mail: email,
-                    login: login,
-                    firstname: first_name,
-                    lastname: last_name,
-                    status: Principal::STATUSES[:invited]
+  def invite_new_user(email:, login: nil, first_name: nil, last_name: nil, send_notification: true)
+    attributes = {
+      mail: email,
+      login:,
+      firstname: first_name,
+      lastname: last_name,
+      status: Principal.statuses[:invited]
+    }
 
-    assign_user_attributes(user)
+    user = user_from_attributes(attributes)
 
     yield user if block_given?
 
-    invite_user! user
+    invite_user! user, send_notification:
   end
 
   ##
@@ -73,13 +75,11 @@ module UserInvitation
   # derives login and first name
   #
   # The default login is the email address.
-  def assign_user_attributes(user)
-    placeholder = placeholder_name(user.mail)
-
-    user.login = user.login.presence || user.mail
-    user.firstname = user.firstname.presence || placeholder.first
-    user.lastname = user.lastname.presence || placeholder.last
-    user.language = user.language.presence || Setting.default_language
+  def user_from_attributes(attributes)
+    ::Users::SetAttributesService
+      .new(user: User.system, model: User.new, contract_class: ::Users::CreateContract)
+      .call(attributes)
+      .result
   end
 
   ##
@@ -92,38 +92,19 @@ module UserInvitation
       clear_tokens user_id
       reset_login user_id
 
-      Token::Invitation.create!(user_id: user_id).tap do |token|
+      Token::Invitation.create!(user_id:).tap do |token|
         OpenProject::Notifications.send Events.user_reinvited, token
       end
     end
   end
 
   def clear_tokens(user_id)
-    Token::Invitation.where(user_id: user_id).delete_all
+    Token::Invitation.where(user_id:).delete_all
   end
 
   def reset_login(user_id)
     User.where(id: user_id).update_all identity_url: nil
-    UserPassword.where(user_id: user_id).destroy_all
-  end
-
-  ##
-  # Creates a placeholder name for the user based on their email address.
-  # For the unlikely case that the local or domain part of the email address
-  # are longer than 30 characters they will be trimmed to 27 characters and an
-  # elipsis will be appended.
-  def placeholder_name(email)
-    first, last = email.split('@').map { |name| trim_name(name) }
-
-    [first, '@' + last]
-  end
-
-  def trim_name(name)
-    if name.size > 30
-      name[0..26] + '...'
-    else
-      name
-    end
+    UserPassword.where(user_id:).destroy_all
   end
 
   ##
@@ -133,10 +114,10 @@ module UserInvitation
   # Validates and saves the given user. The invitation will fail if the user is invalid.
   #
   # @return The invited user or nil if the invitation failed.
-  def invite_user!(user)
+  def invite_user!(user, send_notification: true)
     user, token = user_invitation user
 
-    if token
+    if token && send_notification
       OpenProject::Notifications.send(Events.user_invited, token)
 
       user
@@ -155,13 +136,13 @@ module UserInvitation
       user.invite
 
       if user.valid?
-        token = Token::Invitation.create! user: user
+        token = Token::Invitation.create!(user:)
         user.save!
 
-        return [user, token]
+        [user, token]
+      else
+        [user, nil]
       end
     end
-
-    [user, nil]
   end
 end

@@ -1,13 +1,12 @@
-#-- encoding: UTF-8
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -24,11 +23,11 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'open_project/scm/adapters'
-require 'pathname'
+require "open_project/scm/adapters"
+require "pathname"
 
 module OpenProject
   module SCM
@@ -52,7 +51,7 @@ module OpenProject
         end
 
         ##
-        # Overriden by descendants when
+        # Overridden by descendants when
         # they are able to retrieve current
         # storage usage.
         def storage_available?
@@ -91,16 +90,16 @@ module OpenProject
         def split_path(path)
           Pathname(path.to_s)
             .each_filename
-            .select { |n| !n.blank? }
+            .select { |n| n.present? }
         end
 
         def search_entries(parts, identifier)
-          search_path = parts[0..-2].join('/')
+          search_path = parts[0..-2].join("/")
           search_name = parts[-1]
 
           if search_path.blank? && search_name.blank?
             # Root entry
-            Entry.new(path: '', kind: 'dir')
+            Entry.new(path: "", kind: "dir")
           else
             # Search for the entry in the parent directory
             es = entries(search_path, identifier)
@@ -143,23 +142,23 @@ module OpenProject
         end
 
         def with_leading_slash(path)
-          path ||= ''
-          (path[0, 1] != '/') ? "/#{path}" : path
+          path ||= ""
+          path[0, 1] == "/" ? path : "/#{path}"
         end
 
         def with_trailling_slash(path)
-          path ||= ''
-          (path[-1, 1] == '/') ? path : "#{path}/"
+          path ||= ""
+          path[-1, 1] == "/" ? path : "#{path}/"
         end
 
         def without_leading_slash(path)
-          path ||= ''
-          path.gsub(%r{\A/+}, '')
+          path ||= ""
+          path.gsub(%r{\A/+}, "")
         end
 
         def without_trailling_slash(path)
-          path ||= ''
-          (path[-1, 1] == '/') ? path[0..-2] : path
+          path ||= ""
+          path[-1, 1] == "/" ? path[0..-2] : path
         end
       end
 

@@ -1,12 +1,12 @@
 <%#-- copyright
 OpenProject is an open source project management software.
-Copyright (C) 2012-2020 the OpenProject GmbH
+Copyright (C) the OpenProject GmbH
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License version 3.
 
 OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-Copyright (C) 2006-2017 Jean-Philippe Lang
+Copyright (C) 2006-2013 Jean-Philippe Lang
 Copyright (C) 2010-2013 the ChiliProject Team
 
 This program is free software; you can redistribute it and/or
@@ -23,14 +23,11 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-See docs/COPYRIGHT.rdoc for more details.
+See COPYRIGHT and LICENSE files for more details.
 
 ++#%>
 
-<%= error_messages_for 'document' %>
-<% resource = ::API::V3::Documents::DocumentRepresenter.new(f.object,
-                                                            current_user: current_user,
-                                                            embed_links: true) %>
+<%= error_messages_for @document %>
 
 <div class="form--field -required">
   <%= f.select :category_id,
@@ -44,7 +41,10 @@ See docs/COPYRIGHT.rdoc for more details.
 <div class="form--field -visible-overflow">
   <%= f.text_area :description,
                   container_class: '-xxwide',
+                  label_options: {
+                    class: '-top'
+                  },
                   with_text_formatting: true,
-                  resource: resource,
+                  resource: api_v3_document_resource(f.object),
                   preview_context: preview_context(f.object.project) %>
 </div>

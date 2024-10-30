@@ -1,5 +1,9 @@
 #English strings go here
 lt:
+  plugin_openproject_avatars:
+    name: "Nuotraukos"
+    description: >-
+      Šis priedas leidžia OpenProject naudotojams įkelti piešinį, kuris turėtų būti naudojamas kaip avataras arba naudoti Gravatar registruotus piešinius.
   label_avatar: "Nuotrauka"
   label_avatar_plural: "Nuotraukos"
   label_current_avatar: "Dabartinė nuotrauka"
@@ -7,7 +11,6 @@ lt:
   message_avatar_uploaded: "Nuotrauka sėkmingai pakeista."
   error_image_upload: "Klaida įrašant paveikslėlį."
   error_image_size: "Paveikslėlis per didelis."
-  button_change_avatar: "Keisti nuotrauką"
   are_you_sure_delete_avatar: "Ar tikrai norite ištrinti jūsų nuotrauką?"
   avatar_deleted: "Nuotrauka sėkmingai ištrinta."
   unable_to_delete_avatar: "Nepavyko ištrinti nuotraukos."
@@ -35,6 +38,3 @@ lt:
       enable_gravatars: 'Įjungti naudotojų gravatarus'
       gravatar_default: "Gravatar paveiksliukas pagal nutylėjimą"
       enable_local_avatars: 'Įjungti savus naudotojų gravatarus'
-
-
-

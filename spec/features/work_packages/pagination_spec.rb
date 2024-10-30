@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,70 +23,69 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'spec_helper'
+require "spec_helper"
 
-RSpec.feature 'Work package pagination', js: true do
-  using_shared_fixtures :admin
+RSpec.describe "Work package pagination", :js do
+  shared_let(:admin) { create(:admin) }
 
   let(:project) do
-    FactoryBot.create(:project, name: 'project1', identifier: 'project1')
+    create(:project, name: "project1", identifier: "project1")
   end
 
-  shared_examples_for 'paginated work package list' do
-    let!(:work_package_1) { FactoryBot.create(:work_package, project: project) }
-    let!(:work_package_2) { FactoryBot.create(:work_package, project: project) }
+  shared_examples_for "paginated work package list" do
+    let!(:work_package_1) { create(:work_package, project:) }
+    let!(:work_package_2) { create(:work_package, project:) }
 
     before do
       login_as(admin)
-      allow(Setting).to receive(:per_page_options).and_return '1, 50, 100'
+      allow(Setting).to receive(:per_page_options).and_return "1, 50, 100"
 
       visit path
-      expect(current_path).to eq(expected_path)
+      expect(page).to have_current_path(expected_path, ignore_query: true)
     end
 
-    scenario do
-      expect(page).to have_content('All open')
+    it do
+      expect(page).to have_content("All open")
 
-      within('.work-packages-partitioned-query-space--container') do
-        expect(page).to     have_content(work_package_1.subject)
-        expect(page).to_not have_content(work_package_2.subject)
+      within(".work-packages-partitioned-query-space--container") do
+        expect(page).to have_content(work_package_1.subject)
+        expect(page).to have_no_content(work_package_2.subject)
       end
 
-      within('.pagination--pages') do
-        find('.pagination--item a', text: '2').click
+      within(".op-pagination--pages") do
+        find(".op-pagination--item button", text: "2").click
       end
 
-      within('.work-packages-partitioned-query-space--container') do
-        expect(page).to     have_content(work_package_2.subject)
-        expect(page).to_not have_content(work_package_1.subject)
+      within(".work-packages-partitioned-query-space--container") do
+        expect(page).to have_content(work_package_2.subject)
+        expect(page).to have_no_content(work_package_1.subject)
       end
 
-      within('.pagination--options') do
-        find('.pagination--item a', text: '50').click
+      within(".op-pagination--options") do
+        find(".op-pagination--item button", text: "50").click
       end
 
-      within('.work-packages-partitioned-query-space--container') do
+      within(".work-packages-partitioned-query-space--container") do
         expect(page).to have_content(work_package_1.subject)
         expect(page).to have_content(work_package_2.subject)
       end
     end
-
   end
 
-  context 'with project scope' do
-    it_behaves_like 'paginated work package list' do
+  context "with project scope" do
+    it_behaves_like "paginated work package list" do
       let(:path) { project_work_packages_path(project) }
-      let(:expected_path) { '/projects/project1/work_packages' }
+      let(:expected_path) { "/projects/project1/work_packages" }
     end
   end
 
-  context 'globally' do
-    it_behaves_like 'paginated work package list' do
+  context "globally" do
+    it_behaves_like "paginated work package list" do
       let(:path) { work_packages_path }
-      let(:expected_path) { '/work_packages' }
+      let(:expected_path) { "/work_packages" }
     end
   end
 end

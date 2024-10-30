@@ -1,12 +1,12 @@
 <%#-- copyright
 OpenProject is an open source project management software.
-Copyright (C) 2012-2020 the OpenProject GmbH
+Copyright (C) the OpenProject GmbH
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License version 3.
 
 OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-Copyright (C) 2006-2017 Jean-Philippe Lang
+Copyright (C) 2006-2013 Jean-Philippe Lang
 Copyright (C) 2010-2013 the ChiliProject Team
 
 This program is free software; you can redistribute it and/or
@@ -23,15 +23,11 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-See docs/COPYRIGHT.rdoc for more details.
+See COPYRIGHT and LICENSE files for more details.
 
 ++#%>
 
-<% content_for :header_tags do %>
-  <meta name="required_script" content="repository_navigation" />
-<% end %>
-
-<persistent-toggle data-identifier="repository.checkout_instructions"></persistent-toggle>
+<opce-persistent-toggle data-identifier="repository.checkout_instructions"></opce-persistent-toggle>
 <%= toolbar title: t('repositories.named_repository',
                      vendor_name: @repository.class.vendor_name) do %>
   <% if @instructions && @instructions.available? %>
@@ -44,13 +40,13 @@ See docs/COPYRIGHT.rdoc for more details.
            value="<%= @instructions.checkout_url(true) %>"
            readonly>
     <% csp_onclick('this.focus(); this.select();', '#repository-checkout-url') %>
-    <copy-to-clipboard click-target=".repository-checkout-copy-button"
+    <opce-copy-to-clipboard click-target=".repository-checkout-copy-button"
                        clipboard-target="#repository-checkout-url">
-    </copy-to-clipboard>
+    </opce-copy-to-clipboard>
     <button class="repository-checkout-copy-button toolbar-input--affix toolbar-input-group--affix -append"
-            title="<%= t(:label_copy_to_clipboard) %>">
+            title="<%= t(:button_copy_to_clipboard) %>">
       <%= op_icon('icon-copy') %>
-      <span class="hidden-for-sighted"><%= t(:label_copy_to_clipboard) %></span>
+      <span class="hidden-for-sighted"><%= t(:button_copy_to_clipboard) %></span>
     </button>
   </li>
   <li class="toolbar-item -icon-only">
@@ -61,7 +57,7 @@ See docs/COPYRIGHT.rdoc for more details.
     </a>
   </li>
   <% end %>
-  <% if !empty && User.current.allowed_to?(:browse_repository, @project) %>
+  <% if !empty && User.current.allowed_in_project?(:browse_repository, @project) %>
   <li class="toolbar-item -icon-only">
     <%= link_to stats_project_repository_path(@project),
         class: 'button', title: t(:label_statistics) do %>
@@ -71,9 +67,9 @@ See docs/COPYRIGHT.rdoc for more details.
   <% end %>
   <%= call_hook(:repositories_navigation_toolbar,
                 { repository: @repository, project: @project, repository_empty: empty }) %>
-  <% if User.current.allowed_to?(:manage_repository, @project) %>
+  <% if User.current.allowed_in_project?(:manage_repository, @project) %>
     <li class="toolbar-item -icon-only">
-      <%= link_to settings_repository_project_path(@project),
+      <%= link_to project_settings_repository_path(@project),
           class: 'button', title: t(:label_setting_plural) do %>
         <%= op_icon('button--icon icon-settings') %>
       <% end %>
@@ -86,5 +82,3 @@ See docs/COPYRIGHT.rdoc for more details.
   <%= render partial: 'checkout_instructions',
              locals: { repository: @repository, instructions: @instructions } %>
 <% end %>
-
-

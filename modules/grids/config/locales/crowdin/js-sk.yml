@@ -2,12 +2,13 @@ sk:
   js:
     grid:
       add_widget: 'Add widget'
-      remove: 'Remove widget'
+      remove: 'Odstrániť widget'
       configure: 'Configurovať widget'
       upsale:
-        text: "Some widgets, like the work package graph widget, are only available in the "
-        link: 'enterprise edition.'
+        text: "Some widgets, like the work package graph widget, are only available in the Enterprise edition."
+        link: 'Enterprise edition.'
       widgets:
+        missing_permission: "You don't have the necessary permissions to view this widget."
         custom_text:
           title: 'Vlastný text'
         documents:
@@ -26,18 +27,21 @@ sk:
         project_description:
           title: 'Popis projektu'
           no_results: "No description has been written yet. One can be provided in the 'Project settings'."
-        project_details:
-          title: 'Detailne informácie o projekte'
-          no_results: 'No custom fields have been defined for projects.'
         project_status:
           title: 'Stav projektu'
-          on_track: 'On track'
-          off_track: 'Off track'
-          at_risk: 'At risk'
+          not_started: 'Not started'
+          on_track: 'Na dobrej ceste'
+          off_track: 'Na zlej ceste'
+          at_risk: 'V riziku'
           not_set: 'Not set'
+          finished: 'Dokončené'
+          discontinued: 'Discontinued'
         subprojects:
           title: 'Podprojekty'
           no_results: 'No subprojects.'
+        project_favorites:
+          title: 'Favorite projects'
+          no_results: 'You currently have no favorite projects. Click on the star icon in the project dashboard to add one to your favorites.'
         time_entries_current_user:
           title: 'My spent time'
           displayed_days: 'Dni zobrazenia v miniaplikácii:'
@@ -45,7 +49,7 @@ sk:
           title: 'Strávený čas (posledných 7 dní)'
           no_results: 'Žiadne časové záznamy za posledných 7 dní.'
         work_packages_accountable:
-          title: "Pracovné balíčky, za ktoré som zodpovedný(á)"
+          title: "Pracovné balíčky, za ktoré som zodpovedný(a)"
         work_packages_assigned:
           title: 'Mne priradené pracovné balíčky'
         work_packages_created:

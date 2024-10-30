@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,10 +23,10 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'support/pages/page'
+require "support/pages/page"
 
 module Pages
   class WorkPackageCard < Page
@@ -42,28 +42,28 @@ module Pages
     end
 
     def card_selector
-      ".wp-card-#{work_package.id}"
+      ".op-wp-single-card-#{work_package.id}"
     end
 
-    def expect_selected
-      expect(page).to have_selector("#{card_selector}.-checked")
+    def expect_selected(selected: true)
+      expect(page).to have_conditional_selector(selected, "#{card_selector}[data-qa-selected='true']")
     end
 
     def expect_type(name)
       page.within(card_element) do
-        expect(page).to have_selector('.wp-card--type', text: name.upcase)
+        expect(page).to have_css('[data-test-selector="op-wp-single-card--content-type"]', text: name.upcase)
       end
     end
 
     def expect_subject(subject)
       page.within(card_element) do
-        expect(page).to have_selector('.wp-card--subject', text: subject)
+        expect(page).to have_css('[data-test-selector="op-wp-single-card--content-subject"]', text: subject)
       end
     end
 
     def open_details_view
       card_element.hover
-      card_element.find('.wp-card--details-button').click
+      card_element.find('[data-test-selector="op-wp-single-card--details-button"]').click
 
       ::Pages::SplitWorkPackage.new work_package
     end

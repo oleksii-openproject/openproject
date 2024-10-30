@@ -1,10 +1,10 @@
 #-- copyright
 #OpenProject is an open source project management software.
-#Copyright (C) 2012-2020 the OpenProject GmbH
+#Copyright (C) the OpenProject GmbH
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License version 3.
 #OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-#Copyright (C) 2006-2017 Jean-Philippe Lang
+#Copyright (C) 2006-2013 Jean-Philippe Lang
 #Copyright (C) 2010-2013 the ChiliProject Team
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License
@@ -17,10 +17,13 @@
 #You should have received a copy of the GNU General Public License
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-#See docs/COPYRIGHT.rdoc for more details.
+#See COPYRIGHT and LICENSE files for more details.
 #++
 pl:
-  button_save_as: "Zapisz raport jako..."
+  plugin_openproject_reporting:
+    name: "Raportowanie OpenProject"
+    description: "Ta wtyczka umożliwia tworzenie niestandardowych raportów kosztów z filtrowaniem i grupowaniem utworzonym przez wtyczkę OpenProject Czas i koszty."
+  button_save_report_as: "Zapisz raport jako..."
   comments: "Komentarz"
   cost_reports_title: "Czas i koszty"
   label_cost_report: "Raport kosztów"
@@ -44,6 +47,7 @@ pl:
   label_is_project_with_subprojects: "jest (zawiera podprojekty)"
   label_work_package_attributes: "Atrybuty zadań"
   label_less: "<"
+  label_logged_by_reporting: "W dzienniku zarejestrował:"
   label_money: "Wartość pieniężna"
   label_month_reporting: "Miesiąc (wydatki)"
   label_new_report: "Nowy raport kosztowy"
@@ -60,6 +64,18 @@ pl:
   label_units: "Jednostki"
   label_week_reporting: "Tygodniu (wydatki)"
   label_year_reporting: "Roku (wydatki)"
+  label_count: "Ilość"
+  label_filter: "Filtr"
+  label_filter_add: "Dodaj filtr"
+  label_filter_plural: "Filtry"
+  label_group_by: "Grupuj według"
+  label_group_by_add: "Dodaj grupowanie po atrybucie"
+  label_inactive: "«nieaktywne»"
+  label_no: "Nie"
+  label_none: "(brak danych)"
+  label_no_reports: "Nie ma jeszcze żadnych raportów kosztów."
+  label_report: "Raport"
+  label_yes: "Tak"
   load_query_question: "Raport będzie zawierał %{size} komórek tabeli. Eksport może zająć trochę czasu. Czy nadal chcesz wygenerować raport?"
   permission_save_cost_reports: "Zapisz publiczny raport kosztów"
   permission_save_private_cost_reports: "Zapisz prywatny raport kosztów"
@@ -69,3 +85,10 @@ pl:
   units: "Jednostki"
   validation_failure_date: "nie jest poprawną datą"
   validation_failure_integer: "nie jest prawidłową liczbą całkowitą"
+  export:
+    cost_reports:
+      title: "Twój eksport raportów kosztów w formacie XLS"
+  reporting:
+    group_by:
+      selected_columns: "Wybrane kolumny"
+      selected_rows: "Wybrane wiersze"

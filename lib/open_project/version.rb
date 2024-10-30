@@ -1,13 +1,12 @@
-#-- encoding: UTF-8
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -24,22 +23,21 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'rexml/document'
-require 'open3'
+require "rexml/document"
+require "open3"
 
 module OpenProject
-  module VERSION #:nodoc:
-    MAJOR = 11
+  module VERSION # :nodoc:
+    MAJOR = 15
     MINOR = 0
     PATCH = 0
-    TINY  = PATCH # Redmine compat
 
     class << self
       # Used by semver to define the special version (if any).
-      # A special version "satify but have a lower precedence than the associated
+      # A special version "satisfy but have a lower precedence than the associated
       # normal version". So 2.0.0RC1 would be part of the 2.0.0 series but
       # be considered to be an older version.
       #
@@ -50,33 +48,40 @@ module OpenProject
       #
       #   2.0.0debian-2
       def special
-        ''
+        ""
       end
 
       def revision
-        cached_or_block(:@revision) do
-          revision, = Open3.capture3('git', 'rev-parse', 'HEAD')
-          if revision.present?
-            revision.strip[0..8]
-          end
+        revision_from_core_sha || revision_from_git
+      end
+
+      def core_sha
+        cached_or_block(:@core_sha) do
+          read_optional "CORE_VERSION"
         end
       end
 
-      def product_version
-        cached_or_block(:@product_version) do
-          path = Rails.root.join('config', 'PRODUCT_VERSION')
-          if File.exists? path
-            File.read(path)
-          end
+      def core_url
+        cached_or_block(:@core_url) do
+          read_optional "CORE_URL"
         end
       end
 
-      def core_version
-        cached_or_block(:@core_version) do
-          path = Rails.root.join('config', 'CORE_VERSION')
-          if File.exists? path
-            File.read(path)
-          end
+      def product_sha
+        cached_or_block(:@product_sha) do
+          read_optional "PRODUCT_VERSION"
+        end
+      end
+
+      def product_url
+        cached_or_block(:@product_url) do
+          read_optional "PRODUCT_URL"
+        end
+      end
+
+      def builder_sha
+        cached_or_block(:@builder_sha) do
+          read_optional "BUILDER_VERSION"
         end
       end
 
@@ -93,25 +98,47 @@ module OpenProject
       def to_s; STRING end
 
       def to_semver
-        [MAJOR, MINOR, PATCH].join('.') + special
+        [MAJOR, MINOR, PATCH].join(".") + special
       end
 
       private
 
       def release_date_from_file
         cached_or_block(:@release_date_from_file) do
-          path = Rails.root.join('config', 'RELEASE_DATE')
-          if File.exists? path
+          path = Rails.root.join("RELEASE_DATE")
+          if File.exist? path
             s = File.read(path)
-            Date.parse(s)
+            Time.zone.parse(s)
           end
         end
       end
 
       def release_date_from_git
         cached_or_block(:@release_date_from_git) do
-          date, = Open3.capture3('git', 'log', '-1', '--format=%cd', '--date=short')
-          Date.parse(date) if date
+          date, = Open3.capture3("git", "log", "-1", "--format=%cd", "--date=iso8601")
+          Time.zone.parse(date) if date
+        end
+      end
+
+      def revision_from_core_sha
+        return unless core_sha.is_a?(String)
+
+        core_sha.split.first
+      end
+
+      def revision_from_git
+        cached_or_block(:@revision) do
+          revision, = Open3.capture3("git", "rev-parse", "HEAD")
+          if revision.present?
+            revision.strip[0..8]
+          end
+        end
+      end
+
+      def read_optional(file)
+        path = Rails.root.join(file)
+        if File.exist? path
+          String(File.read(path)).strip
         end
       end
 
@@ -119,10 +146,10 @@ module OpenProject
         return instance_variable_get(variable) if instance_variable_defined?(variable)
 
         value = begin
-                  yield
-                rescue StandardError
-                  nil
-                end
+          yield
+        rescue StandardError
+          nil
+        end
 
         instance_variable_set(variable, value)
       end
@@ -130,6 +157,6 @@ module OpenProject
 
     REVISION = revision
     ARRAY = [MAJOR, MINOR, PATCH, REVISION].compact
-    STRING = ARRAY.join('.')
+    STRING = ARRAY.join(".")
   end
 end

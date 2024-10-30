@@ -1,14 +1,12 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -25,30 +23,30 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 class Workflow < ApplicationRecord
   belongs_to :role
-  belongs_to :old_status, class_name: 'Status', foreign_key: 'old_status_id'
-  belongs_to :new_status, class_name: 'Status', foreign_key: 'new_status_id'
-  belongs_to :type, inverse_of: 'workflows'
+  belongs_to :old_status, class_name: "Status"
+  belongs_to :new_status, class_name: "Status"
+  belongs_to :type, inverse_of: "workflows"
 
-  validates_presence_of :role, :old_status, :new_status
+  validates :role, :old_status, :new_status, presence: true
 
   # Returns workflow transitions count by type and role
   def self.count_by_type_and_role
     counts = connection
              .select_all("SELECT role_id, type_id, count(id) AS c FROM #{Workflow.table_name} GROUP BY role_id, type_id")
-    roles = Role.order(Arel.sql('builtin, position'))
-    types = ::Type.order(Arel.sql('position'))
+    roles = Role.order(Arel.sql("builtin, position"))
+    types = ::Type.order(Arel.sql("position"))
 
     result = []
     types.each do |type|
       t = []
       roles.each do |role|
-        row = counts.detect { |c| c['role_id'].to_s == role.id.to_s && c['type_id'].to_s == type.id.to_s }
-        t << [role, (row.nil? ? 0 : row['c'].to_i)]
+        row = counts.detect { |c| c["role_id"].to_s == role.id.to_s && c["type_id"].to_s == type.id.to_s }
+        t << [role, (row.nil? ? 0 : row["c"].to_i)]
       end
       result << [type, t]
     end
@@ -65,17 +63,17 @@ class Workflow < ApplicationRecord
   # such a case, those work flows are additionally returned.
   def self.from_status(old_status_id, type_id, role_ids, author = false, assignee = false)
     workflows = Workflow
-                .where(old_status_id: old_status_id, type_id: type_id, role_id: role_ids)
+                .where(old_status_id:, type_id:, role_id: role_ids)
 
     if author && assignee
       workflows
     elsif author || assignee
       workflows
-        .merge(Workflow.where(author: author).or(Workflow.where(assignee: assignee)))
+        .merge(Workflow.where(author:).or(Workflow.where(assignee:)))
     else
       workflows
-        .where(author: author)
-        .where(assignee: assignee)
+        .where(author:)
+        .where(assignee:)
     end
   end
 
@@ -84,8 +82,7 @@ class Workflow < ApplicationRecord
     Workflow
       .includes(:new_status)
       .where(role_id: user.roles_for_project(project).map(&:id))
-      .map(&:new_status)
-      .compact
+      .filter_map(&:new_status)
       .uniq
       .sort
   end
@@ -93,7 +90,7 @@ class Workflow < ApplicationRecord
   # Copies workflows from source to targets
   def self.copy(source_type, source_role, target_types, target_roles)
     unless source_type.is_a?(::Type) || source_role.is_a?(Role)
-      raise ArgumentError.new('source_type or source_role must be specified')
+      raise ArgumentError.new("source_type or source_role must be specified")
     end
 
     target_types = Array(target_types)
@@ -119,7 +116,7 @@ class Workflow < ApplicationRecord
            target_type.is_a?(::Type) && !target_type.new_record? &&
            target_role.is_a?(Role) && !target_role.new_record?
 
-      raise ArgumentError.new('arguments can not be nil or unsaved objects')
+      raise ArgumentError.new("arguments can not be nil or unsaved objects")
     end
 
     if source_type == target_type && source_role == target_role

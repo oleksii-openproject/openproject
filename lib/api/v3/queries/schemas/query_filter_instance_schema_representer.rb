@@ -1,14 +1,12 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -25,10 +23,10 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'queries/operators'
+require "queries/operators"
 
 module API
   module V3
@@ -38,7 +36,7 @@ module API
           include API::Utilities::RepresenterToJsonCache
 
           schema :name,
-                 type: 'String',
+                 type: "String",
                  writable: false,
                  has_default: true,
                  required: true
@@ -57,7 +55,7 @@ module API
           end
 
           schema_with_allowed_collection :filter,
-                                         type: 'QueryFilter',
+                                         type: "QueryFilter",
                                          required: true,
                                          writable: true,
                                          values_callback: -> {
@@ -80,7 +78,7 @@ module API
           end
 
           schema_with_allowed_collection :operator,
-                                         type: 'QueryOperator',
+                                         type: "QueryOperator",
                                          writable: true,
                                          has_default: false,
                                          required: true,
@@ -100,7 +98,7 @@ module API
           alias :filter :represented
 
           def _type
-            'QueryFilterInstanceSchema'
+            "QueryFilterInstanceSchema"
           end
 
           def _name
@@ -110,8 +108,8 @@ module API
           def _dependencies
             [
               ::API::V3::Schemas::SchemaDependencyRepresenter.new(dependencies,
-                                                                  'operator',
-                                                                  current_user: current_user)
+                                                                  "operator",
+                                                                  current_user:)
             ]
           end
 
@@ -124,9 +122,9 @@ module API
               path = api_v3_paths.query_operator(operator.to_query)
               value = FilterDependencyRepresenterFactory.create(filter,
                                                                 operator,
-                                                                form_embedded: form_embedded)
+                                                                form_embedded:)
 
-              hash[path] = value
+              hash[path] = value unless value.nil?
             end
           end
 

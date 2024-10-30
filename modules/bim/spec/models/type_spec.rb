@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,21 +23,21 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'spec_helper'
+require "spec_helper"
 
-describe Type, type: :model do
-  let(:type) { FactoryBot.create :type, name: "Issue" }
+RSpec.describe Type do
+  let(:type) { create(:type, name: "Issue") }
 
-  it 'bcf_thumbnail is available as a WorkPackageRepresenter attribute' do
+  it "bcf_thumbnail is available as a WorkPackageRepresenter attribute" do
     expect(API::V3::WorkPackages::Schema::WorkPackageSchemaRepresenter.representable_attrs.keys).to(
-      include('bcf_thumbnail')
+      include("bcf_thumbnail")
     )
   end
 
-  it 'bcf_thumbnail is not within the attributes of the default form configuration' do
-    expect(type.attribute_groups.map(&:attributes).flatten).not_to include('bcf_thumbnail')
+  it "bcf_thumbnail is not within the attributes of the default form configuration" do
+    expect(type.attribute_groups.map(&:attributes).flatten).not_to include("bcf_thumbnail")
   end
 end

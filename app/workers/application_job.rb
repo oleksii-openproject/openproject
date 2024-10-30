@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,18 +23,14 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'active_job'
+require "active_job"
 
-class ApplicationJob < ::ActiveJob::Base
+class ApplicationJob < ActiveJob::Base
   include ::JobStatus::ApplicationJobWithStatus
-
-  around_perform do |_job, block|
-    reload_mailer_configuration!
-    with_clean_request_store { block.call }
-  end
+  include SharedJobSetup
 
   ##
   # Return a priority number on the given payload
@@ -44,6 +40,10 @@ class ApplicationJob < ::ActiveJob::Base
       0
     when :notification
       5
+    when :above_normal
+      7
+    when :below_normal
+      13
     when :low
       20
     else
@@ -53,36 +53,13 @@ class ApplicationJob < ::ActiveJob::Base
 
   def self.queue_with_priority(value = :default)
     if value.is_a?(Symbol)
-      super priority_number(value)
+      super(priority_number(value))
     else
-      super value
+      super
     end
   end
 
-  # Resets the thread local request store.
-  # This should be done, because normal application code expects the RequestStore to be
-  # invalidated between multiple requests and does usually not care whether it is executed
-  # from a request or from a delayed job.
-  # For a delayed job, each job execution is the thing that comes closest to
-  # the concept of a new request.
-  def with_clean_request_store
-    store = RequestStore.store
-
-    begin
-      RequestStore.clear!
-      yield
-    ensure
-      # Reset to previous value
-      RequestStore.clear!
-      RequestStore.store.merge! store
-    end
-  end
-
-  # Reloads the thread local ActionMailer configuration.
-  # Since the email configuration is now done in the web app, we need to
-  # make sure that any changes to the configuration is correctly picked up
-  # by the background jobs at runtime.
-  def reload_mailer_configuration!
-    OpenProject::Configuration.reload_mailer_configuration!
+  def job_scheduled_at
+    GoodJob::Job.where(id: job_id).pick(:scheduled_at)
   end
 end

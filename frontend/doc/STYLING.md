@@ -1,7 +1,7 @@
 Styling the frontend
 ====================
 
-Frontend styling is coupled to the Living Styleguide. The guide implements the same CSS that the application does. It takes the very same Sass files used in the Asset pipeline to build a second css file that is then used for diplaying the guide.
+Frontend styling is coupled to the Living Styleguide. The guide implements the same CSS that the application does. It takes the very same Sass files used in the Asset pipeline to build a second css file that is then used for displaying the guide.
 
 All styles for OpenProject are found in `./app/assets/stylesheets`. The frontend folder contains no styling, besides rendered files and some styling for the styleguide itself.
 
@@ -11,7 +11,7 @@ The styleguide itself is just a long html page demonstrating the components. It 
 
 The general approach here is that for every partial of sass there is a Markdown file (`*.lsg`) describing it:
 
-```bash
+```shell
 $ cd app/assets/stylesheets/content
 $ ls -la _accounts*
 _accounts.lsg

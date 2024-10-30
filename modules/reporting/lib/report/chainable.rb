@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 # Provides convenience layer and logic shared between GroupBy::Base and Filter::Base.
@@ -37,7 +37,7 @@ module Report
 
     # this attr. should point to a symbol useable for translations
     inherited_attribute :applies_for, default: :label_cost_entry_attributes
-    def_delegators :'self.class', :table_joins, :table_name, :field, :display?, :underscore_name
+    def_delegators :"self.class", :table_joins, :table_name, :field, :display?, :underscore_name
 
     def self.accepts_property(*list)
       engine.accepted_properties.push(*list.map(&:to_s))
@@ -58,11 +58,12 @@ module Report
 
     def self.base
       return self if base?
+
       superclass.base
     end
 
-    def self.from_base(&block)
-      base.instance_eval(&block)
+    def self.from_base(&)
+      base.instance_eval(&)
     end
 
     def self.available
@@ -71,7 +72,7 @@ module Report
 
     def self.register(label)
       available << klass
-      set_inherited_attribute 'label', label
+      set_inherited_attribute "label", label
     end
 
     def self.table_joins
@@ -81,6 +82,7 @@ module Report
     def self.table_from(value)
       return value.table_name if value.respond_to? :table_name
       return value unless value.respond_to? :to_ary or value.respond_to? :to_hash
+
       table_from value.to_a.first
     end
 
@@ -115,7 +117,7 @@ module Report
     inherited_attribute :properties, list: true
 
     def self.label
-      'Translation needed'
+      "Translation needed"
     end
 
     class << self
@@ -124,11 +126,12 @@ module Report
     end
 
     attr_accessor :parent, :child, :type
+
     accepts_property :type
 
-    def each(&block)
+    def each(&)
       yield self
-      child.try(:each, &block)
+      child.try(:each, &)
     end
 
     def row?
@@ -149,6 +152,7 @@ module Report
 
     def top
       return self if top?
+
       parent.top
     end
 
@@ -162,6 +166,7 @@ module Report
 
     def bottom
       return self if bottom?
+
       child.bottom
     end
 
@@ -170,10 +175,14 @@ module Report
       options.each do |key, value|
         unless self.class.extra_options.include? key
           raise ArgumentError, "may not set #{key}" unless engine.accepted_properties.include? key.to_s
-          send "#{key}=", value
+
+          send :"#{key}=", value
         end
       end
-      self.child, child.parent = child, self if child
+      if child
+        self.child = child
+        child.parent = self
+      end
       move_down until correct_position?
       clear
     end
@@ -183,7 +192,7 @@ module Report
     end
 
     def to_s
-      URI.escape to_a.map(&:join).join(',')
+      URI.escape to_a.map(&:join).join(",")
     end
 
     def serialize
@@ -209,14 +218,14 @@ module Report
       end
     end
 
-    def chain_collect(name, *args, &block)
-      top.subchain_collect(name, *args, &block)
+    def chain_collect(name, *, &)
+      top.subchain_collect(name, *, &)
     end
 
     # See #chain_collect
-    def subchain_collect(name, *args, &block)
-      subchain = child.subchain_collect(name, *args, &block) unless bottom?
-      [* send(name, *args, &block)].push(*subchain).compact.uniq
+    def subchain_collect(name, *, &)
+      subchain = child.subchain_collect(name, *, &) unless bottom?
+      [* send(name, *, &)].push(*subchain).compact.uniq
     end
 
     # overwrite in subclass to maintain constisten state
@@ -249,6 +258,7 @@ module Report
 
     def sql_statement
       raise "should not get here (#{inspect})" if bottom?
+
       child.cached(:sql_statement).tap do |q|
         chain_collect(:table_joins).each { |args| q.join(*args) } if responsible_for_sql?
       end
@@ -301,6 +311,7 @@ module Report
       class << self
         def new(chain = nil, options = {})
           return chain if chain and chain.map(&:class).include? self
+
           super
         end
       end
@@ -318,7 +329,7 @@ module Report
     def with_table(fields)
       fields.map do |f|
         place_field_name = self.class.put_sql_table_names[f] || self.class.put_sql_table_names[f].nil?
-        place_field_name ? (field_name_for f, self) : f
+        place_field_name ? field_name_for([self, f]) : f
       end
     end
 

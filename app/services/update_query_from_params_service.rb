@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 class UpdateQueryFromParamsService
@@ -32,6 +32,7 @@ class UpdateQueryFromParamsService
     self.current_user = user
   end
 
+  # rubocop:disable Metrics/AbcSize
   def call(params, valid_subset: false)
     apply_group_by(params)
 
@@ -51,6 +52,10 @@ class UpdateQueryFromParamsService
 
     apply_display_representation(params)
 
+    apply_include_subprojects(params)
+
+    apply_timestamps(params)
+
     disable_hierarchy_when_only_grouped_by(params)
 
     if valid_subset
@@ -58,12 +63,12 @@ class UpdateQueryFromParamsService
     end
 
     if query.valid?
-      ServiceResult.new(success: true,
-                        result: query)
+      ServiceResult.success(result: query)
     else
-      ServiceResult.new(errors: query.errors)
+      ServiceResult.failure(errors: query.errors)
     end
   end
+  # rubocop:enable Metrics/AbcSize
 
   private
 
@@ -110,6 +115,14 @@ class UpdateQueryFromParamsService
 
   def apply_display_representation(params)
     query.display_representation = params[:display_representation] if params.key?(:display_representation)
+  end
+
+  def apply_include_subprojects(params)
+    query.include_subprojects = params[:include_subprojects] if params.key?(:include_subprojects)
+  end
+
+  def apply_timestamps(params)
+    query.timestamps = params[:timestamps] if params.key?(:timestamps)
   end
 
   def disable_hierarchy_when_only_grouped_by(params)

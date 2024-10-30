@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,31 +23,27 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 class EnterprisesController < ApplicationController
   include EnterpriseTrialHelper
 
-  layout 'admin'
+  layout "admin"
   menu_item :enterprise
 
-  helper_method :gon
-
-  before_action :augur_content_security_policy
   before_action :chargebee_content_security_policy
   before_action :youtube_content_security_policy
   before_action :require_admin
   before_action :check_user_limit, only: [:show]
   before_action :check_domain, only: [:show]
+  before_action :render_gon
 
   def show
     @current_token = EnterpriseToken.current
     @token = @current_token || EnterpriseToken.new
 
-    write_augur_to_gon
-
     if !@current_token.present?
-      write_trial_key_to_gon
+      helpers.write_trial_key_to_gon
     end
   end
 
@@ -69,7 +65,7 @@ class EnterprisesController < ApplicationController
       end
       respond_to do |format|
         format.html { render action: :show }
-        format.json { render json: { description: @token.errors.full_messages.join(", ") }, status: 400 }
+        format.json { render json: { description: @token.errors.full_messages.join(", ") }, status: :bad_request }
       end
     end
   end
@@ -98,27 +94,14 @@ class EnterprisesController < ApplicationController
 
   private
 
-  def write_trial_key_to_gon
-    @trial_key = Token::EnterpriseTrialKey.find_by(user_id: User.system.id)
-    if @trial_key
-      gon.ee_trial_key = {
-        value: @trial_key.value,
-        created: @trial_key.created_on
-      }
-    end
+  def render_gon
+    helpers.write_augur_to_gon
   end
 
-  def write_augur_to_gon
-    gon.augur_url = OpenProject::Configuration.enterprise_trial_creation_host
-    gon.token_version = OpenProject::Token::VERSION
-  end
-
-  def default_breadcrumb
-    t(:label_enterprise_edition)
-  end
+  def default_breadcrumb; end
 
   def show_local_breadcrumb
-    true
+    false
   end
 
   def check_user_limit

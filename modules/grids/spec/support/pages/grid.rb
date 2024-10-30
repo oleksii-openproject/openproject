@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,25 +23,27 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'support/pages/page'
+require "support/pages/page"
 
 module Pages
   class Grid < ::Pages::Page
     def add_widget(row_number, column_number, location, name)
       within_add_widget_modal(row_number, column_number, location) do
         expect(page)
-          .to have_content(I18n.t('js.grid.add_widget'))
+          .to have_content(I18n.t("js.grid.add_widget"))
 
-        page.find('.grid--addable-widget', text: Regexp.new("^#{name}$")).click
+        SeleniumHubWaiter.wait unless using_cuprite?
+
+        page.find('[data-test-selector="op-grid--addable-widget"]', text: Regexp.new("^#{name}$")).click
       end
     end
 
     def expect_no_help_mode
       expect(page)
-        .to have_no_selector('.toolbar-item .icon-add')
+        .to have_no_css(".toolbar-item .icon-add")
     end
 
     def expect_unable_to_add_widget(row_number, column_number, location, name = nil)
@@ -55,10 +57,10 @@ module Pages
     def expect_add_widget_enterprise_edition_notice(row_number, column_number, location)
       within_add_widget_modal(row_number, column_number, location) do
         expect(page)
-          .to have_content(I18n.t('js.grid.add_widget'))
+          .to have_content(I18n.t("js.grid.add_widget"))
 
         expect(page)
-          .to have_selector('.notification-box.-ee-upsale', text: I18n.t('js.upsale.ee_only'))
+          .to have_css(".op-toast.-ee-upsale", text: I18n.t("js.upsale.ee_only"))
       end
     end
 
@@ -67,9 +69,9 @@ module Pages
                               when :within
                                 [row_number * 2, column_number * 2]
                               when :row
-                                [row_number * 2 - 1, column_number * 2]
+                                [(row_number * 2) - 1, column_number * 2]
                               when :column
-                                [row_number * 2, column_number * 2 - 1]
+                                [row_number * 2, (column_number * 2) - 1]
                               end
 
       ::Components::Grids::GridArea.of(real_row, real_column).area
@@ -77,14 +79,14 @@ module Pages
 
     private
 
-    def within_add_widget_modal(row_number, column_number, location)
+    def within_add_widget_modal(row_number, column_number, location, &)
       area = area_of(row_number, column_number, location)
       area.hover
-      area.find('.grid--widget-add', visible: :all).click
 
-      within '.op-modal--portal' do
-        yield
-      end
+      add_widget_button = area.find(".grid--widget-add", visible: :all)
+      add_widget_button.click
+
+      within(".spot-modal", &)
     end
 
     def expect_widget_adding_prohibited_generally(row_number = 1, column_number = 1)
@@ -92,16 +94,16 @@ module Pages
       area.hover
 
       expect(area)
-        .to have_no_selector('.grid--widget-add')
+        .to have_no_css(".grid--widget-add")
     end
 
     def expect_specific_widget_unaddable(row_number, column_number, location, name)
       within_add_widget_modal(row_number, column_number, location) do
         expect(page)
-          .to have_content(I18n.t('js.grid.add_widget'))
+          .to have_content(I18n.t("js.grid.add_widget"))
 
         expect(page)
-          .not_to have_selector('.grid--addable-widget', text: Regexp.new("^#{name}$"))
+          .to have_no_css('[data-test-selector="op-grid--addable-widget"]', text: Regexp.new("^#{name}$"))
       end
     end
   end

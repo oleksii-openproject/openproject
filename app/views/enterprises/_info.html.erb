@@ -1,12 +1,12 @@
 <%#-- copyright
 OpenProject is an open source project management software.
-Copyright (C) 2012-2020 the OpenProject GmbH
+Copyright (C) the OpenProject GmbH
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License version 3.
 
 OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-Copyright (C) 2006-2017 Jean-Philippe Lang
+Copyright (C) 2006-2013 Jean-Philippe Lang
 Copyright (C) 2010-2013 the ChiliProject Team
 
 This program is free software; you can redistribute it and/or
@@ -23,25 +23,25 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-See docs/COPYRIGHT.rdoc for more details.
+See COPYRIGHT and LICENSE files for more details.
 
 ++#%>
 <% content_for :header_tags do %>
   <script src="<%= OpenProject::Static::Links.links[:chargebee][:href] %>"
-          data-cb-site="openproject-enterprise-test">
+          data-cb-site="<%= OpenProject::Configuration.enterprise_chargebee_site %>">
   </script>
 <% end %>
 
 <div class="upsale--information-container">
   <div class='upsale-information'>
-    <enterprise-base></enterprise-base>
+    <opce-enterprise-base></opce-enterprise-base>
   </div>
 
   <div class='upsale-actions'>
     <a href="#"
        class="button -highlight-inverted"
        data-cb-type="checkout"
-       data-cb-plan-id="enterprise-edition---annual-user-license">
+       data-cb-plan-id="<%= OpenProject::Configuration.enterprise_plan %>">
       <%= t('admin.enterprise.book_now') %>
     </a>
 
@@ -75,7 +75,7 @@ See docs/COPYRIGHT.rdoc for more details.
       </div>
     </div>
     <div class="info-boxes--item">
-      <%= image_tag "system_maintenance.jpg",
+      <%= image_tag "professional_support.svg",
                     class: "info-boxes--teaser-image",
                     title: t('js.admin.enterprise.upsale.benefits.professional_support'),
                     alt: t('js.admin.enterprise.upsale.benefits.professional_support') %>
@@ -90,7 +90,7 @@ See docs/COPYRIGHT.rdoc for more details.
       </div>
     </div>
     <div class="info-boxes--item">
-      <%= image_tag "premium_features.svg",
+      <%= image_tag "enterprise-add-on.svg",
                     class: "info-boxes--teaser-image",
                     title: t('js.admin.enterprise.upsale.benefits.premium_features'),
                     alt: t('js.admin.enterprise.upsale.benefits.premium_features') %>
@@ -105,7 +105,7 @@ See docs/COPYRIGHT.rdoc for more details.
       </div>
     </div>
     <div class="info-boxes--item">
-      <%= image_tag "security_alerts.jpg",
+      <%= image_tag "security_alerts.svg",
                     class: "info-boxes--teaser-image",
                     title: t('js.admin.enterprise.upsale.benefits.high_security'),
                     alt: t('js.admin.enterprise.upsale.benefits.high_security') %>

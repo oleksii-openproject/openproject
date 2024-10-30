@@ -5,9 +5,10 @@ tr:
       remove: 'Widget''ı kaldır'
       configure: 'Widget''ı yapılandır'
       upsale:
-        text: "İş paketi grafik widget'ı gibi bazı widget’lar yalnızca"
-        link: 'kurumsal baskı.'
+        text: "İş paketi grafiği pencere öğesi gibi bazı pencere öğeleri yalnızca Enterprise sürümünde mevcuttur."
+        link: 'Enterprise sürümü.'
       widgets:
+        missing_permission: "You don't have the necessary permissions to view this widget."
         custom_text:
           title: 'Özel metin'
         documents:
@@ -16,7 +17,7 @@ tr:
         members:
           title: 'Üyeler'
           no_results: 'Görünür üye yok.'
-          view_all_members: 'Tüm üyeleri görüntüle'
+          view_all_members: 'Tüm üyeleri göster'
           add: 'Üye'
           too_many: '%{total} üyelerin %{count} sayısını gösteriliyor.'
         news:
@@ -26,26 +27,29 @@ tr:
         project_description:
           title: 'Proje tanımı'
           no_results: "Henüz bir açıklama yazılmadı. Biri 'Proje ayarları' içinde sağlanabilir."
-        project_details:
-          title: 'Proje detayları'
-          no_results: 'Projeler için özel alan tanımlanmadı.'
         project_status:
           title: 'Proje Durumu'
+          not_started: 'Başlatılmadı'
           on_track: 'Takipte'
           off_track: 'Kapalı parça'
           at_risk: 'Riskli'
           not_set: 'Ayarlanmadı'
+          finished: 'Bitti'
+          discontinued: 'Durduruldu'
         subprojects:
           title: 'Alt Projeler'
           no_results: 'Alt proje yok.'
+        project_favorites:
+          title: 'Favori projeler'
+          no_results: 'Şu anda favori projeniz yok. Favorilerinize bir proje eklemek için proje kontrol panelindeki yıldız simgesine tıklayın.'
         time_entries_current_user:
           title: 'Geçirdiğim zaman'
           displayed_days: 'Widget''te görüntülenen günler:'
         time_entries_list:
           title: 'Harcanan zaman (son 7 gün)'
-          no_results: 'Son 7 güne zaman girişi yok.'
+          no_results: 'Son 7 günde zaman girişi yok.'
         work_packages_accountable:
-          title: "Sorumlu olduğum iş paketleri"
+          title: "Sorumlusu olduğum iş paketleri"
         work_packages_assigned:
           title: 'Bana atanan iş paketleri'
         work_packages_created:

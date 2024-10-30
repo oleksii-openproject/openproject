@@ -1,5 +1,8 @@
 #English strings go here for Rails i18n
 sk:
+  plugin_openproject_bim:
+    name: "OpenProject BIM and BCF functionality"
+    description: "This OpenProject plugin introduces BIM and BCF functionality."
   bim:
     label_bim: 'BIM'
   bcf:
@@ -16,8 +19,6 @@ sk:
     x_bcf_issues:
       zero: 'No BCF issues'
       one: 'One BCF issue'
-      few: '%{count} BCF issues'
-      many: '%{count} BCF issues'
       other: '%{count} BCF issues'
     bcf_xml:
       xml_file: 'BCF XML File'
@@ -115,10 +116,12 @@ sk:
       check_1: 'Check that you have uploaded at least one IFC model.'
       check_2: 'Check that at least one IFC model is set to "Default".'
     no_results: "No IFC models have been uploaded in this project."
-    processing_state:
+    conversion_status:
       label: 'Processing?'
-      in_progress: 'Prebieha'
+      pending: 'Pending'
+      processing: 'Processing'
       completed: 'Completed'
+      error: 'Chyba'
     processing_notice:
       processing_default: 'The following default IFC models are still being processed and are thus not available, yet:'
     flash_messages:
@@ -131,4 +134,3 @@ sk:
   extraction:
     available:
       ifc_convert: "IFC conversion pipeline available"
-

@@ -1,6 +1,6 @@
 /*-- copyright
  * OpenProject is an open source project management software.
- * Copyright (C) 2012-2020 the OpenProject GmbH
+ * Copyright (C) the OpenProject GmbH
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License version 3.
@@ -23,8 +23,9 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * See docs/COPYRIGHT.rdoc for more details. ++*/
+ * See COPYRIGHT and LICENSE files for more details. ++*/
 
+$repository-entry-filename-margin-left: 24px
 
 div.changeset-changes ul
   list-style-type: none
@@ -92,17 +93,17 @@ li.change
 
   &::before
     content: '▸'
-    color: var(--gray-dark)
+    color: var(--fgColor-muted)
 
 table.filecontent
-  border: 1px solid #ccc
+  border: 1px solid var(--borderColor-default)
   border-collapse: collapse
   width: 98%
   background-color: #fafafa
   line-height: initial
 
   th
-    border: 1px solid #ccc
+    border: 1px solid var(--borderColor-default)
     background-color: #eee
     &.filename
       background-color: #e4e4d4
@@ -145,7 +146,7 @@ table.filecontent
   pre
     overflow: hidden
 
-// 12 different colors for the annonate view
+// 12 different colors for the annotate view
 table.annotate
   tr
     &.bloc-0
@@ -228,13 +229,13 @@ tr
       td
         &.filename
           a
-            margin-left: var(--repository-entry-filename-margin-left)
+            margin-left: $repository-entry-filename-margin-left
 
 tr
   &.entry
     &.truncation-warning
       td
-        div.notification-box
-          margin-left: var(--repository-entry-filename-margin-left)
+        div.op-toast
+          margin-left: $repository-entry-filename-margin-left
           margin-top: 0
           margin-bottom: 0

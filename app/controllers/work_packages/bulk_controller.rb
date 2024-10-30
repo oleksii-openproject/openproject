@@ -1,13 +1,12 @@
-#-- encoding: UTF-8
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -24,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 class WorkPackages::BulkController < ApplicationController
@@ -35,7 +34,8 @@ class WorkPackages::BulkController < ApplicationController
   include CustomFieldsHelper
   include RelationsHelper
   include QueriesHelper
-  include IssuesHelper
+
+  include WorkPackages::BulkErrorMessage
 
   def edit
     setup_edit
@@ -44,33 +44,20 @@ class WorkPackages::BulkController < ApplicationController
   def update
     @call = ::WorkPackages::Bulk::UpdateService
       .new(user: current_user, work_packages: @work_packages)
-      .call(params: params)
+      .call(attributes_for_update)
 
     if @call.success?
       flash[:notice] = t(:notice_successful_update)
-      redirect_back_or_default(controller: '/work_packages', action: :index, project_id: @project)
+      redirect_back_or_default(controller: "/work_packages", action: :index, project_id: @project)
     else
-      @bulk_errors = @call.errors
+      flash[:error] = bulk_error_message(@work_packages, @call)
       setup_edit
       render action: :edit
     end
   end
 
   def destroy
-    unless WorkPackage.cleanup_associated_before_destructing_if_required(@work_packages, current_user, params[:to_do])
-
-      respond_to do |format|
-        format.html do
-          render locals: { work_packages: @work_packages,
-                           associated: WorkPackage.associated_classes_to_address_before_destruction_of(@work_packages) }
-        end
-        format.json do
-          render json: { error_message: 'Clean up of associated objects required' }, status: 420
-        end
-      end
-
-    else
-
+    if WorkPackage.cleanup_associated_before_destructing_if_required(@work_packages, current_user, params[:to_do])
       destroy_work_packages(@work_packages)
 
       respond_to do |format|
@@ -81,31 +68,50 @@ class WorkPackages::BulkController < ApplicationController
           head :ok
         end
       end
+    else
+      respond_to do |format|
+        format.html do
+          render locals: { work_packages: @work_packages,
+                           associated: WorkPackage.associated_classes_to_address_before_destruction_of(@work_packages) }
+        end
+        format.json do
+          render json: { error_message: "Clean up of associated objects required" }, status: 420
+        end
+      end
     end
   end
 
   private
 
   def setup_edit
-    @available_statuses = @projects.map { |p| Workflow.available_statuses(p) }.inject { |memo, w| memo & w }
-    @custom_fields = @projects.map(&:all_work_package_custom_fields).inject { |memo, c| memo & c }
-    @assignables = @projects.map(&:possible_assignees).inject { |memo, a| memo & a }
-    @responsibles = @projects.map(&:possible_responsibles).inject { |memo, a| memo & a }
-    @types = @projects.map(&:types).inject { |memo, t| memo & t }
+    @available_statuses = @projects.map { |p| Workflow.available_statuses(p) }.inject(&:&)
+    @assignables = @responsibles = Principal.possible_assignee(@projects)
+    @types = @projects.map(&:types).inject(&:&)
+
+    # Display only the custom fields that are enabled on the projects and on types too.
+    @custom_fields =
+      @projects.map(&:all_work_package_custom_fields).inject(&:&) &
+      WorkPackageCustomField.joins(:types).where(types: @types)
   end
 
   def destroy_work_packages(work_packages)
     work_packages.each do |work_package|
-      begin
-        WorkPackages::DeleteService
-          .new(user: current_user,
-               model: work_package.reload)
-          .call
-      rescue ::ActiveRecord::RecordNotFound
-        # raised by #reload if work package no longer exists
-        # nothing to do, work package was already deleted (eg. by a parent)
-      end
+      WorkPackages::DeleteService
+        .new(user: current_user,
+             model: work_package.reload)
+        .call
+    rescue ::ActiveRecord::RecordNotFound
+      # raised by #reload if work package no longer exists
+      # nothing to do, work package was already deleted (eg. by a parent)
     end
+  end
+
+  def attributes_for_update
+    return {} unless params.has_key? :work_package
+
+    attributes = permitted_params.update_work_package
+    attributes[:custom_field_values] = transform_attributes(attributes[:custom_field_values])
+    transform_attributes(attributes)
   end
 
   def user
@@ -114,5 +120,11 @@ class WorkPackages::BulkController < ApplicationController
 
   def default_breadcrumb
     I18n.t(:label_work_package_plural)
+  end
+
+  def transform_attributes(attributes)
+    Hash(attributes)
+      .compact_blank
+      .transform_values { |v| Array(v).include?("none") ? "" : v }
   end
 end

@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,19 +23,19 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'story'
-require 'task'
+require "story"
+require "task"
 
 module OpenProject::Backlogs
   class WorkPackageFilter < ::Queries::WorkPackages::Filter::WorkPackageFilter
     def allowed_values
-      [[I18n.t(:story, scope: [:backlogs]), 'story'],
-       [I18n.t(:task, scope: [:backlogs]), 'task'],
-       [I18n.t(:impediment, scope: [:backlogs]), 'impediment'],
-       [I18n.t(:any, scope: [:backlogs]), 'any']]
+      [[I18n.t("backlogs.story"), "story"],
+       [I18n.t("backlogs.task"), "task"],
+       [I18n.t("backlogs.impediment"), "impediment"],
+       [I18n.t("backlogs.any"), "any"]]
     end
 
     def available?
@@ -51,10 +51,6 @@ module OpenProject::Backlogs
       sql_for_field(values)
     end
 
-    def order
-      20
-    end
-
     def type
       :list
     end
@@ -64,7 +60,7 @@ module OpenProject::Backlogs
     end
 
     def dependency_class
-      '::API::V3::Queries::Schemas::BacklogsTypeDependencyRepresenter'
+      "::API::V3::Queries::Schemas::BacklogsTypeDependencyRepresenter"
     end
 
     def ar_object_filter?
@@ -75,8 +71,7 @@ module OpenProject::Backlogs
       available_backlog_types = allowed_values.index_by(&:last)
 
       values
-        .map { |backlog_type_id| available_backlog_types[backlog_type_id] }
-        .compact
+        .filter_map { |backlog_type_id| available_backlog_types[backlog_type_id] }
         .map { |value| BacklogsType.new(*value) }
     end
 
@@ -91,28 +86,28 @@ module OpenProject::Backlogs
     end
 
     def sql_for_field(values)
-      selected_values = if values.include?('any')
-                          ['story', 'task']
+      selected_values = if values.include?("any")
+                          ["story", "task"]
                         else
                           values
                         end
 
       sql_parts = selected_values.map do |val|
         case val
-        when 'story'
+        when "story"
           sql_for_story
-        when 'task'
+        when "task"
           sql_for_task
-        when 'impediment'
+        when "impediment"
           sql_for_impediment
         end
       end
 
       case operator
-      when '='
-        sql_parts.join(' OR ')
-      when '!'
-        'NOT (' + sql_parts.join(' OR ') + ')'
+      when "="
+        sql_parts.join(" OR ")
+      when "!"
+        "NOT (" + sql_parts.join(" OR ") + ")"
       end
     end
 
@@ -121,7 +116,7 @@ module OpenProject::Backlogs
     end
 
     def sql_for_story
-      story_types = Story.types.map(&:to_s).join(',')
+      story_types = Story.types.map(&:to_s).join(",")
 
       "(#{db_table}.type_id IN (#{story_types}))"
     end

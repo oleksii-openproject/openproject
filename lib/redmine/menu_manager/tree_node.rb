@@ -1,13 +1,12 @@
-#-- encoding: UTF-8
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -24,10 +23,10 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'tree' # gem install rubytree
+require "tree" # gem install rubytree
 
 class Redmine::MenuManager::TreeNode < Tree::TreeNode
   attr_reader :last_items_count
@@ -41,9 +40,9 @@ class Redmine::MenuManager::TreeNode < Tree::TreeNode
   # parent is set to be the receiver.  The child is added as the first child in
   # the current list of children for the receiver node.
   def prepend(child)
-    raise(ArgumentError, 'Child already added') if @children_hash.has_key?(child.name)
+    raise(ArgumentError, "Child already added") if @children_hash.has_key?(child.name)
 
-    @children_hash[child.name]  = child
+    @children_hash[child.name] = child
     @children = [child] + @children
     child.parent = self
     child
@@ -53,18 +52,18 @@ class Redmine::MenuManager::TreeNode < Tree::TreeNode
   # parent is set to be the receiver.  The child is added at the position
   # into the current list of children for the receiver node.
   def add_at(child, position)
-    raise(ArgumentError, 'Child already added') if @children_hash.has_key?(child.name)
+    raise(ArgumentError, "Child already added") if @children_hash.has_key?(child.name)
 
-    @children_hash[child.name]  = child
+    @children_hash[child.name] = child
     @children = @children.insert(position, child)
     child.parent = self
     child
   end
 
   def add_last(child)
-    raise(ArgumentError, 'Child already added') if @children_hash.has_key?(child.name)
+    raise(ArgumentError, "Child already added") if @children_hash.has_key?(child.name)
 
-    @children_hash[child.name]  = child
+    @children_hash[child.name] = child
     @children << child
     @last_items_count += 1
     child.parent = self
@@ -75,7 +74,7 @@ class Redmine::MenuManager::TreeNode < Tree::TreeNode
   # parent is set to be the receiver.  The child is added as the last child in
   # the current list of children for the receiver node.
   def add(child)
-    raise(ArgumentError, 'Child already added') if @children_hash.has_key?(child.name)
+    raise(ArgumentError, "Child already added") if @children_hash.has_key?(child.name)
 
     @children_hash[key!(child)] = child
     position = @children.size - @last_items_count
@@ -84,7 +83,7 @@ class Redmine::MenuManager::TreeNode < Tree::TreeNode
     child
   end
 
-  # Wrapp remove! making sure to decrement the last_items counter if
+  # Wrap remove! making sure to decrement the last_items counter if
   # the removed child was a last item
   def remove!(child)
     @last_items_count -= +1 if child && child.last
@@ -110,7 +109,7 @@ class Redmine::MenuManager::TreeNode < Tree::TreeNode
       name = deduplicate(child.name, @children_hash.keys.map(&:to_s))
       child.caption = "#{child.caption} (#{I18n.t(:label_duplicate)})"
 
-      child.name = name.to_url
+      child.name = WikiPage.slug(name)
     else
       child.name
     end

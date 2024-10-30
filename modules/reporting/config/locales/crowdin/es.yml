@@ -1,10 +1,10 @@
 #-- copyright
 #OpenProject is an open source project management software.
-#Copyright (C) 2012-2020 the OpenProject GmbH
+#Copyright (C) the OpenProject GmbH
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License version 3.
 #OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-#Copyright (C) 2006-2017 Jean-Philippe Lang
+#Copyright (C) 2006-2013 Jean-Philippe Lang
 #Copyright (C) 2010-2013 the ChiliProject Team
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License
@@ -17,10 +17,13 @@
 #You should have received a copy of the GNU General Public License
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-#See docs/COPYRIGHT.rdoc for more details.
+#See COPYRIGHT and LICENSE files for more details.
 #++
 es:
-  button_save_as: "Guardar informe como..."
+  plugin_openproject_reporting:
+    name: "Informes de OpenProject"
+    description: "Este plug-in permite crear reportes de costos personalizados con filtrado y agrupación creados por los plug-ins OpenProject Time y costes."
+  button_save_report_as: "Guardar informe como..."
   comments: "Comentario"
   cost_reports_title: "Tiempo y costos"
   label_cost_report: "Informe costo"
@@ -38,12 +41,13 @@ es:
   label_entry: "Entrada de costo"
   label_filter_text: "Filtrar texto"
   label_filter_value: "Valor"
-  label_filters: "Filtro"
+  label_filters: "Filtrar"
   label_greater: ">"
   label_is_not_project_with_subprojects: "no (incluye subproyectos)"
   label_is_project_with_subprojects: "es (incluye subproyectos)"
   label_work_package_attributes: "Atributos del paquetes de trabajo"
   label_less: "<"
+  label_logged_by_reporting: "Registrado por"
   label_money: "Valor en efectivo"
   label_month_reporting: "Mes (pasado)"
   label_new_report: "Nuevo informe de costo"
@@ -60,6 +64,18 @@ es:
   label_units: "Unidades"
   label_week_reporting: "Semana (pasada)"
   label_year_reporting: "Año (pasado)"
+  label_count: "Contador"
+  label_filter: "Filtro"
+  label_filter_add: "Añadir filtro"
+  label_filter_plural: "Filtros"
+  label_group_by: "Agrupar por"
+  label_group_by_add: "Añadir atributo de agrupación"
+  label_inactive: "«inactivo»"
+  label_no: "No"
+  label_none: "(sin datos)"
+  label_no_reports: "Todavía no hay reportes de costes"
+  label_report: "Informe"
+  label_yes: "Sí"
   load_query_question: "El informe tendrá %{size} celdas de tabla y puede tardar algún tiempo en generarse. ¿Desea generarlo de todas formas?"
   permission_save_cost_reports: "Guardar informes de costos públicos"
   permission_save_private_cost_reports: "Guardar informes de costos privados"
@@ -69,3 +85,10 @@ es:
   units: "Unidades"
   validation_failure_date: "no es una fecha válida"
   validation_failure_integer: "no es un entero válido"
+  export:
+    cost_reports:
+      title: "Su exportación de informes de costes XLS"
+  reporting:
+    group_by:
+      selected_columns: "Columnas seleccionadas"
+      selected_rows: "Filas seleccionadas"

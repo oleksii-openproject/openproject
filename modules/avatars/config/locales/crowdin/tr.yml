@@ -1,5 +1,9 @@
 #English strings go here
 tr:
+  plugin_openproject_avatars:
+    name: "Avatarlar"
+    description: >-
+      This plugin allows OpenProject users to upload a picture to be used as an avatar or use registered images from Gravatar.
   label_avatar: "Avatar"
   label_avatar_plural: "Avatarlar"
   label_current_avatar: "Mevcut Avatar"
@@ -7,7 +11,6 @@ tr:
   message_avatar_uploaded: "Avatar başarıyla değiştirildi."
   error_image_upload: "Resim kaydedilirken hata oluştu."
   error_image_size: "Resim çok büyük."
-  button_change_avatar: "Avatarı değiştir"
   are_you_sure_delete_avatar: "Avatarını silmek istediğinden emin misin?"
   avatar_deleted: "Avatar başarıyla silindi."
   unable_to_delete_avatar: "Avatar silinemedi."
@@ -35,6 +38,3 @@ tr:
       enable_gravatars: 'Kullanıcı gravatarlarını etkinleştir'
       gravatar_default: "Varsayılan Gravatar resmi"
       enable_local_avatars: 'Kullanıcı özel avatarları etkinleştir'
-
-
-

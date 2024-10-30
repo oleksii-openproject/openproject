@@ -1,13 +1,12 @@
-#-- encoding: UTF-8
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -24,20 +23,19 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 class Authorization::AbstractQuery
   class_attribute :model
   class_attribute :base_table
 
-  def self.query(*args)
-    arel = transformed_query(*args)
+  def self.query(*)
+    arel = transformed_query(*)
 
     model.unscoped
          .joins(joins(arel))
          .where(wheres(arel))
-         .distinct
   end
 
   def self.base_query
@@ -46,8 +44,8 @@ class Authorization::AbstractQuery
       .from(base_table || model.arel_table)
   end
 
-  def self.transformed_query(*args)
-    run_transformations(*args)
+  def self.transformed_query(*)
+    run_transformations(*)
   end
 
   class_attribute :transformations
@@ -61,8 +59,8 @@ class Authorization::AbstractQuery
   def self.run_transformations(*args)
     query = base_query
 
-    transformator = Authorization::QueryTransformationVisitor.new(transformations: transformations,
-                                                                  args: args)
+    transformator = Authorization::QueryTransformationVisitor.new(transformations:,
+                                                                  args:)
 
     transformator.accept(query)
 

@@ -1,8 +1,7 @@
 module Webhooks
   module Outgoing
     class UpdateWebhookService
-      attr_reader :current_user
-      attr_reader :webhook
+      attr_reader :current_user, :webhook
 
       def initialize(webhook, current_user:)
         @current_user = current_user
@@ -12,10 +11,10 @@ module Webhooks
       def call(attributes: {})
         ::Webhooks::Webhook.transaction do
           set_attributes attributes
-          raise ActiveRecord::Rollback unless (webhook.errors.empty? && webhook.save)
+          raise ActiveRecord::Rollback unless webhook.errors.empty? && webhook.save
         end
 
-        ServiceResult.new success: webhook.errors.empty? , errors: webhook.errors, result: webhook
+        ServiceResult.new success: webhook.errors.empty?, errors: webhook.errors, result: webhook
       end
 
       private
@@ -36,7 +35,7 @@ module Webhooks
         option = params.delete :project_ids
         selected = params.delete :selected_project_ids
 
-        if option == 'all'
+        if option == "all"
           webhook.all_projects = true
         else
           webhook.all_projects = false

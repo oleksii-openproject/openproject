@@ -6,8 +6,11 @@
   &.ck-editor__editable_inline
     padding-left: 2px !important
 
+  .ck-content .table table th
+    @include op-uc-table-header-styles
+
 // Wrapper for full text element
-ckeditor-augmented-textarea .op-ckeditor--wrapper
+opce-ckeditor-augmented-textarea .op-ckeditor--wrapper
   margin-bottom: 2rem
 
 // Ensure same border and min-height for preview
@@ -90,20 +93,20 @@ ckeditor-augmented-textarea .op-ckeditor--wrapper
   .document-editor__toolbar
     position: sticky
     top: 0px
-    z-index: 1
+    z-index: 2
 
-    // Adjust top offset to match if globally
-    // scrolling (content-wrapper)
-    .ckeditor--content-scrollable &,
-    .form--field.-visible-overflow &
-      top: -10px
+    // Reset these styles explicitly when the editor is opened inside a Dialog, as position: sticky opens a separate stacking context.
+    // In case the dialog has multiple editors below each other, these different context interfere and the paragraph dropdown of an editor will be behind the editor below it.
+    // See: WP#53724
+    dialog &
+      position: initial
+      z-index: auto
 
   .ck.ck-toolbar.ck-rounded-corners
     border-bottom-left-radius: 0
     border-bottom-right-radius: 0
 
   .document-editor__editable-container
-    overflow-y: auto
     border: 1px solid var(--ck-color-base-border)
     border-top: none
     border-radius: var(--ck-border-radius)
@@ -114,25 +117,14 @@ ckeditor-augmented-textarea .op-ckeditor--wrapper
       .-large-height &
         min-height: 250px
 
-// todolist override global label style
-label.todo-list__label
-  margin-bottom: 0
-  display: initial
-  font-size: initial
-  float: left
-  width: 0
-
-  > input
-    margin-top: 0
-
-// todolist list-style
-.ck-editor__editable .todo-list
-  margin-bottom: 0
-  li
-    list-style: none
-    word-break: break-word
-
 .ck-editor__editable[dir="rtl"]
   ol, ul
     margin-left: 0
     margin-right: 40px
+
+.ck tr .ck-editor__nested-editable
+  border: 1px solid var(--ck-color-base-border)
+
+.ck-icon_inherit-color
+  path
+    fill: var(--body-font-color) !important

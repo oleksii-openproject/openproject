@@ -12,6 +12,8 @@ fr:
       show_viewpoint: 'Afficher le point de vue'
       delete_viewpoint: 'Supprimer le point de vue'
       management: 'Gestion BCF'
+      refresh: 'Actualiser'
+      refresh_work_package: 'Actualiser le lot de travaux'
     ifc_models:
       empty_warning: "Ce projet n'a encore de modèle IFC pour le moment"
       use_this_link_to_manage: "Utilisez ce lien pour téléverser et gérer vos modèles IFC"
@@ -20,7 +22,7 @@ fr:
         ifc_models: 'Modèles IFC'
       views:
         viewer: 'Visionneuse'
-        split: 'Visionneuse et table'
+        split: 'Visionneuse et tableau'
         split_cards: 'Visionneuse et cartes'
     revit:
       revit_add_in: "Module complémentaire Revit"

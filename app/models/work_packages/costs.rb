@@ -1,14 +1,12 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -25,14 +23,14 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module WorkPackages::Costs
   extend ActiveSupport::Concern
 
   included do
-    belongs_to :budget, inverse_of: :work_packages
+    belongs_to :budget, inverse_of: :work_packages, optional: true
     has_many :cost_entries, dependent: :delete_all
 
     # disabled for now, implements part of ticket blocking
@@ -49,10 +47,8 @@ module WorkPackages::Costs
     end
 
     def validate_budget
-      if budget_id_changed?
-        unless budget_id.blank? || project.budget_ids.include?(budget_id)
-          errors.add :budget, :inclusion
-        end
+      if budget_id_changed? && !(budget_id.blank? || project.budget_ids.include?(budget_id))
+        errors.add :budget, :inclusion
       end
     end
 
@@ -87,29 +83,29 @@ module WorkPackages::Costs
 
       CostEntry
         .where(work_package_id: id)
-        .update_all(project_id: project_id)
+        .update_all(project_id:)
     end
   end
 
   class_methods do
     protected
 
-    def cleanup_cost_entries_before_destruction_of(work_packages, user, to_do = { action: 'destroy' })
+    def cleanup_cost_entries_before_destruction_of(work_packages, user, to_do = { action: "destroy" })
       work_packages = Array(work_packages)
 
       return false unless to_do.present?
 
       case to_do[:action]
-      when 'destroy'
+      when "destroy"
         true
         # nothing to do
-      when 'nullify'
+      when "nullify"
         work_packages.each do |wp|
           wp.errors.add(:base, :nullify_is_not_valid_for_cost_entries)
         end
 
         false
-      when 'reassign'
+      when "reassign"
         reassign_cost_entries_before_destruction(work_packages, user, to_do[:reassign_to_id])
       else
         false

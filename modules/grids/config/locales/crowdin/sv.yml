@@ -1,4 +1,6 @@
 sv:
+  grids:
+    label_widget_in_grid: "Widget som finns i rutnät %{grid_name}"
   activerecord:
     attributes:
       grids/grid:

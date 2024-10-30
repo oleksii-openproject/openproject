@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,18 +23,17 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'spec_helper'
+require "spec_helper"
 
-describe Bim::Bcf::API::V2_1::Viewpoints::SingleRepresenter, 'rendering' do
+RSpec.describe Bim::Bcf::API::V2_1::Viewpoints::SingleRepresenter, "rendering" do
   let(:struct) do
     OpenStruct.new
   end
   let(:hash) do
-    FactoryBot
-      .attributes_for(:bcf_viewpoint)[:json_viewpoint]
+    attributes_for(:bcf_viewpoint)[:json_viewpoint]
       .merge(
         "snapshot" =>
           {
@@ -85,7 +84,7 @@ describe Bim::Bcf::API::V2_1::Viewpoints::SingleRepresenter, 'rendering' do
 
   subject { representer.from_hash(hash).to_h.to_json }
 
-  shared_examples_for 'parses' do |attribute|
+  shared_examples_for "parses" do |attribute|
     it attribute do
       expect(subject)
         .to be_json_eql(hash[attribute].to_json)
@@ -93,24 +92,24 @@ describe Bim::Bcf::API::V2_1::Viewpoints::SingleRepresenter, 'rendering' do
     end
   end
 
-  it 'does not parse uuid' do
+  it "does not parse uuid" do
     expect(subject)
-      .not_to have_json_path('guid')
+      .not_to have_json_path("guid")
   end
 
-  it_behaves_like 'parses', 'index'
+  it_behaves_like "parses", "index"
 
-  it_behaves_like 'parses', 'orthogonal_camera'
+  it_behaves_like "parses", "orthogonal_camera"
 
-  it_behaves_like 'parses', 'perspective_camera'
+  it_behaves_like "parses", "perspective_camera"
 
-  it_behaves_like 'parses', 'lines'
+  it_behaves_like "parses", "lines"
 
-  it_behaves_like 'parses', 'clipping_planes'
+  it_behaves_like "parses", "clipping_planes"
 
-  it_behaves_like 'parses', 'bitmaps' # in order to throw a not writable error)
+  it_behaves_like "parses", "bitmaps" # in order to throw a not writable error)
 
-  it_behaves_like 'parses', 'snapshot'
+  it_behaves_like "parses", "snapshot"
 
-  it_behaves_like 'parses', 'components'
+  it_behaves_like "parses", "components"
 end

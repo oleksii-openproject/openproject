@@ -1,12 +1,12 @@
 <%#-- copyright
 OpenProject is an open source project management software.
-Copyright (C) 2012-2020 the OpenProject GmbH
+Copyright (C) the OpenProject GmbH
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License version 3.
 
 OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-Copyright (C) 2006-2017 Jean-Philippe Lang
+Copyright (C) 2006-2013 Jean-Philippe Lang
 Copyright (C) 2010-2013 the ChiliProject Team
 
 This program is free software; you can redistribute it and/or
@@ -23,29 +23,13 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-See docs/COPYRIGHT.rdoc for more details.
+See COPYRIGHT and LICENSE files for more details.
 
 ++#%>
 
 <%= error_messages_for 'color' %>
 
-<%= toolbar title: (color.new_record? ? t('timelines.new_color') : t('timelines.edit_color')) do %>
-  <% if color.persisted? %>
-  <li class="toolbar-item">
-    <%= link_to color_path(color),
-                method: :delete,
-                data: { confirm: t('text_are_you_sure') },
-                class: "button -danger" do %>
-      <%= op_icon 'button--icon icon-delete' %>
-      <span class="button--text"><%= t :button_delete %></span>
-    <% end %>
-  </li>
-  <% end %>
-<% end %>
-
 <fieldset class="form--fieldset">
-  <legend class="form--fieldset-legend"><%= t('timelines.properties') %></legend>
-
   <div class="form--field -required">
     <%= f.text_field :name, required: true, container_class: '-slim' %>
   </div>
@@ -64,5 +48,5 @@ See docs/COPYRIGHT.rdoc for more details.
   </div>
 </fieldset>
 
-<%= styled_button_tag t(:button_save), class: '-highlight -with-icon icon-checkmark' %>
+<%= styled_button_tag t(:button_save), class: '-primary -with-icon icon-checkmark' %>
 <%= link_to t(:button_cancel), colors_path, class: 'button -with-icon icon-cancel' %>

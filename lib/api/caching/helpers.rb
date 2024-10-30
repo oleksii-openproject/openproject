@@ -3,9 +3,9 @@ module API
     module Helpers
       def with_etag!(key)
         etag = %(W/"#{::Digest::SHA1.hexdigest(key.to_s)}")
-        error!('Not Modified'.freeze, 304) if headers['If-None-Match'.freeze] == etag
+        error!("Not Modified".freeze, 304) if headers["If-None-Match".freeze] == etag
 
-        header 'ETag'.freeze, etag
+        header "ETag".freeze, etag
       end
 
       ##
@@ -14,10 +14,10 @@ module API
         # Save serialization since we're only dealing with strings here
         args[:raw] = true
 
-        json = Rails.cache.fetch(key, args) {
+        json = Rails.cache.fetch(key, args) do
           result = yield
           result.to_json
-        }
+        end
 
         ::API::Caching::StoredRepresenter.new json
       end

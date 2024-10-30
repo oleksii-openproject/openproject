@@ -1,8 +1,6 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -25,19 +23,17 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 
-require 'spec_helper'
+require "spec_helper"
 
-describe 'GET /api/v3/users',
-         :with_clean_fixture,
-         type: :request do
+RSpec.describe "GET /api/v3/users" do
   let!(:users) do
     [
-      FactoryBot.create(:admin, login: 'admin', status: Principal::STATUSES[:active]),
-      FactoryBot.create(:user, login: 'h.wurst', status: Principal::STATUSES[:active]),
-      FactoryBot.create(:user, login: 'h.heine', status: Principal::STATUSES[:locked]),
-      FactoryBot.create(:user, login: 'm.mario', status: Principal::STATUSES[:active])
+      create(:admin, login: "admin", status: :active),
+      create(:user, login: "h.wurst", status: :active),
+      create(:user, login: "h.heine", status: :locked),
+      create(:user, login: "m.mario", status: :active)
     ]
   end
 
@@ -63,31 +59,31 @@ describe 'GET /api/v3/users',
     Array(Hash(json).dig("_embedded", "elements")).map { |e| e["login"] }
   end
 
-  describe 'status filter' do
-    it '=' do
-      expect(filter_users("status", "=", :active)).to match_array ["admin", "h.wurst", "m.mario"]
+  describe "status filter" do
+    it "=" do
+      expect(filter_users("status", "=", :active)).to contain_exactly("admin", "h.wurst", "m.mario")
     end
 
-    it '!' do
-      expect(filter_users("status", "!", :active)).to match_array ["h.heine"]
+    it "!" do
+      expect(filter_users("status", "!", :active)).to contain_exactly("h.heine")
     end
   end
 
-  describe 'login filter' do
-    it '=' do
-      expect(filter_users("login", "=", "admin")).to match_array ["admin"]
+  describe "login filter" do
+    it "=" do
+      expect(filter_users("login", "=", "admin")).to contain_exactly("admin")
     end
 
-    it '!' do
-      expect(filter_users("login", "!", "admin")).to match_array ["h.wurst", "h.heine", "m.mario"]
+    it "!" do
+      expect(filter_users("login", "!", "admin")).to contain_exactly("h.wurst", "h.heine", "m.mario")
     end
 
-    it '~' do
-      expect(filter_users("login", "~", "h.")).to match_array ["h.wurst", "h.heine"]
+    it "~" do
+      expect(filter_users("login", "~", "h.")).to contain_exactly("h.wurst", "h.heine")
     end
 
-    it '!~' do
-      expect(filter_users("login", "!~", "h.")).to match_array ["admin", "m.mario"]
+    it "!~" do
+      expect(filter_users("login", "!~", "h.")).to contain_exactly("admin", "m.mario")
     end
   end
 end

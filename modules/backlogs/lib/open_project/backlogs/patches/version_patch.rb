@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,10 +23,8 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
-
-require_dependency 'version'
 
 module OpenProject::Backlogs::Patches::VersionPatch
   def self.included(base)
@@ -39,25 +37,27 @@ module OpenProject::Backlogs::Patches::VersionPatch
   end
 
   module InstanceMethods
-    def rebuild_positions(project = self.project)
+    def rebuild_story_positions(project = self.project)
       return unless project.backlogs_enabled?
 
       WorkPackage.transaction do
         # Remove position from all non-stories
-        WorkPackage.where(['project_id = ? AND type_id NOT IN (?) AND position IS NOT NULL', project, Story.types])
+        WorkPackage.where(["project_id = ? AND type_id NOT IN (?) AND position IS NOT NULL", project, Story.types])
           .update_all(position: nil)
 
+        rebuild_positions(work_packages.where(project_id: project), Story.types)
+      end
+
+      nil
+    end
+
+    def rebuild_task_positions(task)
+      return unless task.project.backlogs_enabled?
+
+      WorkPackage.transaction do
         # Add work_packages w/o position to the top of the list and add
         # work_packages, that have a position, at the end
-        stories_wo_position = work_packages.where(project_id: project, type_id: Story.types, position: nil).order(Arel.sql('id'))
-
-        stories_w_position = work_packages.where(project_id: project, type_id: Story.types)
-                                         .where('position IS NOT NULL')
-                                         .order(Arel.sql('COALESCE(position, 0), id'))
-
-        (stories_w_position + stories_wo_position).each_with_index do |story, index|
-          story.update_column(:position, index + 1)
-        end
+        rebuild_positions(task.story.children.where(project_id: task.project), Task.type)
       end
 
       nil
@@ -65,19 +65,33 @@ module OpenProject::Backlogs::Patches::VersionPatch
 
     def ==(other)
       super ||
-        other.is_a?(self.class) &&
+        (other.is_a?(self.class) &&
           id.present? &&
-          other.id == id
+          other.id == id)
     end
 
     def eql?(other)
       self == other
     end
 
-    def hash
-      id.hash
+    delegate :hash, to: :id
+
+    def rebuild_positions(scope, type_ids)
+      wo_position = scope
+                      .where(type_id: type_ids,
+                             position: nil)
+                      .order(Arel.sql("id"))
+
+      w_position = scope
+                     .where(type_id: type_ids)
+                     .where.not(position: nil)
+                     .order(Arel.sql("COALESCE(position, 0), id"))
+
+      (w_position + wo_position).each_with_index do |work_package, index|
+        work_package.update_column(:position, index + 1)
+      end
     end
   end
 end
 
-Version.send(:include, OpenProject::Backlogs::Patches::VersionPatch)
+Version.include OpenProject::Backlogs::Patches::VersionPatch

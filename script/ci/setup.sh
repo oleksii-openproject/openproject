@@ -1,8 +1,7 @@
 #!/bin/bash
-#-- encoding: UTF-8
 #-- copyright
 # OpenProject is a project management system.
-# Copyright (C) 2012-2015 the OpenProject Foundation (OPF)
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -45,20 +44,16 @@ run() {
 
 run "bash $(dirname $0)/db_setup.sh"
 
-# run migrations for mysql or postgres
+# run migrations for postgres
+# setup binstubs
 if [ $1 != 'npm' ]; then
+  run "bundle binstubs parallel_tests"
   run "bundle exec rake db:migrate"
 fi
 
 if [ $1 = 'npm' ]; then
-  run "for i in {1..3}; do npm install && break || sleep 15; done"
+  run "for i in {1..3}; do (cd frontend; npm install && break || sleep 15;) done"
   echo "No asset compilation required"
-fi
-
-if [ $1 = 'units' ]; then
-  # Install pandoc for testing textile migration
-  run "sudo apt-get update -qq"
-  run "sudo apt-get install -qq pandoc"
 fi
 
 if [ ! -f "public/assets/frontend_assets.manifest.json" ]; then

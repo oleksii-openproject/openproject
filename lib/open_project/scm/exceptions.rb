@@ -1,13 +1,12 @@
-#-- encoding: UTF-8
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -24,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 module OpenProject
   module SCM
@@ -43,9 +42,7 @@ module OpenProject
 
       # Exception marking an error in the execution of a local command.
       class CommandFailed < SCMError
-        attr_reader :program
-        attr_reader :message
-        attr_reader :stderr
+        attr_reader :program, :message, :stderr
 
         # Create a +CommandFailed+ exception for the executed program (e.g., 'svn'),
         # and a meaningful error message
@@ -68,7 +65,7 @@ module OpenProject
 
       # a localized exception raised when SCM could be accessed
       class SCMUnavailable < SCMError
-        def initialize(key = 'unavailable')
+        def initialize(key = "unavailable")
           @error = I18n.t("repositories.errors.#{key}")
         end
 
@@ -80,13 +77,14 @@ module OpenProject
       # raised if SCM could not be accessed due to authorization failure
       class SCMUnauthorized < SCMUnavailable
         def initialize
-          super('unauthorized')
+          super("unauthorized")
         end
       end
+
       # raised when encountering an empty (bare) repository
       class SCMEmpty < SCMUnavailable
         def initialize
-          super('empty_repository')
+          super("empty_repository")
         end
       end
     end

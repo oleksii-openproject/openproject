@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,13 +23,13 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 class CostType < ApplicationRecord
   has_many :material_budget_items
   has_many :cost_entries, dependent: :destroy
-  has_many :rates, class_name: 'CostRate', foreign_key: 'cost_type_id', dependent: :destroy
+  has_many :rates, class_name: "CostRate", dependent: :destroy
 
   validates_presence_of :name, :unit, :unit_plural
   validates_uniqueness_of :name
@@ -49,8 +49,8 @@ class CostType < ApplicationRecord
     default
   end
 
-  def <=>(cost_type)
-    name.downcase <=> cost_type.name.downcase
+  def <=>(other)
+    name.downcase <=> other.name.downcase
   end
 
   def current_rate
@@ -58,8 +58,8 @@ class CostType < ApplicationRecord
   end
 
   def rate_at(date)
-    CostRate.where(['cost_type_id = ? and valid_from <= ?', id, date])
-            .order(Arel.sql('valid_from DESC'))
+    CostRate.where(["cost_type_id = ? and valid_from <= ?", id, date])
+            .order(Arel.sql("valid_from DESC"))
             .first
   end
 

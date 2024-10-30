@@ -3,11 +3,12 @@ hu:
     grid:
       add_widget: 'Widget hozzáadása'
       remove: 'Widget eltávolítása'
-      configure: 'Configure widget'
+      configure: 'Widget konfigurálása'
       upsale:
-        text: "Néhány kütyü, például a munkacsomag-grafikon-kütyü, csak a"
-        link: 'enterprise edition.'
+        text: "Some widgets, like the work package graph widget, are only available in the Enterprise edition."
+        link: 'Enterprise edition.'
       widgets:
+        missing_permission: "Nincs meg a szükséges jogosultsága a widget megtekintéséhez."
         custom_text:
           title: 'Egyéni szöveg'
         documents:
@@ -26,21 +27,24 @@ hu:
         project_description:
           title: 'Projekt leírása'
           no_results: "Még nem írt leírást. Az egyik megtalálható a 'Projekt beállításai' részben."
-        project_details:
-          title: 'Projekt részletei'
-          no_results: 'A projektekhez nem definiáltak egyedi mezőket.'
         project_status:
           title: 'Projekt állapot'
+          not_started: 'El nem kezdett'
           on_track: 'Terv szerint'
           off_track: 'Kisiklott'
           at_risk: 'Veszélyben'
           not_set: 'Nincs beállítva'
+          finished: 'Befejezett'
+          discontinued: 'Megszakított'
         subprojects:
           title: 'Alprojektek'
           no_results: "Nincsenek alprojektek\n"
+        project_favorites:
+          title: 'Kedvenc projektek'
+          no_results: 'Jelenleg nincsenek kedvenc projektjei. Kattintson a csillag ikonra a projekt műszerfalon, hogy felvegyen egyet a kedvencei közé.'
         time_entries_current_user:
           title: 'Eltöltött idő rögzítése'
-          displayed_days: 'Days displayed in the widget:'
+          displayed_days: 'Napok megjelenítése a főoldalon.'
         time_entries_list:
           title: 'Eltöltött idő (elmúlt 7 nap)'
           no_results: 'Az elmúlt 7 napra nincs bejegyzés.'

@@ -1,13 +1,12 @@
-#-- encoding: UTF-8
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -24,28 +23,29 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 class UsersController < ApplicationController
-  layout 'admin'
+  layout "admin"
 
-  helper_method :gon
+  before_action :authorize_global, except: %i[show deletion_info destroy]
 
-  before_action :require_admin, except: [:show, :deletion_info, :destroy]
-  before_action :find_user, only: [:show,
-                                   :edit,
-                                   :update,
-                                   :change_status_info,
-                                   :change_status,
-                                   :destroy,
-                                   :deletion_info,
-                                   :resend_invitation]
+  before_action :find_user, only: %i[show
+                                     edit
+                                     update
+                                     change_status_info
+                                     change_status
+                                     destroy
+                                     deletion_info
+                                     resend_invitation]
   # should also contain destroy but post data can not be redirected
   before_action :require_login, only: [:deletion_info]
   before_action :authorize_for_user, only: [:destroy]
-  before_action :check_if_deletion_allowed, only: [:deletion_info,
-                                                   :destroy]
+  before_action :check_if_deletion_allowed, only: %i[deletion_info
+                                                     destroy]
+  no_authorization_required! :show
+  authorization_checked! :destroy, :deletion_info
 
   # Password confirmation helpers and actions
   include PasswordConfirmation
@@ -61,99 +61,48 @@ class UsersController < ApplicationController
 
   def index
     @groups = Group.all.sort
-    @status = Users::UserFilterCell.status_param params
-    @users = Users::UserFilterCell.filter params
-
-    respond_to do |format|
-      format.html do
-        render layout: !request.xhr?
-      end
-    end
+    @status = Users::UserFilterComponent.status_param params
+    @users = Users::UserFilterComponent.filter params
   end
 
   def show
-    # show projects based on current user visibility
-    @memberships = @user.memberships
-                        .visible(current_user)
-
-    events = Activities::Fetcher.new(User.current, author: @user).events(nil, nil, limit: 10)
-    @events_by_day = events.group_by { |e| e.event_datetime.to_date }
-
-    if !User.current.admin? &&
-       (!(@user.active? ||
-       @user.registered?) ||
-       (@user != User.current && @memberships.empty? && events.empty?))
-      render_404
+    if can_show_user?
+      render layout: (can_manage_or_create_users? ? "admin" : "no_menu")
     else
-      respond_to do |format|
-        format.html { render layout: 'no_menu' }
-      end
+      render_404
     end
   end
 
   def new
-    @user = User.new(language: Setting.default_language,
-                     mail_notification: Setting.default_notification_option)
-    @auth_sources = AuthSource.all
-  end
-
-  def create
-    @user = User.new(language: Setting.default_language,
-                     mail_notification: Setting.default_notification_option)
-    @user.attributes = permitted_params.user_create_as_admin(false, @user.change_password_allowed?)
-    @user.admin = params[:user][:admin] || false
-    @user.login = params[:user][:login] || @user.mail
-
-    if UserInvitation.invite_user! @user
-      respond_to do |format|
-        format.html do
-          flash[:notice] = I18n.t(:notice_successful_create)
-          redirect_to(params[:continue] ? new_user_path : edit_user_path(@user))
-        end
-      end
-    else
-      @auth_sources = AuthSource.all
-
-      respond_to do |format|
-        format.html { render action: 'new' }
-      end
-    end
+    @user = User.new(language: Setting.default_language)
   end
 
   def edit
-    @auth_sources = AuthSource.all
     @membership ||= Member.new
+    @individual_principal = @user
+  end
+
+  def create
+    call = Users::CreateService
+           .new(user: current_user)
+           .call(create_params)
+
+    @user = call.result
+
+    if call.success?
+      flash[:notice] = I18n.t(:notice_successful_create)
+      redirect_to(params[:continue] ? new_user_path : helpers.allowed_management_user_profile_path(@user))
+    else
+      render action: "new"
+    end
   end
 
   def update
-    @user.attributes = permitted_params.user_create_as_admin(@user.uses_external_authentication?,
-                                                             @user.change_password_allowed?)
+    update_params = build_user_update_params
+    call = ::Users::UpdateService.new(model: @user, user: current_user).call(update_params)
 
-    if @user.change_password_allowed?
-      if params[:user][:assign_random_password]
-        @user.random_password!
-      elsif set_password? params
-        @user.password = params[:user][:password]
-        @user.password_confirmation = params[:user][:password_confirmation]
-      end
-    end
-
-    pref_params = if params[:pref].present?
-                    permitted_params.pref
-                  else
-                    {}
-                  end
-
-    if @user.save
-      update_email_service = UpdateUserEmailSettingsService.new(@user)
-      update_email_service.call(mail_notification: pref_params.delete(:mail_notification),
-                                self_notified: params[:self_notified] == '1',
-                                notified_project_ids: params[:notified_project_ids])
-
-      @user.pref.attributes = pref_params
-      @user.pref.save
-
-      if !@user.password.blank? && @user.change_password_allowed?
+    if call.success?
+      if update_params[:password].present? && @user.change_password_allowed?
         send_information = params[:send_information]
 
         if @user.invited?
@@ -169,20 +118,20 @@ class UsersController < ApplicationController
         end
 
         if @user.active? && send_information
-          UserMailer.account_information(@user, @user.password).deliver_later
+          UserMailer.account_information(@user, update_params[:password]).deliver_later
         end
       end
 
       respond_to do |format|
         format.html do
           flash[:notice] = I18n.t(:notice_successful_update)
-          redirect_back(fallback_location: edit_user_path(@user))
+          render action: :edit
         end
       end
     else
-      @auth_sources = AuthSource.all
       @membership ||= Member.new
       # Clear password input
+      @user = call.result
       @user.password = @user.password_confirmation = nil
 
       respond_to do |format|
@@ -196,20 +145,20 @@ class UsersController < ApplicationController
   def change_status_info
     @status_change = params[:change_action].to_sym
 
-    return render_400 unless %i(activate lock unlock).include? @status_change
+    render_400 unless %i(activate lock unlock).include? @status_change
   end
 
   def change_status
     if @user.id == current_user.id
       # user is not allowed to change own status
-      redirect_back_or_default(action: 'edit', id: @user)
+      redirect_back_or_default(action: "edit", id: @user)
       return
     end
 
     if (params[:unlock] || params[:activate]) && user_limit_reached?
       show_user_limit_error!
 
-      return redirect_back_or_default(action: 'edit', id: @user)
+      return redirect_back_or_default(action: "edit", id: @user)
     end
 
     if params[:unlock]
@@ -221,28 +170,25 @@ class UsersController < ApplicationController
       @user.activate
     end
     # Was the account activated? (do it before User#save clears the change)
-    was_activated = (@user.status_change == [User::STATUSES[:registered],
-                                             User::STATUSES[:active]])
+    was_activated = (@user.status_change == %w[registered active])
 
     if params[:activate] && @user.missing_authentication_method?
-      flash[:error] = I18n.t(:error_status_change_failed,
-                             errors: I18n.t(:notice_user_missing_authentication_method),
-                             scope: :user)
+      flash[:error] = I18n.t("user.error_status_change_failed",
+                             errors: I18n.t(:notice_user_missing_authentication_method))
     elsif @user.save
       flash[:notice] = I18n.t(:notice_successful_update)
       if was_activated
         UserMailer.account_activated(@user).deliver_later
       end
     else
-      flash[:error] = I18n.t(:error_status_change_failed,
-                             errors: @user.errors.full_messages.join(', '),
-                             scope: :user)
+      flash[:error] = I18n.t("user.error_status_change_failed",
+                             errors: @user.errors.full_messages.join(", "))
     end
-    redirect_back_or_default(action: 'edit', id: @user)
+    redirect_back_or_default(action: "edit", id: @user)
   end
 
   def resend_invitation
-    status = Principal::STATUSES[:invited]
+    status = Principal.statuses[:invited]
     @user.update status: status if @user.status != status
 
     token = UserInvitation.reinvite_user @user.id
@@ -254,16 +200,16 @@ class UsersController < ApplicationController
       flash[:error] = I18n.t(:notice_internal_server_error, app_title: Setting.app_title)
     end
 
-    redirect_to edit_user_path(@user)
+    redirect_to helpers.allowed_management_user_profile_path(@user)
   end
 
   def destroy
     # true if the user deletes him/herself
     self_delete = (@user == User.current)
 
-    Users::DeleteService.new(@user, User.current).call
+    Users::DeleteService.new(model: @user, user: User.current).call
 
-    flash[:notice] = I18n.t('account.deleted')
+    flash[:notice] = I18n.t("account.deletion_pending")
 
     respond_to do |format|
       format.html do
@@ -273,13 +219,24 @@ class UsersController < ApplicationController
   end
 
   def deletion_info
-    render action: 'deletion_info', layout: my_or_admin_layout
+    render action: "deletion_info", layout: my_or_admin_layout, locals: { layout: my_or_admin_layout }
   end
 
   private
 
+  def can_show_user?
+    return true if can_manage_or_create_users?
+    return true if @user == User.current
+
+    @user.active? || @user.registered?
+  end
+
+  def can_manage_or_create_users?
+    current_user.allowed_globally?(:manage_user) || current_user.allowed_globally?(:create_user)
+  end
+
   def find_user
-    if params[:id] == 'current' || params['id'].nil?
+    if params[:id] == User::CURRENT_USER_LOGIN_ALIAS || params[:id].nil?
       require_login || return
       @user = User.current
     else
@@ -296,9 +253,9 @@ class UsersController < ApplicationController
 
       respond_to do |format|
         format.html { render_403 }
-        format.xml  { head :unauthorized, 'WWW-Authenticate' => 'Basic realm="OpenProject API"' }
-        format.js   { head :unauthorized, 'WWW-Authenticate' => 'Basic realm="OpenProject API"' }
-        format.json { head :unauthorized, 'WWW-Authenticate' => 'Basic realm="OpenProject API"' }
+        format.xml  { head :unauthorized, "WWW-Authenticate" => 'Basic realm="OpenProject API"' }
+        format.js   { head :unauthorized, "WWW-Authenticate" => 'Basic realm="OpenProject API"' }
+        format.json { head :unauthorized, "WWW-Authenticate" => 'Basic realm="OpenProject API"' }
       end
 
       false
@@ -306,16 +263,16 @@ class UsersController < ApplicationController
   end
 
   def check_if_deletion_allowed
-    render_404 unless Users::DeleteService.deletion_allowed? @user, User.current
+    render_404 unless Users::DeleteContract.deletion_allowed? @user, User.current
   end
 
   def my_or_admin_layout
     # TODO: how can this be done better:
     # check if the route used to call the action is in the 'my' namespace
     if url_for(:delete_my_account_info) == request.url
-      'my'
+      "my"
     else
-      'admin'
+      "admin"
     end
   end
 
@@ -325,15 +282,41 @@ class UsersController < ApplicationController
 
   protected
 
-  def default_breadcrumb
-    if action_name == 'index'
-      t('label_user_plural')
-    else
-      ActionController::Base.helpers.link_to(t('label_user_plural'), users_path)
-    end
+  def show_local_breadcrumb
+    false
   end
 
-  def show_local_breadcrumb
-    current_user.admin?
+  def build_user_update_params
+    pref_params = permitted_params.pref.to_h
+    update_params = permitted_params
+      .user_create_as_admin(@user.uses_external_authentication?, @user.change_password_allowed?)
+      .to_h
+      .merge(pref: pref_params)
+
+    return update_params unless @user.change_password_allowed?
+
+    if params[:user][:assign_random_password]
+      password = OpenProject::Passwords::Generator.random_password
+      update_params.merge!(
+        password:,
+        password_confirmation: password,
+        force_password_change: true
+      )
+    elsif set_password? params
+      update_params.merge!(
+        password: params[:user][:password],
+        password_confirmation: params[:user][:password_confirmation]
+      )
+    end
+
+    update_params
+  end
+
+  def create_params
+    permitted_params
+      .user_create_as_admin(false, false)
+      .merge(admin: params[:user][:admin] || false,
+             login: params[:user][:login] || params[:user][:mail],
+             status: User.statuses[:invited])
   end
 end

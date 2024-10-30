@@ -1,13 +1,12 @@
-#-- encoding: UTF-8
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -24,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 class Authorization::UserAllowedQuery < Authorization::AbstractUserQuery
@@ -52,7 +51,11 @@ class Authorization::UserAllowedQuery < Authorization::AbstractUserQuery
                                   has_role.and(has_permission)
                                 end
 
-      is_admin = users_table[:admin].eq(true)
+      is_admin = if OpenProject::AccessControl.grant_to_admin?(action)
+                   users_table[:admin].eq(true)
+                 else
+                   Arel::Nodes::Equality.new(1, 0)
+                 end
 
       statement.where(has_role_and_permission.or(is_admin))
     else
@@ -104,14 +107,14 @@ class Authorization::UserAllowedQuery < Authorization::AbstractUserQuery
 
   def self.anonymous_user_condition
     users_table[:type]
-      .eq('AnonymousUser')
+      .eq("AnonymousUser")
       .and(roles_table[:builtin].eq(Role::BUILTIN_ANONYMOUS))
   end
 
   def self.member_or_public_project_condition(id_equal)
     roles_table
       .grouping(users_table[:type]
-                .eq('User')
+                .eq("User")
                 .and(id_equal.or(no_membership_and_non_member_role_condition)))
       .or(anonymous_user_condition)
   end

@@ -1,10 +1,10 @@
 #-- copyright
 #OpenProject is an open source project management software.
-#Copyright (C) 2012-2020 the OpenProject GmbH
+#Copyright (C) the OpenProject GmbH
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License version 3.
 #OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-#Copyright (C) 2006-2017 Jean-Philippe Lang
+#Copyright (C) 2006-2013 Jean-Philippe Lang
 #Copyright (C) 2010-2013 the ChiliProject Team
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License
@@ -17,13 +17,16 @@
 #You should have received a copy of the GNU General Public License
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-#See docs/COPYRIGHT.rdoc for more details.
+#See COPYRIGHT and LICENSE files for more details.
 #++
 fi:
+  plugin_costs:
+    name: "Työaika ja kustannukset"
+    description: "This module adds features for planning and tracking costs of projects."
   activerecord:
     attributes:
       cost_entry:
-        work_package: "Tehtävä"
+        work_package: "Työpaketti"
         overridden_costs: "Ohitetut kustannukset"
         spent: "Käytetty"
         spent_on: "Päivämäärä"
@@ -61,7 +64,7 @@ fi:
     valid_from: "Voimassa"
     fixed_date: "Kiinteä päivämäärä"
   button_add_rate: "Lisää tuntihinta"
-  button_log_costs: "Kirjaa työkustannuksia"
+  button_log_costs: "Kirjaa kustannuksia"
   caption_booked_on_project: "Kirjattu projektille"
   caption_default: "Oletus"
   caption_default_rate_history_for: "Oletushinnan historia käyttäjälle %{user}"
@@ -75,7 +78,7 @@ fi:
   caption_show_locked: "Näytä lukitut tyypit"
   description_date_for_new_rate: "Uuden tuntinnan päivämäärä"
   group_by_others: "ei missä missään ryhmässä"
-  label_between: "between"
+  label_between: "välillä"
   label_cost_filter_add: "Lisää suodatin kustannuskirjauksille"
   label_costlog: "Kirjatut kustannukset"
   label_cost_plural: "Kustannukset"
@@ -101,13 +104,14 @@ fi:
   label_work_package_filter_add: "Lisää tehtävien suodatin"
   label_kind: "Tyyppi"
   label_less_or_equal: "<="
-  label_log_costs: "Kirjaa työkustannuksia"
+  label_log_costs: "Kirjaa kustannuksia"
   label_no: "Ei"
   label_option_plural: "Valinnat"
   label_overall_costs: "Kokonaiskustannukset"
   label_rate: "Tuntihinta"
   label_rate_plural: "Tuntihinnat"
   label_status_finished: "Valmis"
+  label_show: "Show"
   label_units: "Kustannusten yksiköt"
   label_user: "Käyttäjä"
   label_until: "saakka"
@@ -130,7 +134,7 @@ fi:
   permission_view_own_cost_entries: "Omien kustannuskirjausten tarkasteleminen"
   permission_view_own_hourly_rate: "Oman tuntinnan tarkasteleminen"
   permission_view_own_time_entries: "Oman aikakirjauksen tarkistelu"
-  project_module_costs: "Time and costs"
+  project_module_costs: "Työaika ja kustannukset"
   text_assign_time_and_cost_entries_to_project: "Raportoitujen tunti- ja kustannuskirjausten liittäminen projektiin"
   text_destroy_cost_entries_question: "%{cost_entries} on raportoitu projektille, jota olet poistamassa. Mitä haluat tehdä?"
   text_destroy_time_and_cost_entries: "Poista raportoidut tunnit ja kustannukset"

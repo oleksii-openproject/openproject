@@ -1,12 +1,12 @@
 //-- copyright
 // OpenProject is an open source project management software.
-// Copyright (C) 2012-2020 the OpenProject GmbH
+// Copyright (C) the OpenProject GmbH
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License version 3.
 //
 // OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-// Copyright (C) 2006-2017 Jean-Philippe Lang
+// Copyright (C) 2006-2013 Jean-Philippe Lang
 // Copyright (C) 2010-2013 the ChiliProject Team
 //
 // This program is free software; you can redistribute it and/or
@@ -23,7 +23,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 //
-// See docs/COPYRIGHT.rdoc for more details.
+// See COPYRIGHT and LICENSE files for more details.
 //++
 
 @mixin default-transition
@@ -34,6 +34,25 @@
   font-family:        var(--body-font-family)
   font-size:          $font-size
   font-weight:        $font-weight
+
+/// Taken from Foundation for Apps
+@mixin animation($animation, $duration: 500ms, $timing: ease, $delay: 0, $iterations: null)
+  animation-name: $animation
+  animation-duration: $duration
+  animation-timing-function: $timing
+
+  backface-visibility: hidden
+  transform: translate3d(0,0,0)
+
+  @if $delay != null
+    animation-delay: $delay
+
+  @if $iterations != null
+    animation-iteration-count: $iterations
+
+  @if $animation == null
+    @warn "Please include an animation name"
+
 
 // Make sure an element doesn't collapse due to floated elements inside
 @mixin prevent-float-collapse
@@ -62,8 +81,9 @@
     text-decoration: none
 
 @mixin widget-box--style
-  background: var(--widget-box-block-bg-color)
+  background: var(--body-background)
   margin: 10px
+  border: 1px solid var(--borderColor-default)
   box-shadow: 0px 1px 5px 0px rgba(0,0,0,0.1)
 
 @mixin widget-box--hover-style
@@ -89,6 +109,62 @@
   background: none
   border: none
 
+
+/// Taken from Foundation for Apps
+// Button mixins
+$button-sizes: (tiny: 0.7, small: 0.8, medium: 1, large: 1.3)
+$button-background: var(--button--background-color)
+$button-background-hover: var(--button--background-hover-color)
+$button-color: var(--button--font-color)
+$button-style: solid
+$button-radius: 0
+
+@mixin button-size($size: medium, $expand: false)
+  $size: 0.875rem * map-get($button-sizes, $size)
+  font-size: $size
+
+  @if $expand
+    @include button-expand
+
+@mixin button-expand($expand: true)
+  @if $expand
+    display: block
+    width: 100%
+    margin-left: 0
+    margin-right: 0
+
+  @else
+    display: inline-block
+    width: auto
+    margin: 0 1rem 1rem 0
+
+@mixin button-style($background: $button-background, $background-hover: $button-background-hover, $color: $button-color)
+  @if $color == auto
+    $color: is-light($background)
+
+  background: $background
+  color: $color
+
+  &:hover, &:focus
+    @if $background-hover == auto
+      background: scale-color($background, $lightness: -15%)
+
+    @else
+      background: $background-hover
+      color: $color
+
+
+@mixin button-disabled()
+  opacity: 0.5
+  cursor: default
+  pointer-events: none
+
+// Disable OS-level styles
+@mixin no-appearance
+  -webkit-appearance: none
+  -moz-appearance: none
+
+// ------------------------------------------------------------------
 
 $scrollbar-color: #DDDDDD
 $scrollbar-size: 10px
@@ -132,33 +208,6 @@ $scrollbar-size: 10px
     background: transparent
     visibility: hidden
 
-@mixin two-column-layout
-  column-count: 2
-  column-gap: 3rem
-
-  .attributes-key-value.-column-start
-    column-break-before: always !important
-    break-before: column
-  
-  @supports (column-span: all)
-        // Let some elements still span both columns
-        .attributes-key-value.-span-all-columns
-          column-span: all
-          .attributes-key-value--key
-            flex-basis: calc(22.5% - (4rem / 6))
-          .attributes-key-value--value-container
-            flex-basis: calc(77.5% + (4rem / 6))
-            max-width: calc(77.5% + (4rem / 6))
-
-  .attributes-key-value
-    -webkit-column-break-inside: avoid
-    page-break-inside: avoid
-    break-inside: avoid
-    // For some reason chrome seems to treat a two column layout
-    // as if it would result in showing the backside of this element.
-    // This leads to input and select elements not showing their values.
-    backface-visibility: visible
-
 @mixin overlay-background
   position: absolute
   top: 0
@@ -167,16 +216,17 @@ $scrollbar-size: 10px
   bottom: 0
   z-index: 900
 
-@mixin extended-content--top
-  #content-wrapper
-    padding-top: 0
-
 @mixin extended-content--bottom
-  #content-wrapper
+  #content-body
     padding-bottom: 0
 
+@mixin extended-content--top
+  #content-body
+    padding-top: 0
+
 @mixin extended-content--left
-  #content-wrapper
+  #content-body,
+  #content-header
     padding-left: 0
 
     .toolbar-container
@@ -185,7 +235,9 @@ $scrollbar-size: 10px
       margin-left: 20px
 
 @mixin extended-content--right
-  #content-wrapper
+  #content-bodyRight,
+  #content-body,
+  #content-header
     padding-right: 0
 
     .toolbar-container
@@ -194,7 +246,7 @@ $scrollbar-size: 10px
       margin-right: 15px
 
 @mixin modifying--placeholder
-  border: 1px dashed var(--primary-color)
+  border: 1px dashed var(--accent-color)
   pointer-events: none
   *
     visibility: hidden
@@ -204,13 +256,93 @@ $scrollbar-size: 10px
 
 @mixin macro--text-style
   @media screen
-    // Ensure width of contents is wrapped
-    display: inline-block
+    display: inline
     background: rgba(218,223,225,0.19)
     border: 1px solid transparent
     padding: 2px
 
     &:hover
       cursor: default
-      border-color: #c7c7c7
+      border-color: var(--fgColor-muted)
       background: rgba(218,223,225,0.75)
+
+@mixin unset-button-styles
+  padding: 0
+  margin: 0
+  background: transparent
+  border: 0
+  font: inherit
+  text-align: inherit
+
+@mixin hide-button-texts
+  .button--text:not(.button--text_without_icon)
+    display: none
+
+@mixin board-header-editable-toolbar-title
+  line-height: normal !important
+
+@mixin toolbar-input-styles
+  height: 36px !important
+  line-height: 36px !important
+
+@mixin global-breadcrumb-styles
+  display: none
+  @include default-transition
+  overflow: hidden
+  width: auto
+
+  ul.op-breadcrumb
+    height: initial
+    margin: 0
+    padding: 0
+    li
+      @include default-font(var(--breadcrumb-font-color), var(--breadcrumb-font-size), normal)
+      list-style-type: none
+      float: left
+      margin: 0 5px 0 0
+      padding: 0
+      line-height: 20px
+      max-width: 100%
+      @include text-shortener
+
+  &.-show
+    display: block
+
+@mixin indicator-bubble
+  display: inline-flex
+  justify-content: center
+  align-items: center
+  box-sizing: content-box
+  height: 16px
+  line-height: 16px
+  width: 16px
+  border-radius: 0.5rem
+  padding: 0 0.15rem 0 0.15rem
+  font-size: 0.7rem
+  font-weight: var(--base-text-weight-bold)
+  background: var(--bgColor-accent-emphasis)
+  color: white
+  flex-shrink: 0
+
+@mixin show-on-focus
+  position: absolute
+  right: -10000px
+
+  &:focus
+    right: 0
+
+/// Taken from Foundation for Apps
+/// Clearfix
+/// Uses the micro clearfix hack popularized by Nicolas Gallagher. Include this mixin on a container if its children are all floated, to give the container a proper height.
+///
+/// @see http://nicolasgallagher.com/micro-clearfix-hack/
+@mixin clearfix
+  &:before, &:after
+    content: " "
+    display: table
+  &:after
+    clear: both
+
+@mixin op-uc-table-header-styles
+  border-color: var(--borderColor-default)
+  background-color: var(--bgColor-muted)

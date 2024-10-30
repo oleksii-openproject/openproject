@@ -1,17 +1,17 @@
-require_relative './edit_field'
+require_relative "edit_field"
 
 class WorkPackageStatusField < EditField
   def initialize(context)
     @context = context
-    @selector = ".wp-status-button"
+    @selector = "[data-test-selector='op-wp-status-button']"
   end
 
   def input_selector
-    '#wp-status-context-menu'
+    "#wp-status-context-menu"
   end
 
   def input_element
-    page.find "#{input_selector}"
+    page.find input_selector.to_s
   end
 
   def display_element
@@ -37,7 +37,7 @@ class WorkPackageStatusField < EditField
   end
 
   def set_value(content)
-    input_element.find('a', text: content).click
+    input_element.find("button", text: content).click
   end
 
   def active?
@@ -47,7 +47,7 @@ class WorkPackageStatusField < EditField
 
   def expect_active!
     expect(page).to have_selector(input_selector, wait: 10),
-          "Expected context menu for status."
+                    "Expected context menu for status."
   end
 
   def expect_inactive!

@@ -1,7 +1,6 @@
-#-- encoding: UTF-8
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -24,17 +23,18 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 module DemoData
   class VersionBuilder
     include ::DemoData::References
 
-    attr_reader :config
-    attr_reader :project
+    attr_reader :config, :project, :user, :seed_data
 
-    def initialize(config, project)
+    def initialize(config, project:, user:, seed_data:)
       @config = config
       @project = project
+      @user = user
+      @seed_data = seed_data
     end
 
     def create!
@@ -55,24 +55,28 @@ module DemoData
 
     def version
       version = Version.create!(
-        name:    config[:name],
-        status:  config[:status],
-        sharing: config[:sharing],
-        project: project
+        name: config["name"],
+        status: config["status"],
+        sharing: config["sharing"],
+        project:
       )
+      seed_data.store_reference(config["reference"], version)
 
-      set_wiki! version, config[:wiki] if config[:wiki]
+      set_wiki! version, config["wiki"]
 
       version
     end
 
     def set_wiki!(version, config)
-      version.wiki_page_title = config[:title]
-      page = WikiPage.create! wiki: version.project.wiki, title: version.wiki_page_title
+      return unless config
 
-      content = with_references config[:content], project
+      version.wiki_page_title = config["title"]
+
       Journal::NotificationConfiguration.with false do
-        WikiContent.create! page: page, author: User.admin.first, text: content
+        WikiPage.create! wiki: version.project.wiki,
+                         title: version.wiki_page_title,
+                         author: User.admin.first,
+                         text: with_references(config["content"])
       end
 
       version.save!

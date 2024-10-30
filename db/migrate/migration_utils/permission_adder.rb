@@ -1,13 +1,12 @@
-#-- encoding: UTF-8
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -24,20 +23,26 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module Migration
   module MigrationUtils
-    class PermissionAdder
-      def self.add(having, add)
+    module PermissionAdder
+      module_function
+
+      def add(having, add)
         Role
           .joins(:role_permissions)
           .where(role_permissions: { permission: having.to_s })
           .references(:role_permissions)
           .find_each do |role|
-
-          role.add_permission! add
+          # Check if the add-permission already exists before adding
+          already_exists = RolePermission
+                             .exists?(role_id: role.id, permission: add.to_s)
+          unless already_exists
+            role.add_permission! add
+          end
         end
       end
     end

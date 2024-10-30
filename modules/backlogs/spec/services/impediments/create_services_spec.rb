@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,54 +23,52 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require File.expand_path(File.dirname(__FILE__) + '/../../spec_helper')
+require "spec_helper"
 
-describe Impediments::CreateService do
-  let(:instance) { described_class.new(user: user) }
+RSpec.describe Impediments::CreateService do
+  let(:instance) { described_class.new(user:) }
+  let(:impediment_subject) { "Impediment A" }
 
-  let(:user) { FactoryBot.create(:user) }
-  let(:role) { FactoryBot.create(:role, permissions: %i(add_work_packages assign_versions)) }
-  let(:type_feature) { FactoryBot.create(:type_feature) }
-  let(:type_task) { FactoryBot.create(:type_task) }
-  let(:priority) { FactoryBot.create(:priority, is_default: true) }
+  let(:user) { create(:user) }
+  let(:role) { create(:project_role, permissions: %i(add_work_packages assign_versions work_package_assigned)) }
+  let(:type_feature) { create(:type_feature) }
+  let(:type_task) { create(:type_task) }
+  let(:priority) { create(:priority, is_default: true) }
   let(:feature) do
-    FactoryBot.build(:work_package,
-                     type: type_feature,
-                     project: project,
-                     author: user,
-                     priority: priority,
-                     status: status1)
+    build(:work_package,
+          type: type_feature,
+          project:,
+          author: user,
+          priority:,
+          status: status1)
   end
-  let(:version) { FactoryBot.create(:version, project: project) }
+  let(:version) { create(:version, project:) }
 
   let(:project) do
-    project = FactoryBot.create(:project, types: [type_feature, type_task])
+    project = create(:project, types: [type_feature, type_task])
 
-    FactoryBot.create(:member, principal: user,
-                               project: project,
-                               roles: [role])
+    create(:member, principal: user,
+                    project:,
+                    roles: [role])
 
     project
   end
 
-  let(:status1) { FactoryBot.create(:status, name: 'status 1', is_default: true) }
+  let(:status1) { create(:status, name: "status 1", is_default: true) }
 
-  before(:each) do
-    allow(Setting).to receive(:plugin_openproject_backlogs).and_return('points_burn_direction' => 'down',
-                                                                       'wiki_template' => '',
-                                                                       'card_spec' => 'Sattleford VM-5040',
-                                                                       'story_types' => [type_feature.id.to_s],
-                                                                       'task_type' => type_task.id.to_s)
+  before do
+    allow(Setting).to receive(:plugin_openproject_backlogs).and_return("points_burn_direction" => "down",
+                                                                       "wiki_template" => "",
+                                                                       "story_types" => [type_feature.id.to_s],
+                                                                       "task_type" => type_task.id.to_s)
 
     login_as user
   end
 
-  let(:impediment_subject) { 'Impediment A' }
-
-  shared_examples_for 'impediment creation' do
+  shared_examples_for "impediment creation" do
     it { expect(subject.subject).to eql impediment_subject }
     it { expect(subject.author).to eql User.current }
     it { expect(subject.project).to eql project }
@@ -81,20 +79,21 @@ describe Impediments::CreateService do
     it { expect(subject.assigned_to).to eql user }
   end
 
-  shared_examples_for 'impediment creation with 1 blocking relationship' do
-    it_should_behave_like 'impediment creation'
-    it { expect(subject.relations_to.direct.size).to eq(1) }
-    it { expect(subject.relations_to.direct[0].to).to eql feature }
-    it { expect(subject.relations_to.direct[0].relation_type).to eql Relation::TYPE_BLOCKS }
+  shared_examples_for "impediment creation with 1 blocking relationship" do
+    it_behaves_like "impediment creation"
+
+    it { expect(subject.blocks_relations.size).to eq(1) }
+    it { expect(subject.blocks_relations[0].to).to eql feature }
   end
 
-  shared_examples_for 'impediment creation with no blocking relationship' do
-    it_should_behave_like 'impediment creation'
-    it { expect(subject.relations_to.direct.size).to eq(0) }
+  shared_examples_for "impediment creation with no blocking relationship" do
+    it_behaves_like "impediment creation"
+
+    it { expect(subject.blocks_relations.size).to eq(0) }
   end
 
-  describe 'WITH a blocking relationship to a story' do
-    describe 'WITH the story having the same version' do
+  describe "WITH a blocking relationship to a story" do
+    describe "WITH the story having the same version" do
       subject do
         call = instance.call(attributes: { subject: impediment_subject,
                                            assigned_to_id: user.id,
@@ -106,17 +105,17 @@ describe Impediments::CreateService do
         call.result
       end
 
-      before(:each) do
+      before do
         feature.version = version
         feature.save
       end
 
-      it_should_behave_like 'impediment creation with 1 blocking relationship'
+      it_behaves_like "impediment creation with 1 blocking relationship"
       it { expect(subject).not_to be_new_record }
-      it { expect(subject.relations_to.direct[0]).not_to be_new_record }
+      it { expect(subject.blocks_relations[0]).not_to be_new_record }
     end
 
-    describe 'WITH the story having another version' do
+    describe "WITH the story having another version" do
       subject do
         call = instance.call(attributes: { subject: impediment_subject,
                                            assigned_to_id: user.id,
@@ -128,39 +127,47 @@ describe Impediments::CreateService do
         call.result
       end
 
-      before(:each) do
-        feature.version = FactoryBot.create(:version, project: project, name: 'another version')
+      before do
+        feature.version = create(:version, project:, name: "another version")
         feature.save
       end
 
-      it_should_behave_like 'impediment creation with no blocking relationship'
+      it_behaves_like "impediment creation with no blocking relationship"
       it { expect(subject).to be_new_record }
-      it { expect(subject.errors[:blocks_ids]).to include I18n.t(:can_only_contain_work_packages_of_current_sprint, scope: [:activerecord, :errors, :models, :work_package, :attributes, :blocks_ids]) }
+
+      it {
+        expect(subject.errors.symbols_for(:blocks_ids))
+          .to eq [:can_only_contain_work_packages_of_current_sprint]
+      }
     end
 
-    describe 'WITH the story being non existent' do
+    describe "WITH the story being non existent" do
       subject do
         call = instance.call(attributes: { subject: impediment_subject,
                                            assigned_to_id: user.id,
                                            priority_id: priority.id,
-                                           blocks_ids: '0',
+                                           blocks_ids: "0",
                                            status_id: status1.id,
                                            version_id: version.id,
                                            project_id: project.id })
         call.result
       end
 
-      it_should_behave_like 'impediment creation with no blocking relationship'
+      it_behaves_like "impediment creation with no blocking relationship"
       it { expect(subject).to be_new_record }
-      it { expect(subject.errors[:blocks_ids]).to include I18n.t(:can_only_contain_work_packages_of_current_sprint, scope: [:activerecord, :errors, :models, :work_package, :attributes, :blocks_ids]) }
+
+      it {
+        expect(subject.errors.symbols_for(:blocks_ids))
+          .to eq [:can_only_contain_work_packages_of_current_sprint]
+      }
     end
   end
 
-  describe 'WITHOUT a blocking relationship defined' do
+  describe "WITHOUT a blocking relationship defined" do
     subject do
       call = instance.call(attributes: { subject: impediment_subject,
                                          assigned_to_id: user.id,
-                                         blocks_ids: '',
+                                         blocks_ids: "",
                                          priority_id: priority.id,
                                          status_id: status1.id,
                                          version_id: version.id,
@@ -168,8 +175,12 @@ describe Impediments::CreateService do
       call.result
     end
 
-    it_should_behave_like 'impediment creation with no blocking relationship'
+    it_behaves_like "impediment creation with no blocking relationship"
     it { expect(subject).to be_new_record }
-    it { expect(subject.errors[:blocks_ids]).to include I18n.t(:must_block_at_least_one_work_package, scope: [:activerecord, :errors, :models, :work_package, :attributes, :blocks_ids]) }
+
+    it {
+      expect(subject.errors.symbols_for(:blocks_ids))
+        .to eq [:must_block_at_least_one_work_package]
+    }
   end
 end

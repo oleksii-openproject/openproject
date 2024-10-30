@@ -1,14 +1,12 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -25,15 +23,13 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 class Queries::WorkPackages::Filter::SubprojectFilter <
   Queries::WorkPackages::Filter::WorkPackageFilter
   def allowed_values
-    @allowed_values ||= begin
-      visible_subproject_array.map { |id, name| [name, id.to_s] }
-    end
+    @allowed_values ||= visible_subproject_array.map { |id, name| [name, id.to_s] }
   end
 
   def default_operator
@@ -51,7 +47,7 @@ class Queries::WorkPackages::Filter::SubprojectFilter <
   end
 
   def human_name
-    I18n.t('query_fields.subproject_id')
+    I18n.t("query_fields.subproject_id")
   end
 
   def self.key
@@ -66,12 +62,11 @@ class Queries::WorkPackages::Filter::SubprojectFilter <
     available_subprojects = visible_subprojects.index_by(&:id)
 
     values
-      .map { |subproject_id| available_subprojects[subproject_id.to_i] }
-      .compact
+      .filter_map { |subproject_id| available_subprojects[subproject_id.to_i] }
   end
 
   def where
-    "#{Project.table_name}.id IN (%s)" % ids_for_where.join(',')
+    "#{Project.table_name}.id IN (%s)" % ids_for_where.join(",")
   end
 
   protected
@@ -100,13 +95,14 @@ class Queries::WorkPackages::Filter::SubprojectFilter <
 
   def visible_subprojects
     # This can be accessed even when `available?` is false
-    @visible_subprojects ||= begin
-      if project.nil?
-        []
-      else
-        project.descendants.visible
-      end
-    end
+    @visible_subprojects ||= if project.nil?
+                               []
+                             else
+                               project
+                                 .descendants
+                                 .visible
+                                 .active
+                             end
   end
 
   def visible_subproject_ids

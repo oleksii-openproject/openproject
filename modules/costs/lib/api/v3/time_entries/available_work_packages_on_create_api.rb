@@ -1,12 +1,12 @@
 #-- copyright
-# OpenProject is a project management system.
-# Copyright (C) 2012-2018 the OpenProject Foundation (OPF)
+# OpenProject is an open source project management software.
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module API
@@ -31,15 +31,17 @@ module API
     module TimeEntries
       class AvailableWorkPackagesOnCreateAPI < ::API::OpenProjectAPI
         after_validation do
-          authorize_any %i[log_time],
-                        global: true
+          authorize_in_any_work_package(:log_own_time) do
+            authorize_in_any_project(:log_time)
+          end
         end
 
         helpers AvailableWorkPackagesHelper
 
         helpers do
           def allowed_scope
-            WorkPackage.where(project_id: Project.allowed_to(User.current, :log_time))
+            WorkPackage.where(id: WorkPackage.allowed_to(User.current, :log_own_time))
+                       .or(WorkPackage.where(project_id: Project.allowed_to(User.current, :log_time)))
           end
         end
 

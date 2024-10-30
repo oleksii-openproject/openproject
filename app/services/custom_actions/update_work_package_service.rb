@@ -1,14 +1,12 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -25,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 class CustomActions::UpdateWorkPackageService
@@ -41,15 +39,15 @@ class CustomActions::UpdateWorkPackageService
     self.contract_class = ::WorkPackages::UpdateContract
   end
 
-  def call(work_package:, &block)
+  def call(work_package:, &)
     apply_actions(work_package, action.actions)
 
     result = ::WorkPackages::UpdateService
-             .new(user: user,
+             .new(user:,
                   model: work_package)
-             .call({})
+             .call
 
-    block_with_result(result, &block)
+    block_with_result(result, &)
   end
 
   private
@@ -76,7 +74,7 @@ class CustomActions::UpdateWorkPackageService
   end
 
   def without_invalid_actions(actions, errors)
-    invalid_keys = errors.keys.map { |k| append_id(k) }
+    invalid_keys = errors.attribute_names.map { |k| append_id(k) }
 
     actions.reject { |a| invalid_keys.include?(append_id(a.key)) }
   end
@@ -88,6 +86,6 @@ class CustomActions::UpdateWorkPackageService
   end
 
   def append_id(sym)
-    sym.to_s.chomp('_id') + '_id'
+    "#{sym.to_s.chomp('_id')}_id"
   end
 end

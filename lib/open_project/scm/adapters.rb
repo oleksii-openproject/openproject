@@ -1,13 +1,12 @@
-#-- encoding: UTF-8
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -24,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 module OpenProject
   module SCM
@@ -60,6 +59,7 @@ module OpenProject
 
       class Info
         attr_accessor :root_url, :lastrev
+
         def initialize(attributes = {})
           self.root_url = attributes[:root_url]
           self.lastrev = attributes[:lastrev]
@@ -68,9 +68,10 @@ module OpenProject
 
       class Entry
         attr_accessor :name, :path, :kind, :size, :lastrev
+
         def initialize(attributes = {})
-          [:name, :path, :kind, :size].each do |attr|
-            send("#{attr}=", attributes[attr])
+          %i[name path kind size].each do |attr|
+            send(:"#{attr}=", attributes[attr])
           end
 
           self.size = size.to_i if size.present?
@@ -78,23 +79,23 @@ module OpenProject
         end
 
         def file?
-          'file' == kind
+          "file" == kind
         end
 
         def dir?
-          'dir' == kind
+          "dir" == kind
         end
       end
 
       class Revisions < Array
         def latest
-          sort { |x, y|
+          max do |x, y|
             if x.time.nil? or y.time.nil?
               0
             else
               x.time <=> y.time
             end
-          }.last
+          end
         end
       end
 
@@ -103,12 +104,12 @@ module OpenProject
         attr_writer :identifier
 
         def initialize(attributes = {})
-          [:identifier, :scmid, :author, :time, :paths, :revision, :branch].each do |attr|
-            send("#{attr}=", attributes[attr])
+          %i[identifier scmid author time paths revision branch].each do |attr|
+            send(:"#{attr}=", attributes[attr])
           end
 
           self.name = attributes[:name].presence || identifier
-          self.message = attributes[:message].presence || ''
+          self.message = attributes[:message].presence || ""
         end
 
         # Returns the identifier of this revision; see also Changeset model
@@ -139,9 +140,7 @@ module OpenProject
           lines.join("\n")
         end
 
-        def empty?
-          lines.empty?
-        end
+        delegate :empty?, to: :lines
       end
     end
   end

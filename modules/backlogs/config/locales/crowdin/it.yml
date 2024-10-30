@@ -1,10 +1,10 @@
 #-- copyright
 #OpenProject is an open source project management software.
-#Copyright (C) 2012-2020 the OpenProject GmbH
+#Copyright (C) the OpenProject GmbH
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License version 3.
 #OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-#Copyright (C) 2006-2017 Jean-Philippe Lang
+#Copyright (C) 2006-2013 Jean-Philippe Lang
 #Copyright (C) 2010-2013 the ChiliProject Team
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License
@@ -17,15 +17,16 @@
 #You should have received a copy of the GNU General Public License
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-#See docs/COPYRIGHT.rdoc for more details.
+#See COPYRIGHT and LICENSE files for more details.
 #++
 it:
+  plugin_openproject_backlogs:
+    name: "Backlog di OpenProject"
+    description: "Questo modulo aggiunge funzionalità che consentono ai team agili di lavorare con i progetti OpenProject in Scrum."
   activerecord:
     attributes:
       work_package:
         position: "Posizione"
-        remaining_hours: "Ore rimanenti"
-        remaining_time: "Ore rimanenti"
         story_points: "Punti della storia"
         backlogs_work_package_type: "Tipo di backlog"
     errors:
@@ -35,9 +36,6 @@ it:
             blocks_ids:
               can_only_contain_work_packages_of_current_sprint: "può contenere solo ID dei pacchetti di lavoro presenti nello sprint corrente."
               must_block_at_least_one_work_package: "deve contenere l'ID di almeno un ticket."
-            parent_id:
-              parent_child_relationship_across_projects: "non è valido perché il pacchetto di lavoro '%{work_package_name}' è un task di backlog e pertanto non può avere una dipendenza esterna al progetto corrente."
-              type_must_be_one_of_the_following: "Il tipo deve essere uno dei seguenti: %{type_names}."
             version_id:
               task_version_must_be_the_same_as_story_version: "deve essere uguale alla versione della storia del genitore."
         sprint:
@@ -66,8 +64,8 @@ it:
     properties: "Proprietà"
     rebuild: "Ricostruisci"
     rebuild_positions: "Ricostruisce le posizioni"
-    remaining_hours: "Ore rimanenti"
-    remaining_hours_ideal: "Ore rimanenti (ideale)"
+    remaining_hours: "Lavoro residuo"
+    remaining_hours_ideal: "Lavoro residuo (ideale)"
     show_burndown_chart: "Grafico Burndown"
     story: "Storia"
     story_points: "Punti della storia"
@@ -78,7 +76,6 @@ it:
     x_more: "%{count} più..."
   backlogs_active: "attivo"
   backlogs_any: "qualsiasi"
-  backlogs_card_specification: "Tipi di etichette per la stampa delle schede"
   backlogs_inactive: "Progetto non mostra alcuna attività"
   backlogs_points_burn_direction: "Punteggi per burn positivo/negativo"
   backlogs_product_backlog: "Backlog del prodotto"
@@ -99,6 +96,7 @@ it:
   backlogs_empty_title: "Non è stata definita nessuna versione per i backlog"
   backlogs_empty_action_text: "Per iniziare ad utilizzare i backlog, crea una nuova versione e assegnala ad una colonna nel backlog."
   button_edit_wiki: "Modifica la pagina wiki"
+  error_backlogs_task_cannot_be_story: "Le impostazioni non sono valide. Il tipo di attività selezionato non può essere un tipo di storia."
   error_intro_plural: "Si sono verificati i seguenti errori:"
   error_intro_singular: "È stato rilevato il seguente errore:"
   error_outro: "Si prega di correggere gli errori riportati prima di inviare nuovamente."
@@ -110,7 +108,7 @@ it:
   label_backlog: "Backlog"
   label_backlogs: "Backlog"
   label_backlogs_unconfigured: "Non hai ancora configurato i Backlog. Vai su %{administration} > %{plugins}, quindi fai clic sul link %{configure} per il plugin. Dopo aver impostato i campi, torna su questa pagina per iniziare a utilizzare lo strumento."
-  label_blocks_ids: "ID delle macro-attività bloccate"
+  label_blocks_ids: "ID dei pacchetti di lavoro bloccati"
   label_burndown: "Burndown"
   label_column_in_backlog: "Colonna nel backlog"
   label_hours: "ore"
@@ -119,7 +117,7 @@ it:
   label_not_prioritized: "priorità non definita"
   label_points: "punti"
   label_points_burn_down: "Verso il basso"
-  label_points_burn_up: "Su"
+  label_points_burn_up: "Verso l'alto"
   label_product_backlog: "backlog del prodotto"
   label_select_all: "Seleziona tutto"
   label_sprint_backlog: "backlog di sprint"
@@ -136,19 +134,20 @@ it:
   label_wiki: "Wiki"
   permission_view_master_backlog: "Visualizza il master backlog"
   permission_view_taskboards: "Visualizza i pannelli delle attività"
+  permission_select_done_statuses: "Seleziona gli stati terminati"
   permission_update_sprints: "Aggiorna gli sprint"
   points_accepted: "punti accettati"
   points_committed: "punti acquisiti"
   points_resolved: "punti risolti"
   points_to_accept: "punti non accettati"
   points_to_resolve: "punti non risolti"
-  project_module_backlogs: "Backlog"
+  project_module_backlogs: "Backlogs"
   rb_label_copy_tasks: "Copia i pacchetti di lavoro"
   rb_label_copy_tasks_all: "Tutti"
   rb_label_copy_tasks_none: "Nessuno"
   rb_label_copy_tasks_open: "Aperti"
   rb_label_link_to_original: "Include il link alla storia originale"
-  remaining_hours: "ore rimanenti"
+  remaining_hours: "lavoro residuo"
   required_burn_rate_hours: "burn rate richiesto (ore)"
   required_burn_rate_points: "burn rate richiesto (punti)"
   todo_work_package_description: "%{summary}: %{url}\n%{description}"

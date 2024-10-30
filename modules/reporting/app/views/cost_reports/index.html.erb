@@ -1,12 +1,12 @@
 <%#-- copyright
 OpenProject is an open source project management software.
-Copyright (C) 2012-2020 the OpenProject GmbH
+Copyright (C) the OpenProject GmbH
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License version 3.
 
 OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-Copyright (C) 2006-2017 Jean-Philippe Lang
+Copyright (C) 2006-2013 Jean-Philippe Lang
 Copyright (C) 2010-2013 the ChiliProject Team
 
 This program is free software; you can redistribute it and/or
@@ -23,7 +23,7 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-See docs/COPYRIGHT.rdoc for more details.
+See COPYRIGHT and LICENSE files for more details.
 
 ++#%>
 
@@ -35,18 +35,7 @@ See docs/COPYRIGHT.rdoc for more details.
 
 <% html_title (@query.persisted? ? "#{t(:label_cost_report)}: #{@query.name}" : t(:label_new_report)) %>
 
-<div class="toolbar-container">
-  <div class="toolbar">
-    <div class="title-container">
-      <h2 id="ur_caption">
-        <%= render_widget Widget::Controls::QueryName, @query, :can_rename => allowed_to?(:rename, @query, current_user) %>
-      </h2>
-    </div>
-    <ul class="toolbar-items">
-      <%= call_hook(:view_cost_report_toolbar) %>
-    </ul>
-  </div>
-</div>
+<%= render CostReports::IndexPageHeaderComponent.new(query: @query, project: @project) %>
 
 <%= render_widget Widget::Settings, @query, :cost_types => @cost_types, :selected_type_id => @unit_id %>
 
@@ -55,11 +44,8 @@ See docs/COPYRIGHT.rdoc for more details.
 </div>
 <p class="footnote">
   <%= t(:text_costs_are_rounded_note) %>
-  <%= "<br />#{t(:information_restricted_depending_on_permission)}".html_safe unless User.current.admin?%>
-</p>
-
-<% content_for :sidebar do %>
-  <% [:private, :public].each do |type| %>
-    <%= render :partial => "report_category", :locals => { :report_type => type } %>
+  <% unless User.current.admin? %>
+    <br/>
+    <%= t(:information_restricted_depending_on_permission) %>
   <% end %>
-<% end -%>
+</p>

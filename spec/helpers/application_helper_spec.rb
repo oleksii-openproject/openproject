@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,96 +23,35 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'spec_helper'
+require "spec_helper"
 
-describe ApplicationHelper, type: :helper do
-  include ApplicationHelper
-  include WorkPackagesHelper
-
-  describe 'format_activity_description' do
-    it 'truncates given text' do
-      text = 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lore'
-      expect(format_activity_description(text).size).to eq(120)
+RSpec.describe ApplicationHelper do
+  describe ".link_to_if_authorized" do
+    let(:project) { create(:valid_project) }
+    let(:project_member) do
+      create(:user,
+             member_with_permissions: { project => %i[view_work_packages edit_work_packages
+                                                      browse_repository view_changesets view_wiki_pages] })
+    end
+    let(:issue) do
+      create(:work_package,
+             project:,
+             author: project_member,
+             type: project.types.first)
     end
 
-    it 'replaces escaped line breaks with html line breaks and should be html_safe' do
-      text = "Lorem ipsum dolor sit \namet, consetetur sadipscing elitr, sed diam nonumy eirmod\r tempor invidunt"
-      text_html = 'Lorem ipsum dolor sit <br />amet, consetetur sadipscing elitr, sed diam nonumy eirmod<br /> tempor invidunt'
-      expect(format_activity_description(text)).to be_html_eql(text_html)
-      expect(format_activity_description(text).html_safe?).to be_truthy
-    end
-
-    it 'escapes potentially harmful code' do
-      text = "Lorem ipsum dolor <script>alert('pwnd');</script> tempor invidunt"
-      expect(format_activity_description(text).include?('&lt;script&gt;alert(&#39;pwnd&#39;);&lt;/script&gt;')).to be_truthy
-    end
-  end
-
-  describe 'footer_content' do
-    context 'no additional footer content' do
-      before do
-        OpenProject::Footer.content = nil
-      end
-
-      it { expect(footer_content).to eq(I18n.t(:text_powered_by, link: link_to(OpenProject::Info.app_name, OpenProject::Info.url))) }
-    end
-
-    context 'string as additional footer content' do
-      before do
-        OpenProject::Footer.content = nil
-        OpenProject::Footer.add_content('openproject', 'footer')
-      end
-
-      it { expect(footer_content.include?(I18n.t(:text_powered_by, link: link_to(OpenProject::Info.app_name, OpenProject::Info.url)))).to be_truthy  }
-      it { expect(footer_content.include?("<span class=\"footer_openproject\">footer</span>")).to be_truthy  }
-    end
-
-    context 'proc as additional footer content' do
-      before do
-        OpenProject::Footer.content = nil
-        OpenProject::Footer.add_content('openproject', Proc.new { Date.parse(Time.now.to_s) })
-      end
-
-      it { expect(footer_content.include?("<span class=\"footer_openproject\">#{Date.parse(Time.now.to_s)}</span>")).to be_truthy  }
-    end
-
-    context 'proc which returns nothing' do
-      before do
-        OpenProject::Footer.content = nil
-        OpenProject::Footer.add_content('openproject', Proc.new { 'footer' if false })
-      end
-
-      it { expect(footer_content.include?("<span class=\"footer_openproject\">")).to be_falsey }
-    end
-  end
-
-  describe '.link_to_if_authorized' do
-    let(:project) { FactoryBot.create :valid_project }
-    let(:project_member) {
-      FactoryBot.create :user,
-                         member_in_project: project,
-                         member_through_role: FactoryBot.create(:role,
-                                                                 permissions: [:view_work_packages, :edit_work_packages,
-                                                                               :browse_repository, :view_changesets, :view_wiki_pages])
-    }
-    let(:issue) {
-      FactoryBot.create :work_package,
-                         project: project,
-                         author: project_member,
-                         type: project.types.first
-    }
-
-    context 'if user is authorized' do
+    context "if user is authorized" do
       before do
         expect(self).to receive(:authorize_for).and_return(true)
-        @response = link_to_if_authorized('link_content', {
-                                            controller: 'work_packages',
-                                            action: 'show',
-                                            id: issue },
-                                          class: 'fancy_css_class')
+        @response = link_to_if_authorized("link_content", {
+                                            controller: "work_packages",
+                                            action: "show",
+                                            id: issue
+                                          },
+                                          class: "fancy_css_class")
       end
 
       subject { @response }
@@ -122,14 +61,15 @@ describe ApplicationHelper, type: :helper do
       it { is_expected.to match /fancy_css_class/ }
     end
 
-    context 'if user is unauthorized' do
+    context "if user is unauthorized" do
       before do
         expect(self).to receive(:authorize_for).and_return(false)
-        @response = link_to_if_authorized('link_content', {
-                                            controller: 'work_packages',
-                                            action: 'show',
-                                            id: issue },
-                                          class: 'fancy_css_class')
+        @response = link_to_if_authorized("link_content", {
+                                            controller: "work_packages",
+                                            action: "show",
+                                            id: issue
+                                          },
+                                          class: "fancy_css_class")
       end
 
       subject { @response }
@@ -137,12 +77,12 @@ describe ApplicationHelper, type: :helper do
       it { is_expected.to be_nil }
     end
 
-    context 'allow using the :controller and :action for the target link' do
+    context "allow using the :controller and :action for the target link" do
       before do
         expect(self).to receive(:authorize_for).and_return(true)
-        @response = link_to_if_authorized('By controller/action',
-                                          controller: 'work_packages',
-                                          action: 'show',
+        @response = link_to_if_authorized("By controller/action",
+                                          controller: "work_packages",
+                                          action: "show",
                                           id: issue.id)
       end
 
@@ -152,78 +92,142 @@ describe ApplicationHelper, type: :helper do
     end
   end
 
-  describe 'other_formats_links' do
-    context 'link given' do
+  describe "other_formats_links" do
+    context "link given" do
       before do
-        @links = other_formats_links { |f| f.link_to 'Atom', url: { controller: :projects, action: :index } }
+        @links = other_formats_links { |f| f.link_to "Atom", url: { controller: :projects, action: :index } }
       end
-      it { expect(@links).to be_html_eql("<p class=\"other-formats\">Also available in:<span><a class=\"icon icon-atom\" href=\"/projects.atom\" rel=\"nofollow\">Atom</a></span></p>") }
+
+      it {
+        expect(@links).to be_html_eql("<p class=\"other-formats\">Also available in:<span><a class=\"icon icon-atom\" href=\"/projects.atom\" rel=\"nofollow\">Atom</a></span></p>")
+      }
     end
 
-    context 'link given but disabled' do
+    context "link given but disabled" do
       before do
         allow(Setting).to receive(:feeds_enabled?).and_return(false)
-        @links = other_formats_links { |f| f.link_to 'Atom', url: { controller: :projects, action: :index } }
+        @links = other_formats_links { |f| f.link_to "Atom", url: { controller: :projects, action: :index } }
       end
+
       it { expect(@links).to be_nil }
     end
   end
 
-  describe 'time_tag' do
+  describe "time_tag" do
     around do |example|
       I18n.with_locale(:en) { example.run }
     end
 
     subject { time_tag(time) }
 
-    context 'with project' do
+    context "with project" do
       before do
-        @project = FactoryBot.build(:project)
+        @project = build(:project)
       end
 
-      context 'right now' do
+      context "right now" do
         let(:time) { Time.now }
 
-        it { is_expected.to match /^\<a/ }
+        it { is_expected.to match /^<a/ }
         it { is_expected.to match /less than a minute/ }
         it { is_expected.to be_html_safe }
       end
 
-      context 'some time ago' do
-        let(:time) {
+      context "some time ago" do
+        let(:time) do
           Timecop.travel(2.weeks.ago) do
             Time.now
           end
-        }
+        end
 
-        it { is_expected.to match /^\<a/ }
+        it { is_expected.to match /^<a/ }
         it { is_expected.to match /14 days/ }
         it { is_expected.to be_html_safe }
       end
     end
 
-    context 'without project' do
-      context 'right now' do
+    context "without project" do
+      context "right now" do
         let(:time) { Time.now }
 
-        it { is_expected.to match /^\<time/ }
-        it { is_expected.to match /datetime=\"#{Regexp.escape(time.xmlschema)}\"/ }
+        it { is_expected.to match /^<time/ }
+        it { is_expected.to match /datetime="#{Regexp.escape(time.xmlschema)}"/ }
         it { is_expected.to match /less than a minute/ }
         it { is_expected.to be_html_safe }
       end
 
-      context 'some time ago' do
-        let(:time) {
+      context "some time ago" do
+        let(:time) do
           Timecop.travel(1.week.ago) do
             Time.now
           end
-        }
+        end
 
-        it { is_expected.to match /^\<time/ }
-        it { is_expected.to match /datetime=\"#{Regexp.escape(time.xmlschema)}\"/ }
+        it { is_expected.to match /^<time/ }
+        it { is_expected.to match /datetime="#{Regexp.escape(time.xmlschema)}"/ }
         it { is_expected.to match /7 days/ }
         it { is_expected.to be_html_safe }
       end
+    end
+  end
+
+  describe ".authoring_at" do
+    it "escapes html from author name" do
+      created = "2023-06-02"
+      author = build(:user, firstname: "<b>Hello</b>", lastname: "world")
+      author.save! validate: false
+      expect(authoring_at(created, author))
+        .to eq("Added by <a href=\"/users/#{author.id}\">&lt;b&gt;Hello&lt;/b&gt; world</a> at 2023-06-02")
+    end
+  end
+
+  describe ".all_lang_options_for_select" do
+    it 'has all languages translated ("English" should appear only once)' do
+      impostor_locales =
+        all_lang_options_for_select
+          .reject { |_lang, locale| locale == "en" }
+          .select { |lang, _locale| lang == "English" }
+          .map { |_lang, locale| locale }
+      expect(impostor_locales.count).to eq(0), <<~ERR
+        The locales #{impostor_locales.to_sentence} display themselves as "English"!
+
+        Probably because new languages were added, and the translation for their language is not
+        available, so it fallbacks to the English translation.
+
+        To fix it, generate translation files from CLDR by running
+
+            script/i18n/generate_languages_translations
+
+        And commit the yml files added in "config/locales/generated/*.yml".
+      ERR
+    end
+
+    it "has distinct languages translation" do
+      duplicate_langs =
+        all_lang_options_for_select
+          .map { |lang, _locale| lang }
+          .tally
+          .reject { |_lang, count| count == 1 }
+          .map { |lang, _count| lang }
+      duplicate_options =
+        all_lang_options_for_select
+          .filter { |lang, _locale| duplicate_langs.include?(lang) }
+          .sort
+
+      expect(duplicate_options.count).to eq(0), <<~ERR
+        Some identical language names are used for different locales!
+
+          duplicates: #{duplicate_options}
+
+        This happens when a new language is added to Crowdin: new translation files are
+        generated and the new language is available in Setting.all_languages, but there
+        is no translation for its name yet, and so it falls back to "English".
+
+        To fix it:
+          - run the script "script/i18n/generate_languages_translations"
+          - commit the additional translation file generated in
+            "config/locales/generated/*.yml".
+      ERR
     end
   end
 end

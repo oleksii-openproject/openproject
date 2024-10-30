@@ -1,4 +1,7 @@
 lt:
+  plugin_openproject_webhooks:
+    name: "OpenProject žiniatinklio sąsajos"
+    description: "Teikia priedo API palaikymą OpenProject žiniatinklio sąsajoms, geresniai trečių šalių integracijai."
   activerecord:
     attributes:
       webhooks/webhook:
@@ -27,13 +30,17 @@ lt:
       events:
         created: "Sukurta"
         updated: "Atnaujinta"
+      explanation:
+        text: >
+          Atsitikus įvykiui, tokiam kaip darbų paketo sukūrimui ar projekto pakeitimui, OpenProject išsiųs POST užklausą nurodytoms jungtims. Dažnai įvykis siunčiamas po %{link} praėjimo.
+        link: konfigūruotas agregavimo periodas
       status:
         enabled: '„Webhook“ įgalintas'
         disabled: '„Webhook“ atjungtas'
         enabled_text: '„Webhook“ išsiųs „krovinį“ įvykus tokiems įvykiams'
         disabled_text: 'Paspauskite „Redaguoti“ mygtuką, kad aktyvuotumėte „webhook“.'
       deliveries:
-        no_results_table: Šis „webhook“ nesiuntė jokių pranešimų.
+        no_results_table: Šiam „webhook“ per paskutines dienas niekas nebuvo atsiųsta.
         title: 'Paskutiniai pranešimai'
         time: 'Pristatymo laikas'
       form:

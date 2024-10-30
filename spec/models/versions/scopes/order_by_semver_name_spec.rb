@@ -1,36 +1,28 @@
-require 'spec_helper'
+require "spec_helper"
 
-describe Versions::Scopes::OrderBySemverName, type: :model do
-  let(:project) { FactoryBot.create(:project) }
-  let!(:version1) do
-    FactoryBot.create(:version, name: "aaaaa 1.", project: project)
+RSpec.describe Versions::Scopes::OrderBySemverName do
+  let(:project) { create(:project) }
+  let(:names) do
+    [
+      "1. xxxx",
+      "1.1. aaa",
+      "1.1. zzz",
+      "1.2. mmm",
+      "1.10. aaa",
+      "9",
+      "10.2",
+      "10.10.2",
+      "10.10.10",
+      "aaaaa",
+      "aaaaa 1."
+    ]
   end
-  let!(:version2) do
-    FactoryBot.create(:version, name: "aaaaa", project: project)
-  end
-  let!(:version3) do
-    FactoryBot.create(:version, name: "1.10. aaa", project: project)
-  end
-  let!(:version4) do
-    FactoryBot.create(:version, name: "1.1. zzz", project: project, start_date: Date.today, effective_date: Date.today + 1.day)
-  end
-  let!(:version5) do
-    FactoryBot.create(:version, name: "1.2. mmm", project: project, start_date: Date.today)
-  end
-  let!(:version6) do
-    FactoryBot.create(:version, name: "1. xxxx", project: project, start_date: Date.today + 5.days)
-  end
-  let!(:version7) do
-    FactoryBot.create(:version, name: "1.1. aaa", project: project)
-  end
+  let!(:versions) { names.map { |name| create(:version, name:, project:) } }
 
-  it 'returns the versions in semver order' do
-    expect(described_class.fetch.to_a)
-      .to eql [version6, version7, version4, version5, version3, version2, version1]
-  end
+  subject { Version.order_by_semver_name.order(id: :desc).to_a }
 
-  it 'is also callable on the version class' do
-    expect(Version.order_by_semver_name.to_a)
-      .to eql [version6, version7, version4, version5, version3, version2, version1]
+  it "returns the versions in semver order" do
+    expect(subject)
+      .to eql versions
   end
 end

@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is a project management system.
-# Copyright (C) 2012-2018 the OpenProject Foundation (OPF)
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -23,32 +23,35 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
-#+
+# See COPYRIGHT and LICENSE files for more details.
+# +
 
 module Bim
   module IfcModels
     class UpdateService < ::BaseServices::Update
       protected
 
-      def before_perform(params)
-        super.tap do |call|
-          @ifc_attachment_replaced = call.success? && model.ifc_attachment.new_record?
-        end
+      def before_perform(params, _service_result)
+        @ifc_attachment_updated = params[:ifc_attachment].present?
+
+        super
       end
 
-      def after_perform(call)
-        if call.success?
+      def after_perform(service_result)
+        if service_result.success?
           # As the attachments association does not have the autosave option, we need to remove the
           # attachments ourselves
           model.attachments.select(&:marked_for_destruction?).each(&:destroy)
 
-          if @ifc_attachment_replaced
-            IfcConversionJob.perform_later(call.result)
+          if @ifc_attachment_updated
+            model.update(conversion_status: ::Bim::IfcModels::IfcModel.conversion_statuses[:pending],
+                         conversion_error_message: nil)
+
+            IfcConversionJob.perform_later(service_result.result)
           end
         end
 
-        call
+        service_result
       end
     end
   end

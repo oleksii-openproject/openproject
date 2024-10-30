@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,36 +23,40 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module API
   module V3
     module Groups
       class GroupsAPI < ::API::OpenProjectAPI
-        helpers ::API::Utilities::PageSizeHelper
-
         resources :groups do
-          route_param :id, type: Integer, desc: 'Group ID' do
-            helpers do
-              def group_scope
-                if current_user.allowed_to_globally?(:manage_members)
-                  Group.all
-                else
-                  Group
-                    .in_project(Project.allowed_to(current_user, :view_members))
-                end
-              end
+          after_validation do
+            authorize_in_any_project(%i[view_members manage_members])
+          end
 
-              def requested_user
-                group_scope.find(params[:id])
-              end
+          get &::API::V3::Utilities::Endpoints::SqlFallbackedIndex
+                 .new(model: Group)
+                 .mount
+          post &::API::V3::Utilities::Endpoints::Create
+                  .new(model: Group)
+                  .mount
+
+          route_param :id, type: Integer, desc: "Group ID" do
+            after_validation do
+              @group = Group.visible(current_user).find(params[:id])
             end
 
-            get do
-              GroupRepresenter
-                .new(requested_user, current_user: current_user)
-            end
+            get &::API::V3::Utilities::Endpoints::Show
+                   .new(model: Group)
+                   .mount
+            patch &::API::V3::Utilities::Endpoints::Update
+                     .new(model: Group)
+                     .mount
+            delete &::API::V3::Utilities::Endpoints::Delete
+                     .new(model: Group,
+                          success_status: 202)
+                     .mount
           end
         end
       end

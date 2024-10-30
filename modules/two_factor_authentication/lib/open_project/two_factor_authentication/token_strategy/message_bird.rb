@@ -1,12 +1,13 @@
-require 'messagebird'
+require "messagebird"
 
 module OpenProject::TwoFactorAuthentication
   module TokenStrategy
     class MessageBird < Base
       def self.validate!
         if configuration_params.nil?
-          raise ArgumentError, 'Missing configuration hash'
+          raise ArgumentError, "Missing configuration hash"
         end
+
         validate_params configuration_params
       end
 
@@ -34,16 +35,16 @@ module OpenProject::TwoFactorAuthentication
                                                       params[:message],
                                                       validity: 720
 
-        raise "Failed to deliver SMS" if response.recipients['totalDeliveryFailedCount'] > 0
-      rescue => e
+        raise "Failed to deliver SMS" if response.recipients["totalDeliveryFailedCount"] > 0
+      rescue StandardError => e
         Rails.logger.error("[2FA] MessageBird SMS delivery failed for user #{user.login}. Error: #{e} #{e.message}")
-        raise I18n.t('two_factor_authentication.message_bird.sms_delivery_failed')
+        raise I18n.t("two_factor_authentication.message_bird.sms_delivery_failed")
       end
 
       ##
       # TODO ensure the originator cannot be larger than 11 characters
       def originator
-        'OpenProject'
+        "OpenProject"
       end
 
       def send_voice
@@ -55,14 +56,14 @@ module OpenProject::TwoFactorAuthentication
                                                             ifMachine: :continue,
                                                             language: params[:language]
 
-        raise "Failed to initiate voice message" if response.recipients['totalDeliveryFailedCount'] > 0
-      rescue => e
+        raise "Failed to initiate voice message" if response.recipients["totalDeliveryFailedCount"] > 0
+      rescue StandardError => e
         Rails.logger.error("[2FA] MessageBird VOICE delivery failed for user #{user.login}. Error: #{e} #{e.message}")
-        raise I18n.t('two_factor_authentication.message_bird.voice_delivery_failed')
+        raise I18n.t("two_factor_authentication.message_bird.voice_delivery_failed")
       end
 
       def message_bird_client
-        ::MessageBird::Client.new(configuration_params[:apikey])
+        ::MessageBird::Client.new(configuration_params["apikey"])
       end
 
       ##
@@ -110,7 +111,7 @@ module OpenProject::TwoFactorAuthentication
       ##
       # Select a matching language from the available languages
       def build_localized_message(params)
-        locale_key = (user.language.presence || Setting.default_language)
+        locale_key = user.language.presence || Setting.default_language
 
         # Check if the translation exist or fall back to english
         language =
@@ -138,7 +139,6 @@ module OpenProject::TwoFactorAuthentication
         :"en-us"
       end
 
-
       ##
       # Checks whether the locale has a non-fallback
       def has_localized_text?(locale_key)
@@ -151,19 +151,20 @@ module OpenProject::TwoFactorAuthentication
       ##
       # Localize the message
       def localized_message(locale_key, token_value, fallback: true, raise_on_missing: false)
-        pause = ''
+        pause = ""
 
         # Output pauses for TTS in voice mode
         if channel.to_sym == :voice
-          token_value = token_value.split('').join('<break time="400ms"/>')
+          token_value = token_value.split("").join('<break time="400ms"/>')
           pause = '<break time="500ms"/>'
         end
 
         I18n.t "two_factor_authentication.text_otp_delivery_message_#{channel}",
-               pause: pause,
+               pause:,
                token: token_value,
-               app_title: Setting.app_title, locale: locale_key,
-               fallback: fallback, raise: raise_on_missing
+               locale: locale_key,
+               app_title: Setting.app_title,
+               fallback:, raise: raise_on_missing
       end
 
       ##
@@ -172,7 +173,7 @@ module OpenProject::TwoFactorAuthentication
       # Output format: xxyyyyyyyyyy
       def build_recipients(params)
         phone = device.phone_number
-        phone.gsub!(/[\+\s]/, '')
+        phone.gsub!(/[+\s]/, "")
 
         params[:recipients] = phone
       end

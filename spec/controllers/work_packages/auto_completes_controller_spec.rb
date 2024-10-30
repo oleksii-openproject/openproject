@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,40 +23,40 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'spec_helper'
+require "spec_helper"
 
-describe WorkPackages::AutoCompletesController, type: :controller do
-  let(:user) { FactoryBot.create(:user) }
-  let(:project) { FactoryBot.create(:project) }
+RSpec.describe WorkPackages::AutoCompletesController do
+  let(:user) { create(:user) }
+  let(:project) { create(:project) }
   let(:role) do
-    FactoryBot.create(:role,
-                      permissions: [:view_work_packages])
+    create(:project_role,
+           permissions: [:view_work_packages])
   end
   let(:member) do
-    FactoryBot.create(:member,
-                      project: project,
-                      principal: user,
-                      roles: [role])
+    create(:member,
+           project:,
+           principal: user,
+           roles: [role])
   end
   let(:work_package_1) do
-    FactoryBot.create(:work_package,
-                      subject: "Can't print recipes",
-                      project: project)
+    create(:work_package,
+           subject: "Can't print recipes",
+           project:)
   end
 
   let(:work_package_2) do
-    FactoryBot.create(:work_package,
-                      subject: 'Error when updating a recipe',
-                      project: project)
+    create(:work_package,
+           subject: "Error when updating a recipe",
+           project:)
   end
 
   let(:work_package_3) do
-    FactoryBot.create(:work_package,
-                      subject: 'Lorem ipsum',
-                      project: project)
+    create(:work_package,
+           subject: "Lorem ipsum",
+           project:)
   end
 
   before do
@@ -69,37 +69,37 @@ describe WorkPackages::AutoCompletesController, type: :controller do
     work_package_3
   end
 
-  shared_examples_for 'successful response' do
+  shared_examples_for "successful response" do
     subject { response }
 
     it { is_expected.to be_successful }
   end
 
-  shared_examples_for 'contains expected values' do
+  shared_examples_for "contains expected values" do
     subject { assigns(:work_packages) }
 
     it { is_expected.to include(*expected_values) }
   end
 
-  describe '#work_packages' do
-    describe 'search is case insensitive' do
+  describe "#work_packages" do
+    describe "search is case insensitive" do
       let(:expected_values) { [work_package_1, work_package_2] }
 
       before do
         get :index,
             params: {
               project_id: project.id,
-              q: 'ReCiPe'
+              q: "ReCiPe"
             },
             format: :json
       end
 
-      it_behaves_like 'successful response'
+      it_behaves_like "successful response"
 
-      it_behaves_like 'contains expected values'
+      it_behaves_like "contains expected values"
     end
 
-    describe 'returns work package for given id' do
+    describe "returns work package for given id" do
       let(:expected_values) { work_package_1 }
 
       before do
@@ -111,12 +111,12 @@ describe WorkPackages::AutoCompletesController, type: :controller do
             format: :json
       end
 
-      it_behaves_like 'successful response'
+      it_behaves_like "successful response"
 
-      it_behaves_like 'contains expected values'
+      it_behaves_like "contains expected values"
     end
 
-    describe 'returns work package for given id' do
+    describe "returns work package for given id" do
       # this relies on all expected work packages to have ids that contain the given string
       # we do not want to have work_package_3 so we take it's id + 1 to create a string
       # we are sure to not be part of work_package_3's id.
@@ -156,11 +156,11 @@ describe WorkPackages::AutoCompletesController, type: :controller do
             format: :json
       end
 
-      it_behaves_like 'successful response'
+      it_behaves_like "successful response"
 
-      it_behaves_like 'contains expected values'
+      it_behaves_like "contains expected values"
 
-      context 'uniq' do
+      context "uniq" do
         let(:assigned) { assigns(:work_packages) }
 
         subject { assigned.size }
@@ -169,12 +169,12 @@ describe WorkPackages::AutoCompletesController, type: :controller do
       end
     end
 
-    describe 'returns work package for given id' do
+    describe "returns work package for given id" do
       render_views
       let(:work_package_4) do
-        FactoryBot.create(:work_package,
-                          subject: "<script>alert('danger!');</script>",
-                          project: project)
+        create(:work_package,
+               subject: "<script>alert('danger!');</script>",
+               project:)
       end
       let(:expected_values) { work_package_4 }
 
@@ -187,29 +187,30 @@ describe WorkPackages::AutoCompletesController, type: :controller do
             format: :json
       end
 
-      it_behaves_like 'successful response'
-      it_behaves_like 'contains expected values'
+      it_behaves_like "successful response"
+      it_behaves_like "contains expected values"
 
-      it 'should escape html' do
-        expect(response.body).not_to include '<script>'
+      it "escapes html" do
+        expect(response.body).not_to include "<script>"
       end
     end
 
-    describe 'in different projects' do
+    describe "in different projects" do
       let(:project_2) do
-        FactoryBot.create(:project,
-                          parent: project)
+        create(:project,
+               parent: project)
       end
+      let(:expected_values) { work_package_4 }
       let(:member_2) do
-        FactoryBot.create(:member,
-                          project: project_2,
-                          principal: user,
-                          roles: [role])
+        create(:member,
+               project: project_2,
+               principal: user,
+               roles: [role])
       end
       let(:work_package_4) do
-        FactoryBot.create(:work_package,
-                          subject: 'Foo Bar Baz',
-                          project: project_2)
+        create(:work_package,
+               subject: "Foo Bar Baz",
+               project: project_2)
       end
 
       before do
@@ -225,11 +226,9 @@ describe WorkPackages::AutoCompletesController, type: :controller do
             format: :json
       end
 
-      let(:expected_values) { work_package_4 }
+      it_behaves_like "successful response"
 
-      it_behaves_like 'successful response'
-
-      it_behaves_like 'contains expected values'
+      it_behaves_like "contains expected values"
     end
   end
 end

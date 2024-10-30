@@ -1,13 +1,12 @@
-#-- encoding: UTF-8
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -24,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 class Queries::WorkPackages::Filter::GroupFilter < Queries::WorkPackages::Filter::WorkPackageFilter
@@ -41,7 +40,7 @@ class Queries::WorkPackages::Filter::GroupFilter < Queries::WorkPackages::Filter
   end
 
   def human_name
-    I18n.t('query_fields.member_of_group')
+    I18n.t("query_fields.member_of_group")
   end
 
   def self.key
@@ -56,24 +55,23 @@ class Queries::WorkPackages::Filter::GroupFilter < Queries::WorkPackages::Filter
     available_groups = all_groups.index_by(&:id)
 
     values
-      .map { |group_id| available_groups[group_id.to_i] }
-      .compact
+      .filter_map { |group_id| available_groups[group_id.to_i] }
   end
 
   def where
     operator_for_filtering.sql_for_field(user_ids_for_filtering.map(&:to_s),
                                          WorkPackage.table_name,
-                                         'assigned_to_id')
+                                         "assigned_to_id")
   end
 
   private
 
   def operator_for_filtering
     case operator
-    when '*' # Any Role
+    when "*" # Any Role
       # Override the operator since we want to find by assigned_to
       ::Queries::Operators::Equals
-    when '!*' # No role
+    when "!*" # No role
       # Override the operator since we want to find by assigned_to
       ::Queries::Operators::NotEquals
     else
@@ -83,13 +81,13 @@ class Queries::WorkPackages::Filter::GroupFilter < Queries::WorkPackages::Filter
 
   def user_ids_for_filtering
     scope = case operator
-            when '*', '!*'
+            when "*", "!*"
               all_groups
             else
               all_groups.where(id: values)
             end
 
-    scope.joins(:users).pluck(Arel.sql('users_users.id')).uniq.sort
+    scope.joins(:users).pluck(Arel.sql("users_users.id")).uniq.sort
   end
 
   def all_groups

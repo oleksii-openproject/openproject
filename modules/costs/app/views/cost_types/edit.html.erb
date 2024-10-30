@@ -1,12 +1,12 @@
 <%#-- copyright
 OpenProject is an open source project management software.
-Copyright (C) 2012-2020 the OpenProject GmbH
+Copyright (C) the OpenProject GmbH
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License version 3.
 
 OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-Copyright (C) 2006-2017 Jean-Philippe Lang
+Copyright (C) 2006-2013 Jean-Philippe Lang
 Copyright (C) 2010-2013 the ChiliProject Team
 
 This program is free software; you can redistribute it and/or
@@ -23,20 +23,27 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-See docs/COPYRIGHT.rdoc for more details.
+See COPYRIGHT and LICENSE files for more details.
 
 ++#%>
 
 <% if(@cost_type.id) %>
   <% html_title  t(:label_cost_type_specific, id: @cost_type.id, name: @cost_type.name) %>
-  <% local_assigns[:additional_breadcrumb] = @cost_type.name %>
+  <% title = @cost_type.name %>
 <% else %>
   <% html_title t(:label_administration), t(:label_cost_type_plural) %>
-  <% local_assigns[:additional_breadcrumb] = t(:label_new) + ' ' + I18n.t('activerecord.models.cost_type.one') %>
+  <% title = t(:label_new) + ' ' + I18n.t('activerecord.models.cost_type.one') %>
 <% end %>
 
-
-<%= toolbar title: CostType.model_name.human %>
+<%=
+  render(Primer::OpenProject::PageHeader.new) do |header|
+    header.with_title { title }
+    header.with_breadcrumbs([{ href: admin_index_path, text: t("label_administration") },
+                             { href: url_for({ controller: "/admin/settings", action: "show_plugin", id: :costs }), text: t(:project_module_costs) },
+                             { href: cost_types_path, text: t(:label_cost_type_plural) },
+                             title])
+  end
+%>
 
 <costs-subform item-count="<%= @cost_type.rates.length %>">
 <%= labelled_tabular_form_for @cost_type do |f| %>
@@ -59,11 +66,11 @@ See docs/COPYRIGHT.rdoc for more details.
   <h3><%= t :caption_rate_history %></h3>
   <div class="generic-table--container">
     <div class="generic-table--results-container">
-      <table class="generic-table">
+      <table class="generic-table" data-controller="table-highlighting">
         <colgroup>
-          <col highlight-col>
-          <col highlight-col>
           <col>
+          <col>
+          <col data-highlight="false">
         </colgroup>
         <thead>
           <tr>
@@ -89,7 +96,7 @@ See docs/COPYRIGHT.rdoc for more details.
           </tr>
         </thead>
         <tbody id="rates_body" class="subform-container">
-          <%= render partial: "rate", object: CostRate.new, locals: { templated: true } %>
+          <%= render partial: "rate", object: CostRate.new(valid_from: Date.current), locals: { templated: true } %>
           <% @cost_type.rates.sort do |a,b|
             case
             when !a.valid? && !b.valid?
@@ -114,7 +121,7 @@ See docs/COPYRIGHT.rdoc for more details.
     <a id="add_rate_date" href="#" class="add-row-button wp-inline-create--add-link" title="<%= t(:button_add_rate) %>">
       <%= op_icon('icon icon-add') %>
     </a>
-    <%= styled_button_tag t(:button_save), class: '-with-icon icon-checkmark' %>
   </div>
+  <%= styled_button_tag t(:button_save), class: '-with-icon icon-checkmark' %>
 <% end %>
 </costs-subform>

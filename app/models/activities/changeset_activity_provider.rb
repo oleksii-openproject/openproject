@@ -1,14 +1,12 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -25,11 +23,11 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 class Activities::ChangesetActivityProvider < Activities::BaseActivityProvider
-  activity_provider_for type: 'changesets',
+  activity_provider_for type: "changesets",
                         permission: :view_changesets
 
   def extend_event_query(query)
@@ -38,11 +36,11 @@ class Activities::ChangesetActivityProvider < Activities::BaseActivityProvider
 
   def event_query_projection
     [
-      activity_journal_projection_statement(:revision, 'revision'),
-      activity_journal_projection_statement(:comments, 'comments'),
-      activity_journal_projection_statement(:committed_on, 'committed_on'),
-      projection_statement(repositories_table, :project_id, 'project_id'),
-      projection_statement(repositories_table, :type, 'repository_type')
+      activity_journal_projection_statement(:revision, "revision"),
+      activity_journal_projection_statement(:comments, "comments"),
+      activity_journal_projection_statement(:committed_on, "committed_on"),
+      projection_statement(repositories_table, :project_id, "project_id"),
+      projection_statement(repositories_table, :type, "repository_type")
     ]
   end
 
@@ -68,24 +66,24 @@ class Activities::ChangesetActivityProvider < Activities::BaseActivityProvider
   protected
 
   def event_type(_event)
-    'changeset'
+    "changeset"
   end
 
   def event_title(event)
     revision = format_revision(event)
 
-    short_comment = split_comment(event['comments']).first
+    short_comment = split_comment(event["comments"]).first
 
     title = "#{I18n.t(:label_revision)} #{revision}"
-    title << (short_comment.blank? ? '' : (': ' + short_comment))
+    title << (short_comment.blank? ? "" : (": " + short_comment))
   end
 
   def event_description(event)
-    split_comment(event['comments']).last
+    split_comment(event["comments"]).last
   end
 
   def event_datetime(event)
-    committed_on = event['committed_on']
+    committed_on = event["committed_on"]
     committed_on.is_a?(String) ? DateTime.parse(committed_on) : committed_on
   end
 
@@ -104,9 +102,9 @@ class Activities::ChangesetActivityProvider < Activities::BaseActivityProvider
   end
 
   def format_revision(event)
-    repository_class = event['repository_type'].constantize
+    repository_class = event["repository_type"].constantize
 
-    repository_class.respond_to?(:format_revision) ? repository_class.format_revision(event['revision']) : event['revision']
+    repository_class.respond_to?(:format_revision) ? repository_class.format_revision(event["revision"]) : event["revision"]
   end
 
   def split_comment(comments)
@@ -118,6 +116,6 @@ class Activities::ChangesetActivityProvider < Activities::BaseActivityProvider
   end
 
   def url_helper_parameter(event)
-    { project_id: event['project_id'], rev: event['revision'] }
+    { project_id: event["project_id"], rev: event["revision"] }
   end
 end

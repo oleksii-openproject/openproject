@@ -1,13 +1,12 @@
-#-- encoding: UTF-8
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -24,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 ##
@@ -34,11 +33,14 @@
 
 # It is very unstable code. However, it should never change the instance it runs in. However, use it with caution.
 
-## Before using it, make sure that all subjects are unique:
-# project_identifiers = %w(construction-project bcf-management seed-daten creating-bim-model)
-# projects = Project.where(identifier: project_identifiers)
-# all_wps = projects.map(&:work_packages).flatten
-# all_wps.group_by(&:subject).select { |subject, members| members.size > 1 }.each { |subject, members| puts "#{subject}\t#{members.map(&:id).join("\t")}" }
+## Before using it, make sure:
+# that the default language is :en
+# that the seeded status, types, and priority names have never been changed
+# that all subjects are unique:
+#   project_identifiers = %w(construction-project bcf-management seed-daten creating-bim-model)
+#   projects = Project.where(identifier: project_identifiers)
+#   all_wps = projects.map(&:work_packages).flatten
+#   all_wps.group_by(&:subject).select { |subject, members| members.size > 1 }.each { |subject, members| puts "#{subject}\t#{members.map(&:id).join("\t")}" }
 class Seedifier
   attr_accessor :written_work_packages_ids, :project_identifiers, :projects, :base_date
 
@@ -47,6 +49,10 @@ class Seedifier
     @written_work_packages_ids = []
     @projects = Project.where(identifier: @project_identifiers)
 
+    raise "Warning: this class and the bim:seedify task have not been maintained when " \
+          "work package 36933 was implemented as it was out-of-scope. It will probably " \
+          "fail to produce the expected output."
+
     all_work_packages = @projects.map { |project| project.work_packages.to_a }.flatten.sort_by(&:start_date)
     @base_date = all_work_packages.first.start_date.monday
   end
@@ -54,13 +60,15 @@ class Seedifier
   def run
     @projects.each do |project|
       puts "=== PROJECT: #{project.identifier} ==="
-      work_packages = project.work_packages.reject { |work_package| work_package.parent && work_package.parent.project.identifier == project.identifier }.sort_by(&:start_date)
+      work_packages = project.work_packages.reject do |work_package|
+        work_package.parent && work_package.parent.project.identifier == project.identifier
+      end.sort_by(&:start_date)
       if work_packages.empty?
         puts "No work packages for project with identifier #{project.identifier}... skipping."
         next
       end
 
-      puts work_packages.map { |work_package| seedify_work_package(work_package, project) }.compact.to_yaml
+      puts work_packages.filter_map { |work_package| seedify_work_package(work_package, project) }.to_yaml
     end
   end
 
@@ -79,17 +87,17 @@ class Seedifier
   end
 
   def calc_status(work_package)
-    prefix = ''
+    prefix = ""
     if ["Resolved"].include?(work_package.status.name)
-      prefix = 'seeders.bim.'
+      prefix = "bim."
     end
     "#{prefix}default_status_#{calc_low_dash(work_package.status.name.downcase)}"
   end
 
   def calc_type(work_package)
-    prefix = ''
+    prefix = ""
     if ["Issue", "Clash", "Remark", "Request"].include?(work_package.type.name)
-      prefix = 'seeders.bim.'
+      prefix = "bim."
     end
     "#{prefix}default_type_#{calc_low_dash(work_package.type.name.downcase)}"
   end
@@ -102,13 +110,13 @@ class Seedifier
   # Create a hash that only hold those properties that we would like to copy and paste into a seeder YAML file.
   def seedify_work_package(work_package, project)
     # Don't seed a WP twice. And don't seed WPs of other projects.
-    return nil if (@written_work_packages_ids.include?(work_package.id) || work_package.project_id != project.id)
+    return nil if @written_work_packages_ids.include?(work_package.id) || work_package.project_id != project.id
 
     @written_work_packages_ids << work_package.id
 
-    predecessors = work_package.follows.sort_by(&:start_date).map { |predecessor| {to: predecessor.subject, type: 'follows'} }
+    predecessors = work_package.follows.sort_by(&:start_date).map { |predecessor| { to: predecessor.subject, type: "follows" } }
 
-    children = work_package.children.sort_by(&:start_date).map { |child| seedify_work_package(child, project) }.compact
+    children = work_package.children.sort_by(&:start_date).filter_map { |child| seedify_work_package(child, project) }
 
     assigned_to = work_package.assigned_to.try(:name)
 
@@ -131,7 +139,10 @@ class Seedifier
 
     seedified[:assigned_to] = assigned_to if assigned_to.present?
     seedified[:duration] = duration if duration.present?
-    seedified[:parent] = work_package.parent.subject if work_package.parent.present? && (work_package.bcf_issue || work_package.project_id != project.id)
+    if work_package.parent.present? && (work_package.bcf_issue || work_package.project_id != project.id)
+      seedified[:parent] =
+        work_package.parent.subject
+    end
     seedified[:relations] = predecessors if predecessors.any?
 
     seedified
@@ -145,5 +156,3 @@ namespace :bim do
     Seedifier.new(project_identifiers).run
   end
 end
-
-

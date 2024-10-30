@@ -1,10 +1,10 @@
 #-- copyright
 #OpenProject is an open source project management software.
-#Copyright (C) 2012-2020 the OpenProject GmbH
+#Copyright (C) the OpenProject GmbH
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License version 3.
 #OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-#Copyright (C) 2006-2017 Jean-Philippe Lang
+#Copyright (C) 2006-2013 Jean-Philippe Lang
 #Copyright (C) 2010-2013 the ChiliProject Team
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License
@@ -17,15 +17,16 @@
 #You should have received a copy of the GNU General Public License
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-#See docs/COPYRIGHT.rdoc for more details.
+#See COPYRIGHT and LICENSE files for more details.
 #++
 ar:
+  plugin_openproject_backlogs:
+    name: "OpenProject Backlogs"
+    description: "This module adds features enabling agile teams to work with OpenProject in Scrum projects."
   activerecord:
     attributes:
       work_package:
         position: "الموقع"
-        remaining_hours: "الساعات المتبقية"
-        remaining_time: "الساعات المتبقية"
         story_points: "نقاط القصة"
         backlogs_work_package_type: "نوع الأعمال المتراكمة غير المنجزة"
     errors:
@@ -35,9 +36,6 @@ ar:
             blocks_ids:
               can_only_contain_work_packages_of_current_sprint: "يمكن أن تحتوي فقط على الهويات المعرّفة لمجموعات العمل في السباق الحالي."
               must_block_at_least_one_work_package: "يجب أن يحتوي على الأقل على الهوية المعرّفة لبطاقة واحدة."
-            parent_id:
-              parent_child_relationship_across_projects: "هو غير صالح لأن مجموعة العمل '%{work_package_name}' هي مهمة عمل متراكم غير منجز ولذلك لا يمكن أن يكون أحد الأصول خارج المشروع الحالي."
-              type_must_be_one_of_the_following: "النوع يجب أن يكون أحد الأنواع التالية: %{type_names}."
             version_id:
               task_version_must_be_the_same_as_story_version: "يجب أن يكون نفس نسخة القصة الأصلية."
         sprint:
@@ -66,8 +64,8 @@ ar:
     properties: "الخصائص"
     rebuild: "إعِدْ بناء"
     rebuild_positions: "أعِد بناء المواقع"
-    remaining_hours: "الساعات المتبقية"
-    remaining_hours_ideal: "الساعات المتبقية (المثالية)"
+    remaining_hours: ""
+    remaining_hours_ideal: "Remaining work (ideal)"
     show_burndown_chart: "الرسم البياني للعمل المتبقي"
     story: "القصة"
     story_points: "نقاط القصة"
@@ -78,7 +76,6 @@ ar:
     x_more: "%{count} أكثر..."
   backlogs_active: "نشِط"
   backlogs_any: "أي"
-  backlogs_card_specification: "أنواع الملصقات لطباعة البطاقة"
   backlogs_inactive: "لا يُظهر المشروع أي نشاط"
   backlogs_points_burn_direction: "نقاط الاستهلاك الإيجابي/ السلبي"
   backlogs_product_backlog: "عمل المنتج المتراكم غير المنجز"
@@ -99,6 +96,7 @@ ar:
   backlogs_empty_title: "لا توجد إصدارات محددة لاستخدامها في  قائمة الأعمال"
   backlogs_empty_action_text: "للبدء مع قائمة الأعمال ، قم بإنشاء إصدار جديد و تعيينه إلى عمود  قائمة الأعمال."
   button_edit_wiki: "عدّل صفحة ويكي wiki"
+  error_backlogs_task_cannot_be_story: "الإعدادات غير صالحة. نوع المهمة المحدد لا يمكن أن يكون أيضا نوع قصة."
   error_intro_plural: "تم مصادفة الأخطاء التالية:"
   error_intro_singular: "تمت مصادفة الخطأ التالي:"
   error_outro: "من فضلك صحح الأخطاء في الأعلى قبل التقديم مرة أخرى."
@@ -110,7 +108,7 @@ ar:
   label_backlog: "العمل المتراكم غير المنجز"
   label_backlogs: "الأعمال المتراكمة غير المنجزة"
   label_backlogs_unconfigured: "لم تقم بإنشاء الأعمال المتراكمة غير المنجزة بعد. من فضلك اذهب إلى %{administration} > %{plugins}، ثم اضغط على رابط %{configure} لهذا البرنامج المساعد. عندما تنتهي من تعيين الحقول، ارجع إلى هذه الصفحة لتبدأ باستخدام الأداة."
-  label_blocks_ids: "مُعرِّفات مجموعات العمل المحظورة"
+  label_blocks_ids: "الهويات المعرِّفة لمجموعات العمل المحظورة"
   label_burndown: "العمل المتبقي"
   label_column_in_backlog: "عمود في العمل المتراكم غير المنجز"
   label_hours: "الساعات"
@@ -131,11 +129,12 @@ ar:
   label_stories_tasks: "القصص/ المهمات"
   label_task_board: "لوحة المهمة"
   label_version_setting: "الإصدارات"
-  label_version: 'الإصدار'
+  label_version: 'النسخة'
   label_webcal: "تغذية Webcal"
   label_wiki: "Wiki"
   permission_view_master_backlog: "عرض العمل الرئيسي المتراكم غير المنجز"
   permission_view_taskboards: "شاهد لوحات المهمات"
+  permission_select_done_statuses: "حدد حالات الاتمام"
   permission_update_sprints: "قم بتحديث السباقات"
   points_accepted: "النقاط التي تم قبولها"
   points_committed: "النقاط التي تم إحرازها"
@@ -148,7 +147,7 @@ ar:
   rb_label_copy_tasks_none: "لا شيء"
   rb_label_copy_tasks_open: "مفتوح"
   rb_label_link_to_original: "ضمّن الرابط للقصة الأصلية"
-  remaining_hours: "الساعات المتبقية"
+  remaining_hours: "remaining work"
   required_burn_rate_hours: "معدّل الاستهلاك المطلوب (الساعات)"
   required_burn_rate_points: "معدّل الاستهلاك المطلوب (النقاط)"
   todo_work_package_description: "%{summary}: %{url}\n%{description}"

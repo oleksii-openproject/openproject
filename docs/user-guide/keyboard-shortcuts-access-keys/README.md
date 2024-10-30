@@ -3,7 +3,6 @@ sidebar_navigation:
   title: Keyboard Shortcuts and Access Keys
   priority: 450
 description: Keyboard Shortcuts and Access Keys in OpenProject.
-robots: index, follow
 keywords: keyboard shortcuts and access keys
 ---
 # Keyboard Shortcuts and Access Keys
@@ -60,24 +59,34 @@ OpenProject (since version 3.0) offers useful keyboard shortcuts to  enhance you
 
 ### Windows
 
-- Internet Exlorer: Alt + <access key number>
-- Firefox: Alt + Shift + <access key number>
-- Google Chrome: Alt + <access key number>
-- Safari: Alt + <access key number>
+- Internet Explorer: Alt + &lt;access key number&gt;
+- Firefox: Alt + Shift + &lt;access key number&gt;
+- Google Chrome: Alt + &lt;access key number&gt;
+- Safari: Alt + &lt;access key number&gt;
 
 ------
 
 ### Linux
 
-- Firefox: Alt + Shift + <access key number>
-- Google Chrome: Alt + Mod + <access key number>
+- Firefox: Alt + Shift + &lt;access key number&gt;
+- Google Chrome: Alt + Mod + &lt;access key number&gt;
 
 ------
 
 ### OS X
 
-- Firefox:  Ctrl + Opt + <access key number>
-- Google Chrome: Ctrl + Opt + <access key number>
-- Safari: Ctrl + Opt + <access key number>
+- Firefox:  Ctrl + Opt + &lt;access key number&gt;
+- Google Chrome: Ctrl + Opt + &lt;access key number&gt;
+- Safari: Ctrl + Opt + &lt;access key number&gt;
 
 ------
+
+## Save text in rich editor
+
+To quickly save changes in a rich text editor (for example a work package description or a comment) you can use this shortcut.
+
+| Shortcut (Windows / Linux) | Shortcut (Mac) | Action                                                       |
+| -------------------------- | -------------- | ------------------------------------------------------------ |
+| CTRL + ENTER               | CMD + ENTER    | **Save changes.**<br>For inline-editable fields, save the field and close it.<br>For pages with a full WYSIWYG (meetings, wiki pages), submit the form. |
+
+Please also refer to documentation  on [working in Rich text editor in OpenProject](../wysiwyg).

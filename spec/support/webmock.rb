@@ -1,13 +1,12 @@
-#-- encoding: UTF-8
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -24,9 +23,11 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
-require 'webmock/rspec'
+
+require "httpx/adapters/webmock"
+require "webmock/rspec"
 
 RSpec.configure do |config|
   config.before(:suite) do
@@ -36,18 +37,25 @@ RSpec.configure do |config|
     WebMock.disable!
   end
 
-  config.around(:example, webmock: true) do |example|
-    begin
-      # When we enable webmock, no connections other than stubbed ones are allowed.
-      # We will exempt local connections from this block, since selenium etc.
-      # uses localhost to communicate with the browser.
-      # Leaving this off will randomly fail some specs with WebMock::NetConnectNotAllowedError
-      WebMock.disable_net_connect!(allow_localhost: true)
-      WebMock.enable!
-      example.run
-    ensure
-      WebMock.allow_net_connect!
-      WebMock.disable!
-    end
+  config.around(:example, :webmock) do |example|
+    # When we enable webmock, no connections other than stubbed ones are allowed.
+    # We will exempt:
+    # * local connections, since selenium etc. uses localhost to communicate with the browser.
+    #   Leaving this off will randomly fail some specs with WebMock::NetConnectNotAllowedError
+    # * chromedriver, since it might need to be downloaded
+    WebMock.disable_net_connect!(
+      allow_localhost: true, allow: [
+        "selenium-hub",
+        Capybara.server_host,
+        "chromedriver.storage.googleapis.com",
+        "openproject-ci-public-logs.s3.eu-west-1.amazonaws.com",
+        "cuprite-chrome"
+      ]
+    )
+    WebMock.enable!
+    example.run
+  ensure
+    WebMock.allow_net_connect!
+    WebMock.disable!
   end
 end

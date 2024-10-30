@@ -1,7 +1,6 @@
 class WorkPackage
   class AbstractCosts
-    attr_reader :user
-    attr_reader :project
+    attr_reader :user, :project
 
     def initialize(user: User.current, project: nil)
       @user = user
@@ -49,15 +48,15 @@ class WorkPackage
     #
     # @return [Class] Class of the model the costs are based on, e.g. CostEntry or TimeEntry.
     def costs_model
-      raise NotImplementedError, "subclass responsiblity"
+      raise NotImplementedError, "subclass responsibility"
     end
 
     def costs_sum_alias
-      raise NotImplementedError, "subclass responsiblity"
+      raise NotImplementedError, "subclass responsibility"
     end
 
     def subselect_alias
-      raise NotImplementedError, "subclass responsiblity"
+      raise NotImplementedError, "subclass responsibility"
     end
 
     private
@@ -125,7 +124,7 @@ class WorkPackage
     def wp_table_descendants
       # Relies on a table called descendants to exist in the scope
       # which is provided by left_join_self_and_descendants
-      wp_table.alias 'descendants'
+      wp_table.alias "descendants"
     end
 
     def ce_table

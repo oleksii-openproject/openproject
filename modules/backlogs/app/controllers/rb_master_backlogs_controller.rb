@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,29 +23,20 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 class RbMasterBacklogsController < RbApplicationController
   menu_item :backlogs
 
-  before_action :set_export_card_config_meta
-
   def index
     @owner_backlogs = Backlog.owner_backlogs(@project)
     @sprint_backlogs = Backlog.sprint_backlogs(@project)
 
-    @last_update = (@sprint_backlogs + @owner_backlogs).map(&:updated_on).compact.max
+    @last_update = (@sprint_backlogs + @owner_backlogs).filter_map(&:updated_at).max
   end
 
   private
-
-  def set_export_card_config_meta
-    @export_card_config_meta = {
-      count: ExportCardConfiguration.active.count,
-      default: ExportCardConfiguration.default
-    }
-  end
 
   def default_breadcrumb
     I18n.t(:label_backlogs)

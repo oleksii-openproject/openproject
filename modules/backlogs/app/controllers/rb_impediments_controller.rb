@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 class RbImpedimentsController < RbApplicationController
@@ -54,7 +54,7 @@ class RbImpedimentsController < RbApplicationController
     @include_meta = true
 
     respond_to do |format|
-      format.html { render partial: 'impediment', object: @impediment, status: status, locals: { errors: call.errors } }
+      format.html { render partial: "impediment", object: @impediment, status:, locals: { errors: call.errors } }
     end
   end
 
@@ -71,7 +71,10 @@ class RbImpedimentsController < RbApplicationController
 
     # We block block_ids only when user is not allowed to create or update the
     # instance passed.
-    unless instance && ((instance.new_record? && User.current.allowed_to?(:add_work_packages, @project)) || User.current.allowed_to?(:edit_work_packages, @project))
+    unless instance && ((instance.new_record? && User.current.allowed_in_project?(:add_work_packages,
+                                                                                  @project)) || User.current.allowed_in_any_work_package?(
+                                                                                    :edit_work_packages, in_project: @project
+                                                                                  ))
       hash.delete(:block_ids)
     end
 

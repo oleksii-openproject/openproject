@@ -1,13 +1,12 @@
-#-- encoding: UTF-8
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -24,54 +23,30 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module BreadcrumbHelper
-  def full_breadcrumb
-    if show_defaults
-      breadcrumb_list(link_to(icon_wrapper('icon2 icon-home', I18n.t(:label_home)), home_path),
-                      link_to_project_ancestors(@project),
-                      *breadcrumb_paths)
-    else
-      breadcrumb_list(*breadcrumb_paths)
-    end
-  end
+  def full_breadcrumbs
+    render(Primer::Beta::Breadcrumbs.new(test_selector: "op-breadcrumb")) do |breadcrumbs|
+      breadcrumb_paths.each_with_index do |item, index|
+        item = anchor_string_to_object(item) if item.is_a?(String) && item.start_with?("\u003c")
 
-  def breadcrumb(*args)
-    elements = args.flatten
-    elements.any? ? content_tag('p', (args.join(' &#187; ') + ' &#187; ').html_safe, class: 'breadcrumb') : nil
-  end
-
-  def breadcrumb_list(*args)
-    elements = args.flatten
-    breadcrumb_elements = [content_tag(:li,
-                                       elements.shift.to_s,
-                                       class: 'first-breadcrumb-element',
-                                       style: 'list-style-image:none;')]
-
-    breadcrumb_elements += elements.map do |element|
-      if element
-        css_class = if element.try(:include?, 'breadcrumb-project-title')
-                      'breadcrumb-project-element '
-                    end
-        content_tag(:li,
-                    h(element.to_s),
-                    class: "#{css_class} icon4 icon-small icon-arrow-right5")
+        if item.is_a?(Hash)
+          breadcrumbs.with_item(href: item[:href], classes: index == 0 ? "first-breadcrumb-element" : nil) { item[:text] }
+        else
+          breadcrumbs.with_item(href: "#", classes: index == 0 ? "first-breadcrumb-element" : nil) { item }
+        end
       end
     end
-
-    content_tag(:ul, breadcrumb_elements.join.html_safe, class: 'breadcrumb')
   end
 
   def breadcrumb_paths(*args)
-    if args.nil?
-      nil
-    elsif args.empty?
+    if args.empty?
       @breadcrumb_paths ||= [default_breadcrumb]
     else
       @breadcrumb_paths ||= []
-      @breadcrumb_paths += args
+      @breadcrumb_paths += args.flatten.compact
     end
   end
 
@@ -83,27 +58,15 @@ module BreadcrumbHelper
     end
   end
 
-  def show_defaults
-    if !!(defined? show_local_breadcrumb_defaults)
-      show_local_breadcrumb_defaults
-    else
-      false
-    end
-  end
-
   private
 
-  def link_to_project_ancestors(project)
-    if project && !project.new_record?
-      ancestors = (project.root? ? [] : project.ancestors.visible.to_a)
-      ancestors << project
-      ancestors.map do |p|
-        if p == project
-          link_to_project(p, { only_path: false }, title: p, class: 'breadcrumb-project-title nocut').html_safe
-        else
-          link_to_project(p, { jump: current_menu_item }, title: p, class: 'breadcrumb-project-title').html_safe
-        end
-      end
-    end
+  # transform anchor tag strings to {href, text} objects
+  # e.g "\u003ca href=\"/admin\"\u003eAdministration\u003c/a\u003e"
+  def anchor_string_to_object(html_string)
+    # Parse the HTML
+    doc = Nokogiri::HTML.fragment(html_string)
+    # Extract href and text
+    anchor = doc.at("a")
+    { href: anchor["href"], text: anchor.text }
   end
 end

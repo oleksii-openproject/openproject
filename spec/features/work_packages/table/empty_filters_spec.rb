@@ -1,10 +1,10 @@
-require 'spec_helper'
+require "spec_helper"
 
-describe 'Empty query filters', js: true do
-  let(:user) { FactoryBot.create(:admin) }
-  let(:work_package) { FactoryBot.create(:work_package) }
-  let(:wp_table) { ::Pages::WorkPackagesTable.new }
-  let(:filters) { ::Components::WorkPackages::Filters.new }
+RSpec.describe "Empty query filters", :js do
+  let(:user) { create(:admin) }
+  let(:work_package) { create(:work_package) }
+  let(:wp_table) { Pages::WorkPackagesTable.new }
+  let(:filters) { Components::WorkPackages::Filters.new }
 
   before do
     login_as(user)
@@ -14,7 +14,7 @@ describe 'Empty query filters', js: true do
   end
 
   # Tests for regression #23739
-  it 'allows to delete the last query filter' do
+  it "allows to delete the last query filter" do
     # Open filter menu
     filters.expect_filter_count(1)
     filters.open
@@ -24,7 +24,7 @@ describe 'Empty query filters', js: true do
 
     wp_table.expect_work_package_listed(work_package)
 
-    wp_table.expect_no_notification(type: :error)
+    wp_table.expect_no_toaster(type: :error)
     filters.expect_filter_count(0)
   end
 end

@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,29 +23,29 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module Costs
   module Patches::MembersPatch
     def self.mixin!
-      ::Members::TableCell.add_column :current_rate
-      ::Members::TableCell.options :current_user # adds current_user option
+      ::Members::TableComponent.add_column :current_rate
+      ::Members::TableComponent.options :current_user # adds current_user option
 
       ::MembersController.prepend TableOptions
-      ::Members::TableCell.prepend TableCell
-      ::Members::RowCell.prepend RowCell
+      ::Members::TableComponent.prepend TableComponent
+      ::Members::RowComponent.prepend RowComponent
     end
 
     module TableOptions
       def members_table_options(_roles)
-        super.merge current_user: current_user
+        super.merge current_user:
       end
     end
 
-    module TableCell
+    module TableComponent
       def sort_collection(query, sort_clause, sort_columns)
-        q = super query, sort_clause.gsub(/current_rate/, 'COALESCE(rate, 0.0)'), sort_columns
+        q = super(query, sort_clause.gsub("current_rate", "COALESCE(rate, 0.0)"), sort_columns)
 
         if sort_columns.include? :current_rate
           join_rate q
@@ -140,7 +140,7 @@ module Costs
       end
     end
 
-    module RowCell
+    module RowComponent
       include ActionView::Helpers::NumberHelper # for #number_to_currency
 
       ##
@@ -158,9 +158,7 @@ module Costs
         end
       end
 
-      def project
-        table.project
-      end
+      delegate :project, to: :table
 
       def column_css_class(name)
         if name == :current_rate
@@ -191,11 +189,11 @@ module Costs
       end
 
       def allow_view?
-        table.current_user.allowed_to? :view_hourly_rates, project
+        table.current_user.allowed_in_project?(:view_hourly_rates, project)
       end
 
       def allow_edit?
-        table.current_user.allowed_to? :edit_hourly_rates, project
+        table.current_user.allowed_in_project?(:edit_hourly_rates, project)
       end
     end
   end

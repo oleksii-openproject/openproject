@@ -1,10 +1,10 @@
 #-- copyright
 #OpenProject is an open source project management software.
-#Copyright (C) 2012-2020 the OpenProject GmbH
+#Copyright (C) the OpenProject GmbH
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License version 3.
 #OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-#Copyright (C) 2006-2017 Jean-Philippe Lang
+#Copyright (C) 2006-2013 Jean-Philippe Lang
 #Copyright (C) 2010-2013 the ChiliProject Team
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License
@@ -17,12 +17,15 @@
 #You should have received a copy of the GNU General Public License
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-#See docs/COPYRIGHT.rdoc for more details.
+#See COPYRIGHT and LICENSE files for more details.
 #++
 nl:
-  button_save_as: "Rapport opslaan als..."
+  plugin_openproject_reporting:
+    name: "OpenProject Rapportage"
+    description: "This plugin allows creating custom cost reports with filtering and grouping created by the OpenProject Time and costs plugin."
+  button_save_report_as: "Save report as..."
   comments: "Commentaar"
-  cost_reports_title: "Time and costs"
+  cost_reports_title: "Tijd en kosten"
   label_cost_report: "Kostenrapport"
   label_cost_report_plural: "Kostenrapporten"
   description_drill_down: "Details weergeven"
@@ -44,10 +47,11 @@ nl:
   label_is_project_with_subprojects: "is (inclusief subprojecten)"
   label_work_package_attributes: "Attributen van het werkpakket"
   label_less: "<"
+  label_logged_by_reporting: "Gelogd door"
   label_money: "Cash waarde"
   label_month_reporting: "Maand (kosten)"
   label_new_report: "Nieuwe kostenrapport"
-  label_open: "Open"
+  label_open: "open"
   label_operator: "Operator"
   label_private_report_plural: "Privé kostenrapporten"
   label_progress_bar_explanation: "Rapport aan het genereren..."
@@ -60,6 +64,18 @@ nl:
   label_units: "Eenheden"
   label_week_reporting: "Week (kosten)"
   label_year_reporting: "Jaar (kosten)"
+  label_count: "Aantal"
+  label_filter: "Filter"
+  label_filter_add: "Filter Toevoegen"
+  label_filter_plural: "Filters"
+  label_group_by: "Groeperen op"
+  label_group_by_add: "Groep, toevoegen aan Attribuut"
+  label_inactive: "«inactief»"
+  label_no: "Nee"
+  label_none: "(geen gegevens)"
+  label_no_reports: "Er zijn nog geen kostenrapporten."
+  label_report: "Rapport"
+  label_yes: "Ja"
   load_query_question: "Het rapport bevat %{size} tabelcellen en kan enige tijd kosten om te renderen. Wilt u proberen het rapport toch uit te voeren?"
   permission_save_cost_reports: "Bewaar publiek kostenrapporten"
   permission_save_private_cost_reports: "Bewaar privé kostenrapporten"
@@ -69,3 +85,10 @@ nl:
   units: "Eenheden"
   validation_failure_date: "is geen geldige datum"
   validation_failure_integer: "is geen geldig geheel getal"
+  export:
+    cost_reports:
+      title: "Jouw kostenrapporten XLS export"
+  reporting:
+    group_by:
+      selected_columns: "Geselecteerde kolommen"
+      selected_rows: "Geselecteerde rijen"

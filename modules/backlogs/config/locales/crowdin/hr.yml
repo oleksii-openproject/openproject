@@ -1,10 +1,10 @@
 #-- copyright
 #OpenProject is an open source project management software.
-#Copyright (C) 2012-2020 the OpenProject GmbH
+#Copyright (C) the OpenProject GmbH
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License version 3.
 #OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-#Copyright (C) 2006-2017 Jean-Philippe Lang
+#Copyright (C) 2006-2013 Jean-Philippe Lang
 #Copyright (C) 2010-2013 the ChiliProject Team
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License
@@ -17,15 +17,16 @@
 #You should have received a copy of the GNU General Public License
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-#See docs/COPYRIGHT.rdoc for more details.
+#See COPYRIGHT and LICENSE files for more details.
 #++
 hr:
+  plugin_openproject_backlogs:
+    name: "OpenProject Backlogs"
+    description: "This module adds features enabling agile teams to work with OpenProject in Scrum projects."
   activerecord:
     attributes:
       work_package:
         position: "Pozicija"
-        remaining_hours: "Preostalo vrijeme"
-        remaining_time: "Preostalo vrijeme"
         story_points: "Točke priče"
         backlogs_work_package_type: "Backlog tip"
     errors:
@@ -35,9 +36,6 @@ hr:
             blocks_ids:
               can_only_contain_work_packages_of_current_sprint: "može sadržavati samo ID-ove radnih paketa u aktualnom periodu razvoja."
               must_block_at_least_one_work_package: "mora sadržavati najamanje jedan ID tiketa za postupak blokiranja radnog paketa."
-            parent_id:
-              parent_child_relationship_across_projects: "je neispravan zato što radni paket %{work_package_name} je backlog zadatak i kao takav ne može imati nadređenog izvan trenutnog projekta."
-              type_must_be_one_of_the_following: "Tip mora biti jedan od sljedećih: %{type_names}."
             version_id:
               task_version_must_be_the_same_as_story_version: "must be the same as the parent story's version."
         sprint:
@@ -66,19 +64,18 @@ hr:
     properties: "Postavke"
     rebuild: "Obnovi"
     rebuild_positions: "Obnovi pozicije"
-    remaining_hours: "Preostalo vrijeme"
-    remaining_hours_ideal: "Preostali vrijeme (idealno)"
+    remaining_hours: "Remaining work"
+    remaining_hours_ideal: "Remaining work (ideal)"
     show_burndown_chart: "Burndown graf"
     story: "Scenarij"
     story_points: "Točke priče"
     story_points_ideal: "Točke scenarija (idealno)"
-    task: "Zadatak"
+    task: "Zadaća"
     task_color: "Boja zadaće"
     unassigned: "Nedodijeljeno"
     x_more: "%{count} više..."
   backlogs_active: "aktivno"
   backlogs_any: "bilo koji"
-  backlogs_card_specification: "Tipovi oznaka za ispis kartica"
   backlogs_inactive: "Projekt trenutno nema aktivnosti"
   backlogs_points_burn_direction: "Burn točke gore/dole"
   backlogs_product_backlog: "Backlog produkta"
@@ -99,6 +96,7 @@ hr:
   backlogs_empty_title: "No versions are defined to be used in backlogs"
   backlogs_empty_action_text: "To get started with backlogs, create a new version and assign it to a backlogs column."
   button_edit_wiki: "Uredi wiki stranicu"
+  error_backlogs_task_cannot_be_story: "The settings are invalid. The selected task type can not also be a story type."
   error_intro_plural: "Nastupile su sljedeće pogreške:"
   error_intro_singular: "Nastupila je sljedeća pogreška:"
   error_outro: "Molim Vas ispravite gore navedene greške prije nego opet potvrdite unose."
@@ -110,7 +108,7 @@ hr:
   label_backlog: "Backlog"
   label_backlogs: "Backlogs"
   label_backlogs_unconfigured: "Niste još konfigurirali Backlog. Za konfiguraciju odaberite %{administration}>%{plugins}, zatim %{configure} Backlog dodatak. Nakon što ste uredili potrebna polja, vratite se na ovu stranicu da biste započeli s korištenjem ovog alata."
-  label_blocks_ids: "ID-ovi onemogućenih radnih paketa"
+  label_blocks_ids: "ID blokiranih radnih paketa"
   label_burndown: "Burndown"
   label_column_in_backlog: "Stupac u backlogu"
   label_hours: "sati"
@@ -136,6 +134,7 @@ hr:
   label_wiki: "Wiki"
   permission_view_master_backlog: "Pogledaj glavni backlog"
   permission_view_taskboards: "Pogledaj upravitelj zadatcima"
+  permission_select_done_statuses: "Select done statuses"
   permission_update_sprints: "Ažuriraj periode razvoja"
   points_accepted: "točaka prihvaćeno"
   points_committed: "točaka commitano"
@@ -145,15 +144,15 @@ hr:
   project_module_backlogs: "Backlogs"
   rb_label_copy_tasks: "Kopiraj radne pakete"
   rb_label_copy_tasks_all: "Svi"
-  rb_label_copy_tasks_none: "Bez"
+  rb_label_copy_tasks_none: "Nijedan"
   rb_label_copy_tasks_open: "Otvoren"
   rb_label_link_to_original: "Uključi poveznicu u orginalni scenarij"
-  remaining_hours: "preostali sati"
+  remaining_hours: "remaining work"
   required_burn_rate_hours: "potrebni burn omjer (sati)"
   required_burn_rate_points: "potrebni burn omjer (točke)"
   todo_work_package_description: "%{summary}: %{url}\n%{description}"
   todo_work_package_summary: "%{type}: %{summary}"
   version_settings_display_label: "Stupac u backlogu"
   version_settings_display_option_left: "lijevo"
-  version_settings_display_option_none: "none"
+  version_settings_display_option_none: "nijedan"
   version_settings_display_option_right: "desno"

@@ -1,6 +1,6 @@
-// -- copyright
+//-- copyright
 // OpenProject is an open source project management software.
-// Copyright (C) 2012-2020 the OpenProject GmbH
+// Copyright (C) the OpenProject GmbH
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License version 3.
@@ -23,17 +23,17 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 //
-// See docs/COPYRIGHT.rdoc for more details.
-// ++
+// See COPYRIGHT and LICENSE files for more details.
+//++
 
-import {Injectable} from "@angular/core";
+import { Injectable } from "@angular/core";
 
 @Injectable()
 export class CostSubformAugmentService {
 
   constructor() {
     jQuery('costs-subform').each((i, match) => {
-      let el = jQuery(match);
+      const el = jQuery(match);
 
       const container = el.find('.subform-container');
 
@@ -50,7 +50,7 @@ export class CostSubformAugmentService {
       // Add new row handler
       el.find('.add-row-button,.wp-inline-create--add-link').click((evt:any) => {
         evt.preventDefault();
-        let row = jQuery(template.replace(/INDEX/g, rowIndex.toString()));
+        const row = jQuery(template.replace(/INDEX/g, rowIndex.toString()));
         row.show();
         row.removeClass('subform-row-template');
         row.find('input.costs-date-picker').prop('required', true);
@@ -59,12 +59,10 @@ export class CostSubformAugmentService {
         container.append(row);
         rowIndex += 1;
 
-        container.find('.subform-row:last-child input:first').focus();
+        setTimeout(() => container.find('.subform-row:last-child input:first').focus(), 10)
 
         return false;
       });
     });
   }
 }
-
-

@@ -1,14 +1,12 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -25,25 +23,21 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-class Queries::Projects::Orders::ProjectStatusOrder < Queries::BaseOrder
+class Queries::Projects::Orders::ProjectStatusOrder < Queries::Orders::Base
   self.model = Project
 
   def self.key
     :project_status
   end
 
-  def left_outer_joins
-    :status
-  end
-
   private
 
-  def order
+  def order(scope)
     with_raise_on_invalid do
-      model.order(Arel.sql("project_statuses.code").send(direction))
+      scope.order(status_code: direction)
     end
   end
 end

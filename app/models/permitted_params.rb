@@ -1,13 +1,12 @@
-#-- encoding: UTF-8
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -24,10 +23,10 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'permitted_params/allowed_settings'
+require "permitted_params/allowed_settings"
 
 class PermittedParams
   # This class intends to provide a method for all params hashes coming from the
@@ -63,8 +62,8 @@ class PermittedParams
     params.require(:attribute_help_text).permit(*self.class.permitted_attributes[:attribute_help_text])
   end
 
-  def auth_source
-    params.require(:auth_source).permit(*self.class.permitted_attributes[:auth_source])
+  def ldap_auth_source
+    params.require(:ldap_auth_source).permit(*self.class.permitted_attributes[:ldap_auth_source])
   end
 
   def forum
@@ -93,8 +92,8 @@ class PermittedParams
 
   def custom_action
     whitelisted = params
-                  .require(:custom_action)
-                  .permit(*self.class.permitted_attributes[:custom_action])
+      .require(:custom_action)
+      .permit(*self.class.permitted_attributes[:custom_action])
 
     whitelisted.merge(params[:custom_action].slice(:actions, :conditions).permit!)
   end
@@ -109,9 +108,7 @@ class PermittedParams
 
   def group
     permitted_params = params.require(:group).permit(*self.class.permitted_attributes[:group])
-    permitted_params = permitted_params.merge(custom_field_values(:group))
-
-    permitted_params
+    permitted_params.merge(custom_field_values(:group))
   end
 
   def group_membership
@@ -124,9 +121,17 @@ class PermittedParams
 
     permitted_params = params.require(:work_package).permit(*permitted)
 
-    permitted_params = permitted_params.merge(custom_field_values(:work_package))
+    permitted_params.merge(custom_field_values(:work_package))
+  end
 
+  def move_work_package(args = {})
+    permitted = permitted_attributes(:move_work_package, args)
+    permitted_params = params.permit(*permitted)
     permitted_params
+      .merge(custom_field_values(required: false))
+      .merge(type_id: params[:new_type_id],
+             project_id: params[:new_project_id],
+             journal_notes: params[:notes])
   end
 
   def member
@@ -138,7 +143,7 @@ class PermittedParams
       scopes = app_params[:scopes]
 
       if scopes.present?
-        app_params[:scopes] = scopes.reject(&:blank?).join(" ")
+        app_params[:scopes] = scopes.compact_blank.join(" ")
       end
 
       app_params
@@ -156,8 +161,8 @@ class PermittedParams
     # Here we try to circumvent this
     p = params.require(:query).permit(*self.class.permitted_attributes[:query])
     p[:sort_criteria] = params
-                        .require(:query)
-                        .permit(sort_criteria: { '0' => [], '1' => [], '2' => [] })
+      .require(:query)
+      .permit(sort_criteria: { "0" => [], "1" => [], "2" => [] })
     p[:sort_criteria].delete :sort_criteria
     p
   end
@@ -174,47 +179,49 @@ class PermittedParams
     params.require(:status).permit(*self.class.permitted_attributes[:status])
   end
 
-  def settings
-    permitted_params = params.require(:settings).permit
-    all_valid_keys = AllowedSettings.all
-
-    permitted_params.merge(params[:settings].to_unsafe_hash.slice(*all_valid_keys))
+  def settings(extra_permitted_filters = nil)
+    params.require(:settings).permit(*AllowedSettings.filters, *extra_permitted_filters)
   end
 
-  def user
-    permitted_params = params.require(:user).permit(*self.class.permitted_attributes[:user])
-    permitted_params = permitted_params.merge(custom_field_values(:user))
+  def user(additional_params = [])
+    if params[:user].present?
+      permitted_params = params.require(:user).permit(*self.class.permitted_attributes[:user] + additional_params)
+      permitted_params.merge(custom_field_values(:user))
+    else
+      # This happens on the Profile page for LDAP user, no "user" hash is sent.
+      {}.merge(custom_field_values(:user, required: false))
+    end
+  end
 
-    permitted_params
+  def placeholder_user
+    params.require(:placeholder_user).permit(*self.class.permitted_attributes[:placeholder_user])
+  end
+
+  def my_account_settings
+    user.merge(pref:)
   end
 
   def user_register_via_omniauth
     permitted_params = params
-                       .require(:user)
-                       .permit(:login, :firstname, :lastname, :mail, :language)
-    permitted_params = permitted_params.merge(custom_field_values(:user))
-
-    permitted_params
+      .require(:user)
+      .permit(:login, :firstname, :lastname, :mail, :language)
+    permitted_params.merge(custom_field_values(:user))
   end
 
   def user_create_as_admin(external_authentication,
                            change_password_allowed,
                            additional_params = [])
+
+    additional_params << :ldap_auth_source_id unless external_authentication
+
     if current_user.admin?
-      additional_params << :auth_source_id unless external_authentication
       additional_params << :force_password_change if change_password_allowed
-
-      allowed_params = self.class.permitted_attributes[:user] + \
-                       additional_params + \
-                       %i[admin login]
-
-      permitted_params = params.require(:user).permit(*allowed_params)
-      permitted_params = permitted_params.merge(custom_field_values(:user))
-
-      permitted_params
-    else
-      params.require(:user).permit
+      additional_params << :admin
     end
+
+    additional_params << :login if Users::BaseContract.new(User.new, current_user).writable?(:login)
+
+    user additional_params
   end
 
   def type(args = {})
@@ -235,6 +242,10 @@ class PermittedParams
     params.require(:type).permit(*self.class.permitted_attributes[:move_to])
   end
 
+  def enumerations_move
+    params.require(:enumeration).permit(*self.class.permitted_attributes[:move_to])
+  end
+
   def search
     params.permit(*self.class.permitted_attributes[:search])
   end
@@ -248,19 +259,13 @@ class PermittedParams
   def wiki_page
     permitted = permitted_attributes(:wiki_page)
 
-    permitted_params = params.require(:content).require(:page).permit(*permitted)
-
-    permitted_params
-  end
-
-  def wiki_content
-    params.require(:content).permit(*self.class.permitted_attributes[:wiki_content])
+    params.require(:page).permit(*permitted)
   end
 
   def pref
-    params.require(:pref).permit(:hide_mail, :time_zone, :theme,
-                                 :comments_sorting, :warn_on_leaving_unsaved,
-                                 :auto_hide_popups)
+    params.fetch(:pref, {}).permit(:time_zone, :theme,
+                                   :comments_sorting, :warn_on_leaving_unsaved,
+                                   :auto_hide_popups)
   end
 
   def project
@@ -283,6 +288,11 @@ class PermittedParams
     end
 
     whitelist.merge(custom_field_values(:project))
+  end
+
+  def project_custom_field_project_mapping
+    params.require(:project_custom_field_project_mapping)
+      .permit(*self.class.permitted_attributes[:project_custom_field_project_mapping])
   end
 
   def news
@@ -319,7 +329,7 @@ class PermittedParams
   # all the time.
   def message(project = nil)
     # TODO: Move this distinction into the contract where it belongs
-    if project && current_user.allowed_to?(:edit_messages, project)
+    if project && current_user.allowed_in_project?(:edit_messages, project)
       params.fetch(:message, {}).permit(:subject, :content, :forum_id, :locked, :sticky)
     else
       params.fetch(:message, {}).permit(:subject, :content, :forum_id)
@@ -327,7 +337,7 @@ class PermittedParams
   end
 
   def attachments
-    params.permit(attachments: %i[file description id])['attachments']
+    params.permit(attachments: %i[file description id])["attachments"]
   end
 
   def enumerations
@@ -386,29 +396,27 @@ class PermittedParams
 
   protected
 
-  def custom_field_values(key, required: true)
-    # a hash of arbitrary values is not supported by strong params
-    # thus we do it by hand
-    object = required ? params.require(key) : params.fetch(key, {})
-    values = object[:custom_field_values] || ActionController::Parameters.new
-
+  def custom_field_values(key = nil, required: true)
+    values = build_custom_field_values(key, required:)
     # only permit values following the schema
     # 'id as string' => 'value as string'
-    values.reject! { |k, v| k.to_i < 1 || !v.is_a?(String) }
+    values.select! { |k, v| k.to_i > 0 && (v.is_a?(String) || v.is_a?(Array)) }
+    # Reject blank values from include_hidden select fields
+    values.each { |_, v| v.compact_blank! if v.is_a?(Array) }
 
-    values.empty? ? {} : { 'custom_field_values' => values.permit! }
+    values.empty? ? {} : { "custom_field_values" => values.permit! }
   end
 
   def permitted_attributes(key, additions = {})
-    merged_args = { params: params, current_user: current_user }.merge(additions)
+    merged_args = { params:, current_user: }.merge(additions)
 
-    self.class.permitted_attributes[key].map { |permission|
+    self.class.permitted_attributes[key].filter_map do |permission|
       if permission.respond_to?(:call)
         permission.call(merged_args)
       else
         permission
       end
-    }.compact
+    end
   end
 
   def self.permitted_attributes
@@ -419,7 +427,7 @@ class PermittedParams
           attribute_name
           help_text
         ),
-        auth_source: %i(
+        ldap_auth_source: %i(
           name
           host
           port
@@ -434,6 +442,8 @@ class PermittedParams
           attr_lastname
           attr_mail
           attr_admin
+          verify_peer
+          tls_certificate_string
         ),
         forum: %i(
           name
@@ -462,13 +472,15 @@ class PermittedParams
           :possible_values,
           :regexp,
           :searchable,
-          :visible,
+          :admin_only,
           :default_value,
           :possible_values,
           :multi_value,
           :content_right_to_left,
+          :custom_field_section_id,
+          :allow_non_open_versions,
           { custom_options_attributes: %i(id value default_value position) },
-          type_ids: []
+          { type_ids: [] }
         ],
         enumeration: %i(
           active
@@ -482,18 +494,14 @@ class PermittedParams
         ],
         membership: [
           :project_id,
-          role_ids: []
+          { role_ids: [] }
         ],
         group_membership: [
           :membership_id,
-          membership: [
+          { membership: [
             :project_id,
-            role_ids: []
-          ],
-          new_membership: [
-            :project_id,
-            role_ids: []
-          ]
+            { role_ids: [] }
+          ] }
         ],
         member: [
           role_ids: []
@@ -510,44 +518,66 @@ class PermittedParams
           :budget_id,
           :parent_id,
           :priority_id,
+          :remaining_hours,
           :responsible_id,
           :start_date,
           :status_id,
           :type_id,
           :subject,
           Proc.new do |args|
-            # avoid costly allowed_to? if the param is not there at all
-            if args[:params]['work_package'] &&
-               args[:params]['work_package'].has_key?('watcher_user_ids') &&
-               args[:current_user].allowed_to?(:add_work_package_watchers, args[:project])
+            # avoid costly allowed_in_project? if the param is not there at all
+            if args[:params]["work_package"]&.has_key?("watcher_user_ids") &&
+               args[:current_user].allowed_in_project?(:add_work_package_watchers, args[:project])
 
               { watcher_user_ids: [] }
             end
           end,
           # attributes unique to :new_work_package
           :journal_notes,
-          :lock_version],
+          :lock_version
+        ],
+        move_work_package: %i[
+          assigned_to_id
+          responsible_id
+          start_date
+          due_date
+          status_id
+          version_id
+          priority_id
+        ],
         oauth_application: [
           :name,
           :redirect_uri,
           :confidential,
+          :enabled,
           :client_credentials_user_id,
-          scopes: []
+          { scopes: [] }
         ],
+        placeholder_user: %i(
+          name
+        ),
         project_type: [
           :name,
-          type_ids: []],
+          { type_ids: [] }
+        ],
+        project_custom_field_project_mapping: %i(
+          project_id
+          custom_field_id
+          custom_field_section_id
+          include_sub_projects
+        ),
         query: %i(
           name
           display_sums
-          is_public
+          public
           group_by
         ),
         role: [
           :name,
           :assignable,
           :move_to,
-          permissions: []],
+          { permissions: [] }
+        ],
         search: %i(
           q
           offset
@@ -565,6 +595,7 @@ class PermittedParams
           name
           color_id
           default_done_ratio
+          excluded_from_totals
           is_closed
           is_default
           is_readonly
@@ -578,7 +609,7 @@ class PermittedParams
           :color_id,
           :default,
           :description,
-          project_ids: []
+          { project_ids: [] }
         ],
         user: %i(
           firstname
@@ -592,11 +623,9 @@ class PermittedParams
           title
           parent_id
           redirect_existing_links
-        ),
-        wiki_content: %i(
-          comments
           text
           lock_version
+          journal_notes
         ),
         move_to: [:move_to]
       }
@@ -621,5 +650,18 @@ class PermittedParams
     (hash || {})
       .keys
       .select { |k| list.any? { |whitelisted| whitelisted.to_s == k.to_s || whitelisted === k } }
+  end
+
+  private
+
+  def build_custom_field_values(key, required:)
+    # When the key is false, it means we do not have a parent key,
+    # so we are searching the whole params hash.
+    key_to_fetch = key || :custom_field_values
+    # a hash of arbitrary values is not supported by strong params
+    # thus we do it by hand
+    object = required ? params.require(key_to_fetch) : params.fetch(key_to_fetch, {})
+    values = key ? object[:custom_field_values] : object
+    values || ActionController::Parameters.new
   end
 end

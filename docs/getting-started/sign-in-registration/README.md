@@ -3,41 +3,39 @@ sidebar_navigation:
   title: Sign in and registration
   priority: 990
 description: Sign in and registration in OpenProject.
-robots: index, follow
-keywords: sing in, login, registration
+keywords: sign in, login, registration
 ---
+
 # Sign in and registration
 
-Here you will get an overview how to sign in and register to an existing OpenProject installation.
+This page will give you an overview of how to register or sign in to an existing OpenProject installation.
 
-<div class="alert alert-info" role="alert">
+> **Note**: If you do not have an OpenProject installation yet, please visit our site on [how to create an OpenProject trial installation](../../enterprise-guide/enterprise-cloud-guide/create-cloud-trial/).
 
-**Note**: If you do not have an OpenProject installation yet, please visit our site: [create an OpenProject trial installation](../../cloud-edition-guide/#create-an-openproject-trial-installation).
+| Topic                                                                         | Content                                                            |
+|-------------------------------------------------------------------------------|--------------------------------------------------------------------|
+| [Sign in with an existing account](#sign-in-with-an-existing-account)         | Sign in with an existing account to an OpenProject installation.   |
+| [Sign in with Google](#sign-in-with-a-google-account)                         | Find out how to sign in with a Google account.                     |
+| [Sign in from the OpenProject website](#sign-in-from-the-openproject-website) | Sign in to an existing OpenProject Enterprise cloud edition from the website. |
+| [Create a new account](#create-a-new-account)                                 | Create a new account for OpenProject.                              |
+| [Choose your language](#choose-your-language)                                 | How to select your language in OpenProject.                        |
+| [Reset your password](#reset-your-password)                                   | If you forgot your password find out how to reset it.              |
 
-</div>
-
-| Feature                                                      | Documentation for                                            |
-| ------------------------------------------------------------ | ------------------------------------------------------------ |
-| [Sign in with an existing account](#sign-in-with-an-existing-account) | Sign in with an existing account to an OpenProject installation. |
-| [Sign in with Google](#sign-in-with-google)                  | Find out how to sign in with a Google account.               |
-| [Sign in from the OpenProject website](#sign-in-from-the-openproject-website) | Sign in to an existing OpenProject Cloud Edition from the website. |
-| [Create a new account](#create-a-new-account)                | Create a new account for OpenProject.                        |
-| [Choose your language](#choose-your-language)                | How to select your language in OpenProject?                  |
-| [Reset your password](#reset-your-password)                  | If you forgot your password find out how to reset it.        |
-
-<iframe width="560" height="315" src="https://www.youtube.com/embed/JO-ugpygx68" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<video src="https://openproject-docs.s3.eu-central-1.amazonaws.com/videos/OpenProject-Sign-in-and-Registration-2.mp4" type="video/mp4" controls="" style="width:100%"></video>
 
 ## Sign in with an existing account
 
 To sign in to an OpenProject installation with an existing account, please enter the URL of your OpenProject in a modern browser, e.g. documentation.openproject.com.
 
-Type in your user name and password in the respective fields and click the blue Sign in button. You will then be signed in to your OpenProject environment.
+![modern browser search bar](modern-browser-searchbar.png)
 
-![Sign-in to OpenProject](1565974792215.png)
+Type in your user name and password in the respective fields and click the blue Sign in button. You will then be signed in to your OpenProject environment. If the autologin option was activated for your installation you will also be able to stay logged in for several days.
+
+![Sign-in to OpenProject](openproject_user_guide_sign_in.png)
 
 ## Sign in with a Google account
 
-Enterprise Edition and Cloud Edition customers can sign in with OpenID Connect, using their Google account. To sign in just click the Google button below the sign in form.
+Enterprise on-premises and Enterprise cloud customers can sign in with OpenID Connect, using their Google account. To sign in just click the Google button below the sign in form.
 
 Please enter your email and click the blue Next button.
 
@@ -49,7 +47,7 @@ Enter you password and click the blue Next button.
 
 If you have activated Two-factor authentication, please enter your second factor and click the blue Next button.
 
-![1566204298041](1566204298041.png)
+![Enter second factor for Google authentication](1566204298041.png)
 
 Then, you are asked to create your OpenProject Account.
 
@@ -57,9 +55,9 @@ Then, you are asked to create your OpenProject Account.
 
 ## Sign in from the OpenProject website
 
-If you are using the OpenProject Cloud Edition, you can sign in to your installation directly from the OpenProject website.
+If you are using the OpenProject Enterprise cloud edition, you can sign in to your installation directly from the OpenProject website.
 
-Please follow the [instructions in our Cloud Edition guide](../../cloud-edition-guide/#sign-in).
+Please follow the [instructions in our Enterprise cloud edition guide](../../enterprise-guide/enterprise-cloud-guide/sign-in).
 
 ## Create a new account
 
@@ -86,13 +84,11 @@ Make sure to remember your password in order to sign-in again at a later point.
 
 After the creation of your account you are logged into the system. You will then be asked to set your language in the system. Please choose your preferred language from the drop-down list.
 
-<div class="alert alert-info" role="alert">
-**Note**: OpenProject is available in more than 30 languages. If you do not find your preferred language, it first needs to be activated in the system's administration. Please talk to your system administrator so set up the language.
-</div>
+> **Note**: OpenProject is available in more than 30 languages. If you do not find your preferred language, it first needs to be activated in the system's administration. Please talk to your system administrator so set up the language.
 
 ![select language](20191202171349241.png)
 
-If you have already logged in before, you can [set your language in your user profile](../my-account/#profile-settings:-change-your-language,-time-zone-or-display-of-comments).
+If you have already logged in before, you can [set your language in your user profile](../../user-guide/my-account/#profile-settings).
 
 ## Reset your password
 
@@ -100,21 +96,10 @@ If you forgot your password, you can reset your password by clicking the blue **
 
 ![Forgot-password](1566205596114.png)
 
-You are then asked to enter you email address with which you have registered to OpenProject. 
+You are then asked to enter your email address with which you registered to OpenProject.
 
 ![enter-email-address](1566205903097.png)
 
 You will then receive an email with a link to reset your password.
 
-<div class="alert alert-info" role="alert">
-
-**Note**: If you have [signed-in with a Google account](#sign-in-with-a-google-account), your are not able to reset your password at this point.
-
-</div>
-
-## Frequently asked questions (FAQ)
-
-### Is it possible to use multiple languages in OpenProject?
-
-Yes, it is possible to use OpenProject in multiple languages. We support English, German, French and a number of additional languages. Each user can select their own preferred language by signing into OpenProject, clicking on the user avatar on the upper right side and selecting "My account" from the dropdown menu.
-You can then select "Settings" from the side menu on the left side and [change the language](../my-account/#change-your-language).
+> **Note**: If you have [signed-in with a Google account](#sign-in-with-a-google-account), you are not able to reset your password at this point.

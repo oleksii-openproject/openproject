@@ -6,10 +6,10 @@
 # (and other plugins' specs) keep working with this plugin in an OpenProject configuration
 # even if it changes things which would otherwise break existing specs.
 Rails.application.config.plugins_to_test_paths.each do |dir|
-  ['disabled_specs.rb', 'disable_specs.rb', 'config_spec_helper.rb'].each do |file_name|
-    file = File.join(dir, 'spec', file_name)
+  ["disabled_specs.rb", "disable_specs.rb", "config_spec_helper.rb"].each do |file_name|
+    file = File.join(dir, "spec", file_name)
 
-    if File.exists?(file)
+    if File.exist?(file)
       puts "Loading #{file}"
       require file
     end

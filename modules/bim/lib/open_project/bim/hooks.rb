@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is a project management system.
-# Copyright (C) 2012-2018 the OpenProject Foundation (OPF)
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -23,18 +23,18 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
-#+
+# See COPYRIGHT and LICENSE files for more details.
+# +
 
 module OpenProject::Bim::Hooks
-  class Hook < Redmine::Hook::Listener
+  class Hook < OpenProject::Hook::Listener
     include ActionView::Helpers::TagHelper
     include ActionView::Context
     include WorkPackagesHelper
 
     def admin_information_checklist(*)
       [
-        [:'extraction.available.ifc_convert', ::Bim::IfcModels::ViewConverterService.available?]
+        [:"extraction.available.ifc_convert", ::Bim::IfcModels::ViewConverterService.available?]
       ]
     end
   end

@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,11 +23,11 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 class HourlyRate < Rate
-  validates_uniqueness_of :valid_from, scope: [:user_id, :project_id]
+  validates_uniqueness_of :valid_from, scope: %i[user_id project_id]
   validates_presence_of :user_id, :project_id, :valid_from
   validate :change_of_user_only_on_first_creation
 
@@ -38,9 +38,9 @@ class HourlyRate < Rate
 
   def next(reference_date = valid_from)
     HourlyRate
-      .where(['user_id = ? and project_id = ? and valid_from > ?',
+      .where(["user_id = ? and project_id = ? and valid_from > ?",
               user_id, project_id, reference_date])
-      .order(Arel.sql('valid_from ASC'))
+      .order(Arel.sql("valid_from ASC"))
       .first
   end
 
@@ -77,17 +77,17 @@ class HourlyRate < Rate
     user_id = user_id.id if user_id.is_a?(User)
 
     unless project.nil?
-      rate = where(['user_id = ? and project_id = ? and valid_from <= ?', user_id, project, date])
-             .order(Arel.sql('valid_from DESC'))
+      rate = where(["user_id = ? and project_id = ? and valid_from <= ?", user_id, project, date])
+             .order(Arel.sql("valid_from DESC"))
              .first
       if rate.nil?
         project = Project.find(project) unless project.is_a?(Project)
-        rate = where(['user_id = ? and project_id in (?) and valid_from <= ?',
+        rate = where(["user_id = ? and project_id in (?) and valid_from <= ?",
                       user_id,
                       project.ancestors.to_a,
                       date])
                .includes(:project)
-               .order(Arel.sql('projects.lft DESC, valid_from DESC'))
+               .order(Arel.sql("projects.lft DESC, valid_from DESC"))
                .first
       end
     end
@@ -99,7 +99,7 @@ class HourlyRate < Rate
 
   def change_of_user_only_on_first_creation
     # Only allow change of project and user on first creation
-    return if self.new_record?
+    return if new_record?
 
     errors.add :project_id, :invalid if project_id_changed?
     errors.add :user_id, :invalid if user_id_changed?

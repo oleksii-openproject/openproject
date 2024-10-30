@@ -1,6 +1,6 @@
 // -- copyright
 // OpenProject is an open source project management software.
-// Copyright (C) 2012-2020 the OpenProject GmbH
+// Copyright (C) the OpenProject GmbH
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License version 3.
@@ -22,31 +22,23 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 //
-// See docs/COPYRIGHT.rdoc for more details.
+// See COPYRIGHT and LICENSE files for more details.
 
-import {Injector, NgModule} from '@angular/core';
-import {CommonModule} from "@angular/common";
-import {AvatarUploadFormComponent} from "./avatar-upload-form/avatar-upload-form.component";
-import {HookService} from "../../hook-service";
+import { Injector, NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { AvatarUploadFormComponent } from './avatar-upload-form/avatar-upload-form.component';
+import { registerCustomElement } from 'core-app/shared/helpers/angular/custom-elements.helper';
 
 @NgModule({
-    imports: [
-      CommonModule,
-    ],
-    declarations: [
-        AvatarUploadFormComponent
-    ]
+  imports: [
+    CommonModule,
+  ],
+  declarations: [
+    AvatarUploadFormComponent,
+  ],
 })
 export class PluginModule {
   constructor(injector:Injector) {
-    const hookService = injector.get(HookService);
-    hookService.register('openProjectAngularBootstrap', () => {
-      return [
-        { selector: 'avatar-upload-form', cls: AvatarUploadFormComponent }
-      ];
-    });
+    registerCustomElement('opce-avatar-upload-form', AvatarUploadFormComponent, { injector });
   }
 }
-
-
-

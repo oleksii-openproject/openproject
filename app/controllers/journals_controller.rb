@@ -1,14 +1,14 @@
-#-- encoding: UTF-8
+# frozen_string_literal: true
 
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -25,13 +25,16 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 class JournalsController < ApplicationController
-  before_action :find_journal, except: [:index]
-  before_action :find_optional_project, only: [:index]
-  before_action :authorize, only: [:diff]
+  before_action :load_and_authorize_in_optional_project, only: [:index]
+  before_action :find_journal,
+                :ensure_permitted,
+                only: [:diff]
+  authorization_checked! :diff
+
   accept_key_auth :index
   menu_item :issues
 
@@ -39,8 +42,8 @@ class JournalsController < ApplicationController
   include SortHelper
 
   def index
-    retrieve_query
-    sort_init 'id', 'desc'
+    @query = retrieve_query(@project)
+    sort_init "id", "desc"
     sort_update(@query.sortable_key_by_column_name)
 
     if @query.valid?
@@ -51,7 +54,7 @@ class JournalsController < ApplicationController
     respond_to do |format|
       format.atom do
         render layout: false,
-               content_type: 'application/atom+xml',
+               content_type: "application/atom+xml",
                locals: { title: journals_index_title,
                          journals: @journals }
       end
@@ -61,26 +64,19 @@ class JournalsController < ApplicationController
   end
 
   def diff
-    journal = Journal::AggregatedJournal.containing_journal(@journal)
-    field = params[:field].parameterize.underscore.to_sym
+    return render_404 unless valid_field_for_diffing?
 
-    unless valid_diff?
-      return render_404
+    unless @journal.details[field_param] in [from, to]
+      return render_400 message: I18n.t(:error_journal_attribute_not_present, attribute: field_param)
     end
 
-    unless journal.details[field].is_a?(Array)
-      return render_400 message: I18n.t(:error_journal_attribute_not_present, attribute: field)
-    end
-
-    from = journal.details[field][0]
-    to = journal.details[field][1]
-
+    @activity_page = params["activity_page"]
     @diff = Redmine::Helpers::Diff.new(to, from)
-    @journable = journal.journable
+
     respond_to do |format|
       format.html
       format.js do
-        render partial: 'diff', locals: { diff: @diff }
+        render partial: "diff", locals: { diff: @diff }
       end
     end
   end
@@ -89,22 +85,42 @@ class JournalsController < ApplicationController
 
   def find_journal
     @journal = Journal.find(params[:id])
-    @project = @journal.journable.project
+    @journable = @journal.journable
+    @project = @journable.project
   rescue ActiveRecord::RecordNotFound
     render_404
   end
 
-  # Is this a valid field for diff'ing?
-  def valid_field?(field)
-    field.to_s.strip == 'description'
+  def ensure_permitted
+    permission = case @journal.journable_type
+                 when "WorkPackage" then :view_work_packages
+                 when "Project" then :view_project
+                 when "Meeting" then :view_meetings
+                 end
+
+    do_authorize(permission)
+  rescue Authorization::UnknownPermissionError
+    deny_access
   end
 
-  def valid_diff?
-    valid_field?(params[:field]) &&
-      @journal.journable.class == WorkPackage
+  def field_param
+    @field_param ||= params[:field].parameterize.underscore
+  end
+
+  def valid_field_for_diffing?
+    case field_param
+    when "description",
+         "status_explanation",
+         /\Aagenda_items_\d+_notes\z/
+      true
+    when /\Acustom_fields_(?<id>\d+)\z/
+      ::CustomField.exists?(id: Regexp.last_match[:id], field_format: "text")
+    end
   end
 
   def journals_index_title
-    (@project ? @project.name : Setting.app_title) + ': ' + (@query.new_record? ? I18n.t(:label_changes_details) : @query.name)
+    subject = @project ? @project.name : Setting.app_title
+    query_name = @query.new_record? ? I18n.t(:label_changes_details) : @query.name
+    "#{subject}: #{query_name}"
   end
 end

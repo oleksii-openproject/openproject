@@ -1,10 +1,10 @@
 #-- copyright
 #OpenProject is an open source project management software.
-#Copyright (C) 2012-2020 the OpenProject GmbH
+#Copyright (C) the OpenProject GmbH
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License version 3.
 #OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-#Copyright (C) 2006-2017 Jean-Philippe Lang
+#Copyright (C) 2006-2013 Jean-Philippe Lang
 #Copyright (C) 2010-2013 the ChiliProject Team
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License
@@ -17,9 +17,12 @@
 #You should have received a copy of the GNU General Public License
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-#See docs/COPYRIGHT.rdoc for more details.
+#See COPYRIGHT and LICENSE files for more details.
 #++
 sv:
+  plugin_costs:
+    name: "Tid och kostnader"
+    description: "This module adds features for planning and tracking costs of projects."
   activerecord:
     attributes:
       cost_entry:
@@ -80,12 +83,12 @@ sv:
   label_costlog: "Loggade enhetskostnader"
   label_cost_plural: "Kostnader"
   label_cost_type_plural: "Kostnadstyper"
-  label_cost_type_specific: "Cost type #%{id}: %{name}"
+  label_cost_type_specific: "Kostnadstyp #%{id}: %{name}"
   label_costs_per_page: "Kostnader per sida"
   label_currency: "Valuta"
   label_currency_format: "Formatet för valuta"
   label_current_default_rate: "Nuvarande standardtimpris"
-  label_date_on: "på"
+  label_date_on: "den"
   label_deleted_cost_types: "Borttagna kostnadstyper"
   label_locked_cost_types: "Låsta kostnadstyper"
   label_display_cost_entries: "Visa enhetskostnader"
@@ -108,6 +111,7 @@ sv:
   label_rate: "Timpris"
   label_rate_plural: "Priser"
   label_status_finished: "Avslutad"
+  label_show: "Visa"
   label_units: "Kostnadsenheter"
   label_user: "Användare"
   label_until: "fram till"
@@ -130,7 +134,7 @@ sv:
   permission_view_own_cost_entries: "Visa egna bokade kostnader"
   permission_view_own_hourly_rate: "Visa egna timpriser"
   permission_view_own_time_entries: "Visa egen spenderad tid"
-  project_module_costs: "Time and costs"
+  project_module_costs: "Tid och kostnader"
   text_assign_time_and_cost_entries_to_project: "Tilldela rapporterade timmar och kostnader till projektet"
   text_destroy_cost_entries_question: "%{cost_entries} rapporterades på de arbetspaket som du håller på och tar bort. Vad vill du göra?"
   text_destroy_time_and_cost_entries: "Ta bort rapporterade timmar och kostnader"

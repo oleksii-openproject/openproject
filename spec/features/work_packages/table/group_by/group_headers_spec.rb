@@ -1,21 +1,21 @@
-require 'spec_helper'
+require "spec_helper"
 
-describe 'Work Package table group headers', js: true do
-  let(:user) { FactoryBot.create :admin }
+RSpec.describe "Work Package table group headers", :js do
+  let(:user) { create(:admin) }
 
-  let(:project) { FactoryBot.create(:project) }
-  let(:category) { FactoryBot.create :category, project: project, name: 'Foo' }
-  let(:category2) { FactoryBot.create :category, project: project, name: 'Bar' }
+  let(:project) { create(:project) }
+  let(:category) { create(:category, project:, name: "Foo") }
+  let(:category2) { create(:category, project:, name: "Bar") }
 
-  let!(:wp_cat1) { FactoryBot.create(:work_package, project: project, category: category) }
-  let!(:wp_cat2) { FactoryBot.create(:work_package, project: project, category: category2) }
-  let!(:wp_none) { FactoryBot.create(:work_package, project: project) }
+  let!(:wp_cat1) { create(:work_package, project:, category:) }
+  let!(:wp_cat2) { create(:work_package, project:, category: category2) }
+  let!(:wp_none) { create(:work_package, project:) }
   let(:wp_table) { Pages::WorkPackagesTable.new(project) }
-  let(:group_by) { ::Components::WorkPackages::GroupBy.new }
+  let(:group_by) { Components::WorkPackages::GroupBy.new }
 
   let!(:query) do
-    query              = FactoryBot.build(:query, user: user, project: project)
-    query.column_names = ['subject', 'category']
+    query              = build(:query, user:, project:)
+    query.column_names = ["subject", "category"]
     query.show_hierarchies = false
 
     query.save!
@@ -31,26 +31,26 @@ describe 'Work Package table group headers', js: true do
     wp_table.expect_work_package_listed(wp_none)
   end
 
-  it 'shows group headers for group by category' do
+  it "shows group headers for group by category" do
     # Group by category
-    group_by.enable_via_menu 'Category'
+    group_by.enable_via_menu "Category"
 
     # Expect table to be grouped as WP created above
-    expect(page).to have_selector('.group--value .count', count: 3)
-    expect(page).to have_selector('.group--value', text: 'Foo (1)')
-    expect(page).to have_selector('.group--value', text: 'Bar (1)')
-    expect(page).to have_selector('.group--value', text: '- (1)')
+    group_by.expect_number_of_groups 3
+    group_by.expect_grouped_by_value "Foo", 1
+    group_by.expect_grouped_by_value "Bar", 1
+    group_by.expect_grouped_by_value "-", 1
 
     # Update category of wp_none
     cat = wp_table.edit_field(wp_none, :category)
     cat.activate!
-    cat.set_value 'Foo'
+    cat.set_value "Foo"
 
     loading_indicator_saveguard
 
     # Expect changed groups
-    expect(page).to have_selector('.group--value .count', count: 2)
-    expect(page).to have_selector('.group--value', text: 'Foo (2)')
-    expect(page).to have_selector('.group--value', text: 'Bar (1)')
+    group_by.expect_number_of_groups 2
+    group_by.expect_grouped_by_value "Foo", 2
+    group_by.expect_grouped_by_value "Bar", 1
   end
 end

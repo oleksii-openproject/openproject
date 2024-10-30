@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,28 +23,45 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
-
-require 'features/support/components/ui_autocomplete'
+require "support/components/autocompleter/autocomplete_helpers"
 
 module Components
   module Projects
     class TopMenu
       include Capybara::DSL
+      include Capybara::RSpecMatchers
       include RSpec::Matchers
-      include ::Components::UIAutocompleteHelpers
+      include ::Components::Autocompleter::AutocompleteHelpers
 
       def toggle
-        page.find('#projects-menu').click
+        page.find_by_id("projects-menu").click
+        wait_for_network_idle(timeout: 10)
+      end
+
+      # Ensures modal registers as #open? before proceeding
+      def toggle!
+        toggle
+        expect_open
+      end
+
+      def open?
+        page.has_selector?(autocompleter_selector)
+      end
+
+      def switch_mode(mode)
+        within(".op-project-list-modal--header") do
+          find('[data-test-selector="spot-toggle--option"]', text: mode).click
+        end
       end
 
       def expect_current_project(name)
-        expect(page).to have_selector('#projects-menu', text: name)
+        page.find_by_id("projects-menu", text: name)
       end
 
       def expect_open
-        expect(page).to have_selector(autocompleter_selector)
+        page.find(autocompleter_selector)
       end
 
       def expect_closed
@@ -52,34 +69,75 @@ module Components
       end
 
       def search(query)
-        search_autocomplete(autocompleter, query: query)
+        search_autocomplete(autocompleter, query:, results_selector: autocompleter_results_selector)
       end
 
       def clear_search
-        autocompleter.set ''
+        autocompleter.set ""
         autocompleter.send_keys :backspace
       end
 
       def search_and_select(query)
         select_autocomplete autocompleter,
                             results_selector: autocompleter_results_selector,
-                            query: query
+                            item_selector: autocompleter_item_title_selector,
+                            query:
       end
 
       def search_results
-        page.find autocompleter_results_selector
+        page.find autocompleter_results_selector, wait: 10
       end
 
       def autocompleter
-        page.find autocompleter_selector
+        page.find autocompleter_selector, wait: 10
+      end
+
+      def expect_result(name, disabled: false)
+        within search_results do
+          if disabled
+            page.find(autocompleter_item_disabled_title_selector, text: name)
+          else
+            page.find(autocompleter_item_title_selector, text: name)
+          end
+        end
+      end
+
+      def expect_no_result(name)
+        within search_results do
+          expect(page).to have_no_selector(autocompleter_item_title_selector, text: name)
+        end
+      end
+
+      def expect_blankslate
+        expect(page).not_to have_test_selector("op-project-list-modal--no-results", wait: 0)
+      end
+
+      def expect_item_with_hierarchy_level(hierarchy_level:, item_name:)
+        within search_results do
+          hierarchy_selector  = hierarchy_level.times.collect { autocompleter_item_selector }.join(" ")
+          expect(page)
+            .to have_css("#{hierarchy_selector} #{autocompleter_item_title_selector}", text: item_name)
+        end
+      end
+
+      def autocompleter_item_selector
+        '[data-test-selector="op-header-project-select--item"]'
+      end
+
+      def autocompleter_item_title_selector
+        '[data-test-selector="op-header-project-select--item-title"]'
+      end
+
+      def autocompleter_item_disabled_title_selector
+        '[data-test-selector="op-header-project-select--item-disabled-title"]'
       end
 
       def autocompleter_results_selector
-        '.project-menu-autocomplete--results'
+        '[data-test-selector="op-header-project-select--list"]'
       end
 
       def autocompleter_selector
-        '#project_autocompletion_input'
+        '[data-test-selector="op-header-project-select--search"] input'
       end
     end
   end

@@ -1,13 +1,12 @@
-#-- encoding: UTF-8
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -24,105 +23,78 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 class Member < ApplicationRecord
-  extend DeprecatedAlias
-  belongs_to :principal, foreign_key: 'user_id'
-  has_many :member_roles, dependent: :destroy, autosave: true, validate: false
-  has_many :roles, through: :member_roles
-  belongs_to :project
+  include ::Scopes::Scoped
 
-  validates_presence_of :project, :principal
-  validates_uniqueness_of :user_id, scope: :project_id
+  ALLOWED_ENTITIES = [
+    "WorkPackage",
+    "ProjectQuery"
+  ].freeze
+
+  extend DeprecatedAlias
+  belongs_to :principal, foreign_key: "user_id", inverse_of: "members", optional: false
+  belongs_to :entity, polymorphic: true, optional: true
+  belongs_to :project, optional: true
+
+  has_many :member_roles, dependent: :destroy, autosave: true, validate: false
+  has_many :roles, -> { distinct }, through: :member_roles
+  has_many :oauth_client_tokens, foreign_key: :user_id, primary_key: :user_id, dependent: nil # rubocop:disable Rails/InverseOf
+
+  validates :user_id, uniqueness: { scope: %i[project_id entity_type entity_id] }
+  validates :entity_type, inclusion: { in: ALLOWED_ENTITIES, allow_blank: true }
 
   validate :validate_presence_of_role
   validate :validate_presence_of_principal
 
-  before_destroy :remove_from_category_assignments
-  after_destroy :unwatch_from_permission_change,
-                if: ->(member) { member.prune_watchers_on_destruction != false }
+  scopes :assignable,
+         :global,
+         :not_locked,
+         :of_project,
+         :of_any_project,
+         :of_work_package,
+         :of_any_work_package,
+         :of_entity,
+         :of_any_entity,
+         :of_anything_in_project,
+         :visible,
+         :with_shared_work_packages_info,
+         :without_inherited_roles
 
-  after_save :save_notification
-  after_destroy :destroy_notification
-
-  scope :of, ->(project) {
-    where(project_id: project)
-  }
-
-  def self.visible(user)
-    view_members = Project.where(id: Project.allowed_to(user, :view_members))
-    manage_members = Project.where(id: Project.allowed_to(user, :manage_members))
-
-    project_scope = view_members.or(manage_members)
-
-    where(project_id: project_scope.select(:id))
-  end
-
-  def name
-    principal.name
-  end
+  delegate :name, to: :principal
 
   def to_s
     name
   end
 
-  # Set the roles for this member to the given roles_or_role_ids.
-  # Inherited roles are left untouched.
-  def assign_roles(roles_or_role_ids)
-    do_assign_roles(roles_or_role_ids, false)
-  end
-
-  alias :base_role_ids= :role_ids=
-
   deprecated_alias :user, :principal
   deprecated_alias :user=, :principal=
 
-  # Set the roles for this member to the given roles_or_role_ids, immediately
-  # save the changes and destroy the member in case no role is left.
-  # Inherited roles are left untouched.
-  def assign_and_save_roles_and_destroy_member_if_none_left(roles_or_role_ids)
-    do_assign_roles(roles_or_role_ids, true)
-  end
-  alias_method :role_ids=, :assign_and_save_roles_and_destroy_member_if_none_left
-
-  # Add a role to the membership
-  # Does not save the changes, the member must be saved afterwards for the role to be added.
-  def add_role(role_or_role_id, inherited_from_id = nil)
-    do_add_role(role_or_role_id, inherited_from_id, false)
-  end
-
-  # Add a role and save the change to the database
-  def add_and_save_role(role_or_role_id, inherited_from_id = nil)
-    do_add_role(role_or_role_id, inherited_from_id, true)
-  end
-
-  # Mark one of the member's roles for destruction
-  #
-  # Make sure to get the MemberRole instance from the member's association, otherwise the actual
-  # destruction on save doesn't work.
-  def mark_member_role_for_destruction(member_role)
-    do_remove_member_role(member_role, false)
-  end
-
-  # Remove a role from a member
-  # Destroys the member itself when no role is left afterwards
-  #
-  # Make sure to get the MemberRole instance from the member's association, otherwise the
-  # destruction of the member, when the last MemberRole is destroyed, might not work.
-  def remove_member_role_and_destroy_member_if_last(member_role, prune_watchers: true)
-    do_remove_member_role(member_role, true, prune_watchers: prune_watchers)
-  end
-
-  def <=>(member)
-    a = roles.sort.first
-    b = member.roles.sort.first
-    a == b ? (principal <=> member.principal) : (a <=> b)
+  def <=>(other)
+    a = roles.min
+    b = other.roles.min
+    a == b ? (principal <=> other.principal) : (a <=> b)
   end
 
   def deletable?
-    member_roles.detect(&:inherited_from).nil?
+    member_roles.none?(&:inherited_from?)
+  end
+
+  def some_roles_deletable?
+    !member_roles.all?(&:inherited_from?)
+  end
+
+  def project_role?
+    entity_id.nil? && project_id.present?
+  end
+
+  def deletable_role?(role)
+    member_roles
+      .only_inherited
+      .where(role:)
+      .none?
   end
 
   def include?(principal)
@@ -133,16 +105,6 @@ class Member < ApplicationRecord
     end
   end
 
-  # remove category based auto assignments for this member
-  #
-  # Note: This logic is duplicated for mass deletion in `app/models/group/destroy.rb`.
-  #       Accordingly it has to be changed there too should this bit change at all.
-  def remove_from_category_assignments
-    Category
-      .where(project_id: project_id, assigned_to_id: user_id)
-      .update_all(assigned_to_id: nil)
-  end
-
   ##
   # Returns true if this user can be deleted as they have no other memberships
   # and haven't been activated yet. Only applies if the member is actually a user
@@ -151,15 +113,19 @@ class Member < ApplicationRecord
     user? && principal&.invited? && principal.memberships.none? { |m| m.project_id != project_id }
   end
 
+  def self.can_be_member_of?(entity_or_class)
+    checked_class = if entity_or_class.is_a?(Class)
+                      entity_or_class.name
+                    else
+                      entity_or_class.class.name
+                    end
+
+    ALLOWED_ENTITIES.include?(checked_class)
+  end
+
   protected
 
   attr_accessor :prune_watchers_on_destruction
-
-  def destroy_if_no_roles_left!
-    destroy if member_roles.empty? || member_roles.all? do |member_role|
-      member_role.marked_for_destruction? || member_role.destroyed?
-    end
-  end
 
   def validate_presence_of_role
     if (member_roles.empty? && roles.empty?) ||
@@ -175,82 +141,7 @@ class Member < ApplicationRecord
     errors.add :base, :principal_blank if principal.blank?
   end
 
-  def do_add_role(role_or_role_id, inherited_from_id, save_immediately)
-    id = role_or_role_id.is_a?(Role) ? role_or_role_id.id : role_or_role_id
-
-    if save_immediately
-      member_roles << MemberRole.new.tap do |member_role|
-        member_role.role_id = id
-        member_role.inherited_from = inherited_from_id
-      end
-    else
-      member_roles.build.tap do |member_role|
-        member_role.role_id = id
-        member_role.inherited_from = inherited_from_id
-      end
-    end
-  end
-
-  # Set save_and_possibly_destroy to true to immediately save changes and destroy
-  # when no roles are left.
-  def do_assign_roles(roles_or_role_ids, save_and_possibly_destroy)
-    # ensure we have integer ids
-    ids = roles_or_role_ids.map { |r| r.is_a?(Role) ? r.id : r.to_i }
-
-    # Keep inherited roles
-    ids += member_roles.reject { |mr| mr.inherited_from.nil? }.map(&:role_id)
-
-    new_role_ids = ids - role_ids
-    # Add new roles
-    # Do this before destroying them, otherwise the Member is destroyed due to not having any
-    # Roles assigned via MemberRoles.
-    new_role_ids.each { |id| do_add_role(id, nil, save_and_possibly_destroy) }
-
-    # Remove roles (Rails' #role_ids= will not trigger MemberRole#on_destroy)
-    member_roles_to_destroy = member_roles.reject { |mr| ids.include?(mr.role_id) }
-    member_roles_to_destroy.each { |mr| do_remove_member_role(mr, save_and_possibly_destroy) }
-  end
-
-  def do_remove_member_role(member_role, destroy, prune_watchers: true)
-    self.prune_watchers_on_destruction = prune_watchers
-
-    # because we later on check whether all member_roles have been destroyed
-    # (at least when we do destroy it) we have to work on the member_role
-    # instance existing in the member_roles association.  Otherwise, while
-    # representing the same db entry, the instances could be different and the
-    # wrong instance might have the destroyed flag.
-    to_destroy = member_roles.detect { |mr| mr.id == member_role.id }
-
-    if destroy
-      to_destroy.destroy_for_member
-      destroy_if_no_roles_left!
-    else
-      to_destroy.mark_for_destruction
-    end
-    unwatch_from_permission_change if prune_watchers
-
-    self.prune_watchers_on_destruction = true
-  end
-
   private
-
-  # Unwatch things that the user is no longer allowed to view inside project
-  #
-  # Note: This logic is duplicated for mass deletion in `app/models/group/destroy.rb`.
-  #       Accordingly it has to be changed there too should this bit change at all.
-  def unwatch_from_permission_change
-    if principal
-      Watcher.prune(user: principal, project_id: project_id)
-    end
-  end
-
-  def save_notification
-    ::OpenProject::Notifications.send(:member_updated, member: self)
-  end
-
-  def destroy_notification
-    ::OpenProject::Notifications.send(:member_removed, member: self)
-  end
 
   def user?
     principal.is_a?(User)

@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,72 +23,72 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'spec_helper'
+require "spec_helper"
 
-describe ::API::V3::CostEntries::CostEntryRepresenter do
+RSpec.describe API::V3::CostEntries::CostEntryRepresenter do
   include API::V3::Utilities::PathHelper
 
-  let(:cost_entry) { FactoryBot.build_stubbed(:cost_entry) }
-  let(:representer) { described_class.new(cost_entry, current_user: double('current_user')) }
+  let(:cost_entry) { build_stubbed(:cost_entry) }
+  let(:representer) { described_class.new(cost_entry, current_user: double("current_user")) }
 
   subject { representer.to_json }
 
-  it 'has a type' do
-    is_expected.to be_json_eql('CostEntry'.to_json).at_path('_type')
+  it "has a type" do
+    expect(subject).to be_json_eql("CostEntry".to_json).at_path("_type")
   end
 
-  it_behaves_like 'has an untitled link' do
-    let(:link) { 'self' }
+  it_behaves_like "has an untitled link" do
+    let(:link) { "self" }
     let(:href) { api_v3_paths.cost_entry cost_entry.id }
   end
 
-  it_behaves_like 'has a titled link' do
-    let(:link) { 'project' }
+  it_behaves_like "has a titled link" do
+    let(:link) { "project" }
     let(:href) { api_v3_paths.project cost_entry.project.id }
     let(:title) { cost_entry.project.name }
   end
 
-  it_behaves_like 'has a titled link' do
-    let(:link) { 'user' }
+  it_behaves_like "has a titled link" do
+    let(:link) { "user" }
     let(:href) { api_v3_paths.user cost_entry.user_id }
     let(:title) { cost_entry.user.name }
   end
 
-  it_behaves_like 'has a titled link' do
-    let(:link) { 'costType' }
+  it_behaves_like "has a titled link" do
+    let(:link) { "costType" }
     let(:href) { api_v3_paths.cost_type cost_entry.cost_type.id }
     let(:title) { cost_entry.cost_type.name }
   end
 
-  it_behaves_like 'has a titled link' do
-    let(:link) { 'workPackage' }
+  it_behaves_like "has a titled link" do
+    let(:link) { "workPackage" }
     let(:href) { api_v3_paths.work_package cost_entry.work_package.id }
     let(:title) { cost_entry.work_package.subject }
   end
 
-  it 'has an id' do
-    is_expected.to be_json_eql(cost_entry.id.to_json).at_path('id')
+  it "has an id" do
+    expect(subject).to be_json_eql(cost_entry.id.to_json).at_path("id")
   end
 
-  it 'has spent units' do
-    is_expected.to be_json_eql(cost_entry.units.to_json).at_path('spentUnits')
+  it "has spent units" do
+    expect(subject).to be_json_eql(cost_entry.units.to_json).at_path("spentUnits")
   end
 
-  it_behaves_like 'has ISO 8601 date only' do
+  it_behaves_like "has ISO 8601 date only" do
     let(:date) { cost_entry.spent_on }
-    let(:json_path) { 'spentOn' }
+    let(:json_path) { "spentOn" }
   end
 
-  it_behaves_like 'has UTC ISO 8601 date and time' do
-    let(:date) { cost_entry.created_on }
-    let(:json_path) { 'createdAt' }
+  it_behaves_like "has UTC ISO 8601 date and time" do
+    let(:date) { cost_entry.created_at }
+    let(:json_path) { "createdAt" }
   end
 
-  it_behaves_like 'has UTC ISO 8601 date and time' do
-    let(:date) { cost_entry.updated_on }
-    let(:json_path) { 'updatedAt' }
+  it_behaves_like "has UTC ISO 8601 date and time" do
+    let(:date) { cost_entry.updated_at }
+    let(:json_path) { "updatedAt" }
   end
 end

@@ -1,13 +1,12 @@
-#-- encoding: UTF-8
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -24,10 +23,10 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'open_project/plugins/auth_plugin'
+require "open_project/plugins/auth_plugin"
 
 module OmniAuth
   module FlexibleStrategy
@@ -37,12 +36,12 @@ module OmniAuth
 
     ##
     # Tries to match the request path of the current request with one of the registered providers.
-    # If a match is found the strategy is intialised with that provider to handle the request.
+    # If a match is found the strategy is initialised with that provider to handle the request.
     def match_provider!
       return false unless providers
 
       @provider = providers.find do |p|
-        (current_path =~ /#{path_for_provider(p.to_hash[:name])}/) == 0
+        current_path.match?(/#{path_for_provider(p.to_hash[:name])}(\/|\s*$)/)
       end
 
       if @provider
@@ -91,8 +90,8 @@ module OmniAuth
   end
 
   module FlexibleStrategyClass
-    def new(app, *args, &block)
-      super(app, *args, &block).tap do |strategy|
+    def new(app, *args, &)
+      super.tap do |strategy|
         strategy.extend FlexibleStrategy
       end
     end

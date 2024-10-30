@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,23 +23,23 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'spec_helper'
+require "spec_helper"
 
-describe SecurityBadgeHelper, type: :helper do
-  describe '#security_badge_url' do
+RSpec.describe SecurityBadgeHelper do
+  describe "#security_badge_url" do
     before do
       # can't use with_settings since Setting.installation_uuid has a custom implementation
-      allow(Setting).to receive(:installation_uuid).and_return 'abcd1234'
+      allow(Setting).to receive(:installation_uuid).and_return "abcd1234"
     end
 
     it "generates a URL with the release API path and the details of the installation" do
       uri = URI.parse(helper.security_badge_url)
       query = Rack::Utils.parse_nested_query(uri.query)
       expect(uri.host).to eq("releases.openproject.com")
-      expect(query.keys).to match_array(["uuid", "type", "version", "db", "lang", "ee"])
+      expect(query.keys).to contain_exactly("uuid", "type", "version", "db", "lang", "ee")
       expect(query["uuid"]).to eq("abcd1234")
       expect(query["version"]).to eq(OpenProject::VERSION.to_semver)
       expect(query["type"]).to eq("manual")

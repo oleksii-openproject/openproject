@@ -1,11 +1,13 @@
 <div class="autocomplete-select-decoration--wrapper" hidden>
-  <%= content_tag :'autocomplete-select-decoration',
+  <%= content_tag :'opce-select-decoration',
                   {},
                   data: {
-                      "multiselect": multiple,
+                      multiple:,
                       "input-name": input_name,
                       "input-id": input_id,
-                      options: JSON.dump(select_options)
+                      "append-to": defined?(append_to) ? append_to : 'body',
+                      key:,
+                      options: JSON.dump(select_options),
                   } %>
 
   <!-- Mapped values are being input as hidden fields here -->

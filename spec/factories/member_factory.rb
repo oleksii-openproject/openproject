@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,35 +23,47 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 # Create memberships like this:
 #
-#   project = FactoryBot.create(:project)
-#   user    = FactoryBot.create(:user)
-#   role    = FactoryBot.create(:role, permissions: [:view_wiki_pages, :edit_wiki_pages])
+#   project = create(:project)
+#   user    = create(:user)
+#   role    = create(:project_role, permissions: [:view_wiki_pages, :edit_wiki_pages])
 #
-#   member = FactoryBot.create(:member, user: user, project: project)
-#   member.role_ids = [role.id]
-#   member.save!
-#
-# It looks like you cannot create member_role models directly.
+#   member = create(:member, user: user, project: project, roles: [role])
 
 FactoryBot.define do
   factory :member do
     project
+    entity { nil }
 
     transient do
       user { nil }
     end
 
-    callback(:after_build) do |member, options|
-      member.principal ||= options.user || FactoryBot.build(:user)
+    after(:build) do |member, evaluator|
+      member.principal ||= evaluator.user || build(:user)
     end
 
-    callback(:after_stub) do |member, options|
-      member.principal ||= options.user || FactoryBot.build_stubbed(:user)
+    after(:stub) do |member, evaluator|
+      member.principal ||= evaluator.user || build_stubbed(:user)
     end
+  end
+
+  factory :global_member, parent: :member do
+    project { nil }
+    entity { nil }
+  end
+
+  factory :work_package_member, parent: :member do
+    entity factory: %i[work_package]
+    project { entity.project }
+  end
+
+  factory :project_query_member, parent: :member do
+    entity factory: %i[project_query]
+    project { nil }
   end
 end

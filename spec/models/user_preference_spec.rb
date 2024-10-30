@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,39 +23,24 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'spec_helper'
+require "spec_helper"
 
-describe UserPreference do
-  let(:user) { FactoryBot.build_stubbed(:user) }
-  subject { FactoryBot.build(:user_preference, user: user) }
-
-  describe 'default settings' do
-    it 'hides the email address' do
-      expect(subject.hide_mail).to eql(true)
-    end
-
-    it 'activates no self notification' do
-      expect(subject.others[:no_self_notified]).to be_truthy
-    end
-
-    context 'with default setting auto_hide_popups to false', with_settings: { default_auto_hide_popups: false } do
-      it 'disables auto hide popups' do
-        expect(subject.auto_hide_popups).to be_falsey
-      end
-    end
-
-    context 'with default setting auto_hide_popups to true', with_settings: { default_auto_hide_popups: true } do
-      it 'disables auto hide popups' do
-        expect(subject.auto_hide_popups).to be_truthy
-      end
-    end
+RSpec.describe UserPreference do
+  subject(:preference) do
+    build(:user_preference,
+          user:,
+          settings:)
   end
 
-  shared_examples 'accepts real and false booleans' do |setter, getter|
-    it 'accepts true boolean' do
+  let(:settings) { {} }
+
+  let(:user) { build_stubbed(:user) }
+
+  shared_examples "accepts real and false booleans" do |setter, getter|
+    it "accepts true boolean" do
       subject.send(setter, true)
       expect(subject.send(getter)).to be true
 
@@ -63,7 +48,7 @@ describe UserPreference do
       expect(subject.send(getter)).to be false
     end
 
-    it 'accepts false booleans' do
+    it "accepts false booleans" do
       %w(true 1).each do |str|
         subject.send(setter, str)
         expect(subject.send(getter)).to be true
@@ -76,87 +61,187 @@ describe UserPreference do
     end
   end
 
-  describe 'sort order' do
-    it_behaves_like 'accepts real and false booleans',
+  describe "sort order" do
+    it_behaves_like "accepts real and false booleans",
                     :comments_in_reverse_order=,
                     :comments_in_reverse_order?
 
-    it 'can be changed by string' do
-      subject.comments_sorting = 'desc'
+    it "can be changed by string" do
+      subject.comments_sorting = "desc"
       expect(subject.comments_in_reverse_order?).to be true
 
-      subject.comments_sorting = 'asc'
+      subject.comments_sorting = "asc"
       expect(subject.comments_in_reverse_order?).to be false
     end
   end
 
-  describe 'warn on unsaved changes' do
-    it_behaves_like 'accepts real and false booleans',
+  describe "warn on unsaved changes" do
+    it_behaves_like "accepts real and false booleans",
                     :warn_on_leaving_unsaved=,
                     :warn_on_leaving_unsaved?
   end
 
-  describe 'auto hide popups' do
-    it_behaves_like 'accepts real and false booleans',
+  describe "auto hide popups" do
+    it_behaves_like "accepts real and false booleans",
                     :auto_hide_popups=,
                     :auto_hide_popups?
-  end
 
-  describe 'time_zone' do
-    it 'allows to save short time zones' do
-      subject.time_zone = 'Berlin'
-      expect(subject).to be_valid
-      expect(subject.time_zone).to eq('Berlin')
-      expect(subject.canonical_time_zone).to eq('Europe/Berlin')
+    describe "without a value being stored and with default setting auto_hide_popups to false",
+             with_settings: { default_auto_hide_popups: false } do
+      it "disables auto hide popups" do
+        expect(subject.auto_hide_popups).to be_falsey
+      end
     end
 
-    it 'allows to set full time zones' do
-      subject.time_zone = 'Europe/Paris'
-      expect(subject).to be_valid
-      expect(subject.time_zone).to eq('Europe/Paris')
-      expect(subject.canonical_time_zone).to eq('Europe/Paris')
-    end
-
-    it 'disallows invalid time zones' do
-      subject.time_zone = 'Berlin123'
-      expect(subject).not_to be_valid
-    end
-
-    it 'allows empty values' do
-      subject.time_zone = nil
-      expect(subject).to be_valid
-
-      subject.time_zone = ''
-      expect(subject).to be_valid
+    context "without a value being stored and with default setting auto_hide_popups to true",
+            with_settings: { default_auto_hide_popups: true } do
+      it "disables auto hide popups" do
+        expect(subject.auto_hide_popups).to be_truthy
+      end
     end
   end
 
-  describe 'self_notified getter/setter' do
-    it 'has a getter and a setter for self_notified' do
-      subject.self_notified = false
-      expect(subject.self_notified?).to be_falsey
-      expect(subject[:no_self_notified]).to be_truthy
+  describe "#diff_type" do
+    it "can be set and written" do
+      expect(subject.diff_type)
+        .to eql "inline"
+
+      subject.diff_type = "sbs"
+
+      expect(subject.diff_type)
+        .to eql "sbs"
+    end
+
+    context "with a new pref instance" do
+      subject { described_class.new }
+
+      it "defaults to `inline`" do
+        expect(subject.diff_type)
+          .to eql "inline"
+      end
     end
   end
 
-  describe '[]=' do
-    let(:user) { FactoryBot.create(:user) }
+  describe "#daily_reminders" do
+    context "without reminders being stored" do
+      it "uses the defaults" do
+        expect(subject.daily_reminders)
+          .to eql("enabled" => true, "times" => ["08:00:00+00:00"])
+      end
+    end
 
-    context 'for attributes stored in "others"' do
-      it 'will save the values on sending "save"' do
-        subject.save
+    context "with reminders being stored" do
+      let(:settings) do
+        {
+          "daily_reminders" => {
+            "enabled" => false,
+            "times" => %w[12:00:00+00:00 18:00:00+00:00 09:00:00+00:00]
+          }
+        }
+      end
 
-        value_no_self_notified = !subject[:no_self_notified]
-        value_auto_hide_popups = !subject[:auto_hide_popups]
+      it "returns the stored value" do
+        expect(subject.daily_reminders)
+          .to eql(settings["daily_reminders"])
+      end
+    end
+  end
 
-        subject[:no_self_notified] = value_no_self_notified
-        subject[:auto_hide_popups] = value_auto_hide_popups
+  describe "#workdays" do
+    context "without work days being stored" do
+      it "uses the defaults" do
+        expect(subject.workdays)
+          .to eq([1, 2, 3, 4, 5])
+      end
+    end
 
-        subject.save
-        subject.reload
+    context "with work days being stored" do
+      let(:settings) do
+        {
+          "workdays" => [1, 2, 4, 5]
+        }
+      end
 
-        expect(subject[:no_self_notified]).to eql(value_no_self_notified)
-        expect(subject[:auto_hide_popups]).to eql(value_auto_hide_popups)
+      it "returns the stored value" do
+        expect(subject.workdays)
+          .to eql([1, 2, 4, 5])
+      end
+    end
+
+    context "with work days being stored and empty" do
+      let(:settings) do
+        {
+          "workdays" => []
+        }
+      end
+
+      it "return empty array" do
+        expect(subject.workdays)
+          .to eql([])
+      end
+    end
+  end
+
+  describe "[]=" do
+    let(:user) { create(:user) }
+
+    it 'saves the values on sending "save"' do
+      subject.save
+
+      value_warn_on_leaving_unsaved = !subject[:warn_on_leaving_unsaved]
+      value_auto_hide_popups = !subject[:auto_hide_popups]
+
+      subject[:warn_on_leaving_unsaved] = value_warn_on_leaving_unsaved
+      subject[:auto_hide_popups] = value_auto_hide_popups
+
+      subject.save
+      subject.reload
+
+      expect(subject[:warn_on_leaving_unsaved]).to eql(value_warn_on_leaving_unsaved)
+      expect(subject[:auto_hide_popups]).to eql(value_auto_hide_popups)
+    end
+  end
+
+  describe "#time_zone" do
+    context "with a time zone set and a default configured", with_settings: { user_default_timezone: "America/Los_Angeles" } do
+      let(:settings) { { "time_zone" => "Africa/Algiers" } }
+
+      it "returns the time zone set" do
+        expect(preference.time_zone).to eql "Africa/Algiers"
+      end
+    end
+
+    context "with no time zone configured but a default", with_settings: { user_default_timezone: "America/Los_Angeles" } do
+      it "returns the default time zone" do
+        expect(preference.time_zone).to eql "America/Los_Angeles"
+      end
+    end
+
+    context "with neiter a time zone configured nor a default one", with_settings: { user_default_timezone: "" } do
+      it "returns UTC" do
+        expect(preference.time_zone).to eql "Etc/UTC"
+      end
+    end
+  end
+
+  describe "#time_zone?" do
+    context "with a time zone set and a default configured", with_settings: { user_default_timezone: "America/Los_Angeles" } do
+      let(:settings) { { "time_zone" => "Africa/Algiers" } }
+
+      it "is true" do
+        expect(preference).to be_time_zone
+      end
+    end
+
+    context "with no time zone configured but a default", with_settings: { user_default_timezone: "America/Los_Angeles" } do
+      it "is false" do
+        expect(preference).not_to be_time_zone
+      end
+    end
+
+    context "with neiter a time zone configured nor a default one", with_settings: { user_default_timezone: "" } do
+      it "is false" do
+        expect(preference).not_to be_time_zone
       end
     end
   end

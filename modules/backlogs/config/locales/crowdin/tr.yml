@@ -1,10 +1,10 @@
 #-- copyright
 #OpenProject is an open source project management software.
-#Copyright (C) 2012-2020 the OpenProject GmbH
+#Copyright (C) the OpenProject GmbH
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License version 3.
 #OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-#Copyright (C) 2006-2017 Jean-Philippe Lang
+#Copyright (C) 2006-2013 Jean-Philippe Lang
 #Copyright (C) 2010-2013 the ChiliProject Team
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License
@@ -17,15 +17,16 @@
 #You should have received a copy of the GNU General Public License
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-#See docs/COPYRIGHT.rdoc for more details.
+#See COPYRIGHT and LICENSE files for more details.
 #++
 tr:
+  plugin_openproject_backlogs:
+    name: "OpenProject Backlogs"
+    description: "This module adds features enabling agile teams to work with OpenProject in Scrum projects."
   activerecord:
     attributes:
       work_package:
         position: "Konum"
-        remaining_hours: "Kalan saat"
-        remaining_time: "Kalan saat"
         story_points: "Hikaye Puanları"
         backlogs_work_package_type: "Bekleme listesi türü"
     errors:
@@ -35,9 +36,6 @@ tr:
             blocks_ids:
               can_only_contain_work_packages_of_current_sprint: "yalnızca geçerli sprintteki iş paketlerinin kimliklerini içerebilir."
               must_block_at_least_one_work_package: "en az bir biletin kimliğini içermelidir."
-            parent_id:
-              parent_child_relationship_across_projects: "iş paketi bir bekleme listesi işidir ve bu nedenle mevcut projenin dışında bir üst öğeye sahip olamaz.%{work_package_name}"
-              type_must_be_one_of_the_following: "Tür, aşağıdakilerden biri olmalıdır: %{type_names}."
             version_id:
               task_version_must_be_the_same_as_story_version: "ana hikaye sürümüyle aynı olmalıdır."
         sprint:
@@ -54,7 +52,7 @@ tr:
     date: "Gün"
     definition_of_done: "Bitti Tanımı"
     generating_chart: "Grafik Oluşturma..."
-    hours: "Saat"
+    hours: "Saatler"
     impediment: "Engel"
     label_versions_default_fold_state: "Katlanmış sürümleri göster"
     work_package_is_closed: "İş paketi, ne zaman"
@@ -63,11 +61,11 @@ tr:
     points: "Puanlar / Noktalar"
     positions_could_not_be_rebuilt: "Pozisyonlar yeniden oluşturulamadı."
     positions_rebuilt_successfully: "Pozisyonlar başarıyla yeniden oluşturuldu."
-    properties: "Özellikler"
+    properties: "Özellikleri"
     rebuild: "Yeniden inşa etmek"
     rebuild_positions: "Pozisyonu yeniden inşa et"
-    remaining_hours: "Kalan saat"
-    remaining_hours_ideal: "Kalan saat (ideal)"
+    remaining_hours: "Kalan çalışma"
+    remaining_hours_ideal: "Kalan çalışma (ideal)"
     show_burndown_chart: "Açılış tablosu"
     story: "Hikaye"
     story_points: "Hikaye Puanları"
@@ -78,7 +76,6 @@ tr:
     x_more: "%{count} daha fazla..."
   backlogs_active: "etkin"
   backlogs_any: "herhangi bir"
-  backlogs_card_specification: "Kart yazdırma için kağıt boyutu"
   backlogs_inactive: "Proje hiçbir etkinlik göstermiyor"
   backlogs_points_burn_direction: "Puanlar yukarı / aşağı yanar"
   backlogs_product_backlog: "Ürün bekleme süresi"
@@ -99,6 +96,7 @@ tr:
   backlogs_empty_title: "Beklentilerde kullanılacak hiçbir sürüm tanımlanmadı"
   backlogs_empty_action_text: "Geri sayımlara başlamak için yeni bir sürüm oluşturun ve bir bekleme listesi sütununa atayın."
   button_edit_wiki: "Wiki sayfalarını düzenlemek"
+  error_backlogs_task_cannot_be_story: "Ayarlar geçersiz. Seçilen görev türü aynı zamanda bir hikaye türü olamaz."
   error_intro_plural: "Aşağıdaki hatalar algılandı:"
   error_intro_singular: "Aşağıdaki hatalar algılandı:"
   error_outro: "Lütfen yukarıdaki hataları tekrar göndermeden önce düzeltin."
@@ -110,7 +108,7 @@ tr:
   label_backlog: "Biriktirme listesi"
   label_backlogs: "Biriktirme listeleri"
   label_backlogs_unconfigured: "Backlog'ları henüz yapılandırmadınız. Lütfen% %{administration}> %{plugins} adresine gidin, ardından bu eklenti için %{configure} bağlantısını tıklayın. Alanları belirledikten sonra, aracı kullanmaya başlamak için bu sayfaya geri dönün."
-  label_blocks_ids: "Engellenen iş paketlerinin ID'leri"
+  label_blocks_ids: "Bloke iş paketleri kimlikleri"
   label_burndown: "Kalan zaman"
   label_column_in_backlog: "Sütununda birikim var"
   label_hours: "saatler"
@@ -133,27 +131,28 @@ tr:
   label_version_setting: "Sürümler"
   label_version: 'Sürüm'
   label_webcal: "Webcal Yemi"
-  label_wiki: "Viki"
+  label_wiki: "wiki"
   permission_view_master_backlog: "Ana bekleme günlüğünü görüntüleme"
   permission_view_taskboards: "Görev tahtalarını görüntüleme"
+  permission_select_done_statuses: "Tamamlanan durumları seçiniz"
   permission_update_sprints: "Süratleri güncelle"
   points_accepted: "kabul edilen puan"
   points_committed: "taahhüt edilen puanlar"
   points_resolved: "puanlar çözüldü"
   points_to_accept: "puan kabul edilmedi"
   points_to_resolve: "puan çözülmedi"
-  project_module_backlogs: "Biriktirme listeleri"
+  project_module_backlogs: "Bekleyen İşler"
   rb_label_copy_tasks: "İş paketlerini kopyala"
   rb_label_copy_tasks_all: "Hepsi"
   rb_label_copy_tasks_none: "Hiçbiri"
   rb_label_copy_tasks_open: "Aç"
   rb_label_link_to_original: "Orijinal hikayeye bağlantı ekle"
-  remaining_hours: "kalan saatler"
+  remaining_hours: "kalan çalışma"
   required_burn_rate_hours: "gerekli yanma oranı (saat)"
   required_burn_rate_points: "gerekli yanma oranı (puan)"
   todo_work_package_description: "%{summary}:%{url}\n%{description}"
   todo_work_package_summary: "%{type}:%{summary}"
-  version_settings_display_label: "Sütununda birikim var"
+  version_settings_display_label: "İş listesindeki sütunlar"
   version_settings_display_option_left: "sol"
   version_settings_display_option_none: "hiçbiri"
   version_settings_display_option_right: "sağ"

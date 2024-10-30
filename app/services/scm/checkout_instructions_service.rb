@@ -1,13 +1,12 @@
-#-- encoding: UTF-8
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -24,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 ##
@@ -44,7 +43,7 @@ class SCM::CheckoutInstructionsService
   def checkout_url(with_path = false)
     repository.scm.checkout_url(repository,
                                 checkout_base_url,
-                                with_path ? URI.escape(@path) : nil)
+                                with_path ? URI.encode_www_form_component(@path) : nil)
   end
 
   ##
@@ -57,13 +56,13 @@ class SCM::CheckoutInstructionsService
   ##
   # Returns the checkout base URL as defined in settings.
   def checkout_base_url
-    checkout_settings['base_url']
+    checkout_settings["base_url"]
   end
 
   ##
   # Returns the instructions defined in the settings.
   def instructions
-    checkout_settings['text'].presence ||
+    checkout_settings["text"].presence ||
       I18n.t("repositories.checkout.default_instructions.#{repository.vendor}")
   end
 
@@ -90,13 +89,12 @@ class SCM::CheckoutInstructionsService
   end
 
   def checkout_enabled?
-    checkout_settings['enabled'].to_i > 0
+    checkout_settings["enabled"].to_i > 0
   end
 
   def supported_but_not_enabled?
     repository.supports_checkout_info? && !checkout_enabled?
   end
-
 
   ##
   # Determines whether permissions for the given repository
@@ -118,9 +116,9 @@ class SCM::CheckoutInstructionsService
   #
   def permission
     project = repository.project
-    if user.allowed_to?(:commit_access, project)
+    if user.allowed_in_project?(:commit_access, project)
       :readwrite
-    elsif user.allowed_to?(:browse_repository, project)
+    elsif user.allowed_in_project?(:browse_repository, project)
       :read
     else
       :none
@@ -134,7 +132,7 @@ class SCM::CheckoutInstructionsService
   # because otherwise OpenProject does not control the repository permissions.
   # Use +manages_permissions?+ to check whether this is the case.
   def may_checkout?
-    [:readwrite, :read].include?(permission)
+    %i[readwrite read].include?(permission)
   end
 
   ##

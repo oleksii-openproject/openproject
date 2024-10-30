@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,59 +23,55 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'spec_helper'
+require "spec_helper"
 
-describe UsersHelper, type: :helper do
-  include UsersHelper
-
+RSpec.describe UsersHelper do
   def build_user(status, blocked)
-    user = FactoryBot.build(:user)
-    allow(user).to receive(:status).and_return(User::STATUSES[status])
-    allow(user).to receive(:failed_too_many_recent_login_attempts?).and_return(blocked)
-    allow(user).to receive(:failed_login_count).and_return(3)
-    user
+    build_stubbed(:user,
+                  status:,
+                  failed_login_count: 3).tap do |user|
+      allow(user)
+        .to receive(:failed_too_many_recent_login_attempts?)
+        .and_return(blocked)
+    end
   end
 
-  describe 'full_user_status' do
+  describe "full_user_status" do
     test_cases = {
-      [:active, false] => I18n.t(:active, scope: :user),
-      [:active, true] => I18n.t(:blocked_num_failed_logins,
-                                count: 3,
-                                scope: :user),
-      [:locked, false] => I18n.t(:locked, scope: :user),
-      [:locked, true] => I18n.t(:status_user_and_brute_force,
-                                user: I18n.t(:locked, scope: :user),
-                                brute_force: I18n.t(:blocked_num_failed_logins,
-                                                    count: 3,
-                                                    scope: :user),
-                                scope: :user),
-      [:registered, false] => I18n.t(:registered, scope: :user),
-      [:registered, true] => I18n.t(:status_user_and_brute_force,
-                                    user: I18n.t(:registered, scope: :user),
-                                    brute_force: I18n.t(:blocked_num_failed_logins,
-                                                        count: 3,
-                                                        scope: :user),
-                                    scope: :user)
+      [:active, false] => I18n.t("user.active"),
+      [:active, true] => I18n.t("user.blocked_num_failed_logins",
+                                count: 3),
+      [:locked, false] => I18n.t("user.locked"),
+      [:locked, true] => I18n.t("user.status_user_and_brute_force",
+                                user: I18n.t("user.locked"),
+                                brute_force: I18n.t("user.blocked_num_failed_logins",
+                                                    count: 3)),
+      [:registered, false] => I18n.t("user.registered"),
+      [:registered, true] => I18n.t("user.status_user_and_brute_force",
+                                    user: I18n.t("user.registered"),
+                                    brute_force: I18n.t("user.blocked_num_failed_logins",
+                                                        count: 3))
     }
 
     test_cases.each do |(status, blocked), expectation|
       describe "with status #{status} and blocked #{blocked}" do
-        before do
-          user = build_user(status, blocked)
-          @status = full_user_status(user, true)
+        let(:user) { build_user(status, blocked) }
+
+        subject(:user_status) do
+          full_user_status(user, true)
         end
 
-        it "should return #{expectation}" do
-          expect(@status).to eq(expectation)
+        it "returns #{expectation}" do
+          expect(user_status).to eq(expectation)
         end
       end
     end
   end
 
-  describe 'change_user_status_buttons' do
+  describe "change_user_status_buttons" do
     test_cases = {
       [:active, false] => :lock,
       [:locked, false] => :unlock,
@@ -87,33 +83,34 @@ describe UsersHelper, type: :helper do
     test_cases.each do |(status, blocked), expectation_symbol|
       describe "with status #{status} and blocked #{blocked}" do
         expectation = I18n.t(expectation_symbol, scope: :user)
-        before do
+        subject(:buttons) do
           user = build_user(status, blocked)
-          @buttons = change_user_status_buttons(user)
-        end
-        it "should contain '#{expectation}'" do
-          expect(@buttons).to include(expectation)
+          change_user_status_buttons(user)
         end
 
-        it 'should contain a single button' do
-          expect(@buttons.scan('<input').count).to eq(1)
+        it "contains '#{expectation}'" do
+          expect(buttons).to include(expectation)
+        end
+
+        it "contains a single button" do
+          expect(buttons.scan("<button").count).to eq(1)
         end
       end
     end
 
-    describe 'with status active and blocked True' do
-      before do
+    describe "with status active and blocked True" do
+      subject(:buttons) do
         user = build_user(:active, true)
-        @buttons = change_user_status_buttons(user)
+        change_user_status_buttons(user)
       end
 
-      it 'should return inputs (buttons)' do
-        expect(@buttons.scan('<input').count).to eq(2)
+      it "returns inputs (buttons)" do
+        expect(buttons.scan("<button").count).to eq(2)
       end
 
-      it "should contain 'Lock' and 'Reset Failed logins'" do
-        expect(@buttons).to include(I18n.t(:lock, scope: :user))
-        expect(@buttons).to include(I18n.t(:reset_failed_logins, scope: :user))
+      it "contains 'Lock' and 'Reset Failed logins'" do
+        expect(buttons).to include(I18n.t("user.lock"))
+        expect(buttons).to include(I18n.t("user.reset_failed_logins"))
       end
     end
   end

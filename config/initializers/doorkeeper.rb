@@ -5,11 +5,12 @@ Doorkeeper.configure do
   # This block will be called to check whether the resource owner is authenticated or not.
   resource_owner_authenticator do
     logged_user = session[:user_id] && User.active.find_by(id: session[:user_id])
-    if logged_user.present?
-      logged_user
-    else
-      redirect_to(signin_path(back_url: request.fullpath))
-    end
+    logged_user.presence || redirect_to(signin_path(back_url: request.fullpath))
+  end
+
+  # Configure to prevent grants when the application is disabled
+  allow_grant_flow_for_client do |_grant_type, client|
+    client.enabled?
   end
 
   # If you are planning to use Doorkeeper in Rails 5 API-only application, then you might
@@ -52,7 +53,7 @@ Doorkeeper.configure do
   # Defaults to ActionController::Base.
   # See https://github.com/doorkeeper-gem/doorkeeper#custom-base-controller
   #
-  base_controller '::OAuth::AuthBaseController'
+  base_controller "::OAuth::AuthBaseController"
 
   # Enable hashing and bcrypt-hashing of token secrets
   # and application secrets, respectively.
@@ -124,7 +125,7 @@ Doorkeeper.configure do
   #
   # force_ssl_in_redirect_uri !Rails.env.development?
   #
-  force_ssl_in_redirect_uri { |uri| uri.host != 'localhost' }
+  force_ssl_in_redirect_uri { |uri| !SecureContextUriValidator.secure_context_uri?(uri) }
 
   # Specify what redirect URI's you want to block during Application creation.
   # Any redirect URI is whitelisted by default.
@@ -183,10 +184,6 @@ Doorkeeper.configure do
   #   Rails.logger.info(params.inspect)
   # end
   #
-  after_successful_authorization do |controller|
-    # Schedule a cleanup job to clean out over-TTL tokens and grants
-    ::OAuth::CleanupJob.perform_later
-  end
 
   # Under some circumstances you might want to have applications auto-approved,
   # so that the user skips the authorization step.
@@ -201,13 +198,13 @@ Doorkeeper.configure do
   # realm "Doorkeeper"
 end
 
-OpenProject::Application.configure do |application|
+Rails.application.configure do |application|
   application.config.to_prepare do
     # Requiring some classes of Doorkeeper ourselves which for whatever reasons are
     # no longer loaded for us now that we use zeitwerk
-    require 'doorkeeper/application_metal_controller'
-    require 'doorkeeper/application_controller'
-    require 'doorkeeper/tokens_controller'
-    require 'doorkeeper/authorizations_controller'
+    require "doorkeeper/application_metal_controller"
+    require "doorkeeper/application_controller"
+    require "doorkeeper/tokens_controller"
+    require "doorkeeper/authorizations_controller"
   end
 end

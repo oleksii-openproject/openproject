@@ -1,10 +1,10 @@
 #-- copyright
 #OpenProject is an open source project management software.
-#Copyright (C) 2012-2020 the OpenProject GmbH
+#Copyright (C) the OpenProject GmbH
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License version 3.
 #OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-#Copyright (C) 2006-2017 Jean-Philippe Lang
+#Copyright (C) 2006-2013 Jean-Philippe Lang
 #Copyright (C) 2010-2013 the ChiliProject Team
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License
@@ -17,10 +17,13 @@
 #You should have received a copy of the GNU General Public License
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-#See docs/COPYRIGHT.rdoc for more details.
+#See COPYRIGHT and LICENSE files for more details.
 #++
 fil:
-  button_save_as: "Save report as..."
+  plugin_openproject_reporting:
+    name: "OpenProject Reporting"
+    description: "This plugin allows creating custom cost reports with filtering and grouping created by the OpenProject Time and costs plugin."
+  button_save_report_as: "Save report as..."
   comments: "Komento"
   cost_reports_title: "Time and costs"
   label_cost_report: "Cost report"
@@ -44,6 +47,7 @@ fil:
   label_is_project_with_subprojects: "is (includes subprojects)"
   label_work_package_attributes: "Work package attributes"
   label_less: "<"
+  label_logged_by_reporting: "Logged by"
   label_money: "Cash value"
   label_month_reporting: "Month (Spent)"
   label_new_report: "New cost report"
@@ -60,6 +64,18 @@ fil:
   label_units: "Units"
   label_week_reporting: "Week (Spent)"
   label_year_reporting: "Year (Spent)"
+  label_count: "Count"
+  label_filter: "Salain"
+  label_filter_add: "Add Filter"
+  label_filter_plural: "Mga nasala"
+  label_group_by: "Pangkat sa"
+  label_group_by_add: "Add Group-by Attribute"
+  label_inactive: "«inactive»"
+  label_no: "Hindi"
+  label_none: "(no data)"
+  label_no_reports: "There are no cost reports yet."
+  label_report: "Ulat"
+  label_yes: "Oo"
   load_query_question: "Report will have %{size} table cells and may take some time to render. Do you still want to try rendering it?"
   permission_save_cost_reports: "Save public cost reports"
   permission_save_private_cost_reports: "Save private cost reports"
@@ -69,3 +85,10 @@ fil:
   units: "Units"
   validation_failure_date: "is not a valid date"
   validation_failure_integer: "is not a valid integer"
+  export:
+    cost_reports:
+      title: "Your Cost Reports XLS export"
+  reporting:
+    group_by:
+      selected_columns: "Selected columns"
+      selected_rows: "Selected rows"

@@ -1,10 +1,10 @@
 #-- copyright
 #OpenProject is an open source project management software.
-#Copyright (C) 2012-2020 the OpenProject GmbH
+#Copyright (C) the OpenProject GmbH
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License version 3.
 #OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-#Copyright (C) 2006-2017 Jean-Philippe Lang
+#Copyright (C) 2006-2013 Jean-Philippe Lang
 #Copyright (C) 2010-2013 the ChiliProject Team
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License
@@ -17,15 +17,24 @@
 #You should have received a copy of the GNU General Public License
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-#See docs/COPYRIGHT.rdoc for more details.
+#See COPYRIGHT and LICENSE files for more details.
 #++
 fr:
-  github_integration:
-    pull_request_opened_comment: >
-      **PR Ouvert :** Demande pull %{pr_number} [%{pr_title}](%{pr_url}) pour [%{repository}](%{repository_url}) ouverte par [%{github_user}](%{github_user_url}).
-    pull_request_closed_comment: >
-      **PR Fermé :** Demande pull %{pr_number} [%{pr_title}](%{pr_url}) pour [%{repository}](%{repository_url}) fermée par [%{github_user}](%{github_user_url}).
-    pull_request_merged_comment: >
-      **PR Fusionné :** Demande pull %{pr_number} [%{pr_title}](%{pr_url}) pour [%{repository}](%{repository_url}) fusionnée par [%{github_user}](%{github_user_url}).
-    pull_request_referenced_comment: >
-      **Référencé dans PR:** [%{github_user}](%{github_user_url}) a référencé ce lots de travaux dans la demande Pull %{pr_number} [%{pr_title}](%{pr_url}) dans [%{repository}](%{repository_url}).
+  button_add_deploy_target: Ajouter un objectif de déploiement
+  label_deploy_target: Objectif de déploiement
+  label_deploy_target_new: Nouvel objectif de déploiement
+  label_deploy_target_plural: Objectifs de déploiement
+  label_github_integration: Intégration GitHub
+  notice_deploy_target_created: Objectif de déploiement créé
+  notice_deploy_target_destroyed: Objectif de déploiement supprimé
+  plugin_openproject_github_integration:
+    name: "Intégration de GitHub et OpenProject"
+    description: "Permet une intégration étroite entre OpenProject et GitHub pour un meilleur flux de travail"
+  project_module_github: "GitHub"
+  permission_show_github_content: "Afficher le contenu GitHub"
+  permission_introspection: Consulter la version principale d'OpenProject et du build SHA en cours d'exécution
+  text_deploy_target_type_info: >
+    Pour l'instant, nous ne prenons en charge qu'OpenProject.
+  text_deploy_target_api_key_info: >
+    Une [clé API](docs_url) OpenProject appartenant à un utilisateur ayant la permission d'introspection globale.
+  text_pull_request_deployed_to: "%{pr_link} déployé sur %{deploy_target_link}"

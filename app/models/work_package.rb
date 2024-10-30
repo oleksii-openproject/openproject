@@ -1,14 +1,12 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -25,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 class WorkPackage < ApplicationRecord
@@ -35,46 +33,56 @@ class WorkPackage < ApplicationRecord
   include WorkPackage::AskBeforeDestruction
   include WorkPackage::TimeEntriesCleaner
   include WorkPackage::Ancestors
-  prepend WorkPackage::Parent
-  include WorkPackage::TypedDagDefaults
   include WorkPackage::CustomActioned
   include WorkPackage::Hooks
   include WorkPackages::DerivedDates
   include WorkPackages::SpentTime
   include WorkPackages::Costs
+  include WorkPackages::Relations
   include ::Scopes::Scoped
+  include HasMembers
 
   include OpenProject::Journal::AttachmentHelper
 
-  DONE_RATIO_OPTIONS = %w(field status disabled).freeze
+  DONE_RATIO_OPTIONS = %w[field status].freeze
+  TOTAL_PERCENT_COMPLETE_MODE_OPTIONS = %w[work_weighted_average simple_average].freeze
 
   belongs_to :project
   belongs_to :type
-  belongs_to :status, class_name: 'Status', foreign_key: 'status_id'
-  belongs_to :author, class_name: 'User', foreign_key: 'author_id'
-  belongs_to :assigned_to, class_name: 'Principal', foreign_key: 'assigned_to_id'
-  belongs_to :responsible, class_name: 'Principal', foreign_key: 'responsible_id'
-  belongs_to :version
-  belongs_to :priority, class_name: 'IssuePriority', foreign_key: 'priority_id'
-  belongs_to :category, class_name: 'Category', foreign_key: 'category_id'
+  belongs_to :status, class_name: "Status"
+  belongs_to :author, class_name: "User"
+  belongs_to :assigned_to, class_name: "Principal", optional: true
+  belongs_to :responsible, class_name: "Principal", optional: true
+  belongs_to :version, optional: true
+  belongs_to :priority, class_name: "IssuePriority"
+  belongs_to :category, class_name: "Category", optional: true
 
   has_many :time_entries, dependent: :delete_all
 
-  has_and_belongs_to_many :changesets, -> {
+  has_many :file_links, dependent: :delete_all, class_name: "Storages::FileLink", as: :container
+
+  has_many :storages, through: :project
+
+  has_and_belongs_to_many :changesets, -> { # rubocop:disable Rails/HasAndBelongsToMany
     order("#{Changeset.table_name}.committed_on ASC, #{Changeset.table_name}.id ASC")
   }
+
+  has_and_belongs_to_many :github_pull_requests # rubocop:disable Rails/HasAndBelongsToMany
+
+  has_many :meeting_agenda_items, dependent: :nullify
+  # The MeetingAgendaItem has a default order, but the ordered field is not part of the select
+  # that retrieves the meetings, hence we need to remove the order.
+  has_many :meetings, -> { unscope(:order).distinct }, through: :meeting_agenda_items, source: :meeting
 
   scope :recently_updated, -> {
     order(updated_at: :desc)
   }
 
-  scope :visible, ->(*args) {
-    where(project_id: Project.allowed_to(args.first || User.current, :view_work_packages))
-  }
+  scope :visible, ->(user = User.current) { allowed_to(user, :view_work_packages) }
 
   scope :in_status, ->(*args) do
-                      where(status_id: (args.first.respond_to?(:id) ? args.first.id : args.first))
-                    end
+    where(status_id: (args.first.respond_to?(:id) ? args.first.id : args.first))
+  end
 
   scope :for_projects, ->(projects) {
     where(project_id: projects)
@@ -117,38 +125,59 @@ class WorkPackage < ApplicationRecord
     where(author_id: author.id)
   }
 
-  scope_classes WorkPackages::Scopes::ForScheduling,
-                WorkPackages::Scopes::IncludeSpentTime,
-                WorkPackages::Scopes::IncludeDerivedDates,
-                WorkPackages::Scopes::LeftJoinSelfAndDescendants
+  scopes :covering_dates_and_days_of_week,
+         :allowed_to,
+         :for_scheduling,
+         :include_derived_dates,
+         :include_spent_time,
+         :involving_user,
+         :left_join_self_and_descendants,
+         :relatable,
+         :directly_related
 
-  acts_as_watchable
+  acts_as_watchable(permission: :view_work_packages)
 
-  before_create :default_assign
+  after_validation :set_attachments_error_details,
+                   if: lambda { |work_package| work_package.errors.messages.has_key? :attachments }
   before_save :close_duplicates, :update_done_ratio_from_status
+  before_create :default_assign
+  # By using prepend: true, the callback will be performed before the meeting_agenda_items are nullified,
+  # thus the associated agenda items will be available at the time the callback method is performed.
+  around_destroy :save_agenda_item_journals, prepend: true, if: -> { meeting_agenda_items.any? }
 
   acts_as_customizable
 
-  acts_as_searchable columns: ['subject',
+  acts_as_searchable columns: ["subject",
                                "#{table_name}.description",
-                               "#{Journal.table_name}.notes"],
+                               {
+                                 name: "#{Journal.table_name}.notes",
+                                 scope: -> { Journal.for_work_package.where("journable_id = #{table_name}.id") }
+                               }],
                      tsv_columns: [
                        {
                          table_name: Attachment.table_name,
-                         column_name: 'fulltext',
-                         normalization_type: :text
+                         column_name: "fulltext",
+                         normalization_type: :text,
+                         scope: -> { Attachment.where(container_type: name).where("container_id = #{table_name}.id") }
                        },
                        {
                          table_name: Attachment.table_name,
-                         column_name: 'file',
-                         normalization_type: :filename
+                         column_name: "file",
+                         normalization_type: :filename,
+                         scope: -> { Attachment.where(container_type: name).where("container_id = #{table_name}.id") }
                        }
                      ],
-                     include: %i(project journals attachments),
-                     references: %i(projects journals attachments),
+                     include: %i(project journals),
+                     references: %i(projects),
                      date_column: "#{quoted_table_name}.created_at",
                      # sort by id so that limited eager loading doesn't break with postgresql
                      order_column: "#{table_name}.id"
+
+  # makes virtual modal WorkPackageHierarchy available
+  has_closure_tree
+
+  # Add on_destroy paper trail
+  has_paper_trail
 
   ##################### WARNING #####################
   # Do not change the order of acts_as_attachable   #
@@ -161,15 +190,11 @@ class WorkPackage < ApplicationRecord
   # test_destroying_root_projects_should_clear_data #
   # for details.                                    #
   ###################################################
-  acts_as_attachable after_remove: :attachments_changed,
-                     order: "#{Attachment.table_name}.file",
+  acts_as_attachable order: "#{Attachment.table_name}.file",
                      add_on_new_permission: :add_work_packages,
-                     add_on_persisted_permission: :edit_work_packages,
+                     add_on_persisted_permission: %i[edit_work_packages add_work_package_attachments],
                      modification_blocked: ->(*) { readonly_status? },
                      extract_tsv: true
-
-  after_validation :set_attachments_error_details,
-                   if: lambda { |work_package| work_package.errors.messages.has_key? :attachments }
 
   associated_to_ask_before_destruction TimeEntry,
                                        ->(work_packages) {
@@ -178,90 +203,54 @@ class WorkPackage < ApplicationRecord
                                        method(:cleanup_time_entries_before_destruction_of)
 
   include WorkPackage::Journalized
+  prepend Journable::Timestamps
 
-  def self.done_ratio_disabled?
-    Setting.work_package_done_ratio == 'disabled'
+  def self.status_based_mode?
+    Setting.work_package_done_ratio == "status"
   end
 
-  def self.use_status_for_done_ratio?
-    Setting.work_package_done_ratio == 'status'
+  def self.work_based_mode?
+    Setting.work_package_done_ratio == "field"
   end
 
-  def self.use_field_for_done_ratio?
-    Setting.work_package_done_ratio == 'field'
+  def self.complete_on_status_closed?
+    Setting.percent_complete_on_status_closed == "set_100p"
   end
 
   # Returns true if usr or current user is allowed to view the work_package
-  def visible?(usr = nil)
-    (usr || User.current).allowed_to?(:view_work_packages, project)
-  end
-
-  # ACTS AS JOURNALIZED
-  def activity_type
-    'work_packages'
+  def visible?(usr = User.current)
+    usr.allowed_in_work_package?(:view_work_packages, self)
   end
 
   # RELATIONS
+  def blockers
+    # return work_packages that block me
+    return WorkPackage.none if closed?
+
+    blocking_relations = Relation.blocks.where(to_id: self)
+
+    WorkPackage
+      .where(id: blocking_relations.select(:from_id))
+      .with_status_open
+  end
+
   # Returns true if this work package is blocked by another work package that is still open
   def blocked?
-    blocked_by
-      .with_status_open
+    blockers
       .exists?
   end
 
-  def relations
-    Relation.of_work_package(self)
-  end
-
   def visible_relations(user)
-    # This duplicates chaining
-    #  .relations.visible
-    # The duplication is made necessary to achive a performant sql query on MySQL.
-    # Chaining would result in
-    #   WHERE (relations.from_id = [ID] OR relations.to_id = [ID])
-    #   AND relations.from_id IN (SELECT [IDs OF VISIBLE WORK_PACKAGES])
-    #   AND relations.to_id IN (SELECT [IDs OF VISIBLE WORK_PACKAGES])
-    # This performs OK on postgresql but is very slow on MySQL
-    # The SQL generated by this method:
-    #   WHERE (relations.from_id = [ID] AND relations.to_id IN (SELECT [IDs OF VISIBLE WORK_PACKAGES])
-    #   OR (relations.to_id = [ID] AND relations.from_id IN (SELECT [IDs OF VISIBLE WORK_PACKAGES]))
-    # is arguably easier to read and performs equally good on both DBs.
-    relations_from = Relation
-                     .where(from: self)
-                     .where(to: WorkPackage.visible(user))
-
-    relations_to = Relation
-                   .where(to: self)
-                   .where(from: WorkPackage.visible(user))
-
-    relations_from
-      .or(relations_to)
-  end
-
-  def relation(id)
-    Relation.of_work_package(self).find(id)
-  end
-
-  def new_relation
-    relations_to.build
+    relations
+      .visible(user)
   end
 
   def add_time_entry(attributes = {})
     attributes.reverse_merge!(
-      project: project,
+      project:,
       work_package: self
     )
     time_entries.build(attributes)
-  end
-
-  # Users/groups the work_package can be assigned to
-  def assignable_assignees
-    project.possible_assignees
-  end
-
-  # Users the work_package can be assigned to
-  def assignable_responsibles
-    project.possible_responsibles
   end
 
   # Versions that the work_package can be assigned to
@@ -269,10 +258,16 @@ class WorkPackage < ApplicationRecord
   #   * any open, shared version of the project the wp belongs to
   #   * the version it was already assigned to
   #     (to make sure, that you can still update closed tickets)
-  def assignable_versions
-    @assignable_versions ||= begin
-      current_version = version_id_changed? ? Version.find_by(id: version_id_was) : version
-      ((project&.assignable_versions || []) + [current_version]).compact.uniq
+  #   * for custom fields only_open: false can be used, if the CF is configured so
+  def assignable_versions(only_open: true)
+    if only_open
+      @assignable_versions ||= begin
+        current_version = version_id_changed? ? Version.find_by(id: version_id_was) : version
+        ((project&.assignable_versions || []) + [current_version]).compact.uniq
+      end
+    else
+      # The called method memoizes the result, no need to memoize it here.
+      project&.assignable_versions(only_open: false)
     end
   end
 
@@ -293,49 +288,57 @@ class WorkPackage < ApplicationRecord
 
   # Returns true if the work_package is overdue
   def overdue?
-    !due_date.nil? && (due_date < Date.today) && !closed?
+    !due_date.nil? && (due_date < Time.zone.today) && !closed?
   end
 
   def milestone?
     type&.is_milestone?
   end
+
   alias_method :is_milestone?, :milestone?
 
-  # Returns users that should be notified
-  def recipients
-    notified = project.notified_users + attribute_users.select { |u| u.notify_about?(self) }
-
-    notified.uniq!
-    # Remove users that can not view the work package
-    notified & User.allowed(:view_work_packages, project)
-  end
-
-  def notify?(user)
-    case user.mail_notification
-    when 'selected', 'only_my_events'
-      author == user || user.is_or_belongs_to?(assigned_to) || user.is_or_belongs_to?(responsible)
-    when 'none'
-      false
-    when 'only_assigned'
-      user.is_or_belongs_to?(assigned_to) || user.is_or_belongs_to?(responsible)
-    when 'only_owner'
-      author == user
-    else
-      false
-    end
+  def included_in_totals_calculation?
+    !status.excluded_from_totals
   end
 
   def done_ratio
-    if WorkPackage.use_status_for_done_ratio? && status && status.default_done_ratio
+    if WorkPackage.status_based_mode? && status && status.default_done_ratio
       status.default_done_ratio
     else
       read_attribute(:done_ratio)
     end
   end
 
-  def estimated_hours=(h)
-    converted_hours = (h.is_a?(String) ? h.to_hours : h)
-    write_attribute :estimated_hours, !!converted_hours ? converted_hours : h
+  def hide_attachments?
+    if project&.deactivate_work_package_attachments.nil?
+      !Setting.show_work_package_attachments
+    else
+      project&.deactivate_work_package_attachments?
+    end
+  end
+
+  def estimated_hours=(hours)
+    write_attribute :estimated_hours, convert_duration_to_hours(hours)
+  end
+
+  def remaining_hours=(hours)
+    write_attribute :remaining_hours, convert_duration_to_hours(hours)
+  end
+
+  def done_ratio=(value)
+    write_attribute :done_ratio, convert_value_to_percentage(value)
+  end
+
+  def set_derived_progress_hint(field_name, hint, **params)
+    derived_progress_hints[field_name] = ProgressHint.new("#{field_name}.#{hint}", params)
+  end
+
+  def derived_progress_hint(field_name)
+    derived_progress_hints[field_name]
+  end
+
+  def duration_in_hours
+    duration ? duration * 24 : nil
   end
 
   # aliasing subject to name
@@ -356,15 +359,14 @@ class WorkPackage < ApplicationRecord
 
   def type_id=(tid)
     self.type = nil
-    result = write_attribute(:type_id, tid)
-    @custom_field_values = nil
-    result
+    write_attribute(:type_id, tid)
   end
 
   # Overrides attributes= so that type_id gets assigned first
   def attributes=(new_attributes)
     return if new_attributes.nil?
-    new_type_id = new_attributes['type_id'] || new_attributes[:type_id]
+
+    new_type_id = new_attributes["type_id"] || new_attributes[:type_id]
     if new_type_id
       self.type_id = new_type_id
     end
@@ -375,23 +377,16 @@ class WorkPackage < ApplicationRecord
   # Set the done_ratio using the status if that setting is set.  This will keep the done_ratios
   # even if the user turns off the setting later
   def update_done_ratio_from_status
-    if WorkPackage.use_status_for_done_ratio? && status && status.default_done_ratio
+    if WorkPackage.status_based_mode? && status && status.default_done_ratio
       self.done_ratio = status.default_done_ratio
     end
-  end
-
-  # Is the amount of work done less than it should for the finish date
-  def behind_schedule?
-    return false if start_date.nil? || due_date.nil?
-    done_date = start_date + (duration * done_ratio / 100).floor
-    done_date <= Date.today
   end
 
   # check if user is allowed to edit WorkPackage Journals.
   # see Acts::Journalized::Permissions#journal_editable_by
   def journal_editable_by?(journal, user)
-    user.allowed_to?(:edit_work_package_notes, project, global: project.present?) ||
-      user.allowed_to?(:edit_own_work_package_notes, project, global: project.present?) && journal.user_id == user.id
+    user.allowed_in_project?(:edit_work_package_notes, project) ||
+      (user.allowed_in_work_package?(:edit_own_work_package_notes, self) && journal.user_id == user.id)
   end
 
   # Returns a scope for the projects
@@ -426,44 +421,44 @@ class WorkPackage < ApplicationRecord
 
   # Extracted from the ReportsController.
   def self.by_type(project)
-    count_and_group_by project: project,
-                       field: 'type_id',
+    count_and_group_by project:,
+                       field: "type_id",
                        joins: ::Type.table_name
   end
 
   def self.by_version(project)
-    count_and_group_by project: project,
-                       field: 'version_id',
+    count_and_group_by project:,
+                       field: "version_id",
                        joins: Version.table_name
   end
 
   def self.by_priority(project)
-    count_and_group_by project: project,
-                       field: 'priority_id',
+    count_and_group_by project:,
+                       field: "priority_id",
                        joins: IssuePriority.table_name
   end
 
   def self.by_category(project)
-    count_and_group_by project: project,
-                       field: 'category_id',
+    count_and_group_by project:,
+                       field: "category_id",
                        joins: Category.table_name
   end
 
   def self.by_assigned_to(project)
-    count_and_group_by project: project,
-                       field: 'assigned_to_id',
+    count_and_group_by project:,
+                       field: "assigned_to_id",
                        joins: User.table_name
   end
 
   def self.by_responsible(project)
-    count_and_group_by project: project,
-                       field: 'responsible_id',
+    count_and_group_by project:,
+                       field: "responsible_id",
                        joins: User.table_name
   end
 
   def self.by_author(project)
-    count_and_group_by project: project,
-                       field: 'author_id',
+    count_and_group_by project:,
+                       field: "author_id",
                        joins: User.table_name
   end
 
@@ -484,75 +479,67 @@ class WorkPackage < ApplicationRecord
     ).to_a
   end
 
-  def self.relateable_to(wp)
-    # can't relate to itself and not to a descendant (see relations)
-    relateable_shared(wp)
-      .not_having_relations_from(wp) # can't relate to wp that relates to us (direct or transitively)
-      .not_having_direct_relation_to(wp) # can't relate to wp we relate to directly
-  end
-
-  def self.relateable_from(wp)
-    # can't relate to itself and not to a descendant (see relations)
-    relateable_shared(wp)
-      .not_having_relations_to(wp) # can't relate to wp that relates to us (direct or transitively)
-      .not_having_direct_relation_from(wp) # can't relate to wp we relate to directly
-  end
-
-  def self.relateable_shared(wp)
-    visible
-      .not_self(wp) # can't relate to itself
-      .not_being_descendant_of(wp) # can't relate to a descendant (see relations)
-      .satisfying_cross_project_setting(wp)
-  end
-  private_class_method :relateable_shared
-
-  def self.satisfying_cross_project_setting(wp)
-    if Setting.cross_project_work_package_relations?
-      all
-    else
-      where(project_id: wp.project_id)
-    end
-  end
-
-  def self.not_self(wp)
-    where.not(id: wp.id)
-  end
-
-  def self.not_having_direct_relation_to(wp)
-    where.not(id: wp.relations_to.direct.select(:to_id))
-  end
-
-  def self.not_having_direct_relation_from(wp)
-    where.not(id: wp.relations_from.direct.select(:from_id))
-  end
-
-  def self.not_having_relations_from(wp)
-    where.not(id: wp.relations_from.select(:from_id))
-  end
-
-  def self.not_having_relations_to(wp)
-    where.not(id: wp.relations_to.select(:to_id))
-  end
-
-  def self.not_being_descendant_of(wp)
-    where.not(id: wp.descendants.select(:to_id))
-  end
-
   def self.order_by_ancestors(direction)
-    max_relation_depth = Relation
-                         .hierarchy
-                         .group(:to_id)
-                         .select(:to_id,
-                                 "MAX(hierarchy) AS depth")
+    max_relation_depth = WorkPackageHierarchy
+                         .group(:descendant_id)
+                         .select(:descendant_id,
+                                 "MAX(generations) AS depth")
 
-    joins("LEFT OUTER JOIN (#{max_relation_depth.to_sql}) AS max_depth ON max_depth.to_id = work_packages.id")
+    joins("LEFT OUTER JOIN (#{max_relation_depth.to_sql}) AS max_depth ON max_depth.descendant_id = work_packages.id")
       .reorder(Arel.sql("COALESCE(max_depth.depth, 0) #{direction}"))
       .select("#{table_name}.*, COALESCE(max_depth.depth, 0)")
   end
 
   # Overrides Redmine::Acts::Customizable::ClassMethods#available_custom_fields
   def self.available_custom_fields(work_package)
-    WorkPackage::AvailableCustomFields.for(work_package.project, work_package.type)
+    if work_package.project_id && work_package.type_id
+      RequestStore.fetch(available_custom_field_key(work_package)) do
+        available_custom_fields_from_db([work_package])
+      end
+    else
+      []
+    end
+  end
+
+  def self.preload_available_custom_fields(work_packages)
+    custom_fields = available_custom_fields_from_db(work_packages)
+                    .select("array_agg(projects.id) available_project_ids",
+                            "array_agg(types.id) available_type_ids",
+                            "custom_fields.*")
+                    .group("custom_fields.id")
+
+    work_packages.each do |work_package|
+      RequestStore.store[available_custom_field_key(work_package)] = custom_fields
+                                                                       .select do |cf|
+        (cf.available_project_ids.include?(work_package.project_id) || cf.is_for_all?) &&
+        cf.available_type_ids.include?(work_package.type_id)
+      end
+    end
+  end
+
+  def self.available_custom_fields_from_db(work_packages)
+    WorkPackageCustomField
+      .left_joins(:projects, :types)
+      .where(projects: { id: work_packages.map(&:project_id).uniq },
+             types: { id: work_packages.map(&:type_id).uniq })
+      .or(WorkPackageCustomField
+            .left_joins(:projects, :types)
+            .references(:projects, :types)
+            .where(is_for_all: true)
+            .where(types: { id: work_packages.map(&:type_id).uniq }))
+      .distinct
+  end
+
+  private_class_method :available_custom_fields_from_db
+
+  def self.available_custom_field_key(work_package)
+    :"#work_package_custom_fields_#{work_package.project_id}_#{work_package.type_id}"
+  end
+
+  private_class_method :available_custom_field_key
+
+  def custom_field_cache_key
+    [project_id, type_id]
   end
 
   protected
@@ -563,13 +550,35 @@ class WorkPackage < ApplicationRecord
 
   private
 
+  def derived_progress_hints
+    @derived_progress_hints ||= {}
+  end
+
   def add_time_entry_for(user, attributes)
     return if time_entry_blank?(attributes)
 
-    attributes.reverse_merge!(user: user,
-                              spent_on: Date.today)
+    attributes.reverse_merge!(user:,
+                              spent_on: Time.zone.today)
 
     time_entries.build(attributes)
+  end
+
+  def convert_duration_to_hours(value)
+    if value.is_a?(String)
+      begin
+        value = DurationConverter.parse(value)
+      rescue ChronicDuration::DurationParseError
+        # keep invalid value, error shall be caught by numericality validator
+      end
+    end
+    value
+  end
+
+  def convert_value_to_percentage(value)
+    if value.is_a?(String) && PercentageConverter.valid?(value)
+      value = PercentageConverter.parse(value)
+    end
+    value
   end
 
   ##
@@ -579,10 +588,10 @@ class WorkPackage < ApplicationRecord
   def time_entry_blank?(attributes)
     return true if attributes.nil?
 
-    key = 'activity_id'
+    key = "activity_id"
     id = attributes[key]
-    default_id = if id && !id.blank?
-                   Enumeration.exists? id: id, is_default: true, type: 'TimeEntryActivity'
+    default_id = if id.present?
+                   Enumeration.exists? id:, is_default: true, type: "TimeEntryActivity"
                  else
                    true
                  end
@@ -597,6 +606,7 @@ class WorkPackage < ApplicationRecord
       " AND #{Version.table_name}.sharing <> 'system'"
     )
   end
+
   private_class_method :having_version_from_other_project
 
   # Update issues so their versions are not pointing to a
@@ -607,7 +617,7 @@ class WorkPackage < ApplicationRecord
     having_version_from_other_project
       .where(conditions)
       .includes(:project, :version)
-      .references(:versions).each do |issue|
+      .references(:versions).find_each do |issue|
       next if issue.project.nil? || issue.version.nil?
 
       unless issue.project.shared_versions.include?(issue.version)
@@ -616,6 +626,7 @@ class WorkPackage < ApplicationRecord
       end
     end
   end
+
   private_class_method :update_versions
 
   # Default assignment based on category
@@ -625,30 +636,26 @@ class WorkPackage < ApplicationRecord
     end
   end
 
-  # Closes duplicates if the issue is being closed
+  # Closes duplicates if the work_package is being closed
   def close_duplicates
     return unless closing?
 
-    duplicates.each do |duplicate|
+    duplicated_relations.includes(:from).map(&:from).each do |duplicate|
       # Reload is needed in case the duplicate was updated by a previous duplicate
       duplicate.reload
       # Don't re-close it if it's already closed
       next if duplicate.closed?
 
-      # Implicitly creates a new journal
-      duplicate.update_attribute :status, status
-
-      override_last_journal_notes_and_user_of!(duplicate)
+      # Close the duplicate
+      close_duplicate(duplicate)
     end
   end
 
-  def override_last_journal_notes_and_user_of!(other_work_package)
-    journal = other_work_package.journals.last
-    # Same user and notes
-    journal.user = last_journal.user
-    journal.notes = last_journal.notes
-
-    journal.save
+  def close_duplicate(duplicate)
+    WorkPackages::UpdateService
+      .new(user: User.system, model: duplicate, contract_class: EmptyContract)
+      .call(status:, journal_cause: Journal::CausedByDuplicateWorkPackageClose.new(work_package: self))
+      .on_failure { |res| Rails.logger.error "Failed to close duplicate ##{duplicate.id} of ##{id}: #{res.message}" }
   end
 
   # Query generator for selecting groups of issue counts for a project
@@ -681,25 +688,22 @@ class WorkPackage < ApplicationRecord
       group by s.id, s.is_closed, j.id"
     ).to_a
   end
+
   private_class_method :count_and_group_by
 
   def set_attachments_error_details
-    if invalid_attachment = attachments.detect { |a| !a.valid? }
+    if invalid_attachment = attachments.detect(&:invalid?)
       errors.messages[:attachments].first << " - #{invalid_attachment.errors.full_messages.first}"
     end
   end
 
-  def attribute_users
-    related = [author]
-
-    [responsible, assigned_to].each do |user|
-      if user.is_a?(Group)
-        related += user.users
-      else
-        related << user
-      end
-    end
-
-    related.select(&:present?)
+  def save_agenda_item_journals
+    ##
+    # Meetings are stored before they become dissociated from the work package,
+    # but the meeting journals are saved only after the agenda items are dissociated (nullified).
+    # By saving the meeting journals, the agenda item journals are also saved.
+    stored_meetings = meetings.to_a
+    yield
+    stored_meetings.each(&:touch_and_save_journals)
   end
 end

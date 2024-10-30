@@ -1,10 +1,10 @@
 #-- copyright
 #OpenProject is an open source project management software.
-#Copyright (C) 2012-2020 the OpenProject GmbH
+#Copyright (C) the OpenProject GmbH
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License version 3.
 #OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-#Copyright (C) 2006-2017 Jean-Philippe Lang
+#Copyright (C) 2006-2013 Jean-Philippe Lang
 #Copyright (C) 2010-2013 the ChiliProject Team
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License
@@ -17,9 +17,11 @@
 #You should have received a copy of the GNU General Public License
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-#See docs/COPYRIGHT.rdoc for more details.
+#See COPYRIGHT and LICENSE files for more details.
 #++
 uk:
+  plugin_budgets_engine:
+    name: 'Бюджети'
   activerecord:
     attributes:
       budget:
@@ -27,13 +29,11 @@ uk:
         available: "Доступно"
         budget: "Планується"
         budget_ratio: "Витрачено (співвідношення)"
-        created_on: "Створений"
         description: "Опис"
         spent: "Витрачений"
         status: "Статус"
         subject: "Тема"
         type: "Тип вартості"
-        updated_on: "Оновлене"
         labor_budget: "Планові витрати праці"
         material_budget: "Планові витрати на одиницю продукції"
       work_package:
@@ -41,6 +41,9 @@ uk:
     models:
       budget: "Бюджет"
       material_budget_item: "Одиниця"
+  activity:
+    filter:
+      budget: "Бюджети"
   attributes:
     budget: "Бюджет"
   button_add_budget_item: "Додайте планові витрати"
@@ -62,11 +65,14 @@ uk:
   label_budget_plural: "Бюджети"
   label_budget_id: "Бюджет  #%{id}"
   label_deliverable: "Бюджет"
-  label_example_placeholder: 'e.g., %{decimal}'
+  label_example_placeholder: 'наприклад, %{decimal}'
   label_view_all_budgets: "Переглянути всі бюджети"
   label_yes: "Так"
-  notice_budget_conflict: "Робочі пакети повинні бути одного проекту."
+  notice_budget_conflict: "Робочі пакети повинні бути з одного проекту."
   notice_no_budgets_available: "Немає доступних бюджетів."
   permission_edit_budgets: "Редагувати бюджети"
   permission_view_budgets: "Переглянути бюджети"
   project_module_budgets: "Бюджети"
+  text_budget_reassign_to: "Перепризначити їх для цього бюджету:"
+  text_budget_delete: "Видалити цей бюджет з усіх пакетів робіт"
+  text_budget_destroy_assigned_wp: "Цьому бюджету призначено кілька (%{count}) пакетів робіт. Що потрібно зробити?"

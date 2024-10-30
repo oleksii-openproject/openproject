@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module VirtualAttribute
@@ -56,19 +56,19 @@ module VirtualAttribute
     end
 
     def _define_virtual_attribute_setter(attribute)
-      define_method "#{attribute}=" do |value|
+      define_method :"#{attribute}=" do |value|
         set_virtual_attribute(attribute, value) if send(attribute) != value
         instance_variable_set(:"@#{attribute}_set", true)
         instance_variable_set(:"@#{attribute}", value)
       end
     end
 
-    def _define_virtual_attribute_getter(attribute, &block)
+    def _define_virtual_attribute_getter(attribute, &)
       define_method attribute do
         if instance_variable_get(:"@#{attribute}_set")
           instance_variable_get(:"@#{attribute}")
         else
-          value = instance_eval(&block)
+          value = instance_eval(&)
 
           set_virtual_attribute_was(attribute, value)
 

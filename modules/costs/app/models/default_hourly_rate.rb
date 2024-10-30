@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 class DefaultHourlyRate < Rate
@@ -34,8 +34,8 @@ class DefaultHourlyRate < Rate
 
   def next(reference_date = valid_from)
     DefaultHourlyRate
-      .where(['user_id = ? and valid_from > ?', user_id, reference_date])
-      .order(Arel.sql('valid_from ASC'))
+      .where(["user_id = ? and valid_from > ?", user_id, reference_date])
+      .order(Arel.sql("valid_from ASC"))
       .first
   end
 
@@ -46,7 +46,7 @@ class DefaultHourlyRate < Rate
   def self.at_for_user(date, user_id)
     user_id = user_id.id if user_id.is_a?(User)
 
-    where(['user_id = ? and valid_from <= ?', user_id, date]).order(Arel.sql('valid_from DESC')).first
+    where(["user_id = ? and valid_from <= ?", user_id, date]).order(Arel.sql("valid_from DESC")).first
   end
 
   private
@@ -57,7 +57,7 @@ class DefaultHourlyRate < Rate
 
   def change_of_user_only_on_first_creation
     # Only allow change of user on first creation
-    errors.add :user_id, :invalid if !self.new_record? and user_id_changed?
+    errors.add :user_id, :invalid if !new_record? and user_id_changed?
     begin
       valid_from.to_date
     rescue Exception
@@ -76,11 +76,12 @@ class DefaultHourlyRate < Rate
   end
 
   def rate_updated
-    # FIXME: This might be extremly slow. Consider using an implementation like in HourlyRateObserver
+    # FIXME: This might be extremely slow. Consider using an implementation like in HourlyRateObserver
     unless valid_from_changed?
       # We have not moved a rate, maybe just changed the rate value
 
       return unless rate_changed?
+
       # Only the rate value was changed so just update the currently assigned entries
       return rate_created
     end
@@ -122,19 +123,19 @@ class DefaultHourlyRate < Rate
       # This gets an array of all the ids of the DefaultHourlyRates
       default_rates = DefaultHourlyRate.pluck(:id)
 
-      if date1.nil? || date2.nil?
-        # we have only one date, query >=
-        conditions = [
-          'user_id = ? AND (rate_id IN (?) OR rate_id IS NULL) AND spent_on >= ?',
-          @rate.user_id, default_rates, date1 || date2
-        ]
-      else
-        # we have two dates, query between
-        conditions = [
-          'user_id = ? AND (rate_id IN (?) OR rate_id IS NULL) AND spent_on BETWEEN ? AND ?',
-          @rate.user_id, default_rates, date1, date2 - 1
-        ]
-      end
+      conditions = if date1.nil? || date2.nil?
+                     # we have only one date, query >=
+                     [
+                       "user_id = ? AND (rate_id IN (?) OR rate_id IS NULL) AND spent_on >= ?",
+                       @rate.user_id, default_rates, date1 || date2
+                     ]
+                   else
+                     # we have two dates, query between
+                     [
+                       "user_id = ? AND (rate_id IN (?) OR rate_id IS NULL) AND spent_on BETWEEN ? AND ?",
+                       @rate.user_id, default_rates, date1, date2 - 1
+                     ]
+                   end
 
       TimeEntry.includes(:rate).where(conditions)
     end
@@ -149,5 +150,4 @@ class DefaultHourlyRate < Rate
       end
     end
   end
-
 end

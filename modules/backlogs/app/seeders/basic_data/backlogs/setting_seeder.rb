@@ -1,13 +1,12 @@
-#-- encoding: UTF-8
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -24,64 +23,82 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module BasicData
   module Backlogs
     class SettingSeeder < ::Seeder
+      self.needs = [
+        BasicData::TypeSeeder
+      ]
+
+      BACKLOGS_SETTINGS_KEYS = %w[
+        story_types
+        task_type
+        points_burn_direction
+        wiki_template
+      ].freeze
+
       def seed_data!
-        backlogs_init_setting!
+        configure_backlogs_settings
       end
 
       def applicable?
         not backlogs_configured?
       end
 
-      module Functions
-        module_function
+      private
 
-        def backlogs_init_setting!
-          Setting[backlogs_setting_name] = backlogs_setting_value
-        end
+      def configure_backlogs_settings
+        Setting.plugin_openproject_backlogs = current_backlogs_settings.merge(missing_backlogs_settings)
+      end
 
-        def backlogs_configured?
-          setting = Hash(Setting[backlogs_setting_name])
-          setting['story_types'].present? && setting['task_type'].present?
-        end
+      def backlogs_configured?
+        BACKLOGS_SETTINGS_KEYS.all? { configured?(_1) }
+      end
 
-        def backlogs_setting_name
-          'plugin_openproject_backlogs'
-        end
+      def configured?(key)
+        current_backlogs_settings[key] != nil
+      end
 
-        def backlogs_setting_value
-          {
-            "story_types" => backlogs_types.map(&:id),
-            "task_type" => backlogs_task_type.try(:id),
-            "points_burn_direction" => "up",
-            "wiki_template" => ""
-          }
-        end
+      def current_backlogs_settings
+        Hash(Setting.plugin_openproject_backlogs)
+      end
 
-        def backlogs_types
-          Type.where(name: backlogs_type_names)
-        end
+      def missing_backlogs_settings
+        BACKLOGS_SETTINGS_KEYS
+          .reject { |key| configured?(key) }
+          .index_with { |key| setting_value(key) }
+          .compact
+      end
 
-        def backlogs_type_names
-          [:default_type_feature, :default_type_epic, :default_type_user_story, :default_type_bug]
-            .map { |code| I18n.t(code) }
-        end
-
-        def backlogs_task_type
-          Type.find_by(name: backlogs_task_type_name)
-        end
-
-        def backlogs_task_type_name
-          I18n.t(:default_type_task)
+      def setting_value(setting_key)
+        case setting_key
+        when "story_types"
+          backlogs_story_types.map(&:id)
+        when "task_type"
+          backlogs_task_type.try(:id)
+        when "points_burn_direction"
+          "up"
+        when "wiki_template"
+          ""
         end
       end
 
-      include Functions
+      def backlogs_story_types
+        type_references = %i[
+          default_type_feature
+          default_type_epic
+          default_type_user_story
+          default_type_bug
+        ]
+        seed_data.find_references(type_references, default: nil).compact
+      end
+
+      def backlogs_task_type
+        seed_data.find_reference(:default_type_task, default: nil)
+      end
     end
   end
 end

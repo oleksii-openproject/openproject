@@ -1,13 +1,12 @@
-#-- encoding: UTF-8
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -24,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module WorkPackage::TimeEntriesCleaner
@@ -39,17 +38,17 @@ module WorkPackage::TimeEntriesCleaner
 
     def cleanup_time_entries_before_destruction_of(work_packages,
                                                    user,
-                                                   to_do = { action: 'destroy' })
+                                                   to_do = { action: "destroy" })
       return false unless to_do.present?
 
       case to_do[:action]
-      when 'destroy'
+      when "destroy"
         true
         # nothing to do
-      when 'nullify'
+      when "nullify"
         work_packages = Array(work_packages)
-        WorkPackage.update_time_entries(work_packages, 'work_package_id = NULL')
-      when 'reassign'
+        WorkPackage.update_time_entries(work_packages, "work_package_id = NULL")
+      when "reassign"
         reassign_time_entries_before_destruction_of(work_packages, user, to_do[:reassign_to_id])
       else
         false
@@ -57,7 +56,7 @@ module WorkPackage::TimeEntriesCleaner
     end
 
     def update_time_entries(work_packages, action)
-      TimeEntry.where(['work_package_id IN (?)', work_packages.map(&:id)]).update_all(action)
+      TimeEntry.where(["work_package_id IN (?)", work_packages.map(&:id)]).update_all(action)
     end
 
     def reassign_time_entries_before_destruction_of(work_packages, user, ids)

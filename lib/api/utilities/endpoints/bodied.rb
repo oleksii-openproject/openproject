@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,13 +23,15 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module API
   module Utilities
     module Endpoints
       class Bodied
+        include NamespacedLookup
+
         def default_instance_generator(_model)
           raise NotImplementedError
         end
@@ -40,64 +42,85 @@ module API
           end
         end
 
+        def default_process_state
+          ->(**) do
+            {}
+          end
+        end
+
+        def default_params_source
+          ->(request) do
+            request.request_body
+          end
+        end
+
         def initialize(model:,
-                       api_name: model.name.demodulize,
-                       instance_generator: default_instance_generator(model),
-                       params_modifier: default_params_modifier,
+                       api_name: nil,
+                       instance_generator: nil,
+                       params_modifier: nil,
+                       params_source: nil,
+                       process_state: nil,
+                       before_hook: nil,
+                       parse_representer: nil,
+                       render_representer: nil,
                        process_service: nil,
+                       process_contract: nil,
                        parse_service: nil)
           self.model = model
-          self.api_name = api_name
-          self.instance_generator = instance_generator
-          self.params_modifier = params_modifier
-          self.parse_representer = deduce_parse_representer
-          self.render_representer = deduce_render_representer
-          self.process_contract = deduce_process_contract
+          self.api_name = api_name || model.name.demodulize
+          self.instance_generator = instance_generator || default_instance_generator(model)
+          self.params_modifier = params_modifier || default_params_modifier
+          self.params_source = params_source || default_params_source
+          self.process_state = process_state || default_process_state
+          self.parse_representer = parse_representer || deduce_parse_representer
+          self.render_representer = render_representer || deduce_render_representer
+          self.process_contract = process_contract || deduce_process_contract
           self.process_service = process_service || deduce_process_service
           self.parse_service = parse_service || deduce_parse_service
+          self.before_hook = before_hook
         end
 
         def mount
-          update = self
+          endpoint = self
 
           -> do
-            params = update.parse(current_user, request_body)
+            request = self # proc is executed in the context of the grape request
+            endpoint.before_hook&.(request:)
+            params = endpoint.parse(request)
+            call = endpoint.process(request, params)
 
-            params = instance_exec(params, &update.params_modifier)
-
-            call = update.process(current_user,
-                                  instance_exec(params, &update.instance_generator),
-                                  params)
-
-            update.render(current_user, call) do
-              status update.success_status
+            endpoint.render(request, call) do
+              status endpoint.success_status
             end
           end
         end
 
-        def parse(current_user, request_body)
+        def parse(request)
           parse_service
-            .new(current_user,
-                 model: model,
+            .new(request.current_user,
+                 model:,
                  representer: parse_representer)
-            .call(request_body)
+            .call(params_source.call(request))
             .result
         end
 
-        def process(current_user, instance, params)
-          args = { user: current_user,
+        def process(request, params)
+          instance = request.instance_exec(params, &instance_generator)
+
+          args = { user: request.current_user,
                    model: instance,
                    contract_class: process_contract }
 
           process_service
             .new(**args.compact)
-            .call(**params)
+            .with_state(request.instance_exec(model: instance, params:, &process_state))
+            .call(**request.instance_exec(params, &params_modifier))
         end
 
-        def render(current_user, call)
+        def render(request, call)
           if success?(call)
             yield
-            present_success(current_user, call)
+            present_success(request, call)
           else
             present_error(call)
           end
@@ -112,14 +135,17 @@ module API
                       :instance_generator,
                       :parse_representer,
                       :render_representer,
+                      :params_source,
                       :params_modifier,
                       :process_contract,
                       :process_service,
-                      :parse_service
+                      :parse_service,
+                      :process_state,
+                      :before_hook
 
         private
 
-        def present_success(_current_user, _call)
+        def present_success(_request, _call)
           raise NotImplementedError
         end
 
@@ -132,11 +158,11 @@ module API
         end
 
         def deduce_process_service
-          "::#{deduce_backend_namespace}::SetAttributesService".constantize
+          lookup_namespaced_class("SetAttributesService")
         end
 
         def deduce_process_contract
-          "::#{deduce_backend_namespace}::#{update_or_create}Contract".constantize
+          lookup_namespaced_class("#{update_or_create}Contract")
         end
 
         def deduce_parse_representer
@@ -153,14 +179,6 @@ module API
 
         def deduce_api_namespace
           api_name.pluralize
-        end
-
-        def backend_name
-          model.name.demodulize
-        end
-
-        def deduce_backend_namespace
-          backend_name.pluralize
         end
 
         def update_or_create

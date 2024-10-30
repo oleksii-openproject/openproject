@@ -1,14 +1,12 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -25,27 +23,28 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'spec_helper'
+require "spec_helper"
 
-shared_examples_for 'message contract' do
-  let(:current_user) do
-    FactoryBot.build_stubbed(:user) do |user|
-      allow(user)
-        .to receive(:allowed_to?) do |permission, permission_project|
-        permissions.include?(permission) && message_project == permission_project
-      end
+RSpec.shared_examples_for "message contract" do
+  let(:current_user) { build_stubbed(:user) }
+
+  before do
+    mock_permissions_for(current_user) do |mock|
+      mock.allow_in_project *permissions, project: message_project
     end
   end
-  let(:reply_message) { FactoryBot.build_stubbed(:message) }
-  let(:other_user) { FactoryBot.build_stubbed(:user) }
+
+  let(:permissions) { [] }
+  let(:reply_message) { build_stubbed(:message) }
+  let(:other_user) { build_stubbed(:user) }
   let(:message_forum) do
-    FactoryBot.build_stubbed(:forum)
+    build_stubbed(:forum)
   end
-  let(:message_project) { FactoryBot.build_stubbed(:project) }
-  let(:message_parent) { FactoryBot.build_stubbed(:message) }
+  let(:message_project) { build_stubbed(:project) }
+  let(:message_parent) { build_stubbed(:message) }
   let(:message_subject) { "Subject" }
   let(:message_content) { "A content" }
   let(:message_author) { other_user }
@@ -61,11 +60,11 @@ shared_examples_for 'message contract' do
     end
   end
 
-  shared_examples 'is valid' do
-    it 'is valid' do
+  shared_examples "is valid" do
+    it "is valid" do
       expect_valid(true)
     end
   end
 
-  it_behaves_like 'is valid'
+  it_behaves_like "is valid"
 end

@@ -1,14 +1,12 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -25,29 +23,29 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-class Queries::Projects::Filters::NameAndIdentifierFilter < Queries::Projects::Filters::ProjectFilter
+class Queries::Projects::Filters::NameAndIdentifierFilter < Queries::Projects::Filters::Base
   def type
     :string
   end
 
   def where
     case operator
-    when '='
+    when "="
       where_equal
-    when '!'
+    when "!"
       where_not_equal
-    when '~'
+    when "~", "**"
       where_contains
-    when '!~'
+    when "!~"
       where_not_contains
     end
   end
 
   def human_name
-    I18n.t('query_fields.name_or_identifier')
+    I18n.t("query_fields.name_or_identifier")
   end
 
   def self.key
@@ -68,7 +66,7 @@ class Queries::Projects::Filters::NameAndIdentifierFilter < Queries::Projects::F
   end
 
   def where_equal
-    concatenate_with_values('LOWER(projects.identifier) = ? OR LOWER(projects.name) = ?', 'OR', &:downcase)
+    concatenate_with_values("LOWER(projects.identifier) = ? OR LOWER(projects.name) = ?", "OR", &:downcase)
   end
 
   def where_not_equal
@@ -76,7 +74,7 @@ class Queries::Projects::Filters::NameAndIdentifierFilter < Queries::Projects::F
   end
 
   def where_contains
-    concatenate_with_values('LOWER(projects.identifier) LIKE ? OR LOWER(projects.name) LIKE ?', 'OR') do |value|
+    concatenate_with_values("LOWER(projects.identifier) LIKE ? OR LOWER(projects.name) LIKE ?", "OR") do |value|
       "%#{value.downcase}%"
     end
   end

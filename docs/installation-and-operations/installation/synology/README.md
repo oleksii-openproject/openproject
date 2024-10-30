@@ -5,14 +5,14 @@ sidebar_navigation: false
 # Synology
 
 Synology offers NAS devices that come with a UI for starting docker containers on them.
-This means OpenProject has to be used exactly as described in the [docker](../docker/#recommended-usage) section.
+This means OpenProject has to be used exactly as described in the [docker](../docker/) section.
 
 ## Launching the container
 
 Launching OpenProject works like launching any other container in [Synology](https://www.synology.com/en-global/knowledgebase/DSM/help/Docker/docker_container).
 
 First you have to go to the **Registry** section and download the OpenProject image.
-It's best to choose the specific tag of the latest stable version (`openproject/community:10` at the time of writing).
+It's best to choose the specific tag of the latest stable version (`openproject/openproject:14` at the time of writing).
 You can use `:latest` too but it might lead to surprises when a major version upgrade happens.
 
 Below are some settings you have to pay attention to when launching the container.
@@ -40,7 +40,7 @@ Ideally you should also always backup these folders before any updates.
 Updating the container then works like this:
 
 1. Go to the **Registry**
-2. Search for OpenProject, click download and choose the tag you want to update (e.g. 10 or latest).
+2. Search for OpenProject, click download and choose the tag you want to update (e.g. 11 or latest).
 3. Stop the container once the new image has been downloaded.
 4. Click on clear and restart the container.
 
@@ -52,4 +52,4 @@ Your OpenProject data will remain intact as long as you mounted the volumes as d
 ### I had already started OpenProject without mounted volumes. How do I save my data during an update?
 
 You will need to open a terminal on your Synology disk station.
-Then follow the instructions given in the [upgrade section](../../installation/docker/#i-have-already-started-openproject-without-mounted-volumes-how-do-i-save-my-data-during-an-update)..
+Then follow the instructions given in the [upgrade section](../../operation/upgrading/#i-have-already-started-openproject-without-mounted-volumes-how-do-i-save-my-data-during-an-update).

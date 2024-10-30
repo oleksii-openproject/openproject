@@ -1,14 +1,12 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -25,15 +23,14 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module OpenProject::TextFormatting::Matchers
   module LinkHandlers
     class HashSeparator < Base
-
       def self.allowed_prefixes
-        %w(version message project user group document meeting)
+        %w(version message project user group document meeting view)
       end
 
       ##
@@ -41,7 +38,7 @@ module OpenProject::TextFormatting::Matchers
       # Condition: Separator is '#'
       # Condition: Prefix is present, checked to be one of the allowed values
       def applicable?
-        matcher.sep == '#' && valid_prefix? && oid.present?
+        matcher.sep == "#" && valid_prefix? && oid.present?
       end
 
       # Examples:
@@ -50,7 +47,7 @@ module OpenProject::TextFormatting::Matchers
       #     message#1218 -> Link to message with id 1218
       #
       def call
-        send "render_#{matcher.prefix}"
+        send :"render_#{matcher.prefix}"
       end
 
       def valid_prefix?
@@ -63,8 +60,8 @@ module OpenProject::TextFormatting::Matchers
         version = Version.find_by(id: oid)
         if version
           link_to h(version.name),
-                  { only_path: context[:only_path], controller: '/versions', action: 'show', id: version },
-                  class: 'version'
+                  { only_path: context[:only_path], controller: "/versions", action: "show", id: version },
+                  class: "version"
         end
       end
 
@@ -72,10 +69,10 @@ module OpenProject::TextFormatting::Matchers
         if document = Document.visible.find_by_id(oid)
           link_to document.title,
                   { only_path: context[:only_path],
-                    controller: '/documents',
-                    action: 'show',
+                    controller: "/documents",
+                    action: "show",
                     id: document },
-                  class: 'document'
+                  class: "document"
         end
       end
 
@@ -84,40 +81,55 @@ module OpenProject::TextFormatting::Matchers
         if meeting&.visible?(User.current)
           link_to meeting.title,
                   { only_path: context[:only_path],
-                    controller: '/meetings',
-                    action: 'show',
+                    controller: "/meetings",
+                    action: "show",
                     id: oid },
-                  class: 'meeting'
+                  class: "meeting"
         end
       end
 
       def render_message
         message = Message.includes(:parent).find_by(id: oid)
         if message
-          link_to_message(message, { only_path: context[:only_path] }, class: 'message')
+          link_to_message(message, { only_path: context[:only_path] }, class: "message")
         end
       end
 
       def render_project
         p = Project.find_by(id: oid)
         if p
-          link_to_project(p, { only_path: context[:only_path] }, class: 'project')
+          link_to_project(p, { only_path: context[:only_path] }, class: "project")
         end
       end
 
       def render_user
         user = User.find_by(id: oid)
         if user
-          link_to_user(user, only_path: context[:only_path], class: 'user-mention')
+          link_to_user(user,
+                       only_path: context[:only_path],
+                       class: "user-mention")
         end
       end
 
       def render_group
-        if group = Group.find_by(id: oid)
-          content_tag :span,
-                      group.name,
-                      title: I18n.t(:label_group_named, name: group.name),
-                      class: 'user-mention'
+        group = Group.find_by(id: oid)
+
+        if group
+          link_to_group(group,
+                        only_path: context[:only_path],
+                        class: "user-mention")
+        end
+      end
+
+      # view is the user-facing name of work package queries
+      # query is the technical/internal name of the concept
+      def render_view
+        query = Query.find_by(id: oid)
+
+        if query
+          link_to_query(query,
+                        { only_path: context[:only_path] },
+                        class: "query")
         end
       end
     end

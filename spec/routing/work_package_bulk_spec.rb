@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,24 +23,24 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'spec_helper'
+require "spec_helper"
 
-describe WorkPackages::BulkController, type: :routing do
-  it 'should connect GET /work_packages/bulk/edit to work_package_bulk/edit' do
-    expect(get('/work_packages/bulk/edit')).to route_to(controller: 'work_packages/bulk',
-                                                        action: 'edit')
+RSpec.describe WorkPackages::BulkController do
+  it "connects GET /work_packages/bulk/edit to work_package_bulk/edit" do
+    expect(get("/work_packages/bulk/edit")).to route_to(controller: "work_packages/bulk",
+                                                        action: "edit")
   end
 
-  it 'should connect PUT /work_packages/bulk/update to work_package_bulk#update' do
-    expect(put('/work_packages/bulk')).to route_to(controller: 'work_packages/bulk',
-                                                   action: 'update')
+  it "connects PUT /work_packages/bulk/update to work_package_bulk#update" do
+    expect(put("/work_packages/bulk")).to route_to(controller: "work_packages/bulk",
+                                                   action: "update")
   end
 
-  it 'should connect DELETE /work_packages/bulk to work_package_bulk#destroy' do
-    expect(delete('/work_packages/bulk')).to route_to(controller: 'work_packages/bulk',
-                                                      action: 'destroy')
+  it "connects DELETE /work_packages/bulk to work_package_bulk#destroy" do
+    expect(delete("/work_packages/bulk")).to route_to(controller: "work_packages/bulk",
+                                                      action: "destroy")
   end
 end

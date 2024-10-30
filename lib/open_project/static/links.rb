@@ -1,13 +1,12 @@
-#-- encoding: UTF-8
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -24,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module OpenProject
@@ -39,12 +38,14 @@ module OpenProject
           OpenProject::Configuration.force_help_link.presence || static_links[:user_guides]
         end
 
-        def [](name)
-          links[name]
-        end
+        delegate :[], to: :links
 
         def links
           @links ||= static_links.merge(dynamic_links)
+        end
+
+        def url_for(item)
+          links.dig(item, :href)
         end
 
         def has?(name)
@@ -57,14 +58,14 @@ module OpenProject
           dynamic = {
             help: {
               href: help_link,
-              label: 'top_menu.help_and_support'
+              label: "top_menu.help_and_support"
             }
           }
 
           if impressum_link = OpenProject::Configuration.impressum_link
             dynamic[:impressum] = {
               href: impressum_link,
-              label: :label_impressum
+              label: "homescreen.links.impressum"
             }
           end
 
@@ -74,136 +75,243 @@ module OpenProject
         def static_links
           {
             upsale: {
-              href: 'https://www.openproject.org/enterprise-edition',
-              label: 'homescreen.links.upgrade_enterprise_edition'
+              href: "https://www.openproject.org/enterprise-edition",
+              label: "homescreen.links.upgrade_enterprise_edition"
             },
             upsale_benefits_features: {
-              href: 'https://www.openproject.org/enterprise-edition/#premium-features',
-              label: 'noscript_learn_more'
+              href: "https://www.openproject.org/enterprise-edition/#premium-features",
+              label: "noscript_learn_more"
             },
             upsale_benefits_installation: {
-              href: 'https://www.openproject.org/enterprise-edition/#installation',
-              label: 'noscript_learn_more'
+              href: "https://www.openproject.org/enterprise-edition/#installation",
+              label: "noscript_learn_more"
             },
             upsale_benefits_security: {
-              href: 'https://www.openproject.org/enterprise-edition/#security-features',
-              label: 'noscript_learn_more'
+              href: "https://www.openproject.org/enterprise-edition/#security-features",
+              label: "noscript_learn_more"
             },
             upsale_benefits_support: {
-              href: 'https://www.openproject.org/enterprise-edition/#professional-support',
-              label: 'noscript_learn_more'
+              href: "https://www.openproject.org/enterprise-edition/#professional-support",
+              label: "noscript_learn_more"
             },
             upsale_get_quote: {
-              href: 'https://www.openproject.org/upgrade-enterprise-edition/',
-              label: 'admin.enterprise.get_quote'
+              href: "https://www.openproject.org/request-quote/",
+              label: "admin.enterprise.get_quote"
             },
             user_guides: {
-              href: 'https://docs.openproject.org/user-guide/',
-              label: 'homescreen.links.user_guides'
+              href: "https://www.openproject.org/docs/user-guide/",
+              label: "homescreen.links.user_guides"
+            },
+            installation_guides: {
+              href: "https://www.openproject.org/docs/installation-and-operations/installation/",
+              label: :label_installation_guides
+            },
+            packager_installation: {
+              href: "https://www.openproject.org/docs/installation-and-operations/installation/packaged/",
+              label: "Packaged installation"
+            },
+            docker_installation: {
+              href: "https://www.openproject.org/docs/installation-and-operations/installation/docker/",
+              label: "Docker installation"
+            },
+            manual_installation: {
+              href: "https://www.openproject.org/docs/installation-and-operations/installation/manual/",
+              label: "Manual installation"
             },
             upgrade_guides: {
-              href: 'https://www.openproject.org/operations/upgrading/',
+              href: "https://www.openproject.org/docs/installation-and-operations/operation/upgrading/",
               label: :label_upgrade_guides
             },
             postgres_migration: {
-              href: 'https://www.openproject.org/operations/migration-guides/migrating-packaged-openproject-database-postgresql/',
-              label: :'homescreen.links.postgres_migration'
+              href: "https://www.openproject.org/docs/installation-and-operations/misc/packaged-postgresql-migration/",
+              label: :"homescreen.links.postgres_migration"
+            },
+            postgres_13_upgrade: {
+              href: "https://www.openproject.org/docs/installation-and-operations/misc/migration-to-postgresql13/"
             },
             configuration_guide: {
-              href: 'https://www.openproject.org/operations/configuration/',
-              label: 'links.configuration_guide'
+              href: "https://www.openproject.org/docs/installation-and-operations/configuration/",
+              label: "links.configuration_guide"
             },
             contact: {
-              href: 'https://www.openproject.org/contact-us/',
-              label: 'links.get_in_touch'
+              href: "https://www.openproject.org/contact/",
+              label: "links.get_in_touch"
             },
             glossary: {
-              href: 'https://www.openproject.org/help/glossary/',
-              label: 'homescreen.links.glossary'
+              href: "https://www.openproject.org/docs/glossary/",
+              label: "homescreen.links.glossary"
             },
             shortcuts: {
-              href: 'https://docs.openproject.org/user-guide/keyboard-shortcuts-access-keys/',
-              label: 'homescreen.links.shortcuts'
+              href: "https://www.openproject.org/docs/user-guide/keyboard-shortcuts-access-keys/",
+              label: "homescreen.links.shortcuts"
             },
             forums: {
-              href: 'https://community.openproject.com/projects/openproject/forums',
-              label: 'homescreen.links.forums'
+              href: "https://community.openproject.org/projects/openproject/forums",
+              label: "homescreen.links.forums"
             },
-            professional_support: {
-              href: 'https://www.openproject.org/pricing/#support',
-              label: :label_professional_support
+            enterprise_support_as_community: {
+              href: "https://www.openproject.org/pricing/#support",
+              label: :label_enterprise_support
+            },
+            enterprise_support: {
+              href: "https://www.openproject.org/docs/enterprise-guide/support/",
+              label: :label_enterprise_support
             },
             website: {
-              href: 'https://www.openproject.org',
-              label: 'label_openproject_website'
+              href: "https://www.openproject.org",
+              label: "label_openproject_website"
             },
             newsletter: {
-              href: 'https://www.openproject.org/newsletter',
-              label: 'homescreen.links.newsletter'
+              href: "https://www.openproject.org/newsletter",
+              label: "homescreen.links.newsletter"
             },
             blog: {
-              href: 'https://www.openproject.org/blog',
-              label: 'homescreen.links.blog'
+              href: "https://www.openproject.org/blog",
+              label: "homescreen.links.blog"
+            },
+            blog_article_progress_changes: {
+              href: "https://www.openproject.org/blog/updates-to-progress-tracking-in-14-4-based-on-user-feedback/",
+              label: "Significant changes to progress and work estimates"
             },
             release_notes: {
-              href: 'https://docs.openproject.org/release-notes/',
+              href: "https://www.openproject.org/docs/release-notes/",
               label: :label_release_notes
             },
+            release_notes_14_0_1: {
+              href: "https://www.openproject.org/docs/release-notes/14-0-1/",
+              label: "Release notes for OpenProject 14.0.1"
+            },
             data_privacy: {
-              href: 'https://www.openproject.org/data-privacy-and-security/',
+              href: "https://www.openproject.org/legal/privacy/",
               label: :label_privacy_policy
             },
+            digital_accessibility: {
+              href: "https://www.openproject.org/de/rechtliches/erklaerung-zur-digitalen-barrierefreiheit/",
+              label: :label_digital_accessibility
+            },
             report_bug: {
-              href: 'https://docs.openproject.org/development/report-a-bug/',
+              href: "https://www.openproject.org/docs/development/report-a-bug/",
               label: :label_report_bug
             },
             roadmap: {
-              href: 'https://community.openproject.org/projects/openproject/roadmap',
+              href: "https://community.openproject.org/projects/openproject/roadmap",
               label: :label_development_roadmap
             },
             crowdin: {
-              href: 'https://crowdin.com/projects/opf',
+              href: "https://www.openproject.org/docs/development/translate-openproject/",
               label: :label_add_edit_translations
             },
             api_docs: {
-              href: 'https://docs.openproject.org/api',
-              label: :label_api_documentation
+              href: "https://www.openproject.org/docs/api/",
+              label: :label_api_doc
             },
             text_formatting: {
-              href: 'https://docs.openproject.org/user-guide/wiki/',
+              href: "https://www.openproject.org/docs/user-guide/wysiwyg/",
               label: :setting_text_formatting
             },
             oauth_authorization_code_flow: {
-              href: 'https://oauth.net/2/grant-types/authorization-code/',
-              label: 'oauth.flows.authorization_code'
+              href: "https://oauth.net/2/grant-types/authorization-code/",
+              label: "oauth.flows.authorization_code"
             },
             client_credentials_code_flow: {
-              href: 'https://oauth.net/2/grant-types/client-credentials/',
-              label: 'oauth.flows.client_credentials'
+              href: "https://oauth.net/2/grant-types/client-credentials/",
+              label: "oauth.flows.client_credentials"
             },
             ldap_encryption_documentation: {
-              href: 'https://www.rubydoc.info/gems/net-ldap/Net/LDAP#constructor_details',
+              href: "https://www.rubydoc.info/gems/net-ldap/Net/LDAP#constructor_details"
             },
             origin_mdn_documentation: {
-              href: 'https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Origin'
+              href: "https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Origin"
             },
             security_badge_documentation: {
-              href: 'https://docs.openproject.org/system-admin-guide/information/#security-badge'
+              href: "https://www.openproject.org/docs/system-admin-guide/information/#security-badge"
+            },
+            date_format_settings_documentation: {
+              href: "https://www.openproject.org/docs/system-admin-guide/calendars-and-dates/#date-format"
             },
             chargebee: {
-              href: 'https://js.chargebee.com/v2/chargebee.js',
+              href: "https://js.chargebee.com/v2/chargebee.js"
             },
             webinar_videos: {
-              href: 'https://www.youtube.com/watch?v=ebc3lcSmncA&t=8s',
+              href: "https://www.youtube.com/watch?v=un6zCm8_FT4"
             },
             get_started_videos: {
-              href: 'https://www.youtube.com/playlist?list=PLGzJ4gG7hPb8WWOWmeXqlfMfhdXReu-RJ',
+              href: "https://www.youtube.com/playlist?list=PLGzJ4gG7hPb8WWOWmeXqlfMfhdXReu-RJ"
             },
             openproject_docs: {
-              href: 'https://docs.openproject.org',
+              href: "https://www.openproject.org/docs/"
             },
             contact_us: {
-              href: 'https://www.openproject.org/contact-us',
+              href: "https://www.openproject.org/contact/"
+            },
+            pricing: {
+              href: "https://www.openproject.org/pricing/"
+            },
+            progress_tracking_docs: {
+              href: "https://www.openproject.org/docs/user-guide/time-and-costs/progress-tracking/"
+            },
+            enterprise_docs: {
+              form_configuration: {
+                href: "https://www.openproject.org/docs/system-admin-guide/manage-work-packages/work-package-types/#work-package-form-configuration-enterprise-add-on"
+              },
+              attribute_highlighting: {
+                href: "https://www.openproject.org/docs/user-guide/work-packages/work-package-table-configuration/#attribute-highlighting-enterprise-add-on"
+              },
+              boards: {
+                href: "https://www.openproject.org/docs/user-guide/agile-boards/#action-boards-enterprise-add-on"
+              },
+              custom_field_projects: {
+                href: "https://www.openproject.org/docs/system-admin-guide/custom-fields/custom-fields-projects/"
+              },
+              custom_field_multiselect: {
+                href: "https://www.openproject.org/docs/system-admin-guide/custom-fields/#create-a-multi-select-custom-field"
+              },
+              status_read_only: {
+                href: "https://www.openproject.org/docs/system-admin-guide/manage-work-packages/work-package-status/#create-a-new-work-package-status"
+              }
+            },
+            sysadmin_docs: {
+              saml: {
+                href: "https://www.openproject.org/docs/system-admin-guide/authentication/saml/"
+              },
+              oidc: {
+                href: "https://www.openproject.org/docs/installation-and-operations/misc/custom-openid-connect-providers/"
+              },
+              oidc_claims: {
+                href: "https://www.openproject.org/docs/installation-and-operations/misc/custom-openid-connect-providers/#claims"
+              },
+              oidc_acr_values: {
+                href: "https://www.openproject.org/docs/installation-and-operations/misc/custom-openid-connect-providers/#non-essential-claims"
+              }
+            },
+            storage_docs: {
+              setup: {
+                href: "https://www.openproject.org/docs/system-admin-guide/integrations/storage/"
+              },
+              nextcloud_setup: {
+                href: "https://www.openproject.org/docs/system-admin-guide/integrations/nextcloud/"
+              },
+              one_drive_setup: {
+                href: "https://www.openproject.org/docs/system-admin-guide/integrations/one-drive/"
+              },
+              one_drive_drive_id_guide: {
+                href: "https://www.openproject.org/docs/system-admin-guide/integrations/one-drive/drive-guide/"
+              },
+              nextcloud_oauth_application: {
+                href: "https://apps.nextcloud.com/apps/integration_openproject"
+              },
+              one_drive_oauth_application: {
+                href: "https://portal.azure.com/"
+              },
+              troubleshooting: {
+                href: "https://www.openproject.org/docs/user-guide/file-management/nextcloud-integration/#possible-errors-and-troubleshooting"
+              }
+            },
+            ical_docs: {
+              href: "https://www.openproject.org/docs/user-guide/calendar/#subscribe-to-a-calendar"
+            },
+            integrations: {
+              href: "https://www.openproject.org/docs/system-admin-guide/integrations/"
             }
           }
         end

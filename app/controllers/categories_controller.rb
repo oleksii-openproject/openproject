@@ -1,13 +1,12 @@
-#-- encoding: UTF-8
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -24,15 +23,15 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 class CategoriesController < ApplicationController
   menu_item :settings_categories
   model_object Category
-  before_action :find_model_object, except: [:new, :create]
-  before_action :find_project_from_association, except: [:new, :create]
-  before_action :find_project, only: [:new, :create]
+  before_action :find_model_object, except: %i[new create]
+  before_action :find_project_from_association, except: %i[new create]
+  before_action :find_project, only: %i[new create]
   before_action :authorize
 
   def new
@@ -47,7 +46,7 @@ class CategoriesController < ApplicationController
       respond_to do |format|
         format.html do
           flash[:notice] = I18n.t(:notice_successful_create)
-          redirect_to settings_categories_project_path(@project)
+          redirect_to project_settings_categories_path(@project)
         end
         format.js do
           render locals: { project: @project, category: @category }
@@ -69,9 +68,9 @@ class CategoriesController < ApplicationController
     @category.attributes = permitted_params.category
     if @category.save
       flash[:notice] = I18n.t(:notice_successful_update)
-      redirect_to settings_categories_project_path(@project)
+      redirect_to project_settings_categories_path(@project)
     else
-      render action: 'edit'
+      render action: "edit"
     end
   end
 
@@ -80,12 +79,12 @@ class CategoriesController < ApplicationController
     if @issue_count == 0
       # No issue assigned to this category
       @category.destroy
-      redirect_to settings_categories_project_path(@project)
+      redirect_to project_settings_categories_path(@project)
       return
     elsif params[:todo]
-      reassign_to = @project.categories.find_by(id: params[:reassign_to_id]) if params[:todo] == 'reassign'
+      reassign_to = @project.categories.find_by(id: params[:reassign_to_id]) if params[:todo] == "reassign"
       @category.destroy(reassign_to)
-      redirect_to settings_categories_project_path(@project)
+      redirect_to project_settings_categories_path(@project)
       return
     end
     @categories = @project.categories - [@category]

@@ -1,14 +1,12 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -25,55 +23,73 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module BaseServices
-  class Copy < ::BaseServices::BaseContracted
+  class Copy < ::BaseServices::Write
     alias_attribute(:source, :model)
 
-    def initialize(user:, source:, contract_class: nil, contract_options: { copy_source: source })
-      self.source = source
-      super(user: user, contract_class: contract_class, contract_options: contract_options)
+    ##
+    # dependent services to copy associations
+    def self.copy_dependencies
+      []
+    end
+
+    ##
+    # collect copyable associated modules
+    def self.copyable_dependencies
+      copy_dependencies
+        .flat_map { |dependency| [dependency] + dependency.copy_dependencies }
+        .map do |service_cls|
+        {
+          identifier: service_cls.identifier,
+          name_source: -> { service_cls.human_name },
+          count_source: ->(source, user) do
+            service_cls
+              .new(source:, target: nil, user:)
+              .source_count
+          end
+        }
+      end
+    end
+
+    def initialize(user:, source: nil, model: nil, contract_class: nil, contract_options: {})
+      self.source = source || model
+      raise ArgumentError, "Missing source object" if self.source.nil?
+
+      contract_options[:copy_source] = self.source
+      super(user:, contract_class:, contract_options:)
     end
 
     def call(params)
-      User.execute_as(user) do
-        prepare(params)
-        perform(params)
-      end
+      prepare_state(params)
+
+      super
     end
 
-    def after_validate(params, _call)
-      # Initialize the target resource to copy into
-      call = initialize_copy(source, params)
-
+    def persist(call)
       # Return only the unsaved copy
       return call if params[:attributes_only]
 
-      # Try to save the result or return its errors
-      copy_instance = call.result
-      unless copy_instance.save
-        return ServiceResult.new(success: false, result: copy_instance, errors: copy_instance.errors)
+      super.tap do |super_call|
+        copy_instance = super_call.result
+        self.class.copy_dependencies.each do |service_cls|
+          next if skip_dependency?(params, service_cls)
+
+          super_call.merge! call_dependent_service(service_cls, target: copy_instance, params:),
+                            without_success: true
+        end
       end
+    end
 
-      copy_dependencies.each do |service_cls|
-        next if skip_dependency?(params, service_cls)
+    def after_perform(call)
+      return call if params[:attributes_only]
 
-        call.merge! call_dependent_service(service_cls, target: copy_instance, params: params),
-                    without_success: true
-      end
-
-      call
+      super
     end
 
     protected
-
-    ##
-    # Disabling sending regular notifications
-    def service_context(&block)
-      in_context(model, false, &block)
-    end
 
     ##
     # Should the dependency be skipped for this service run?
@@ -87,25 +103,22 @@ module BaseServices
     #
     # Note that for dependent copy services to be called
     # this will already be present.
-    def prepare(_params); end
-
-    ##
-    # dependent services to copy associations
-    def copy_dependencies
-      []
+    def prepare_state(_params)
+      # Retain the source project itself
+      state.source = source
     end
 
     ##
     # Calls a dependent service with the source and copy instance
     def call_dependent_service(service_cls, target:, params:)
       service_cls
-        .new(source: source, target: target, user: user)
+        .new(source:, target:, user:)
         .with_state(state)
-        .call(params: params)
+        .call(params:)
     end
 
-    def initialize_copy(source, params)
-      raise NotImplementedError
+    def instance(_params)
+      source.class.new
     end
 
     def default_contract_class

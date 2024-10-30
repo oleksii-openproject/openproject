@@ -1,14 +1,12 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -25,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module API
@@ -33,31 +31,32 @@ module API
     module Users
       class UserRepresenter < ::API::V3::Principals::PrincipalRepresenter
         include AvatarHelper
+        extend ::API::V3::Utilities::CustomFieldInjector::RepresenterClass
 
-        cached_representer key_parts: %i(auth_source),
-                           dependencies: ->(*) { avatar_cache_dependencies }
-
-        def self.create(user, current_user:)
-          new(user, current_user: current_user)
-        end
-
-        def initialize(user, current_user:)
-          super(user, current_user: current_user)
-        end
+        cached_representer key_parts: %i(ldap_auth_source),
+                           dependencies: ->(*) {
+                             [
+                               # For the name rendering
+                               Setting.user_format,
+                               # For avatars
+                               Setting.plugin_openproject_avatars,
+                               Setting.protocol
+                             ]
+                           }
 
         self_link
 
         link :showUser do
-          next if represented.locked?
+          next if represented.new_record? || represented.locked?
 
           {
             href: api_v3_paths.show_user(represented.id),
-            type: 'text/html'
+            type: "text/html"
           }
         end
 
         link :updateImmediately,
-             cache_if: -> { current_user_is_admin } do
+             cache_if: -> { current_user_is_admin? } do
           {
             href: api_v3_paths.user(represented.id),
             title: "Update #{represented.login}",
@@ -66,7 +65,7 @@ module API
         end
 
         link :lock,
-             cache_if: -> { current_user_is_admin } do
+             cache_if: -> { current_user_is_admin? } do
           next unless represented.lockable?
 
           {
@@ -77,7 +76,7 @@ module API
         end
 
         link :unlock,
-             cache_if: -> { current_user_is_admin } do
+             cache_if: -> { current_user_is_admin? } do
           next unless represented.activatable?
 
           {
@@ -97,12 +96,12 @@ module API
         end
 
         link :auth_source,
-             cache_if: -> { current_user_is_admin } do
-          next unless represented.auth_source
+             cache_if: -> { current_user_is_admin? } do
+          next unless represented.ldap_auth_source
 
           {
-            href: "/api/v3/auth_sources/#{represented.auth_source_id}",
-            title: represented.auth_source.name
+            href: "/api/v3/auth_sources/#{represented.ldap_auth_source_id}",
+            title: represented.ldap_auth_source.name
           }
         end
 
@@ -111,7 +110,7 @@ module API
                  render_nil: false,
                  getter: ->(*) { represented.login },
                  setter: ->(fragment:, represented:, **) { represented.login = fragment },
-                 cache_if: -> { current_user_is_admin_or_self }
+                 cache_if: -> { current_user_can_manage? }
 
         property :admin,
                  exec_context: :decorator,
@@ -120,25 +119,31 @@ module API
                    represented.admin?
                  },
                  setter: ->(fragment:, represented:, **) { represented.admin = fragment },
-                 cache_if: -> { current_user_is_admin }
+                 cache_if: -> { current_user_is_admin? }
 
-        property :firstName,
+        property :firstname,
+                 as: :firstName,
                  exec_context: :decorator,
                  getter: ->(*) { represented.firstname },
-                 setter: ->(fragment:, represented:, **) { represented.firstname = fragment },
+                 setter: ->(fragment:, represented:, **) do
+                   represented.firstname = fragment
+                 end,
                  render_nil: false,
-                 cache_if: -> { current_user_is_admin_or_self }
+                 cache_if: -> { current_user_can_manage? }
 
-        property :lastName,
+        property :lastname,
+                 as: :lastName,
                  exec_context: :decorator,
                  getter: ->(*) { represented.lastname },
                  setter: ->(fragment:, represented:, **) { represented.lastname = fragment },
                  render_nil: false,
-                 cache_if: -> { current_user_is_admin_or_self }
+                 cache_if: -> { current_user_can_manage? }
 
-        property :mail,
-                 as: :email,
-                 cache_if: -> { !represented.pref.hide_mail || current_user_is_admin_or_self }
+        property :email,
+                 getter: ->(*) { represented.mail },
+                 setter: ->(fragment:, represented:, **) { represented.mail = fragment },
+                 exec_context: :decorator,
+                 cache_if: -> { current_user_can_view_user_email? || represented.new_record? || current_user_can_manage? }
 
         property :avatar,
                  exec_context: :decorator,
@@ -146,40 +151,48 @@ module API
                  render_nil: true
 
         property :status,
-                 getter: ->(*) { status_name },
-                 setter: ->(fragment:, represented:, **) { represented.status = User::STATUSES[fragment.to_sym] },
+                 getter: ->(*) { represented.status },
+                 setter: ->(fragment:, represented:, **) { represented.status = User.statuses[fragment.to_sym] },
+                 exec_context: :decorator,
                  render_nil: true,
-                 cache_if: -> { current_user_is_admin_or_self }
+                 cache_if: -> { current_user_can_manage? }
 
         property :identity_url,
                  exec_context: :decorator,
-                 as: 'identityUrl',
+                 as: "identityUrl",
                  getter: ->(*) { represented.identity_url },
                  setter: ->(fragment:, represented:, **) { represented.identity_url = fragment },
                  render_nil: true,
-                 cache_if: -> { current_user_is_admin_or_self }
+                 cache_if: -> { current_user_can_manage? }
+
+        property :language,
+                 exec_context: :decorator,
+                 render_nil: false,
+                 getter: ->(*) { represented.language },
+                 setter: ->(fragment:, represented:, **) { represented.language = fragment },
+                 cache_if: -> { current_user_can_manage? }
 
         # Write-only properties
 
         property :password,
-                 getter: ->(*) { nil },
+                 getter: ->(*) {},
                  render_nil: false,
                  setter: ->(fragment:, represented:, **) {
                    represented.password = represented.password_confirmation = fragment
                  }
 
         ##
-        # Used while parsing JSON to initialize `auth_source_id` through the given link.
+        # Used while parsing JSON to initialize `ldap_auth_source_id` through the given link.
         def initialize_embedded_links!(data)
-          auth_source_id = parse_auth_source_id data, "auth_source"
+          ldap_auth_source_id = parse_auth_source_id(data, "authSource") || parse_auth_source_id(data, "auth_source")
 
-          if auth_source_id
-            auth_source = AuthSource.find_by_unique auth_source_id
+          if ldap_auth_source_id
+            auth_source = LdapAuthSource.find_by_unique(ldap_auth_source_id) # rubocop:disable Rails/DynamicFindBy
             id = auth_source ? auth_source.id : 0
 
             # set id to 0 (as opposed to nil) to produce an auth source not found
             # error further down the line in the user's base contract
-            represented.auth_source_id = id
+            represented.ldap_auth_source_id = id
           end
         end
 
@@ -207,11 +220,23 @@ module API
         end
 
         def _type
-          'User'
+          "User"
         end
 
         def current_user_can_delete_represented?
-          current_user && ::Users::DeleteService.deletion_allowed?(represented, current_user)
+          current_user && ::Users::DeleteContract.deletion_allowed?(represented, current_user)
+        end
+
+        def current_user_can_manage?
+          current_user && (
+            current_user.allowed_globally?(:manage_user) ||
+            current_user.allowed_globally?(:create_user) ||
+            current_user_is_self?
+          )
+        end
+
+        def current_user_can_view_user_email?
+          current_user&.allowed_globally?(:view_user_email)
         end
 
         private

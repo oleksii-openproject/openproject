@@ -1,7 +1,6 @@
-#-- encoding: UTF-8
 #-- copyright
 # OpenProject is a project management system.
-# Copyright (C) 2012-2015 the OpenProject Foundation (OPF)
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -47,9 +46,6 @@ export OPENPROJECT_CLI_PROXY=''
 case "$1" in
         npm)
             cd frontend && npm run test
-            ;;
-        plugins:cucumber)
-            bundle exec rake parallel:$1 -- --group-number $2 --only-group $3
             ;;
         *)
             bundle exec rake parallel:$1 -- --group-number $2 --only-group $3 --seed $CI_SEED

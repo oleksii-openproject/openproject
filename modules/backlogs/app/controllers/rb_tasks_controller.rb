@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 class RbTasksController < RbApplicationController
@@ -34,7 +34,7 @@ class RbTasksController < RbApplicationController
                       "estimated_hours", "status_id", "sprint_id"]
 
   def create
-    call = Tasks::CreateService
+    call = ::Tasks::CreateService
            .new(user: current_user)
            .call(attributes: task_params.merge(project: @project), prev: params[:prev])
 
@@ -44,8 +44,8 @@ class RbTasksController < RbApplicationController
   def update
     task = Task.find(task_params[:id])
 
-    call = Tasks::UpdateService
-           .new(user: current_user, task: task)
+    call = ::Tasks::UpdateService
+           .new(user: current_user, task:)
            .call(attributes: task_params, prev: params[:prev])
 
     respond_with_task call
@@ -60,7 +60,7 @@ class RbTasksController < RbApplicationController
     @include_meta = true
 
     respond_to do |format|
-      format.html { render partial: 'task', object: @task, status: status, locals: { errors: call.errors } }
+      format.html { render partial: "task", object: @task, status:, locals: { errors: call.errors } }
     end
   end
 

@@ -1,13 +1,12 @@
-#-- encoding: UTF-8
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -24,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module OpenProject
@@ -42,22 +41,30 @@ module OpenProject
 
     # Displays a link to user's account page if active or registered
     def link_to_user(user, options = {})
-      if user.is_a?(User)
+      if user.is_a?(User) && user.locked?
+        user.name
+      elsif user.is_a?(User)
         name = user.name
-        only_path = options.delete(:only_path)
-        only_path = true if only_path.nil?
+        href = user_url(user,
+                        only_path: options.delete(:only_path) { true })
+        options[:title] ||= I18n.t(:label_user_named, name:)
 
-        if user.active? || user.registered? || user.invited?
-          href = only_path ? user_path(user) : user_url(user)
-          options[:title] ||= I18n.t(:label_user_named, name: name)
-
-          link_to(name, href, options)
-        else
-          name
-        end
+        link_to(name, href, options)
       else
         h(user.to_s)
       end
+    end
+
+    # Displays a link to groups's account page
+    def link_to_group(group, options = {})
+      return h(group.to_s) unless group.is_a?(Group)
+
+      name = group.name
+      href = show_group_url(group,
+                            only_path: options.delete(:only_path) { true })
+      options[:title] ||= I18n.t(:label_group_named, name:)
+
+      link_to(name, href, options)
     end
 
     # Generates a link to an attachment.
@@ -78,9 +85,16 @@ module OpenProject
     def link_to_revision(revision, project, options = {})
       text = options.delete(:text) || format_revision(revision)
       rev = revision.respond_to?(:identifier) ? revision.identifier : revision
-      url_opts = { controller: '/repositories', action: 'revision', project_id: project, rev: rev }
+      url_opts = { controller: "/repositories", action: "revision", project_id: project, rev: }
       html_options = { title: I18n.t(:label_revision_id, value: format_revision(revision)) }.merge(options)
       link_to(h(text), url_opts, html_options)
+    end
+
+    # Generates a link to a query
+    def link_to_query(query, options = {}, html_options = nil)
+      text = h(query.name)
+      url = project_work_packages_url([query.project.id], only_path: options.delete(:only_path) { true }, query_id: query.id)
+      link_to(text, url, html_options)
     end
 
     # Generates a link to a message
@@ -89,7 +103,7 @@ module OpenProject
         h(truncate(message.subject, length: 60)),
         topic_path_or_url(options.delete(:no_root) ? message : message.root,
                           {
-                            r: (message.parent_id && message.id),
+                            r: message.parent_id && message.id,
                             anchor: (message.parent_id ? "message-#{message.id}" : nil)
                           }.merge(options)),
         html_options
@@ -117,21 +131,31 @@ module OpenProject
 
     def project_link_name(project, show_icon)
       if show_icon && User.current.member_of?(project)
-        icon_wrapper('icon-context icon-star', I18n.t(:description_my_project).html_safe + '&nbsp;'.html_safe) + project.name
+        icon_wrapper("icon-context icon-star", I18n.t(:description_my_project).html_safe + "&nbsp;".html_safe) + project.name
       else
         project.name
       end
     end
 
     def url_to_attachment(attachment, only_path: true)
-      # Including the module breaks the application in strange and mysterious ways
-      v3_paths = API::V3::Utilities::PathHelper::ApiV3Path
-
       if only_path
         v3_paths.attachment_content(attachment.id)
       else
         v3_paths.url_for(:attachment_content, attachment.id)
       end
+    end
+
+    def url_to_file_link(file_link, only_path: true)
+      if only_path
+        v3_paths.file_link_open(file_link.id)
+      else
+        v3_paths.url_for(:file_link_open, file_link.id)
+      end
+    end
+
+    def v3_paths
+      # Including the module breaks the application in strange and mysterious ways
+      API::V3::Utilities::PathHelper::ApiV3Path
     end
   end
 end

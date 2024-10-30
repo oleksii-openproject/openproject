@@ -1,10 +1,10 @@
 #-- copyright
 #OpenProject is an open source project management software.
-#Copyright (C) 2012-2020 the OpenProject GmbH
+#Copyright (C) the OpenProject GmbH
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License version 3.
 #OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-#Copyright (C) 2006-2017 Jean-Philippe Lang
+#Copyright (C) 2006-2013 Jean-Philippe Lang
 #Copyright (C) 2010-2013 the ChiliProject Team
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License
@@ -17,9 +17,12 @@
 #You should have received a copy of the GNU General Public License
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-#See docs/COPYRIGHT.rdoc for more details.
+#See COPYRIGHT and LICENSE files for more details.
 #++
 ar:
+  plugin_costs:
+    name: "الوقت والتكاليف"
+    description: "تضيف هذه الوحدة ميزات لتخطيط وتتبع تكاليف المشاريع."
   activerecord:
     attributes:
       cost_entry:
@@ -56,7 +59,7 @@ ar:
           is_not_a_valid_target_for_cost_entries: "مجموعة العمل #%{id} ليست هدفًا صالحًا لإعادة تعيين إدخالات التكلفة."
           nullify_is_not_valid_for_cost_entries: "لا يمكن تعيين إدخالات التكلفة للمشروع."
   attributes:
-    comment: "تعليق"
+    comment: "التعليق"
     cost_type: "أنواع التكلفة"
     costs: "التكاليف"
     current_rate: "المعدل الحالي"
@@ -84,12 +87,12 @@ ar:
   label_costlog: "تكاليف الوحدة المسجلة"
   label_cost_plural: "التكاليف"
   label_cost_type_plural: "أنواع التكلفة"
-  label_cost_type_specific: "Cost type #%{id}: %{name}"
+  label_cost_type_specific: "نوع التكلفة #%{id}:%{name}"
   label_costs_per_page: "التكاليف للصفحة"
   label_currency: "العملة"
   label_currency_format: "شكل العملة"
   label_current_default_rate: "المعدل الافتراضي الحالي"
-  label_date_on: "في"
+  label_date_on: "على"
   label_deleted_cost_types: "أنواع التكلفة المحذوفة"
   label_locked_cost_types: "أنواع التكلفة المغلقة"
   label_display_cost_entries: "عرض تكاليف الوحدة"
@@ -98,7 +101,7 @@ ar:
   label_edit: "تعديل"
   label_generic_user: "المستخدم العام"
   label_greater_or_equal: "=<"
-  label_group_by: "مجموعة من"
+  label_group_by: "مجموعة بحسب"
   label_group_by_add: "أضِف حقل التجميع"
   label_hourly_rate: "الأجر بالساعة"
   label_include_deleted: "يتضمن المحذوف"
@@ -107,11 +110,12 @@ ar:
   label_less_or_equal: "=>"
   label_log_costs: "سجل تكاليف الوحدة"
   label_no: "لا"
-  label_option_plural: "خيارات"
+  label_option_plural: "الخيارات"
   label_overall_costs: "التكاليف الإجمالية"
   label_rate: "المعدل"
   label_rate_plural: "الأسعار"
   label_status_finished: "مكتمل"
+  label_show: "Show"
   label_units: "وحدات التكلفة"
   label_user: "المستخدم"
   label_until: "حتى"
@@ -134,7 +138,7 @@ ar:
   permission_view_own_cost_entries: "عرض تكاليف الحجز الخاصة"
   permission_view_own_hourly_rate: "عرض الأجور الساعيّة الخاصة"
   permission_view_own_time_entries: "عرض الوقت الخاص الذي تم قضاؤه"
-  project_module_costs: "Time and costs"
+  project_module_costs: "الوقت والتكاليف"
   text_assign_time_and_cost_entries_to_project: "تعيين الساعات والتكاليف التي تمّ الإبلاغ عنها للمشروع"
   text_destroy_cost_entries_question: "%{cost_entries} تم الإبلاغ عنها في مجموعات العمل التي توشك أن تلغيها. ماذا تريد أن تفعل؟"
   text_destroy_time_and_cost_entries: "إلغاء الساعات والتكاليف التي تم الإبلاغ عنها"

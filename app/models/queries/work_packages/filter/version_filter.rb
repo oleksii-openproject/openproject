@@ -1,14 +1,12 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -25,16 +23,14 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 class Queries::WorkPackages::Filter::VersionFilter <
   Queries::WorkPackages::Filter::WorkPackageFilter
   def allowed_values
-    @allowed_values ||= begin
-      # as we no longer display the allowed values, the first value is irrelevant
-      versions.pluck(:id).map { |id| [id.to_s, id.to_s] }
-    end
+    # as we no longer display the allowed values, the first value is irrelevant
+    @allowed_values ||= versions.pluck(:id).map { |id| [id.to_s, id.to_s] }
   end
 
   def type
@@ -42,7 +38,7 @@ class Queries::WorkPackages::Filter::VersionFilter <
   end
 
   def human_name
-    WorkPackage.human_attribute_name('version')
+    WorkPackage.human_attribute_name("version")
   end
 
   def self.key
@@ -57,8 +53,7 @@ class Queries::WorkPackages::Filter::VersionFilter <
     available_versions = versions.index_by(&:id)
 
     values
-      .map { |version_id| available_versions[version_id.to_i] }
-      .compact
+      .filter_map { |version_id| available_versions[version_id.to_i] }
   end
 
   private

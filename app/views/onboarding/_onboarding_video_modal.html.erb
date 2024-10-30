@@ -1,12 +1,12 @@
 <%#-- copyright
 OpenProject is an open source project management software.
-Copyright (C) 2012-2020 the OpenProject GmbH
+Copyright (C) the OpenProject GmbH
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License version 3.
 
 OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-Copyright (C) 2006-2017 Jean-Philippe Lang
+Copyright (C) 2006-2013 Jean-Philippe Lang
 Copyright (C) 2010-2013 the ChiliProject Team
 
 This program is free software; you can redistribute it and/or
@@ -23,38 +23,33 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-See docs/COPYRIGHT.rdoc for more details.
+See COPYRIGHT and LICENSE files for more details.
 
 ++#%>
 
-<div class="modal-wrapper--content">
-  <div class="onboarding--start-modal">
-    <div class="onboarding--top-menu op-modal--modal-header">
-      <%= user_avatar_icon %>
-      <h2><%= I18n.t('onboarding.welcome') %></h2>
-      <a class="op-modal--modal-close-button dynamic-content-modal--close-button"
-         title="<%= t('js.close_popup_title') %>"
-         aria-label="<%= t('js.close_popup_title') %>">
-        <%= op_icon('icon-close') %>
-      </a>
-    </div>
-
-    <div class="onboarding--main op-modal--modal-body">
-      <h2><%= I18n.t('onboarding.heading_getting_started') %></h2>
-      <div class="onboarding--video-block">
-        <div class="onboarding--video-text">
-          <span><%= I18n.t('onboarding.text_getting_started_description') %></span>
-        </div>
-        <div class="onboarding--video iframe-target-wrapper">
-        </div>
+<div class="modal-delivery-element">
+  <div class="spot-modal--header">
+    <span class="spot-icon spot-icon_user"></span>
+    <span id="spotModalTitle"><%= I18n.t('onboarding.welcome', app_title: Setting.app_title) %></span>
+  </div>
+  <div class="spot-divider"></div>
+  <div class="onboarding--main spot-modal--body spot-container">
+    <div class="onboarding--video-block">
+      <div class="onboarding--video-text">
+        <span><%= I18n.t('onboarding.text_getting_started_description') %></span>
+      </div>
+      <div class="onboarding--video iframe-target-wrapper">
       </div>
     </div>
+  </div>
 
-    <div class="onboarding--footer op-modal--modal-footer">
-      <span><em><%= I18n.t('onboarding.text_show_again') %></em></span>
-      <button class="dynamic-content-modal--close-button button -highlight"
-              title=<%= t(:button_close)%>> <%= t(:button_close)%>
-      </button>
+  <div class="onboarding--footer spot-action-bar">
+    <div class="spot-action-bar--right">
+      <button
+        class="button button_no-margin spot-action-bar--action spot-modal--cancel-button"
+        dynamic-content-modal-close-button
+        title=<%= t(:button_close) %>
+      ><%= t(:button_close) %></button>
     </div>
   </div>
 </div>

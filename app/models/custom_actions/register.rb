@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,24 +23,36 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module CustomActions::Register
   class << self
-    def action(action)
-      @actions ||= []
-
-      @actions << action
+    def actions
+      [
+        CustomActions::Actions::AssignedTo,
+        CustomActions::Actions::Responsible,
+        CustomActions::Actions::Status,
+        CustomActions::Actions::Priority,
+        CustomActions::Actions::CustomField,
+        CustomActions::Actions::Type,
+        CustomActions::Actions::Project,
+        CustomActions::Actions::Notify,
+        CustomActions::Actions::DoneRatio,
+        CustomActions::Actions::EstimatedHours,
+        CustomActions::Actions::StartDate,
+        CustomActions::Actions::DueDate,
+        CustomActions::Actions::Date
+      ]
     end
 
-    def condition(condition)
-      @conditions ||= []
-
-      @conditions << condition
+    def conditions
+      [
+        CustomActions::Conditions::Status,
+        CustomActions::Conditions::Role,
+        CustomActions::Conditions::Type,
+        CustomActions::Conditions::Project
+      ]
     end
-
-    attr_accessor :actions,
-                  :conditions
   end
 end

@@ -1,13 +1,12 @@
-#-- encoding: UTF-8
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -24,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 #
@@ -32,50 +31,35 @@
 #
 
 class SystemUser < User
-  validate :validate_unique_system_user, on: :create
+  include Users::FunctionUser
 
-  # There should be only one SystemUser in the database
-  def validate_unique_system_user
-    errors.add :base, 'A SystemUser already exists.' if SystemUser.any?
-  end
+  def name(*_args); "System" end
 
-  # Overrides a few properties
-  def logged?; false end
-
-  def builtin?; true end
-
-  def name(*_args); 'System' end
-
-  def mail; nil end
-
-  def time_zone; nil end
-
-  def rss_key; nil end
-
-  def destroy; false end
-
-  def grant_privileges
-    self.admin = true
-  end
-
-  def remove_privileges
-    self.admin = false
-  end
-
-  def run_given(&_block)
-    if block_given?
-      grant_privileges
-      old_user = User.current
-      User.current = self
-
-      begin
-        yield self
-      ensure
-        remove_privileges
-        User.current = old_user
-      end
-    else
-      raise 'no block given'
+  def run_given
+    User.execute_as(self) do
+      yield self
     end
+  end
+
+  def self.first
+    system_user = super
+
+    if system_user.nil?
+      system_user = new(
+        firstname: "",
+        lastname: "System",
+        login: "",
+        mail: "",
+        admin: true,
+        status: User.statuses[:active],
+        first_login: false
+      )
+
+      system_user.save
+
+      raise "Unable to create the system user." unless system_user.persisted?
+    end
+
+    system_user
   end
 end

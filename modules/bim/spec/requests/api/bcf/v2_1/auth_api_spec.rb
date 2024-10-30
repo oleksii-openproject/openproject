@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,24 +23,24 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'spec_helper'
-require 'rack/test'
+require "spec_helper"
+require "rack/test"
 
-require_relative './shared_responses'
+require_relative "shared_responses"
 
-describe 'BCF 2.1 auth resource', type: :request, content_type: :json do
+RSpec.describe "BCF 2.1 auth resource", content_type: :json do
   include Rack::Test::Methods
 
   let(:current_user) do
-    FactoryBot.create(:user)
+    create(:user)
   end
 
   subject(:response) { last_response }
 
-  describe 'GET /api/bcf/2.1/auth' do
+  describe "GET /api/bcf/2.1/auth" do
     let(:path) { "/api/bcf/2.1/auth" }
 
     before do
@@ -48,13 +48,13 @@ describe 'BCF 2.1 auth resource', type: :request, content_type: :json do
       get path
     end
 
-    it_behaves_like 'bcf api successful response' do
+    it_behaves_like "bcf api successful response" do
       let(:expected_body) do
         {
-          "oauth2_auth_url": "http://localhost:3000/oauth/authorize",
-          "oauth2_token_url": "http://localhost:3000/oauth/token",
-          "http_basic_supported": false,
-          "supported_oauth2_flows": %w(authorization_code_grant client_credentials)
+          oauth2_auth_url: "http://#{Setting.host_name}/oauth/authorize",
+          oauth2_token_url: "http://#{Setting.host_name}/oauth/token",
+          http_basic_supported: false,
+          supported_oauth2_flows: %w(authorization_code_grant client_credentials)
         }
       end
     end

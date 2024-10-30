@@ -1,8 +1,7 @@
 #!/bin/bash
-#-- encoding: UTF-8
 #-- copyright
 # OpenProject is a project management system.
-# Copyright (C) 2012-2015 the OpenProject Foundation (OPF)
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -38,9 +37,9 @@ run() {
   eval $2;
 }
 
-run "bundle exec rake db:migrate webdrivers:chromedriver:update webdrivers:geckodriver:update"
+run "bundle exec rake db:create db:migrate"
 
-run "for i in {1..3}; do npm install && break || sleep 15; done"
+run "cd frontend; npm install ; cd -"
 
 run "bundle exec rake assets:precompile assets:clean"
 

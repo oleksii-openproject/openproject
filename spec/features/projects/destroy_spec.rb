@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,39 +23,38 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'spec_helper'
+require "spec_helper"
 
-describe 'Projects#destroy',
-         type: :feature,
-         js: true do
-  let!(:project) { FactoryBot.create(:project, name: 'foo', identifier: 'foo') }
-  let(:user) { FactoryBot.create(:admin) }
-  let(:projects_page) { Pages::Projects::Destroy.new(project) }
+RSpec.describe "Projects#destroy", :js, :with_cuprite do
+  let!(:project) { create(:project, name: "foo", identifier: "foo") }
+  let(:project_page) { Pages::Projects::Destroy.new(project) }
   let(:danger_zone) { DangerZone.new(page) }
 
-  before do
-    login_as user
+  current_user { create(:admin) }
 
-    # Disable background worker
-    allow(Delayed::Worker)
-      .to receive(:delay_jobs)
-      .and_return(false)
+  before { project_page.visit! }
 
-    expect(project)
-
-    projects_page.visit!
-  end
-
-  it 'can destroy the project' do
+  it "destroys the project" do
     # Confirm the deletion
+    # Without confirmation, the button is disabled
+    expect(danger_zone).to be_disabled
+
+    # With wrong confirmation, the button is disabled
+    danger_zone.confirm_with("#{project.identifier}_wrong")
+
+    expect(danger_zone).to be_disabled
+
+    # With correct confirmation, the button is enabled
+    # and the project can be deleted
     danger_zone.confirm_with(project.identifier)
     expect(danger_zone).not_to be_disabled
     danger_zone.danger_button.click
 
-    expect(page).to have_selector '.flash.notice', text: I18n.t('projects.delete.scheduled')
+    expect_flash message: I18n.t("projects.delete.scheduled")
+    expect(project.reload).to eq(project)
 
     perform_enqueued_jobs
 

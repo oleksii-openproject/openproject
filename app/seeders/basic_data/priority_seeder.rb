@@ -1,13 +1,12 @@
-#-- encoding: UTF-8
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -24,28 +23,20 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 module BasicData
-  class PrioritySeeder < Seeder
-    def seed_data!
-      IssuePriority.transaction do
-        data.each do |attributes|
-          IssuePriority.create!(attributes)
-        end
-      end
-    end
+  class PrioritySeeder < ModelSeeder
+    self.model_class = IssuePriority
+    self.seed_data_model_key = "priorities"
 
-    def applicable?
-      IssuePriority.all.empty?
-    end
-
-    def not_applicable_message
-      'Skipping priorities as there are already some configured'
-    end
-
-    def data
-      raise NotImplementedError
+    def model_attributes(priority_data)
+      {
+        name: priority_data["name"],
+        color_id: color_id(priority_data["color_name"]),
+        is_default: true?(priority_data["is_default"]),
+        position: priority_data["position"]
+      }
     end
   end
 end

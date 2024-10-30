@@ -1,13 +1,12 @@
-#-- encoding: UTF-8
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -24,22 +23,23 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module FrontendAssetHelper
-  CLI_DEFAULT_PROXY = 'http://localhost:4200'.freeze
+  CLI_DEFAULT_PROXY = begin
+    host = ENV.fetch("FE_HOST", "localhost")
+    port = ENV.fetch("FE_PORT", 4200)
+    "http://#{host}:#{port}"
+  end
+  CLI_PROXY = ENV.fetch("OPENPROJECT_CLI_PROXY", CLI_DEFAULT_PROXY)
 
   def self.assets_proxied?
-    !Rails.env.production? && cli_proxy?
+    ENV["OPENPROJECT_DISABLE_DEV_ASSET_PROXY"].blank? && !Rails.env.production? && cli_proxy.present?
   end
 
   def self.cli_proxy
-    ENV.fetch('OPENPROJECT_CLI_PROXY', CLI_DEFAULT_PROXY)
-  end
-
-  def self.cli_proxy?
-    cli_proxy.present?
+    CLI_PROXY
   end
 
   ##
@@ -48,34 +48,49 @@ module FrontendAssetHelper
   def include_frontend_assets
     capture do
       %w(vendor.js polyfills.js runtime.js main.js).each do |file|
-        concat javascript_include_tag variable_asset_path(file)
+        concat nonced_javascript_include_tag variable_asset_path(file), skip_pipeline: true
       end
 
-      if FrontendAssetHelper.assets_proxied?
-        concat javascript_include_tag variable_asset_path("styles.js")
-      else
-        concat stylesheet_link_tag variable_asset_path("styles.css"), media: :all
-      end
+      concat frontend_stylesheet_link_tag("styles.css")
     end
+  end
+
+  def include_spot_assets
+    capture do
+      concat frontend_stylesheet_link_tag("spot.css")
+    end
+  end
+
+  def frontend_stylesheet_link_tag(path)
+    stylesheet_link_tag variable_asset_path(path), media: :all, skip_pipeline: true
+  end
+
+  def nonced_javascript_include_tag(path, **)
+    javascript_include_tag(path, nonce: content_security_policy_script_nonce, **)
   end
 
   private
 
-  def angular_cli_asset(path)
-    URI.join(FrontendAssetHelper.cli_proxy, "assets/frontend/#{path}")
+  def lookup_frontend_asset(unhashed_file_name)
+    hashed_file_name = ::OpenProject::Assets.lookup_asset(unhashed_file_name)
+    frontend_asset_path(hashed_file_name)
   end
 
-  def frontend_asset_path(unhashed, options = {})
-    file_name = ::OpenProject::Assets.lookup_asset unhashed
-
-    asset_path "assets/frontend/#{file_name}", options.merge(skip_pipeline: true)
+  def frontend_asset_path(file_name)
+    "/assets/frontend/#{file_name}"
   end
 
   def variable_asset_path(path)
     if FrontendAssetHelper.assets_proxied?
-      angular_cli_asset(path)
+      File.join(
+        FrontendAssetHelper.cli_proxy,
+        Rails.application.config.relative_url_root,
+        frontend_asset_path(path)
+      )
     else
-      frontend_asset_path(path)
+      # we do not need to take care about Rails.application.config.relative_url_root
+      # because in this case javascript|stylesheet_include_tag will add it automatically.
+      lookup_frontend_asset(path)
     end
   end
 end

@@ -1,13 +1,12 @@
-#-- encoding: UTF-8
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -24,13 +23,13 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'open_project/scm/adapters/git'
+require "open_project/scm/adapters/git"
 
 class Repository::Git < Repository
-  validates_presence_of :url
+  validates :url, presence: true
   validate :validity_of_local_url
 
   def self.scm_adapter_class
@@ -41,7 +40,7 @@ class Repository::Git < Repository
     if scm_type == self.class.managed_type
       unless manageable?
         raise OpenProject::SCM::Exceptions::RepositoryBuildError.new(
-          I18n.t('repositories.managed.error_not_manageable')
+          I18n.t("repositories.managed.error_not_manageable")
         )
       end
 
@@ -51,7 +50,7 @@ class Repository::Git < Repository
   end
 
   def self.permitted_params(params)
-    super(params).merge(params.permit(:path_encoding))
+    super.merge(params.permit(:path_encoding))
   end
 
   def self.supported_types
@@ -70,7 +69,7 @@ class Repository::Git < Repository
   end
 
   def repository_type
-    'Git'
+    "Git"
   end
 
   ##
@@ -85,7 +84,7 @@ class Repository::Git < Repository
   end
 
   def repo_log_encoding
-    'UTF-8'
+    "UTF-8"
   end
 
   def self.authorization_policy
@@ -106,19 +105,17 @@ class Repository::Git < Repository
     revision[0, 8]
   end
 
-  def branches
-    scm.branches
-  end
+  delegate :branches, to: :scm
 
-  def tags
-    scm.tags
-  end
+  delegate :tags, to: :scm
 
   def find_changeset_by_name(name)
     return nil if name.nil? || name.empty?
-    e = changesets.where(['revision = ?', name.to_s]).first
+
+    e = changesets.where(["revision = ?", name.to_s]).first
     return e if e
-    changesets.where(['scmid LIKE ?', "#{name}%"]).first
+
+    changesets.where(["scmid LIKE ?", "#{name}%"]).first
   end
 
   # With SCM's that have a sequential commit numbering, redmine is able to be
@@ -130,20 +127,20 @@ class Repository::Git < Repository
   # The repository can still be fully reloaded by calling #clear_changesets
   # before fetching changesets (eg. for offline resync)
   def fetch_changesets
-    c = changesets.order(Arel.sql('committed_on DESC')).first
+    c = changesets.order(Arel.sql("committed_on DESC")).first
     since = (c ? c.committed_on - 7.days : nil)
 
-    revisions = scm.revisions('', nil, nil, all: true, since: since, reverse: true)
+    revisions = scm.revisions("", nil, nil, all: true, since:, reverse: true)
     return if revisions.nil? || revisions.empty?
 
-    recent_changesets = changesets.where(['committed_on >= ?', since])
+    recent_changesets = changesets.where(["committed_on >= ?", since])
 
     # Clean out revisions that are no longer in git
-    recent_changesets.each do |c| c.destroy unless revisions.detect { |r| r.scmid.to_s == c.scmid.to_s } end
+    recent_changesets.each { |c| c.destroy unless revisions.detect { |r| r.scmid.to_s == c.scmid.to_s } }
 
     # Subtract revisions that redmine already knows about
     recent_revisions = recent_changesets.map(&:scmid)
-    revisions.reject! do |r| recent_revisions.include?(r.scmid) end
+    revisions.reject! { |r| recent_revisions.include?(r.scmid) }
 
     # Save the remaining ones to the database
     unless revisions.nil?
@@ -151,18 +148,20 @@ class Repository::Git < Repository
         transaction do
           changeset = Changeset.new(
             repository: self,
-            revision:   rev.identifier,
-            scmid:      rev.scmid,
-            committer:  rev.author,
+            revision: rev.identifier,
+            scmid: rev.scmid,
+            committer: rev.author,
             committed_on: rev.time,
-            comments:   rev.message)
+            comments: rev.message
+          )
 
           if changeset.save
             rev.paths.each do |file|
               Change.create(
-                changeset: changeset,
-                action:    file[:action],
-                path:      file[:path])
+                changeset:,
+                action: file[:action],
+                path: file[:path]
+              )
             end
           end
         end
@@ -171,21 +170,21 @@ class Repository::Git < Repository
   end
 
   def latest_changesets(path, rev, limit = 10)
-    revisions = scm.revisions(path, nil, rev, limit: limit, all: false)
+    revisions = scm.revisions(path, nil, rev, limit:, all: false)
     return [] if revisions.nil? || revisions.empty?
 
-    changesets.where(['scmid IN (?)', revisions.map!(&:scmid)])
-      .order(Arel.sql('committed_on DESC'))
+    changesets.where(["scmid IN (?)", revisions.map!(&:scmid)])
+      .order(Arel.sql("committed_on DESC"))
   end
 
   private
 
   def validity_of_local_url
     parsed = URI.parse root_url.presence || url
-    if parsed.scheme == 'ssh'
+    if parsed.scheme == "ssh"
       errors.add :url, :must_not_be_ssh
     end
-  rescue => e
+  rescue StandardError => e
     Rails.logger.error "Failed to parse repository url for validation: #{e}"
     errors.add :url, :invalid_url
   end

@@ -1,14 +1,12 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -25,30 +23,30 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 class Enumeration < ApplicationRecord
+  include SubclassRegistry
+
   default_scope { order("#{Enumeration.table_name}.position ASC") }
 
-  belongs_to :project
+  belongs_to :project, optional: true
 
   acts_as_list scope: 'type = \'#{type}\''
-  acts_as_customizable
-  acts_as_tree order: 'position ASC'
+  acts_as_tree order: "position ASC"
 
+  before_save :unmark_old_default_value, if: :became_default_value?
   before_destroy :check_integrity
 
-  validates_presence_of :name
-  validates_uniqueness_of :name,
-                          scope: %i(type project_id),
-                          case_sensitive: false
-  validates_length_of :name, maximum: 30
+  validates :name, presence: true
+  validates :name,
+            uniqueness: { scope: %i(type project_id),
+                          case_sensitive: false }
+  validates :name, length: { maximum: 256 }
 
   scope :shared, -> { where(project_id: nil) }
   scope :active, -> { where(active: true) }
-
-  before_save :unmark_old_default_value, if: :became_default_value?
 
   # let all child classes have Enumeration as it's model name
   # used to not having to create another route for every subclass of Enumeration
@@ -70,7 +68,7 @@ class Enumeration < ApplicationRecord
     # it's type.  STI subclasses will automatically add their own
     # types to the finder.
     if descends_from_active_record?
-      where(is_default: true, type: 'Enumeration').first
+      where(is_default: true, type: "Enumeration").first
     else
       # STI classes are
       where(is_default: true).first
@@ -98,7 +96,7 @@ class Enumeration < ApplicationRecord
   end
 
   def unmark_old_default_value
-    Enumeration.where(type: type).update_all(is_default: false)
+    Enumeration.where(type:).update_all(is_default: false)
   end
 
   # Overloaded on concrete classes
@@ -125,15 +123,15 @@ class Enumeration < ApplicationRecord
     destroy_without_reassign
   end
 
-  def <=>(enumeration)
-    position <=> enumeration.position
+  def <=>(other)
+    position <=> other.position
   end
 
   def to_s; name end
 
   # Does the +new+ Hash override the previous Enumeration?
-  def self.overridding_change?(new, previous)
-    if same_active_state?(new['active'], previous.active) && same_custom_values?(new, previous)
+  def self.overriding_change?(new, previous)
+    if same_active_state?(new["active"], previous.active) && same_custom_values?(new, previous)
       false
     else
       true
@@ -144,8 +142,8 @@ class Enumeration < ApplicationRecord
   def self.same_custom_values?(new, previous)
     previous.custom_field_values.each do |custom_value|
       if new &&
-        new['custom_field_values'] &&
-        custom_value.value != new['custom_field_values'][custom_value.custom_field_id.to_s]
+         new["custom_field_values"] &&
+         custom_value.value != new["custom_field_values"][custom_value.custom_field_id.to_s]
         return false
       end
     end
@@ -155,7 +153,7 @@ class Enumeration < ApplicationRecord
 
   # Are the new and previous fields equal?
   def self.same_active_state?(new, previous)
-    new = new == '1'
+    new = new == "1"
     new == previous
   end
 
@@ -183,5 +181,5 @@ end
 
 # Force load the subclasses in development mode
 %w(time_entry_activity issue_priority).each do |enum_subclass|
-  require_dependency enum_subclass
+  require enum_subclass
 end

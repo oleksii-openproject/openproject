@@ -5,9 +5,10 @@ lt:
       remove: 'Išimti valdiklį'
       configure: 'Valdiklio nustatymai'
       upsale:
-        text: "Kai kurie valdikliai, pavyzdžiui darbo paketų grafo valdiklis, galimi tik "
-        link: '„Enterprise edition“.'
+        text: "Kai kurie valdikliai, pavyzdžiui darbo paketų grafo valdiklis, galimi tik Enterprise versijoje."
+        link: 'Enterprise versija.'
       widgets:
+        missing_permission: "Jūs neturite teisų šio valdiklio peržiūrai."
         custom_text:
           title: 'Pritaikytas tekstas'
         documents:
@@ -26,18 +27,21 @@ lt:
         project_description:
           title: 'Projekto aprašymas'
           no_results: "Dar neįrašytas aprašymas. Jį galima nurodyti „Projekto nustatymuose“."
-        project_details:
-          title: 'Projekto ypatybės'
-          no_results: 'Projektui nenurodyti savi laukai.'
         project_status:
           title: 'Projekto būsena'
+          not_started: 'Nepradėta'
           on_track: 'Teisingame kelyje'
           off_track: 'Pasiklydęs'
           at_risk: 'Rizikingas'
           not_set: 'Nenustatyta'
+          finished: 'Baigta'
+          discontinued: 'Nutrauktas'
         subprojects:
           title: 'Sub-projektai'
-          no_results: 'Nėra su-projektų.'
+          no_results: 'Nėra subprojektų.'
+        project_favorites:
+          title: 'Mėgstami projektai'
+          no_results: 'Jūs šiuo metu neturite mėgiamų projektų. Spauskite žvaigždutės piktogramą projekto skydelyje, kad pridėtumėte prie jūsų mėgstamų.'
         time_entries_current_user:
           title: 'Mano sugaištas laikas'
           displayed_days: 'Valdiklyje rodomos dienos:'
@@ -59,5 +63,5 @@ lt:
         work_packages_calendar:
           title: 'Kalendorius'
         work_packages_overview:
-          title: 'Darbo paketų peržiūra'
+          title: 'Darbo paketų apžvalga'
           placeholder: 'Spauskite keitimui...'

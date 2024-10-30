@@ -4,13 +4,13 @@ module LdapGroups
     before_action :check_ee
     before_action :find_group, only: %i(show destroy_info destroy)
 
-    layout 'admin'
+    layout "admin"
     menu_item :plugin_ldap_groups
     include PaginationHelper
 
     def index
-      @groups = SynchronizedGroup.includes(:auth_source, :group)
-      @filters = SynchronizedFilter.includes(:auth_source, :groups)
+      @groups = SynchronizedGroup.includes(:ldap_auth_source, :group)
+      @filters = SynchronizedFilter.includes(:ldap_auth_source, :groups)
     end
 
     def new
@@ -58,27 +58,21 @@ module LdapGroups
 
     def check_ee
       unless EnterpriseToken.allows_to?(:ldap_groups)
-        render template: 'ldap_groups/synchronized_groups/upsale'
-        return false
+        render template: "ldap_groups/synchronized_groups/upsale"
+        false
       end
     end
 
     def permitted_params
       params
         .require(:synchronized_group)
-        .permit(:dn, :group_id, :auth_source_id)
+        .permit(:dn, :group_id, :ldap_auth_source_id, :sync_users)
     end
 
-    def default_breadcrumb
-      if action_name == 'index'
-        t('ldap_groups.synchronized_groups.plural')
-      else
-        ActionController::Base.helpers.link_to(t('ldap_groups.synchronized_groups.plural'), ldap_groups_synchronized_groups_path)
-      end
-    end
+    def default_breadcrumb; end
 
     def show_local_breadcrumb
-      true
+      false
     end
   end
 end

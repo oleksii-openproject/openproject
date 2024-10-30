@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 ##
@@ -67,22 +67,58 @@ module Accounts::CurrentUser
   # Returns the current user or nil if no user is logged in
   # and starts a session if needed
   def find_current_user
-    if session[:user_id]
-      # existing session
-      User.active.find_by(id: session[:user_id])
-    elsif cookies[OpenProject::Configuration['autologin_cookie_name']] && Setting.autologin?
-      # auto-login feature starts a new session
-      user = User.try_to_autologin(cookies[OpenProject::Configuration['autologin_cookie_name']])
-      session[:user_id] = user.id if user
+    %i[
+      current_session_user
+      current_autologin_user
+      current_rss_key_user
+      current_api_key_user
+    ].each do |method|
+      user = send(method)
+      return user if user&.logged? && user&.active?
+    end
+
+    nil
+  end
+
+  def current_session_user
+    return if session[:user_id].nil?
+
+    User.active.find_by(id: session[:user_id])
+  end
+
+  def current_autologin_user
+    return unless Setting::Autologin.enabled?
+
+    autologin_cookie_name = OpenProject::Configuration["autologin_cookie_name"]
+    autologin_token = cookies[autologin_cookie_name]
+    return unless autologin_token
+
+    user = User.try_to_autologin(autologin_token)
+
+    if user
+      login_user(user)
       user
-    elsif params[:format] == 'atom' && params[:key] && accept_key_auth_actions.include?(params[:action])
+    else
+      cookies.delete(autologin_cookie_name)
+      nil
+    end
+  end
+
+  def current_rss_key_user
+    if params[:format] == "atom" && params[:key] && accept_key_auth_actions.include?(action_name)
       # RSS key authentication does not start a session
       User.find_by_rss_key(params[:key])
-    elsif Setting.rest_api_enabled? && api_request?
-      if (key = api_key_from_request) && accept_key_auth_actions.include?(params[:action])
-        # Use API key
-        User.find_by_api_key(key)
-      end
+    end
+  end
+
+  def current_api_key_user
+    return unless Setting.rest_api_enabled? && api_request?
+
+    key = api_key_from_request
+
+    if key && accept_key_auth_actions.include?(action_name)
+      # Use API key
+      User.find_by_api_key(key)
     end
   end
 
@@ -99,7 +135,7 @@ module Accounts::CurrentUser
   def logout_user
     ::Users::LogoutService
       .new(controller: self)
-      .call(current_user)
+      .call!(current_user)
   end
 
   # Redirect the user according to the logout scheme
@@ -113,7 +149,7 @@ module Accounts::CurrentUser
     end
 
     # Otherwise, if there is an omniauth direct login
-    # and we're not logging out globablly, ensure the
+    # and we're not logging out globally, ensure the
     # user does not get re-logged in
     if Setting.login_required? && omniauth_direct_login?
       flash.now[:notice] = I18n.t :notice_logged_out
@@ -127,8 +163,8 @@ module Accounts::CurrentUser
   # Login the current user
   def login_user(user)
     ::Users::LoginService
-      .new(controller: self)
-      .call(user)
+      .new(user:, controller: self, request:)
+      .call!
   end
 
   def require_login
@@ -145,10 +181,10 @@ module Accounts::CurrentUser
 
         auth_header = OpenProject::Authentication::WWWAuthenticate.response_header(request_headers: request.headers)
 
-        format.any(:xml, :js, :json) do
+        format.any(:xml, :js, :json, :turbo_stream) do
           head :unauthorized,
-               'X-Reason' => 'login needed',
-               'WWW-Authenticate' => auth_header
+               "X-Reason" => "login needed",
+               "WWW-Authenticate" => auth_header
         end
 
         format.all { head :not_acceptable }

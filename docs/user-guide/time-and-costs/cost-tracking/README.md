@@ -3,31 +3,26 @@ sidebar_navigation:
   title: Cost tracking
   priority: 798
 description: Time and cost tracking in OpenProject
-robots: index, follow
-keywords: cost tracking
+keywords: cost tracking, log costs, unit costs
 ---
 
 # Cost tracking
 
 You can log unit costs on a work package within a project to keep track on certain units spent in a project, e.g. travel costs or machines.
 
-<div class="alert alert-info" role="alert">
-**Note**: When using the cost tracking functionality, the **Cost reports** module needs to be activated in the [project menu](../../projects/).
+| Topic                                                       | Content                                             |
+| ----------------------------------------------------------- | --------------------------------------------------- |
+| [Log costs to a work package](#log-costs-to-a-work-package) | How to track costs on a work package.               |
+| [Edit logged costs](#edit-logged-costs)                     | How to edit spent costs logged to a work package.   |
+| [Delete logged costs](#delete-logged-costs)                 | How to delete spent costs logged to a work package. |
 
-</div>
+## Log costs to a work package
 
-| Feature                                                      | Documentation for                                   |
-| ------------------------------------------------------------ | --------------------------------------------------- |
-| [Logging costs to a work package](#logging-costs-to-a-work-package) | How to track costs on a work package?               |
-| [Edit logged costs](#edit-logged-costs)                      | How to edit spent costs logged to a work package?   |
-| [Delete logged costs](#delete-logged-costs)                  | How to delete spent costs logged to a work package? |
-| [Define hourly rate for labor costs](#define-hourly-rate-for-labor-costs) | How to set the hourly rate to track labor costs?    |
+In order to log unit costs, you must first activate the **Time and costs** module and the **Budget** module in the project settings. Then select a budget from the drop-down menu of the work package details and link it to the selected work package![select-budget-work-package-details](select-budget-work-package-details.png)
 
-## Logging costs to a work package
+To log costs to a work package you can either press the button on the top right in the work package detail view or double-click on the line of the work package in the work package table. In both cases a function menu appears in which you can select **log unit costs**.
 
-To track unit costs to a work package select the **Log unit costs** option from the **More functions** drop down menu.
-
-![Cost-tracking_log-costs](Cost-tracking_log-costs.png)
+![log-unit-costs](log-unit-costs.png)
 
 A new form is opened, where you can log unit costs. You can edit the following information:
 
@@ -36,10 +31,13 @@ A new form is opened, where you can log unit costs. You can edit the following i
 2. The **date**, for which the unit costs are logged.
 
 3. You can select a **user** (project member) from the drop down menu for whom you log the unit costs.
+   Please note that you can't log unit costs for [placeholder users](../../../system-admin-guide/users-permissions/placeholder-users).
 
-4. The **cost type** field offers a range of pre-defined cost types which can be configured in the Administration. The  units and respective costs per unit category are defined for every cost type separately. Please note that you need certain privileges to be able to  create new cost types and define costs for specific units.
+4. The **cost type** field offers a range of pre-defined cost types which can be configured in the [Administration](../../../system-admin-guide/time-and-costs). The units and respective costs per unit category are defined for every cost type separately. Please note that you need certain privileges to be able to  create new cost types and define costs for specific units.
 
-   <div class="glossary">**Cost Types** are defined as types of costs that can be defined by system admins (e.g. Scrum development).</div>
+   <div class="glossary">
+   **Cost Types** are defined as types of costs that can be defined by system admins (e.g. consultant days or licenses).
+   </div>
 
 5. You can enter the number of **units** to be logged.
 
@@ -49,72 +47,34 @@ A new form is opened, where you can log unit costs. You can edit the following i
 
 8. Do not forget to **Save** your time log.
 
-9. ![Cost-tracking-log-costs-details](Cost-tracking-log-costs-details.png)
+9. ![Cost tracking log costs details](Cost-tracking-log-costs-details.png)
 
 The **spent unit costs** as well as the total amount of **overall costs** are displayed on the work packages details view.
 
-
-
-![Cost-tracking-overview](Cost-tracking-overview.png)
-
-
+![Cost tracking overview](Cost-tracking-overview.png)
 
 ## Edit logged costs
 
 To display and edit the logged costs to a work package, navigate to the work package details view. Here, the total amount of spent costs are displayed. Click on the sum of logged costs on a work package to display the details.
 
-![Edit-logged-costs](Edit-logged-costs.png)
+![Edit logged costs](Edit-logged-costs.png)
 
 The detailed logs are displayed in a cost report. To edit a cost entry, click on the Edit icon with the little pen next to a cost entry.
 
-![Edit-logged-costs-details](Edit-logged-costs-details.png)
+![Edit logged costs details](Edit-logged-costs-details.png)
 
-It will open the details view of the cost entry and you will be able to make your changes just as for [Logging costs to a work package](#logging-costs-to-a-work-package).
+It will open the details view of the cost entry and you will be able to make your changes just as for [Logging costs to a work package](#log-costs-to-a-work-package).
 
 In some cases, you might want to change the costs manually so that it differs from the automatically calculated product from spent units and costs per unit.
 
-In this case, click on the Edit icon, the little pen, next to the cost entry. Now you can manually enter the costs.
+In this case, click on the **Edit icon**, the little pen, next to the cost entry. Now you can manually enter the costs.
 
-![Edit-costs-details](Edit-costs-details.png)
+![Edit costs details](Edit-costs-details.png)
 
-Do not forget to save your changes.
+Do not forget to **save** your changes.
 
 ## Delete logged costs
 
 If you made a mistake and need to delete logged costs, click on the **delete icon** next to a cost entry in the cost report.
 
-![Delete-cost-entry](Delete-cost-entry.png)
-
-## Define hourly rate for labor costs
-
-You can define an hourly rate to **track labor costs per user**. Please navigate to the user profile, e.g. by clicking on a hyper link of the user name on a work package.
-
- ![User-profile](User-profile.png)
-
-You will be directed to the user's profile page.
-
-Here, you can click the **Edit button** on the top right corner of the user profile page.
-
- ![User-profile-edit](User-profile-edit.png)
-
-Alternatively, you can navigate to ->Administration ->Users & Permissions ->Users.
-
-Click on the **Rate history** tab.
-
-You will see a default hourly rate valid for all projects.
-
-If you want to set a different hourly rate for the user on different projects, you can overwrite the default rate with a different rate below in the respective projects.
-
-![Rate-history](Rate-history-1574778553695.png)
-
-To enter a new hourly rate, click on the **Update** icon next to the rate history. You can either set a **default hourly rate** or define a rate for a certain project.
-
-![Update-hourly-rate](Update-hourly-rate-1574778595938.png)
-
-1. Enter a date from which the rate is **Valid from**.
-2. Enter the (hourly) **Rate**. The currency can only be changed in the system's Administration settings.
-3. You can delete an hourly rate.
-4. You can **add a rate** for a different time period.
-5. Save your changes.
-
-![Rate-history-change](Rate-history-change.png)
+![Delete cost entry](Delete-cost-entry.png)

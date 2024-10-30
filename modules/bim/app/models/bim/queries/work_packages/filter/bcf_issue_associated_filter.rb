@@ -1,14 +1,12 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -25,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module ::Bim::Queries::WorkPackages::Filter
@@ -45,11 +43,11 @@ module ::Bim::Queries::WorkPackages::Filter
 
     def where
       if associated?
-        ::Queries::Operators::All.sql_for_field(values, ::Bim::Bcf::Issue.table_name, 'id')
+        ::Queries::Operators::All.sql_for_field(values, ::Bim::Bcf::Issue.table_name, "id")
       elsif not_associated?
-        ::Queries::Operators::None.sql_for_field(values, ::Bim::Bcf::Issue.table_name, 'id')
+        ::Queries::Operators::None.sql_for_field(values, ::Bim::Bcf::Issue.table_name, "id")
       else
-        raise 'Unsupported operator or value'
+        raise "Unsupported operator or value"
       end
     end
 
@@ -62,7 +60,7 @@ module ::Bim::Queries::WorkPackages::Filter
     end
 
     def dependency_class
-      '::API::V3::Queries::Schemas::BooleanFilterDependencyRepresenter'
+      "::API::V3::Queries::Schemas::BooleanFilterDependencyRepresenter"
     end
 
     def available?
@@ -72,13 +70,13 @@ module ::Bim::Queries::WorkPackages::Filter
     private
 
     def associated?
-      (operator == '=' && values.first == OpenProject::Database::DB_VALUE_TRUE) ||
-        (operator == '!' && values.first == OpenProject::Database::DB_VALUE_FALSE)
+      (operator == "=" && values.first == OpenProject::Database::DB_VALUE_TRUE) ||
+        (operator == "!" && values.first == OpenProject::Database::DB_VALUE_FALSE)
     end
 
     def not_associated?
-      (operator == '=' && values.first == OpenProject::Database::DB_VALUE_FALSE) ||
-        (operator == '!' && values.first == OpenProject::Database::DB_VALUE_TRUE)
+      (operator == "=" && values.first == OpenProject::Database::DB_VALUE_FALSE) ||
+        (operator == "!" && values.first == OpenProject::Database::DB_VALUE_TRUE)
     end
   end
 end

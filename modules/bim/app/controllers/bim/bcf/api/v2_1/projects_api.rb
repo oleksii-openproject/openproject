@@ -1,14 +1,12 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -25,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module Bim::Bcf::API::V2_1
@@ -40,7 +38,7 @@ module Bim::Bcf::API::V2_1
       end
 
       get &::Bim::Bcf::API::V2_1::Endpoints::Index.new(model: Project,
-                                                  scope: -> { visible_projects })
+                                                       scope: -> { visible_projects })
                                              .mount
 
       route_param :id, regexp: /\A(\d+)\z/ do
@@ -51,8 +49,7 @@ module Bim::Bcf::API::V2_1
 
         get &::Bim::Bcf::API::V2_1::Endpoints::Show.new(model: Project).mount
         put &::Bim::Bcf::API::V2_1::Endpoints::Update
-               .new(model: Project,
-                    process_service: ::Projects::UpdateService)
+               .new(model: Project)
                .mount
 
         mount ::Bim::Bcf::API::V2_1::TopicsAPI

@@ -18,7 +18,7 @@ module OpenProject::Webhooks::EventResources
       ##
       # Return a mapping of event key to its localized name
       def available_events_map
-        Hash[available_actions.map { |symbol| [ prefixed_event_name(symbol), localize_event_name(symbol) ] }]
+        available_actions.map { |symbol| [prefixed_event_name(symbol), localize_event_name(symbol)] }.to_h
       end
 
       ##
@@ -40,7 +40,7 @@ module OpenProject::Webhooks::EventResources
       ##
       # Localize the given event name
       def localize_event_name(key)
-        I18n.t(key, scope: 'webhooks.outgoing.events')
+        I18n.t(key, scope: "webhooks.outgoing.events")
       end
 
       ##

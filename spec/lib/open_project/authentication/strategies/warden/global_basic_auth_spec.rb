@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,20 +23,20 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'spec_helper'
+require "spec_helper"
 
 Strategies = OpenProject::Authentication::Strategies::Warden
 
-describe Strategies::GlobalBasicAuth do
-  let(:user) { 'someuser' }
-  let(:password) { 'somepassword' }
+RSpec.describe Strategies::GlobalBasicAuth do
+  let(:user) { "someuser" }
+  let(:password) { "somepassword" }
 
   let(:config) do
     lambda do
-      Strategies::GlobalBasicAuth.configure! user: user, password: password
+      Strategies::GlobalBasicAuth.configure! user:, password:
     end
   end
 
@@ -44,23 +44,23 @@ describe Strategies::GlobalBasicAuth do
     let(:user) { Strategies::UserBasicAuth.user }
 
     before do
-      allow(Strategies::UserBasicAuth).to receive(:user).and_return('schluessel')
+      allow(Strategies::UserBasicAuth).to receive(:user).and_return("schluessel")
     end
 
-    it 'raises an error' do
-      expect(config).to raise_error("global user must not be 'schluessel'")
-    end
-  end
-
-  context 'with an empty pasword' do
-    let(:password) { '' }
-
-    it 'raises an error' do
-      expect(config).to raise_error('password must not be empty')
+    it "raises an error" do
+      expect(&config).to raise_error("global user must not be 'schluessel'")
     end
   end
 
-  context 'with digits-only password' do
+  context "with an empty pasword" do
+    let(:password) { "" }
+
+    it "raises an error" do
+      expect(&config).to raise_error("password must not be empty")
+    end
+  end
+
+  context "with digits-only password" do
     let(:password) { 1234 }
     let(:strategy) { Strategies::GlobalBasicAuth.new nil }
 
@@ -68,8 +68,8 @@ describe Strategies::GlobalBasicAuth do
       config.call
     end
 
-    it 'must authenticate successfully' do
-      expect(strategy.authenticate_user(user, '1234')).to be_truthy
+    it "must authenticate successfully" do
+      expect(strategy.authenticate_user(user, "1234")).to be_truthy
     end
   end
 end

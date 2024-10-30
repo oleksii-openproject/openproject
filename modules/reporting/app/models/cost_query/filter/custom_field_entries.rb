@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 class CostQuery::Filter::CustomFieldEntries < Report::Filter::Base
@@ -33,15 +33,30 @@ class CostQuery::Filter::CustomFieldEntries < Report::Filter::Base
     applies_for :label_work_package_attributes
     # redmine internals just suck
     case custom_field.field_format
-    when 'string', 'text' then use :string_operators
-    when 'list'           then use :null_operators
-    when 'date'           then use :time_operators
-    when 'int', 'float'   then use :integer_operators
-    when 'bool'
-      @possible_values = [['true', 't'], ['false', 'f']]
+    when "string", "text" then use :string_operators
+    when "list"           then use :null_operators
+    when "date"           then use :time_operators
+    when "int", "float"   then use :integer_operators
+    when "bool"
+      @possible_values = [["true", "t"], ["false", "f"]]
       use :null_operators
     else
       fail "cannot handle #{custom_field.field_format.inspect}"
+    end
+  end
+
+  def self.field
+    # There is a special treatment for how list custom values are retrieved as those
+    # are not taken directly from the custom_values but from the custom_options table.
+    # But the value still has to be the id of the option which is later on mapped to the
+    # human readable value.
+    # Mapping to the human readable value is done for all custom values (e.g. users, versions)
+    # following the same pattern of code, so simply making the exception here to use the value
+    # would complicated the code later on.
+    if custom_field.field_format == "list"
+      "#{db_field}.value"
+    else
+      super
     end
   end
 
@@ -50,7 +65,7 @@ class CostQuery::Filter::CustomFieldEntries < Report::Filter::Base
   end
 
   def self.get_possible_values
-    if custom_field.field_format == 'list'
+    if custom_field.field_format == "list"
       # Treat list CFs values as string options again, since
       # aggregation of groups are made by the values as well
       # and otherwise, it won't work as a filter.

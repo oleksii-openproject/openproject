@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module OpenProject::Documents
@@ -32,33 +32,32 @@ module OpenProject::Documents
 
     include OpenProject::Plugins::ActsAsOpEngine
 
-    register 'openproject-documents',
-             author_url: "http://www.openproject.com",
+    register "openproject-documents",
+             author_url: "http://www.openproject.org",
              bundled: true do
-
       menu :project_menu,
            :documents,
-           { controller: '/documents', action: 'index' },
-           param: :project_id,
+           { controller: "/documents", action: "index" },
            caption: :label_document_plural,
            before: :members,
-           icon: 'icon2 icon-notes'
+           icon: "note"
 
       project_module :documents do |_map|
-        permission :view_documents, documents: [:index, :show, :download]
-        permission :manage_documents, {
-          documents: [:new, :create, :edit, :update, :destroy, :add_attachment]
-          }, require: :loggedin
+        permission :view_documents,
+                   { documents: %i[index show download] },
+                   permissible_on: :project
+        permission :manage_documents,
+                   { documents: %i[new create edit update destroy] },
+                   permissible_on: :project,
+                   require: :loggedin
       end
-
-      Redmine::Notifiable.all << Redmine::Notifiable.new('document_added')
 
       Redmine::Search.register :documents
     end
 
-    activity_provider :documents, class_name: 'Activities::DocumentActivityProvider', default: false
+    activity_provider :documents, class_name: "Activities::DocumentActivityProvider", default: false
 
-    patches [:CustomFieldsHelper, :Project]
+    patches %i[Project]
 
     add_api_path :documents do
       "#{root}/documents"
@@ -72,7 +71,7 @@ module OpenProject::Documents
       "#{document(id)}/attachments"
     end
 
-    add_api_endpoint 'API::V3::Root' do
+    add_api_endpoint "API::V3::Root" do
       mount ::API::V3::Documents::DocumentsAPI
     end
 
@@ -80,11 +79,7 @@ module OpenProject::Documents
     additional_permitted_attributes search: %i(documents)
 
     config.to_prepare do
-      require_dependency 'document'
-      require_dependency 'document_category'
-      require_dependency 'document_category_custom_field'
-
-      require_dependency 'open_project/documents/patches/textile_converter_patch'
+      Enumeration.register_subclass(DocumentCategory)
     end
   end
 end

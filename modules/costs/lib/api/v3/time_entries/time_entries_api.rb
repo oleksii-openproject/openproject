@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,17 +23,19 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module API
   module V3
     module TimeEntries
       class TimeEntriesAPI < ::API::OpenProjectAPI
-        helpers ::API::Utilities::PageSizeHelper
+        helpers ::API::Utilities::UrlPropsParsingHelper
 
         resources :time_entries do
-          get &::API::V3::Utilities::Endpoints::Index.new(model: TimeEntry).mount
+          get &::API::V3::Utilities::Endpoints::Index.new(model: TimeEntry,
+                                                          scope: -> { TimeEntry.includes(TimeEntryRepresenter.to_eager_load) })
+                                                     .mount
           post &::API::V3::Utilities::Endpoints::Create.new(model: TimeEntry).mount
 
           mount ::API::V3::TimeEntries::CreateFormAPI
@@ -41,10 +43,11 @@ module API
           mount ::API::V3::TimeEntries::AvailableProjectsAPI
           mount ::API::V3::TimeEntries::AvailableWorkPackagesOnCreateAPI
 
-          route_param :id, type: Integer, desc: 'Time entry ID' do
+          route_param :id, type: Integer, desc: "Time entry ID" do
             after_validation do
               @time_entry = TimeEntry
                             .visible
+                            .or(TimeEntry.where(id: TimeEntry.visible_ongoing.select(:id)))
                             .find(params[:id])
             end
 

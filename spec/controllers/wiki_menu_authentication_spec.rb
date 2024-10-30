@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,46 +23,46 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'spec_helper'
+require "spec_helper"
 
-describe WikiMenuItemsController, type: :controller do
+RSpec.describe WikiMenuItemsController do
   before do
     User.delete_all
     Role.delete_all
 
-    @project = FactoryBot.create(:project)
+    @project = create(:project)
     @project.reload # project contains wiki by default
 
     @params = {}
     @params[:project_id] = @project.id
-    page = FactoryBot.create(:wiki_page, wiki: @project.wiki)
+    page = create(:wiki_page, wiki: @project.wiki)
     @params[:id] = page.title
   end
 
-  describe 'w/ valid auth' do
-    it 'renders the edit action' do
-      admin_user = FactoryBot.create(:admin)
+  describe "w/ valid auth" do
+    it "renders the edit action" do
+      admin_user = create(:admin)
 
       allow(User).to receive(:current).and_return admin_user
-      permission_role = FactoryBot.create(:role, name: 'accessgranted', permissions: [:manage_wiki_menu])
-      member = FactoryBot.create(:member, principal: admin_user, user: admin_user, project: @project, roles: [permission_role])
+      permission_role = create(:project_role, name: "accessgranted", permissions: [:manage_wiki_menu])
+      member = create(:member, principal: admin_user, user: admin_user, project: @project, roles: [permission_role])
 
-      get 'edit', params: @params
+      get "edit", params: @params
 
       expect(response).to be_successful
     end
   end
 
-  describe 'w/o valid auth' do
-    it 'be forbidden' do
-      allow(User).to receive(:current).and_return FactoryBot.create(:user)
+  describe "w/o valid auth" do
+    it "be forbidden" do
+      allow(User).to receive(:current).and_return create(:user)
 
-      get 'edit', params: @params
+      get "edit", params: @params
 
-      expect(response.status).to eq(403) # forbidden
+      expect(response).to have_http_status(:forbidden)
     end
   end
 end

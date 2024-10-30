@@ -1,10 +1,10 @@
 #-- copyright
 #OpenProject is an open source project management software.
-#Copyright (C) 2012-2020 the OpenProject GmbH
+#Copyright (C) the OpenProject GmbH
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License version 3.
 #OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-#Copyright (C) 2006-2017 Jean-Philippe Lang
+#Copyright (C) 2006-2013 Jean-Philippe Lang
 #Copyright (C) 2010-2013 the ChiliProject Team
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License
@@ -17,15 +17,24 @@
 #You should have received a copy of the GNU General Public License
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-#See docs/COPYRIGHT.rdoc for more details.
+#See COPYRIGHT and LICENSE files for more details.
 #++
 vi:
-  github_integration:
-    pull_request_opened_comment: >
-      **PR Opened:** Pull request %{pr_number} [%{pr_title}](%{pr_url}) for [%{repository}](%{repository_url}) has been opened by [%{github_user}](%{github_user_url}).
-    pull_request_closed_comment: >
-      **PR Closed:** Pull request %{pr_number} [%{pr_title}](%{pr_url}) for [%{repository}](%{repository_url}) has been closed by [%{github_user}](%{github_user_url}).
-    pull_request_merged_comment: >
-      **PR Merged:** Pull request %{pr_number} [%{pr_title}](%{pr_url}) for [%{repository}](%{repository_url}) has been merged by [%{github_user}](%{github_user_url}).
-    pull_request_referenced_comment: >
-      **Referenced in PR:** [%{github_user}](%{github_user_url}) referenced this work package in Pull request %{pr_number} [%{pr_title}](%{pr_url}) on [%{repository}](%{repository_url}).
+  button_add_deploy_target: Thêm mục triển khai
+  label_deploy_target: Mục triển khai
+  label_deploy_target_new: Mục triển khai mới
+  label_deploy_target_plural: Các mục triển khai
+  label_github_integration: Tích hợp GitHub
+  notice_deploy_target_created: Mục triển khai đã được tạo
+  notice_deploy_target_destroyed: Mục triển khai đã bị xóa
+  plugin_openproject_github_integration:
+    name: "Tích hợp GitHub OpenProject"
+    description: "Tích hợp OpenProject và GitHub để có quy trình làm việc tốt hơn"
+  project_module_github: "GitHub"
+  permission_show_github_content: "Hiển thị nội dung GitHub"
+  permission_introspection: Đọc phiên bản OpenProject đang chạy và SHA build
+  text_deploy_target_type_info: >
+    Hiện tại chúng tôi chỉ hỗ trợ OpenProject.
+  text_deploy_target_api_key_info: >
+    Một [API key](docs_url) của OpenProject thuộc về người dùng có quyền introspection toàn cầu.
+  text_pull_request_deployed_to: "%{pr_link} đã được triển khai tới %{deploy_target_link}"

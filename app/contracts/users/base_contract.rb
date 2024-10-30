@@ -1,14 +1,12 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -25,37 +23,81 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
-
-require 'model_contract'
 
 module Users
   class BaseContract < ::ModelContract
-    attribute :type
-    attribute :login
+    include AssignableCustomFieldValues
+
+    attribute :login,
+              writable: ->(*) {
+                can_create_or_manage_users? && model.id != user.id
+              }
     attribute :firstname
     attribute :lastname
-    attribute :name
     attribute :mail
-    attribute :admin
+    attribute :admin,
+              writable: ->(*) { user.admin? && model.id != user.id }
+    attribute :language
 
-    attribute :auth_source_id
-    attribute :identity_url
-    attribute :password
+    attribute :ldap_auth_source_id,
+              writable: ->(*) { can_create_or_manage_users? }
+
+    attribute :status,
+              writable: ->(*) { can_create_or_manage_users? }
+
+    attribute :identity_url,
+              writable: ->(*) { user.admin? }
+
+    attribute :force_password_change,
+              writable: ->(*) { user.admin? }
 
     def self.model
       User
     end
 
+    validate :validate_password_writable
     validate :existing_auth_source
+
+    delegate :available_custom_fields, to: :model
+
+    def reduce_writable_attributes(attributes)
+      super.tap do |writable|
+        writable << "password" if password_writable?
+      end
+    end
 
     private
 
+    ##
+    # Password is not a regular attribute so it bypasses
+    # attribute writable checks
+    def password_writable?
+      user.admin? || user.id == model.id
+    end
+
+    ##
+    # User#password is not an ActiveModel property,
+    # but just an accessor, so we need to identify it being written there.
+    # It is only present when freshly written
+    def validate_password_writable
+      # Only admins or the user themselves can set the password
+      return if password_writable?
+
+      errors.add :password, :error_readonly if model.password.present?
+    end
+
+    # rubocop:disable Rails/DynamicFindBy
     def existing_auth_source
-      if auth_source_id && AuthSource.find_by_unique(auth_source_id).nil?
+      if ldap_auth_source_id && LdapAuthSource.find_by_unique(ldap_auth_source_id).nil?
         errors.add :auth_source, :error_not_found
       end
+    end
+    # rubocop:enable Rails/DynamicFindBy
+
+    def can_create_or_manage_users?
+      user.allowed_globally?(:manage_user) || user.allowed_globally?(:create_user)
     end
   end
 end

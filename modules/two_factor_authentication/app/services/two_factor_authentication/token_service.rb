@@ -22,7 +22,7 @@ module TwoFactorAuthentication
       return true if manager.enforced?
 
       # Otherwise, only enabled if active and a device is present for the user
-      return manager.enabled? && device.present?
+      manager.enabled? && device.present?
     end
 
     ##
@@ -30,7 +30,8 @@ module TwoFactorAuthentication
     # device during the login flow.
     def needs_registration?
       return false unless manager.enforced?
-      return device.nil?
+
+      device.nil?
     end
 
     ##
@@ -44,11 +45,11 @@ module TwoFactorAuthentication
       # Produce the token with the given strategy (e.g., sending an sms)
       strategy.transmit
 
-      ServiceResult.new(success: true, result: strategy.transmit_success_message)
-    rescue => e
+      ServiceResult.success(result: strategy.transmit_success_message)
+    rescue StandardError => e
       Rails.logger.error "[2FA plugin] Error during token request to user##{user.id}: #{e}"
 
-      result = ServiceResult.new(success: false)
+      result = ServiceResult.failure
       result.errors.add(:base, e.message)
 
       result
@@ -56,19 +57,19 @@ module TwoFactorAuthentication
 
     ##
     # Validate a token that was input by the user
-    def verify(input_token)
+    def verify(input, **)
       # Validate that we can request the token for this user
       # and get the matching strategy we will use
       verify_device_and_strategy
 
       # Produce the token with the given strategy (e.g., sending an sms)
-      result = strategy.verify input_token
+      result = strategy.verify(input, **)
 
       ServiceResult.new(success: result)
-    rescue => e
-      Rails.logger.error "[2FA plugin] Error during token validation for user##{user.id}: #{e}"
+    rescue StandardError => e
+      Rails.logger.error "[2FA plugin] Error during token validation for user##{user.id}: #{e.class} #{e}"
 
-      result = ServiceResult.new(success: false)
+      result = ServiceResult.failure
       result.errors.add(:base, e.message)
 
       result
@@ -87,13 +88,13 @@ module TwoFactorAuthentication
     ##
     # Perform service checks for the request and validate endpoints of this service
     def verify_device_and_strategy
-      raise I18n.t('two_factor_authentication.error_2fa_disabled') unless manager.enabled?
+      raise I18n.t("two_factor_authentication.error_2fa_disabled") unless manager.enabled?
 
       # Ensure the user's default device for OTP exists
-      raise I18n.t('two_factor_authentication.error_no_device') if device.nil?
+      raise I18n.t("two_factor_authentication.error_no_device") if device.nil?
 
       # Ensure a matching registered strategy for the device's channel exists
-      raise I18n.t('two_factor_authentication.error_no_matching_strategy') if strategy.nil?
+      raise I18n.t("two_factor_authentication.error_no_matching_strategy") if strategy.nil?
     end
 
     def manager

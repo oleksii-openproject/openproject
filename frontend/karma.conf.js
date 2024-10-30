@@ -16,8 +16,8 @@ module.exports = function (config) {
     plugins: [
       require('karma-jasmine'),
       require('karma-chrome-launcher'),
-      require('karma-coverage-istanbul-reporter'),
-      require('@angular-devkit/build-angular/plugins/karma')
+      require('@angular-devkit/build-angular/plugins/karma'),
+      require('karma-spec-reporter'),
     ],
     client:{
       clearContext: false // leave Jasmine Spec Runner output visible in browser
@@ -29,13 +29,32 @@ module.exports = function (config) {
     angularCli: {
       environment: 'dev'
     },
-    reporters: ['progress'],
+    reporters: ['spec'],
+    specReporter: {
+      maxLogLines: 5,         // limit number of lines logged per test
+      suppressErrorSummary: false,  // do not print error summary
+      suppressFailed: false,  // do not print information about failed tests
+      suppressPassed: false,  // do not print information about passed tests
+      suppressSkipped: true,  // do not print information about skipped tests
+      showSpecTiming: true, // print the time elapsed for each spec
+      failFast: false,
+    },
     port: 9876,
     colors: true,
     failOnEmptyTestSuite: true,
     logLevel: config.LOG_INFO,
     autoWatch: true,
-    browsers: ['ChromeHeadless'],
+    browsers: ['ChromeHeadlessNoSandbox'],
+    customLaunchers: {
+      ChromeHeadlessNoSandbox: {
+        base: 'ChromeHeadless',
+        flags: ['--no-sandbox']
+      },
+      ChromeWithDebug: {
+        base: 'Chrome',
+        flags: ['--no-sandbox', '--debug', '--auto-open-devtools-for-tabs']
+      }
+    },
     singleRun: false
   });
 };

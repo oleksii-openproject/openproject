@@ -1,13 +1,12 @@
-#-- encoding: UTF-8
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -24,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 ##
@@ -56,11 +55,11 @@ class SCM::CreateManagedRepositoryService < SCM::BaseRepositoryService
 
     false
   rescue Errno::EACCES
-    @rejected = I18n.t('repositories.errors.path_permission_failed',
+    @rejected = I18n.t("repositories.errors.path_permission_failed",
                        path: repository.root_url)
     false
   rescue SystemCallError => e
-    @rejected = I18n.t('repositories.errors.filesystem_access_failed',
+    @rejected = I18n.t("repositories.errors.filesystem_access_failed",
                        message: e.message)
     false
   rescue OpenProject::SCM::Exceptions::SCMError => e
@@ -71,6 +70,6 @@ class SCM::CreateManagedRepositoryService < SCM::BaseRepositoryService
   ##
   # Returns the error symbol
   def localized_rejected_reason
-    @rejected ||= I18n.t('repositories.errors.not_manageable')
+    @rejected ||= I18n.t("repositories.errors.not_manageable")
   end
 end

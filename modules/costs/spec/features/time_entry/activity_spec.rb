@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,30 +23,48 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'spec_helper'
+require "spec_helper"
 
-describe 'Time entry activity', type: :feature do
-  using_shared_fixtures :admin
+RSpec.describe "Time entry activity" do
+  shared_let(:admin) { create(:admin) }
+  let(:project) { create(:project) }
 
   before do
     login_as(admin)
   end
 
-  it 'supports CRUD' do
+  it "supports CRUD" do
     visit enumerations_path
 
-    page.all('.wp-inline-create--add-link[title="New enumeration value"]').first.click
+    page.find_test_selector("create-enumeration-time-entry-activity").click
 
-    fill_in 'Name', with: 'A new activity'
-    click_on('Create')
+    fill_in "Name", with: "A new activity"
+    click_on("Create")
 
     expect(page.current_path)
       .to eql enumerations_path
 
     expect(page)
-      .to have_content('A new activity')
+      .to have_content("A new activity")
+
+    visit project_settings_general_path(project)
+
+    click_on "Time tracking activities"
+
+    expect(page)
+      .to have_field("A new activity", checked: true)
+
+    uncheck "A new activity"
+
+    click_on "Save"
+
+    expect(page)
+      .to have_content "Successful update."
+
+    expect(page)
+      .to have_field("A new activity", checked: false)
   end
 end

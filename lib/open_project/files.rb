@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module OpenProject
@@ -33,7 +33,7 @@ module OpenProject
     ##
     # Creates a temp file with the given file name.
     # It will reside in some temporary directory.
-    def create_temp_file(name: 'test.txt', content: 'test content', binary: false)
+    def create_temp_file(name: "test.txt", content: "test content", binary: false)
       tmp = Tempfile.new name
       path = Pathname(tmp)
 
@@ -41,7 +41,7 @@ module OpenProject
       path.mkdir # create temp directory
 
       file_path = path.join name
-      File.open(file_path, 'w' + (binary ? 'b' : '')) do |f|
+      File.open(file_path, "w" + (binary ? "b" : "")) do |f|
         f.write content
       end
 
@@ -60,13 +60,13 @@ module OpenProject
       uploaded_file
     end
 
-    def create_uploaded_file(name: 'test.txt',
-                             content_type: 'text/plain',
-                             content: 'test content',
+    def create_uploaded_file(name: "test.txt",
+                             content_type: "text/plain",
+                             content: "test content",
                              binary: false)
 
-      tmp = create_temp_file name: name, content: content, binary: binary
-      build_uploaded_file tmp, content_type, binary: binary
+      tmp = create_temp_file(name:, content:, binary:)
+      build_uploaded_file tmp, content_type, binary:
     end
   end
 end

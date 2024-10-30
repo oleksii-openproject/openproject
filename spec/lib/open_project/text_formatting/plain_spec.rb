@@ -1,13 +1,12 @@
-#-- encoding: UTF-8
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -24,21 +23,21 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'spec_helper'
+require "spec_helper"
 
-describe OpenProject::TextFormatting::Formats::Plain::Formatter do
+RSpec.describe OpenProject::TextFormatting::Formats::Plain::Formatter do
   subject { described_class.new({}) }
 
-  it 'should plain text' do
-    assert_html_output('This is some input' => 'This is some input')
+  it "plains text" do
+    assert_html_output("This is some input" => "This is some input")
   end
 
-  it 'should escaping' do
+  it "escapings" do
     assert_html_output(
-      'this is a <script>' => 'this is a &lt;script&gt;'
+      "this is a <script>" => "this is a &lt;script&gt;"
     )
   end
 
@@ -46,7 +45,8 @@ describe OpenProject::TextFormatting::Formats::Plain::Formatter do
 
   def assert_html_output(to_test, expect_paragraph = true)
     to_test.each do |text, expected|
-      assert_equal((expect_paragraph ? "<p>#{expected}</p>" : expected), subject.to_html(text), "Formatting the following text failed:\n===\n#{text}\n===\n")
+      expect((expect_paragraph ? "<p>#{expected}</p>" : expected)).to(eq(subject.to_html(text)),
+                                                                      "Formatting the following text failed:\n===\n#{text}\n===\n")
     end
   end
 

@@ -1,12 +1,12 @@
 <%#-- copyright
 OpenProject is an open source project management software.
-Copyright (C) 2012-2020 the OpenProject GmbH
+Copyright (C) the OpenProject GmbH
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License version 3.
 
 OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-Copyright (C) 2006-2017 Jean-Philippe Lang
+Copyright (C) 2006-2013 Jean-Philippe Lang
 Copyright (C) 2010-2013 the ChiliProject Team
 
 This program is free software; you can redistribute it and/or
@@ -23,43 +23,52 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-See docs/COPYRIGHT.rdoc for more details.
+See COPYRIGHT and LICENSE files for more details.
 
 ++#%>
-<%= breadcrumb_toolbar t(:label_permissions_report) %>
-<% local_assigns[:additional_breadcrumb] = t(:label_permissions_report) %>
+
+
+<%=
+  render Primer::OpenProject::PageHeader.new do |header|
+    header.with_title { I18n.t(:label_permissions_report) }
+    header.with_breadcrumbs([{ href: admin_index_path, text: t("label_administration") },
+                             { href: admin_settings_users_path, text: t(:label_user_and_permission) },
+                             t(:label_permissions_report)])
+  end
+%>
+
 <% html_title t(:label_administration), t(:label_permissions_report) %>
 
 <% (@calls || []).select(&:failure?).each do |call| %>
-  <%= error_messages_for_contract(call.result, call.errors) %>
+  <%= error_messages_for(call.result) %>
 <% end %>
 
 <%= form_tag(roles_path, method: :put, id: 'permissions_form') do %>
   <%= hidden_field_tag 'permissions[0]', '', id: nil %>
 
-  <% perms_by_module = @permissions.group_by {|p| p.project_module.to_s} %>
-  <% perms_by_module.keys.sort.each do |mod| %>
+  <% group_permissions_by_module(@permissions).each do |mod, mod_permissions| %>
     <% module_name = mod.blank? ? "form--" + I18n.t('attributes.project') : "form--" + l_or_humanize(mod, prefix: 'project_module_').gsub(' ','_') %>
-    <fieldset class="form--fieldset -collapsible" id= "<%= module_name %>">
-      <legend class="form--fieldset-legend" >
-        <%= mod.blank? ? I18n.t('attributes.project') : l_or_humanize(mod, prefix: 'project_module_') %>
+    <% escaped_name = module_name.parameterize %>
+    <fieldset class="form--fieldset -collapsible" id="<%= escaped_name %>">
+      <legend class="form--fieldset-legend">
+        <%= permission_header_for_project_module(mod) %>
       </legend>
       <div class="form--toolbar">
         <span class="form--toolbar-item">
-          (<%= check_all_links module_name %>)
+          (<%= check_all_links escaped_name %>)
         </span>
       </div>
 
       <div class="generic-table--container">
         <div class="generic-table--results-container">
-          <table class="generic-table">
+          <table class="generic-table" data-controller="table-highlighting">
             <colgroup>
-              <col highlight-col>
-              <col highlight-col>
-              <col highlight-col>
-              <col highlight-col>
-              <col highlight-col>
-              <col highlight-col>
+              <col>
+              <col>
+              <col>
+              <col>
+              <col>
+              <col>
             </colgroup>
             <thead>
               <tr>
@@ -91,7 +100,7 @@ See docs/COPYRIGHT.rdoc for more details.
               </tr>
             </thead>
             <tbody>
-              <% perms_by_module[mod].each do |permission| %>
+              <% mod_permissions.each do |permission| %>
                 <tr class="permission-<%= permission.name %>">
                   <td>
                     <%= link_to_function(
@@ -118,5 +127,5 @@ See docs/COPYRIGHT.rdoc for more details.
     </fieldset>
   <% end %>
 
-  <p><%= styled_button_tag t(:button_save), class: '-highlight -with-icon icon-checkmark' %></p>
+  <p><%= styled_button_tag t(:button_save), class: '-primary -with-icon icon-checkmark' %></p>
 <% end %>

@@ -1,13 +1,12 @@
-#-- encoding: UTF-8
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -24,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 # This file is mostly based on source code of thoughbot's paperclip gem
@@ -81,8 +80,8 @@ module OpenProject
   class ContentTypeDetector
     # application/binary is more secure than application/octet-stream
     # see: http://security.stackexchange.com/q/12896
-    SENSIBLE_DEFAULT = 'application/binary'
-    EMPTY_TYPE = 'inode/x-empty'
+    SENSIBLE_DEFAULT = "application/binary"
+    EMPTY_TYPE = "inode/x-empty"
 
     def initialize(filename)
       @filename = filename
@@ -90,21 +89,21 @@ module OpenProject
 
     # Returns a String describing the file's content type
     def detect
-      type = if blank_name?
-               SENSIBLE_DEFAULT
-             elsif empty_file?
-               EMPTY_TYPE
-             elsif calculated_type_matches.any?
-               calculated_type_matches.first
-             else
-               type_from_file_command || SENSIBLE_DEFAULT
+      if blank_name?
+        SENSIBLE_DEFAULT
+      elsif empty_file?
+        EMPTY_TYPE
+      elsif calculated_type_matches.any?
+        calculated_type_matches.first
+      else
+        type_from_file_command || SENSIBLE_DEFAULT
       end.to_s
     end
 
     private
 
     def empty_file?
-      File.exists?(@filename) && File.size(@filename) == 0
+      File.exist?(@filename) && File.size(@filename) == 0
     end
 
     alias :empty? :empty_file?

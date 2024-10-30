@@ -1,13 +1,12 @@
-#-- encoding: UTF-8
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -24,20 +23,18 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 class EnumerationsController < ApplicationController
-  layout 'admin'
+  layout "admin"
 
   before_action :require_admin
-  before_action :find_enumeration, only: [:edit, :update, :destroy]
+  before_action :find_enumeration, only: %i[edit update move destroy]
 
   include CustomFieldsHelper
 
   def index; end
-
-  def edit; end
 
   def new
     enum_class = enumeration_class(permitted_params.enumeration_type)
@@ -48,6 +45,8 @@ class EnumerationsController < ApplicationController
     end
   end
 
+  def edit; end
+
   def create
     enum_params = permitted_params.enumerations
     type = permitted_params.enumeration_type
@@ -57,9 +56,9 @@ class EnumerationsController < ApplicationController
 
     if @enumeration.save
       flash[:notice] = I18n.t(:notice_successful_create)
-      redirect_to action: 'index', type: @enumeration.type
+      redirect_to action: "index", type: @enumeration.type
     else
-      render action: 'new'
+      render action: "new"
     end
   end
 
@@ -71,7 +70,7 @@ class EnumerationsController < ApplicationController
       flash[:notice] = I18n.t(:notice_successful_update)
       redirect_to enumerations_path(type: @enumeration.type)
     else
-      render action: 'edit'
+      render action: "edit"
     end
   end
 
@@ -79,46 +78,43 @@ class EnumerationsController < ApplicationController
     if !@enumeration.in_use?
       # No associated objects
       @enumeration.destroy
-      redirect_to action: 'index'
+      redirect_to action: "index"
       return
     elsif params[:reassign_to_id]
       if reassign_to = @enumeration.class.find_by(id: params[:reassign_to_id])
         @enumeration.destroy(reassign_to)
-        redirect_to action: 'index'
+        redirect_to action: "index"
         return
       end
     end
     @enumerations = @enumeration.class.all - [@enumeration]
   end
 
-  protected
-
-  def default_breadcrumb
-    if action_name == 'index'
-      t(:label_enumerations)
+  def move
+    if @enumeration.update(permitted_params.enumerations_move)
+      flash[:notice] = I18n.t(:notice_successful_update)
+      redirect_to enumerations_path
     else
-      ActionController::Base.helpers.link_to(t(:label_enumerations), enumerations_path)
+      flash.now[:error] = I18n.t(:error_type_could_not_be_saved)
+      render action: "edit"
     end
   end
 
+  protected
+
   def show_local_breadcrumb
-    true
+    false
   end
+
+  def default_breadcrumb; end
 
   def find_enumeration
     @enumeration = Enumeration.find(params[:id])
   end
 
   ##
-  # Find an enumeration class with the given Name
-  # this should be fail save for nonsense names or names
-  # which are no enumerations to prevent remote code execution attacks.
-  # params: type (string)
+  # Find an enumeration class with the given name
   def enumeration_class(type)
-    klass = type.to_s.constantize
-    raise NameError unless klass.ancestors.include? Enumeration
-    klass
-  rescue NameError
-    nil
+    Enumeration.registered_subclasses.detect { |cls| cls.name == type }
   end
 end

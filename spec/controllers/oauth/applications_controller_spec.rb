@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,24 +23,24 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'spec_helper'
-require 'work_package'
+require "spec_helper"
+require "work_package"
 
-describe ::OAuth::ApplicationsController, type: :controller do
-  let(:user) { FactoryBot.build_stubbed :admin }
-  let(:application_stub) { FactoryBot.build_stubbed(:oauth_application, id: 1, secret: 'foo') }
+RSpec.describe OAuth::ApplicationsController do
+  shared_let(:user) { create(:admin) }
+  let(:application_stub) { build_stubbed(:oauth_application, id: 1, secret: "foo") }
 
   before do
     login_as user
   end
 
-  context 'not logged as admin' do
-    let(:user) { FactoryBot.build_stubbed :user }
+  context "not logged as admin" do
+    shared_let(:user) { create(:user) }
 
-    it 'does not grant access' do
+    it "does not grant access" do
       get :index
       expect(response.response_code).to eq 403
 
@@ -61,66 +61,64 @@ describe ::OAuth::ApplicationsController, type: :controller do
     end
   end
 
-  describe '#new' do
+  describe "#new" do
     it do
       get :new
-      expect(response.status).to eql 200
+      expect(response.status).to be 200
       expect(response).to render_template :new
     end
   end
 
-  describe '#edit' do
+  describe "#edit" do
     before do
-      allow(::Doorkeeper::Application)
+      allow(Doorkeeper::Application)
         .to receive(:find)
-        .with('1')
+        .with("1")
         .and_return(application_stub)
     end
 
     it do
-      get :edit, params: { id: 1, application: { name: 'foo' } }
-      expect(response.status).to eql 200
+      get :edit, params: { id: 1, application: { name: "foo" } }
+      expect(response.status).to be 200
       expect(response).to render_template :edit
     end
   end
 
-  describe '#create' do
-    before do
-      allow(::Doorkeeper::Application)
-        .to receive(:new)
-        .and_return(application_stub)
-      expect(application_stub).to receive(:attributes=)
-      expect(application_stub).to receive(:save).and_return(true)
-      expect(application_stub).to receive(:plaintext_secret).and_return('secret!')
-    end
-
+  describe "#create" do
     it do
-      post :create, params: { application: { name: 'foo' } }
-      expect(response).to redirect_to action: :show, id: application_stub.id
+      post :create, params: {
+        application: {
+          name: "foo",
+          redirect_uri: "urn:ietf:wg:oauth:2.0:oob"
+        }
+      }
+      expect(response).to be_redirect
+      app = Doorkeeper::Application.last
+      expect(app.name).to eq "foo"
     end
   end
 
-  describe '#update' do
+  describe "#update" do
     before do
-      allow(::Doorkeeper::Application)
+      allow(Doorkeeper::Application)
         .to receive(:find)
-        .with('1')
+        .with("1")
         .and_return(application_stub)
       expect(application_stub).to receive(:attributes=)
       expect(application_stub).to receive(:save).and_return(true)
     end
 
     it do
-      patch :update, params: { id: 1, application: { name: 'foo' } }
+      patch :update, params: { id: 1, application: { name: "foo" } }
       expect(response).to redirect_to action: :index
     end
   end
 
-  describe '#destroy' do
+  describe "#destroy" do
     before do
-      allow(::Doorkeeper::Application)
+      allow(Doorkeeper::Application)
         .to receive(:find)
-        .with('1')
+        .with("1")
         .and_return(application_stub)
       expect(application_stub).to receive(:destroy).and_return(true)
     end

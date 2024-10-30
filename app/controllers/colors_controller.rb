@@ -1,13 +1,12 @@
-#-- encoding: UTF-8
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -24,18 +23,19 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 class ColorsController < ApplicationController
   before_action :require_admin_unless_readonly_api_request
+  authorization_checked! :index, :show, :new, :edit, :create, :update, :confirm_destroy, :destroy
 
-  layout 'admin'
+  layout "admin"
 
   menu_item :colors
 
   def index
-    @colors = Color.all
+    @colors = Color.all.sort_by(&:name)
     respond_to do |format|
       format.html
     end
@@ -54,6 +54,13 @@ class ColorsController < ApplicationController
     end
   end
 
+  def edit
+    @color = Color.find(params[:id])
+    respond_to do |format|
+      format.html
+    end
+  end
+
   def create
     @color = Color.new(permitted_params.color)
 
@@ -61,15 +68,8 @@ class ColorsController < ApplicationController
       flash[:notice] = I18n.t(:notice_successful_create)
       redirect_to colors_path
     else
-      flash.now[:error] = I18n.t('timelines.color_could_not_be_saved')
-      render action: 'new'
-    end
-  end
-
-  def edit
-    @color = Color.find(params[:id])
-    respond_to do |format|
-      format.html
+      flash.now[:error] = I18n.t(:error_color_could_not_be_saved)
+      render action: "new"
     end
   end
 
@@ -80,8 +80,8 @@ class ColorsController < ApplicationController
       flash[:notice] = I18n.t(:notice_successful_update)
       redirect_to colors_path
     else
-      flash.now[:error] = I18n.t('timelines.color_could_not_be_saved')
-      render action: 'edit'
+      flash.now[:error] = I18n.t(:error_color_could_not_be_saved)
+      render action: "edit"
     end
   end
 
@@ -102,20 +102,14 @@ class ColorsController < ApplicationController
 
   protected
 
-  def default_breadcrumb
-    if action_name == 'index'
-      t('timelines.admin_menu.colors')
-    else
-      ActionController::Base.helpers.link_to(t('timelines.admin_menu.colors'), colors_path)
-    end
+  def show_local_breadcrumb
+    false
   end
 
-  def show_local_breadcrumb
-    true
-  end
+  def default_breadcrumb; end
 
   def require_admin_unless_readonly_api_request
-    require_admin unless %w[index show].include? params[:action] and
+    require_admin unless %w[index show].include? action_name and
                          api_request?
   end
 end

@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,15 +23,15 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 class ConvertToMarkdown < ActiveRecord::Migration[5.1]
   def up
-    setting = Setting.where(name: 'text_formatting').pluck(:value)
-    return unless setting && setting[0] == 'textile'
+    setting = Setting.where(name: "text_formatting").pluck(:value)
+    return unless setting && setting[0] == "textile"
 
-    if ENV['OPENPROJECT_SKIP_TEXTILE_MIGRATION'].present?
+    if ENV["OPENPROJECT_SKIP_TEXTILE_MIGRATION"].present?
       warn <<~WARNING
         Your instance is configured with Textile text formatting, this means you have likely been running OpenProject before 8.0.0
 
@@ -45,15 +45,17 @@ class ConvertToMarkdown < ActiveRecord::Migration[5.1]
 
         For more information, please visit this page: https://www.openproject.org/textile-to-markdown-migration
 
-        WARNING
+      WARNING
       return
     end
 
-    if setting && setting[0] == 'textile'
-      converter = OpenProject::TextFormatting::Formats::Markdown::TextileConverter.new
-      converter.run!
-    end
+    if setting && setting[0] == "textile"
+      raise <<~ERROR
+        You appear to be upgrading from an old version of OpenProject using textile text formatters.
 
-    Setting.where(name: %w(text_formatting use_wysiwyg)).delete_all
+        OpenProject version 13.0 no longer provides the migration from Textile to Markdown.
+        First upgrade to any 12.x version, before performing the upgrade to 13.0
+      ERROR
+    end
   end
 end

@@ -5,16 +5,13 @@
   label.option-label
     float: left
     margin-right: 20px
-
-    &.-multi-line
-      margin-bottom: 0
-      line-height: 40px
+    font-weight: normal
+    display: flex
+    align-items: center
+    gap: 5px
 
     input
       margin-top: 0px
-
-  .modal--form-actions
-    @extend .op-modal--modal-footer
 
   .advanced-filters--filter,
   .advanced-filters--add-filter
@@ -22,3 +19,7 @@
 
   .ee-attribute-highlighting-upsale
     margin-bottom: 1.5rem
+
+  .tab-content
+    overflow-y: scroll
+    @include styled-scroll-bar

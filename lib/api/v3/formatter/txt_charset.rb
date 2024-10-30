@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module API::V3::Formatter
@@ -40,7 +40,7 @@ module API::V3::Formatter
     # * Encoding.default_external if no charset provided
     def self.encoding(object, env)
       Encoding.find(charset(env))
-    rescue
+    rescue StandardError
       object.encoding
     end
     private_class_method :encoding
@@ -50,7 +50,7 @@ module API::V3::Formatter
     #
     # This might return an invalid charset as only pattern matching is applied.
     def self.charset(env)
-      content_type = env['CONTENT_TYPE'].to_s
+      content_type = env["CONTENT_TYPE"].to_s
 
       if (matches = content_type.match(/charset=([^\s;]+)/))
         matches[1]

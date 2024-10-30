@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,21 +23,21 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'spec_helper'
+require "spec_helper"
 
-describe 'preview', type: :routing do
-  it 'should connect POST /meetings/:meeting_id/agenda/preview to meeting_agendas#preview' do
-    expect(post('/meetings/1/agenda/preview')).to route_to(controller: 'meeting_agendas',
-                                                           meeting_id: '1',
-                                                           action: 'preview')
+RSpec.describe "preview" do
+  it "connects POST /meetings/:meeting_id/agenda/preview to meeting_agendas#preview" do
+    expect(post("/meetings/1/agenda/preview")).to route_to(controller: "meeting_agendas",
+                                                           meeting_id: "1",
+                                                           action: "preview")
   end
 
-  it 'should connect POST /meetings/:meeting_id/agenda/preview to meeting_minutes#preview' do
-    expect(post('/meetings/1/minutes/preview')).to route_to(controller: 'meeting_minutes',
-                                                            meeting_id: '1',
-                                                            action: 'preview')
+  it "connects POST /meetings/:meeting_id/agenda/preview to meeting_minutes#preview" do
+    expect(post("/meetings/1/minutes/preview")).to route_to(controller: "meeting_minutes",
+                                                            meeting_id: "1",
+                                                            action: "preview")
   end
 end

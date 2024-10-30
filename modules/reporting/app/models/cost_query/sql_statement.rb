@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,13 +23,13 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 class CostQuery::SqlStatement < Report::SqlStatement
   COMMON_FIELDS = %w[
     user_id project_id work_package_id rate_id
-    comments spent_on created_on updated_on tyear tmonth tweek
+    comments spent_on created_at updated_at tyear tmonth tweek
     costs overridden_costs type
   ]
 
@@ -37,14 +37,14 @@ class CostQuery::SqlStatement < Report::SqlStatement
   attr_accessor :entry_union
 
   def initialize(table, desc = "")
-    super(table, desc)
+    super
     @entry_union = false
   end
 
   # this is a hack to ensure that additional joins added by filters do not result
   # in additional columns being selected.
   def to_s
-    select(['entries.*']) if select == ['*'] && group_by.empty? && self.entry_union
+    select(["entries.*"]) if select == ["*"] && group_by.empty? && entry_union
     super
   end
 
@@ -53,7 +53,7 @@ class CostQuery::SqlStatement < Report::SqlStatement
   #
   # Mapping for direct fields:
   #
-  #   Result                    | Time Entires             | Cost entries
+  #   Result                    | Time Entries             | Cost entries
   #   --------------------------|--------------------------|--------------------------
   #   id                        | id                       | id
   #   user_id                   | user_id                  | user_id
@@ -62,8 +62,8 @@ class CostQuery::SqlStatement < Report::SqlStatement
   #   rate_id                   | rate_id                  | rate_id
   #   comments                  | comments                 | comments
   #   spent_on                  | spent_on                 | spent_on
-  #   created_on                | created_on               | created_on
-  #   updated_on                | updated_on               | updated_on
+  #   created_at                | created_at               | created_at
+  #   updated_at                | updated_at               | updated_at
   #   tyear                     | tyear                    | tyear
   #   tmonth                    | tmonth                   | tmonth
   #   tweek                     | tweek                    | tweek
@@ -86,13 +86,14 @@ class CostQuery::SqlStatement < Report::SqlStatement
       query.select COMMON_FIELDS
       query.desc = "Subquery for #{table}"
       query.select({
-        count: 1, id: [model, :id], display_costs: 1,
-        real_costs: switch("#{table}.overridden_costs IS NULL" => [model, :costs], else: [model, :overridden_costs]),
-        week: iso_year_week(:spent_on, model),
-        singleton_value: 1 })
-      #FIXME: build this subquery from a sql_statement
+                     count: 1, id: [model, :id], display_costs: 1,
+                     real_costs: switch("#{table}.overridden_costs IS NULL" => [model, :costs], else: [model, :overridden_costs]),
+                     week: iso_year_week(field_name_for([model, :spent_on])),
+                     singleton_value: 1
+                   })
+      # FIXME: build this subquery from a sql_statement
       query.from "(SELECT *, #{typed :text, model.model_name.to_s} AS type FROM #{table}) AS #{table}"
-      send("unify_#{table}", query)
+      send(:"unify_#{table}", query)
     end
   end
 
@@ -101,7 +102,7 @@ class CostQuery::SqlStatement < Report::SqlStatement
   #
   # @param [CostQuery::SqlStatement] query The statement to adjust
   def self.unify_time_entries(query)
-    query.select :activity_id, units: :hours, cost_type_id: -1
+    query.select :activity_id, :logged_by_id, units: :hours, cost_type_id: -1
     query.select cost_type: quoted_label(:caption_labor)
   end
 
@@ -110,7 +111,7 @@ class CostQuery::SqlStatement < Report::SqlStatement
   #
   # @param [CostQuery::SqlStatement] query The statement to adjust
   def self.unify_cost_entries(query)
-    query.select :units, :cost_type_id, activity_id: -1
+    query.select :units, :cost_type_id, :logged_by_id, activity_id: -1
     query.select cost_type: "cost_types.name"
     query.join CostType
   end

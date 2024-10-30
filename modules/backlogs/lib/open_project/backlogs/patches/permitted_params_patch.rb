@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,10 +23,8 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
-
-require_dependency 'permitted_params'
 
 module OpenProject::Backlogs::Patches::PermittedParamsPatch
   def self.included(base)
@@ -35,13 +33,24 @@ module OpenProject::Backlogs::Patches::PermittedParamsPatch
 
   module InstanceMethods
     def update_work_package(args = {})
-      permitted_params = super(args)
+      permitted_params = super
 
-      backlogs_params = params.require(:work_package).permit(:story_points, :remaining_hours)
+      backlogs_params = params.require(:work_package).permit(:story_points)
       permitted_params.merge!(backlogs_params)
 
       permitted_params
     end
+
+    def my_account_settings
+      backlogs_params = params.fetch(:backlogs, {}).permit(:task_color, :versions_default_fold_state)
+      super.merge(backlogs: backlogs_params)
+    end
+
+    def backlogs_admin_settings
+      params
+        .require(:settings)
+        .permit(:task_type, :points_burn_direction, :wiki_template, story_types: [])
+    end
   end
 end
-PermittedParams.send(:include, OpenProject::Backlogs::Patches::PermittedParamsPatch)
+PermittedParams.include OpenProject::Backlogs::Patches::PermittedParamsPatch

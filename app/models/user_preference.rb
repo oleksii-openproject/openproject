@@ -1,13 +1,12 @@
-#-- encoding: UTF-8
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -24,61 +23,87 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 class UserPreference < ApplicationRecord
   belongs_to :user
-  serialize :others
+  delegate :notification_settings, to: :user
+  serialize :settings, coder: ::Serializers::IndifferentHashSerializer
 
-  validates_presence_of :user
-  validate :time_zone_correctness, if: -> { time_zone.present? }
+  validates :user,
+            presence: true
 
-  after_initialize :init_other_preferences
+  WORKDAYS_FROM_MONDAY_TO_FRIDAY = [1, 2, 3, 4, 5].freeze
+
+  ##
+  # Retrieve keys from settings, and allow accessing
+  # as boolean with ? suffix
+  def method_missing(method_name, *args)
+    key = method_name.to_s
+    return super unless supported_settings_method?(key)
+
+    action = key[-1]
+
+    case action
+    when "?"
+      to_boolean send(key[..-2])
+    when "="
+      settings[key[..-2]] = args.first
+    else
+      settings[key]
+    end
+  end
+
+  ##
+  # We respond to all methods as we retrieve
+  # the key from settings
+  def respond_to_missing?(method_name, include_private = false)
+    supported_settings_method?(method_name) || super
+  end
 
   def [](attr_name)
-    attribute_present?(attr_name) ? super : others[attr_name]
+    if attribute?(attr_name)
+      super
+    else
+      send attr_name
+    end
   end
 
   def []=(attr_name, value)
-    attribute_present?(attr_name) ? super : others[attr_name] = value
+    if attribute?(attr_name)
+      super
+    else
+      send :"#{attr_name}=", value
+    end
   end
 
   def comments_sorting
-    others.fetch(:comments_sorting, OpenProject::Configuration.default_comment_sort_order)
-  end
-
-  def comments_sorting=(order)
-    others[:comments_sorting] = order
+    settings.fetch(:comments_sorting, OpenProject::Configuration.default_comment_sort_order)
   end
 
   def comments_in_reverse_order?
-    comments_sorting == 'desc'
+    comments_sorting == "desc"
   end
 
-  def self_notified?
-    !others[:no_self_notified]
-  end
-
-  def self_notified=(value)
-    others[:no_self_notified] = !value
+  def diff_type
+    settings.fetch(:diff_type, "inline")
   end
 
   def auto_hide_popups=(value)
-    others[:auto_hide_popups] = to_boolean(value)
+    settings[:auto_hide_popups] = to_boolean(value)
   end
 
   def auto_hide_popups?
-    others.fetch(:auto_hide_popups) { Setting.default_auto_hide_popups? }
+    settings.fetch(:auto_hide_popups) { Setting.default_auto_hide_popups? }
   end
 
   def warn_on_leaving_unsaved?
-    # Need to cast here as previous values were '0' / '1'
-    to_boolean(others.fetch(:warn_on_leaving_unsaved) { true })
+    settings.fetch(:warn_on_leaving_unsaved, true)
   end
 
   def warn_on_leaving_unsaved=(value)
-    others[:warn_on_leaving_unsaved] = to_boolean(value)
+    settings[:warn_on_leaving_unsaved] = to_boolean(value)
   end
 
   # Provide an alias to form builders
@@ -87,18 +112,43 @@ class UserPreference < ApplicationRecord
   alias :auto_hide_popups :auto_hide_popups?
 
   def comments_in_reverse_order=(value)
-    others[:comments_sorting] = to_boolean(value) ? 'desc' : 'asc'
+    settings[:comments_sorting] = to_boolean(value) ? "desc" : "asc"
+  end
+
+  def theme
+    super.presence || Setting.user_default_theme
+  end
+
+  def high_contrast_theme?
+    theme.end_with?("high_contrast")
   end
 
   def time_zone
-    self[:time_zone].presence || Setting.user_default_timezone.presence
+    super.presence || Setting.user_default_timezone.presence || "Etc/UTC"
   end
 
-  def canonical_time_zone
-    return if time_zone.nil?
+  def time_zone?
+    settings["time_zone"].present?
+  end
 
-    zone = ActiveSupport::TimeZone.new(time_zone)
-    zone&.tzinfo&.canonical_identifier
+  def daily_reminders
+    super.presence || { enabled: true, times: ["08:00:00+00:00"] }.with_indifferent_access
+  end
+
+  def workdays
+    super || WORKDAYS_FROM_MONDAY_TO_FRIDAY
+  end
+
+  def immediate_reminders
+    super.presence || { mentioned: true }.with_indifferent_access
+  end
+
+  def pause_reminders
+    super.presence || { enabled: false }.with_indifferent_access
+  end
+
+  def supported_settings_method?(method_name)
+    UserPreferences::Schema.properties.include?(method_name.to_s.gsub(/\?|=\z/, ""))
   end
 
   private
@@ -107,11 +157,7 @@ class UserPreference < ApplicationRecord
     ActiveRecord::Type::Boolean.new.cast(value)
   end
 
-  def init_other_preferences
-    self.others ||= { no_self_notified: true }
-  end
-
-  def time_zone_correctness
-    errors.add(:time_zone, :inclusion) if time_zone.present? && canonical_time_zone.nil?
+  def attribute?(name)
+    %i[user user_id].include?(name.to_sym)
   end
 end

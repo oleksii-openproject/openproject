@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,102 +23,110 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'spec_helper'
+require "spec_helper"
 
-describe CustomValue::DateStrategy do
+RSpec.describe CustomValue::DateStrategy do
   let(:instance) { described_class.new(custom_value) }
   let(:custom_value) do
-    double('CustomValue',
-           value: value)
+    double("CustomValue",
+           value:)
   end
 
-  describe '#typed_value' do
+  describe "#typed_value" do
     subject { instance.typed_value }
 
-    context 'value is some date string' do
-      let(:value) { '2015-01-03' }
+    context "value is some date string" do
+      let(:value) { "2015-01-03" }
+
       it { is_expected.to eql(Date.iso8601(value)) }
     end
 
-    context 'value is blank' do
-      let(:value) { '' }
+    context "value is blank" do
+      let(:value) { "" }
+
       it { is_expected.to be_nil }
     end
 
-    context 'value is nil' do
+    context "value is nil" do
       let(:value) { nil }
+
       it { is_expected.to be_nil }
     end
   end
 
-  describe '#formatted_value' do
+  describe "#formatted_value" do
     subject { instance.formatted_value }
 
-    context 'value is some date string' do
-      let(:value) { '2015-01-03' }
+    context "value is some date string" do
+      let(:value) { "2015-01-03" }
 
-      context 'date format', with_settings: { date_format: '%Y-%m-%d' } do
-        it 'is the date' do
-          is_expected.to eql value
+      context "date format", with_settings: { date_format: "%Y-%m-%d" } do
+        it "is the date" do
+          expect(subject).to eql value
         end
       end
     end
 
-    context 'value is blank' do
-      let(:value) { '' }
+    context "value is blank" do
+      let(:value) { "" }
 
-      it 'is a blank string' do
-        is_expected.to eq nil
+      it "is a blank string" do
+        expect(subject).to be_nil
       end
     end
 
-    context 'value is nil' do
+    context "value is nil" do
       let(:value) { nil }
 
-      it 'is a blank string' do
-        is_expected.to eql ''
+      it "is a blank string" do
+        expect(subject).to eql ""
       end
     end
   end
 
-  describe '#validate_type_of_value' do
+  describe "#validate_type_of_value" do
     subject { instance.validate_type_of_value }
 
-    context 'value is valid date string' do
-      let(:value) { '2015-01-03' }
-      it 'accepts' do
-        is_expected.to be_nil
+    context "value is valid date string" do
+      let(:value) { "2015-01-03" }
+
+      it "accepts" do
+        expect(subject).to be_nil
       end
     end
 
-    context 'value is invalid date string in good format' do
-      let(:value) { '2015-02-30' }
-      it 'rejects' do
-        is_expected.to eql(:not_a_date)
+    context "value is invalid date string in good format" do
+      let(:value) { "2015-02-30" }
+
+      it "rejects" do
+        expect(subject).to be(:not_a_date)
       end
     end
 
-    context 'value is date string in bad format' do
-      let(:value) { '03.01.2015' }
-      it 'rejects' do
-        is_expected.to eql(:not_a_date)
+    context "value is date string in bad format" do
+      let(:value) { "03.01.2015" }
+
+      it "rejects" do
+        expect(subject).to be(:not_a_date)
       end
     end
 
-    context 'value is not a date string at all' do
-      let(:value) { 'chicken' }
-      it 'rejects' do
-        is_expected.to eql(:not_a_date)
+    context "value is not a date string at all" do
+      let(:value) { "chicken" }
+
+      it "rejects" do
+        expect(subject).to be(:not_a_date)
       end
     end
 
-    context 'value is valid date' do
-      let(:value) { Date.iso8601('2015-01-03') }
-      it 'accepts' do
-        is_expected.to be_nil
+    context "value is valid date" do
+      let(:value) { Date.iso8601("2015-01-03") }
+
+      it "accepts" do
+        expect(subject).to be_nil
       end
     end
   end

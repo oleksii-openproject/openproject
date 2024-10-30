@@ -1,14 +1,12 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -25,21 +23,21 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 class CustomAction < ApplicationRecord
   validates :name, length: { maximum: 255, minimum: 1 }
-  serialize :actions, CustomActions::Actions::Serializer
-  has_and_belongs_to_many :status_conditions, class_name: 'Status'
-  has_and_belongs_to_many :role_conditions, class_name: 'Role'
-  has_and_belongs_to_many :type_conditions, class_name: 'Type'
-  has_and_belongs_to_many :project_conditions, class_name: 'Project'
+  serialize :actions, coder: CustomActions::Actions::Serializer
+  has_and_belongs_to_many :status_conditions, class_name: "Status"
+  has_and_belongs_to_many :role_conditions, class_name: "Role"
+  has_and_belongs_to_many :type_conditions, class_name: "Type"
+  has_and_belongs_to_many :project_conditions, class_name: "Project"
 
   after_save :persist_conditions
 
   attribute :conditions
-  define_attribute_method 'conditions'
+  define_attribute_method "conditions"
 
   acts_as_list
 
@@ -89,9 +87,9 @@ class CustomAction < ApplicationRecord
   end
 
   def conditions
-    @conditions ||= available_conditions.map do |condition_class|
+    @conditions ||= available_conditions.filter_map do |condition_class|
       condition_class.getter(self)
-    end.compact
+    end
   end
 
   def conditions=(new_conditions)
@@ -119,28 +117,9 @@ class CustomAction < ApplicationRecord
 
   def persist_conditions
     available_conditions.map do |condition_class|
-      condition = conditions.detect { |c| c.class == condition_class }
+      condition = conditions.detect { |c| c.instance_of?(condition_class) }
 
       condition_class.setter(self, condition)
     end
   end
 end
-
-CustomActions::Register.action(CustomActions::Actions::AssignedTo)
-CustomActions::Register.action(CustomActions::Actions::Responsible)
-CustomActions::Register.action(CustomActions::Actions::Status)
-CustomActions::Register.action(CustomActions::Actions::Priority)
-CustomActions::Register.action(CustomActions::Actions::CustomField)
-CustomActions::Register.action(CustomActions::Actions::Type)
-CustomActions::Register.action(CustomActions::Actions::Project)
-CustomActions::Register.action(CustomActions::Actions::Notify)
-CustomActions::Register.action(CustomActions::Actions::DoneRatio)
-CustomActions::Register.action(CustomActions::Actions::EstimatedHours)
-CustomActions::Register.action(CustomActions::Actions::StartDate)
-CustomActions::Register.action(CustomActions::Actions::DueDate)
-CustomActions::Register.action(CustomActions::Actions::Date)
-
-CustomActions::Register.condition(CustomActions::Conditions::Status)
-CustomActions::Register.condition(CustomActions::Conditions::Role)
-CustomActions::Register.condition(CustomActions::Conditions::Type)
-CustomActions::Register.condition(CustomActions::Conditions::Project)

@@ -1,12 +1,12 @@
 #-- copyright
-# OpenProject is a project management system.
-# Copyright (C) 2012-2018 the OpenProject Foundation (OPF)
+# OpenProject is an open source project management software.
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module API
@@ -31,19 +31,13 @@ module API
     module TimeEntries
       module AvailableWorkPackagesHelper
         def available_work_packages_collection(allowed_scope)
-          service = WorkPackageCollectionFromQueryParamsService
-                      .new(current_user, scope: allowed_scope)
-                      .call(params)
-
-          if service.success?
-            service.result
-          else
-            api_errors = service.errors.full_messages.map do |message|
-              ::API::Errors::InvalidQuery.new(message)
-            end
-
-            raise ::API::Errors::MultipleErrors.create_if_many api_errors
+          call = raise_invalid_query_on_service_failure do
+            WorkPackageCollectionFromQueryParamsService
+              .new(current_user, scope: allowed_scope)
+              .call(params)
           end
+
+          call.result
         end
       end
     end

@@ -1,10 +1,10 @@
 #-- copyright
 #OpenProject is an open source project management software.
-#Copyright (C) 2012-2020 the OpenProject GmbH
+#Copyright (C) the OpenProject GmbH
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License version 3.
 #OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-#Copyright (C) 2006-2017 Jean-Philippe Lang
+#Copyright (C) 2006-2013 Jean-Philippe Lang
 #Copyright (C) 2010-2013 the ChiliProject Team
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License
@@ -17,9 +17,12 @@
 #You should have received a copy of the GNU General Public License
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-#See docs/COPYRIGHT.rdoc for more details.
+#See COPYRIGHT and LICENSE files for more details.
 #++
 cs:
+  plugin_costs:
+    name: "Čas a náklady"
+    description: "Tento modul přidává funkce pro plánování a sledování projektů."
   activerecord:
     attributes:
       cost_entry:
@@ -28,8 +31,8 @@ cs:
         spent: "Strávený čas"
         spent_on: "Datum"
       cost_type:
-        unit: "Jméno jednotky"
-        unit_plural: "Jméno jednotek (mn.č.)"
+        unit: "Název jednotky"
+        unit_plural: "Název Pluralizované jednotky"
       work_package:
         costs_by_type: "Strávené jednotky"
         labor_costs: "Náklady práce"
@@ -47,7 +50,7 @@ cs:
         few: "Typy nákladů"
         many: "Typy nákladů"
         other: "Typy nákladů"
-      rate: "Kurz"
+      rate: "Sazba"
     errors:
       models:
         work_package:
@@ -66,12 +69,12 @@ cs:
   button_log_costs: "Logovat jednotkové náklady"
   caption_booked_on_project: "Rezervováno v projektu"
   caption_default: "Výchozí"
-  caption_default_rate_history_for: "Výchozí historie kurzů pro %{user}"
+  caption_default_rate_history_for: "Výchozí historie sazeb  pro %{user}"
   caption_locked_on: "Uzamčeno"
   caption_materials: "Jednotky"
-  caption_rate_history: "Historie kurzů"
+  caption_rate_history: "Historie sazeb"
   caption_rate_history_for: "Histgoprie kurzů pro %{user}"
-  caption_rate_history_for_project: "Historie kurzů pro %{user} v projektu %{project}"
+  caption_rate_history_for_project: "Historie sazeb pro %{user} v projektu %{project}"
   caption_save_rate: "Uložit kurz"
   caption_set_rate: "Nastavit aktuální sazbu."
   caption_show_locked: "Zobrazit uzamčené typy"
@@ -82,7 +85,7 @@ cs:
   label_costlog: "Logované jednotkové náklady"
   label_cost_plural: "Náklady"
   label_cost_type_plural: "Typy nákladů"
-  label_cost_type_specific: "Cost type #%{id}: %{name}"
+  label_cost_type_specific: "Typ nákladu #%{id}: %{name}"
   label_costs_per_page: "Náklady na stránku"
   label_currency: "Měna"
   label_currency_format: "Formát měny"
@@ -107,9 +110,10 @@ cs:
   label_no: "Ne"
   label_option_plural: "Možnosti"
   label_overall_costs: "Celkové náklady"
-  label_rate: "Kurz"
+  label_rate: "Sazba"
   label_rate_plural: "Kurzy"
   label_status_finished: "Ukončeno"
+  label_show: "Show"
   label_units: "Jednotky nákladu"
   label_user: "Uživatel"
   label_until: "do"
@@ -132,7 +136,7 @@ cs:
   permission_view_own_cost_entries: "Zobrazit vlastní rezervované náklady"
   permission_view_own_hourly_rate: "Zobrazit vlastní hodinovou sazbu"
   permission_view_own_time_entries: "Zobrazit vlastní strávený čas"
-  project_module_costs: "Time and costs"
+  project_module_costs: "Čas a náklady"
   text_assign_time_and_cost_entries_to_project: "Přiřadit nahlášené hodiny a náklady projektu"
   text_destroy_cost_entries_question: "%{cost_entries} byl nahlášen k pracovním balíčkům, které se chystáte odstranit. Co chcete udělat?"
   text_destroy_time_and_cost_entries: "Odstranit nahlášené hodiny a náklady"

@@ -1,10 +1,10 @@
 #-- copyright
 #OpenProject is an open source project management software.
-#Copyright (C) 2012-2020 the OpenProject GmbH
+#Copyright (C) the OpenProject GmbH
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License version 3.
 #OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-#Copyright (C) 2006-2017 Jean-Philippe Lang
+#Copyright (C) 2006-2013 Jean-Philippe Lang
 #Copyright (C) 2010-2013 the ChiliProject Team
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License
@@ -17,15 +17,16 @@
 #You should have received a copy of the GNU General Public License
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-#See docs/COPYRIGHT.rdoc for more details.
+#See COPYRIGHT and LICENSE files for more details.
 #++
 cs:
+  plugin_openproject_backlogs:
+    name: "OpenProject Backlogy"
+    description: "Tento modul přidává funkce umožňující agilním týmům pracovat s OpenProject v Scrum projektech."
   activerecord:
     attributes:
       work_package:
         position: "Pozice"
-        remaining_hours: "Zbývající hodiny"
-        remaining_time: "Zbývající hodiny"
         story_points: "Body příběhu"
         backlogs_work_package_type: "Typ nevyřízené položky"
     errors:
@@ -35,9 +36,6 @@ cs:
             blocks_ids:
               can_only_contain_work_packages_of_current_sprint: "může obsahovat pouze ID pracovních balíčků v aktuálním sprintu."
               must_block_at_least_one_work_package: "musí obsahovat ID alespoň jednoho tiketu."
-            parent_id:
-              parent_child_relationship_across_projects: "je neplatný, protože pracovní balíček '%{work_package_name}' je nevyřízený úkol, a proto nemůže mít nadřazený mimo aktuální projekt."
-              type_must_be_one_of_the_following: "Typ musí být jeden z následujících: %{type_names}."
             version_id:
               task_version_must_be_the_same_as_story_version: "musí být stejná jako verze nadřazeného příběhu."
         sprint:
@@ -45,7 +43,7 @@ cs:
   backlogs:
     add_new_story: "Nový příběh"
     any: "jakákoliv"
-    backlog_settings: "Backlogs settings"
+    backlog_settings: "Nastavení nevyřízených položek"
     burndown_graph: "Graf vypálení"
     card_paper_size: "Velikost papíru pro tisk karet"
     chart_options: "Možnosti grafu"
@@ -66,7 +64,7 @@ cs:
     properties: "Vlastnosti"
     rebuild: "Znovu vytvořit"
     rebuild_positions: "Znovu sestavit pozice"
-    remaining_hours: "Zbývající hodiny"
+    remaining_hours: "Zbývající práce"
     remaining_hours_ideal: "Zbývající hodiny (ideální)"
     show_burndown_chart: "Spálovací graf"
     story: "Příběh"
@@ -78,7 +76,6 @@ cs:
     x_more: "%{count} další..."
   backlogs_active: "aktivní"
   backlogs_any: "jakákoliv"
-  backlogs_card_specification: "Typy štítků pro tisk karet"
   backlogs_inactive: "Projekt nezobrazuje žádnou aktivitu"
   backlogs_points_burn_direction: "Body popáleniny nahoru/dolů"
   backlogs_product_backlog: "Nevyřízené produkty"
@@ -99,6 +96,7 @@ cs:
   backlogs_empty_title: "Nejsou definovány žádné verze pro použití v neuzavřených záznamech"
   backlogs_empty_action_text: "Chcete-li začít s nevyřízené položky, vytvořte novou verzi a přiřaďte ji do sloupce nevyřízené položky."
   button_edit_wiki: "Upravit wiki stránku"
+  error_backlogs_task_cannot_be_story: "Nastavení jsou neplatná. Vybraný typ úlohy nemůže být zároveň typem příběhu."
   error_intro_plural: "Došlo k následujícím chybám:"
   error_intro_singular: "Došlo k následující chybě:"
   error_outro: "Před dalším odesláním opravte výše uvedené chyby."
@@ -136,6 +134,7 @@ cs:
   label_wiki: "Wiki"
   permission_view_master_backlog: "Zobrazit hlavní nevyřízené položky"
   permission_view_taskboards: "Zobrazit tabuly úkolů"
+  permission_select_done_statuses: "Vybrat stavy dokončených"
   permission_update_sprints: "Aktualizovat běhy"
   points_accepted: "Přijaté body"
   points_committed: "přislíbené body"
@@ -148,7 +147,7 @@ cs:
   rb_label_copy_tasks_none: "Žádný"
   rb_label_copy_tasks_open: "Otevřít"
   rb_label_link_to_original: "Zahrnout odkaz na původní příběh"
-  remaining_hours: "zbývající hodiny"
+  remaining_hours: "Zbývající práce"
   required_burn_rate_hours: "požadovaná rychlost hoření (v hodinách)"
   required_burn_rate_points: "požadovaná rychlost hoření (body)"
   todo_work_package_description: "%{summary}: %{url}\n%{description}"

@@ -1,12 +1,12 @@
 //-- copyright
 // OpenProject is an open source project management software.
-// Copyright (C) 2012-2020 the OpenProject GmbH
+// Copyright (C) the OpenProject GmbH
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License version 3.
 //
 // OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-// Copyright (C) 2006-2017 Jean-Philippe Lang
+// Copyright (C) 2006-2013 Jean-Philippe Lang
 // Copyright (C) 2010-2013 the ChiliProject Team
 //
 // This program is free software; you can redistribute it and/or
@@ -23,7 +23,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 //
-// See docs/COPYRIGHT.rdoc for more details.
+// See COPYRIGHT and LICENSE files for more details.
 //++
 
 
@@ -47,10 +47,10 @@
   #add-member--submit-button
     margin-bottom: 0
     margin-left: 1rem
-    // Neccessary so that button and select box have the same height
+    // Necessary so that button and select box have the same height
     line-height: 0.6rem
 
-@include breakpoint(680px down)
+@media screen and (max-width: $breakpoint-sm)
   #members_add_form .-flex
     align-items: flex-start
 
@@ -65,7 +65,7 @@
     .form--field
       margin-bottom: 1rem
 
-@media screen and (max-width: 87rem) and (min-width: 681px)
+@media screen and (max-width: $breakpoint-xl) and (min-width: $breakpoint-sm)
   #members_add_form .-flex.-with-button
     .form--field
       max-width: 60%

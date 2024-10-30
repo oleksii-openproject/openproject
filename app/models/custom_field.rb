@@ -1,14 +1,12 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -25,12 +23,12 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 class CustomField < ApplicationRecord
   include CustomField::OrderStatements
-
+  scope :required, -> { where(is_required: true) }
   has_many :custom_values, dependent: :delete_all
   # WARNING: the inverse_of option is also required in order
   # for the 'touch: true' option on the custom_field association in CustomOption
@@ -40,28 +38,33 @@ class CustomField < ApplicationRecord
   has_many :custom_options,
            -> { order(position: :asc) },
            dependent: :delete_all,
-           inverse_of: 'custom_field'
+           inverse_of: "custom_field"
   accepts_nested_attributes_for :custom_options
 
-  acts_as_list scope: 'type = \'#{self.class}\''
+  has_one :hierarchy_root,
+          class_name: "CustomField::Hierarchy::Item",
+          dependent: :destroy,
+          inverse_of: "custom_field"
+
+  acts_as_list scope: [:type]
 
   validates :field_format, presence: true
   validates :custom_options,
-            presence: { message: ->(*) { I18n.t(:'activerecord.errors.models.custom_field.at_least_one_custom_option') } },
-            if: ->(*) { field_format == 'list' }
-  validates :name, presence: true, length: { maximum: 30 }
+            presence: { message: ->(*) { I18n.t(:"activerecord.errors.models.custom_field.at_least_one_custom_option") } },
+            if: ->(*) { field_format == "list" }
+  validates :name, presence: true, length: { maximum: 256 }
 
   validate :uniqueness_of_name_with_scope
 
   def uniqueness_of_name_with_scope
-    taken_names = CustomField.where(type: type)
-    taken_names = taken_names.where('id != ?', id) if id
+    taken_names = CustomField.where(type:)
+    taken_names = taken_names.where.not(id:) if id
     taken_names = taken_names.pluck(:name)
 
     errors.add(:name, :taken) if name.in?(taken_names)
   end
 
-  validates_inclusion_of :field_format, in: OpenProject::CustomFieldFormat.available_formats
+  validates :field_format, inclusion: { in: OpenProject::CustomFieldFormat.available_formats }
 
   validate :validate_default_value
   validate :validate_regex
@@ -71,17 +74,21 @@ class CustomField < ApplicationRecord
   validates :min_length, numericality: { less_than_or_equal_to: :max_length, message: :smaller_than_or_equal_to_max_length },
                          unless: Proc.new { |cf| cf.max_length.blank? }
 
+  validates :multi_value, absence: true, unless: :multi_value_possible?
+  validates :allow_non_open_versions, absence: true, unless: :allow_non_open_versions_possible?
+
   before_validation :check_searchability
+  after_destroy :destroy_help_text
 
   # make sure int, float, date, and bool are not searchable
   def check_searchability
-    self.searchable = false if %w(int float date bool).include?(field_format)
+    self.searchable = false if %w(int float date bool user version).include?(field_format)
     true
   end
 
   def default_value
     if list?
-      ids = custom_options.select(&:default_value).map(&:id)
+      ids = custom_options.where(default_value: true).pluck(:id).map(&:to_s)
 
       if multi_value?
         ids
@@ -128,11 +135,11 @@ class CustomField < ApplicationRecord
 
   def possible_values_options(obj = nil)
     case field_format
-    when 'user'
+    when "user"
       possible_user_values_options(obj)
-    when 'version'
+    when "version"
       possible_version_values_options(obj)
-    when 'list'
+    when "list"
       possible_list_values_options
     else
       possible_values
@@ -141,9 +148,9 @@ class CustomField < ApplicationRecord
 
   def value_of(value)
     if list?
-      custom_options.where(value: value).pluck(:id).first
+      custom_options.where(value:).pick(:id)
     else
-      CustomValue.new(custom_field: self, value: value).valid? && value
+      CustomValue.new(custom_field: self, value:).valid? && value
     end
   end
 
@@ -154,9 +161,9 @@ class CustomField < ApplicationRecord
   #        You MUST NOT pass a customizable if this CF has any other format
   def possible_values(obj = nil)
     case field_format
-    when 'user', 'version'
+    when "user", "version"
       possible_values_options(obj).map(&:last)
-    when 'list'
+    when "list"
       custom_options
     else
       read_attribute(:possible_values)
@@ -172,7 +179,7 @@ class CustomField < ApplicationRecord
       if custom_option
         custom_option.value = value
       else
-        custom_options.build position: i + 1, value: value
+        custom_options.build position: i + 1, value:
       end
 
       max_position = i + 1
@@ -182,31 +189,33 @@ class CustomField < ApplicationRecord
   end
 
   def cast_value(value)
-    casted = nil
-    unless value.blank?
-      case field_format
-      when 'string', 'text', 'list'
-        casted = value
-      when 'date'
-        casted = begin; value.to_date; rescue; nil end
-      when 'bool'
-        casted = ActiveRecord::Type::Boolean.new.cast(value)
-      when 'int'
-        casted = value.to_i
-      when 'float'
-        casted = value.to_f
-      when 'user', 'version'
-        casted = (value.blank? ? nil : field_format.classify.constantize.find_by(id: value.to_i))
+    return if value.blank?
+
+    case field_format
+    when "string", "text", "list", "link"
+      value
+    when "date"
+      begin
+        value.to_date
+      rescue StandardError
+        nil
       end
+    when "bool"
+      ActiveRecord::Type::Boolean.new.cast(value)
+    when "int"
+      value.to_i
+    when "float"
+      value.to_f
+    when "user", "version"
+      field_format.classify.constantize.find_by(id: value.to_i)
     end
-    casted
   end
 
-  def <=>(field)
-    if type == 'WorkPackageCustomField'
-      name.downcase <=> field.name.downcase
+  def <=>(other)
+    if type == "WorkPackageCustomField"
+      name.downcase <=> other.name.downcase
     else
-      position <=> field.position
+      position <=> other.position
     end
   end
 
@@ -214,7 +223,7 @@ class CustomField < ApplicationRecord
     name =~ /\A(.+)CustomField\z/
     begin
       $1.constantize
-    rescue
+    rescue StandardError
       nil
     end
   end
@@ -224,9 +233,8 @@ class CustomField < ApplicationRecord
   end
 
   # to move in project_custom_field
-  def self.for_all(options = {})
+  def self.for_all
     where(is_for_all: true)
-      .includes(options[:include])
       .order("#{table_name}.position")
   end
 
@@ -234,8 +242,23 @@ class CustomField < ApplicationRecord
     where(is_filter: true)
   end
 
-  def accessor_name
+  def attribute_name(format = nil)
+    return "customField#{id}" if format == :camel_case
+    return "custom-field-#{id}" if format == :kebab_case
+
     "custom_field_#{id}"
+  end
+
+  def attribute_getter
+    attribute_name.to_sym
+  end
+
+  def attribute_setter
+    :"#{attribute_name}="
+  end
+
+  def column_name
+    "cf_#{id}"
   end
 
   def type_name
@@ -250,8 +273,32 @@ class CustomField < ApplicationRecord
     field_format == "list"
   end
 
-  def multi_value?
-    multi_value
+  def user?
+    field_format == "user"
+  end
+
+  def version?
+    field_format == "version"
+  end
+
+  def formattable?
+    field_format == "text"
+  end
+
+  def boolean?
+    field_format == "bool"
+  end
+
+  def field_format_hierarchy?
+    field_format == "hierarchy"
+  end
+
+  def multi_value_possible?
+    version? || user? || list? || field_format_hierarchy?
+  end
+
+  def allow_non_open_versions_possible?
+    version?
   end
 
   ##
@@ -260,7 +307,7 @@ class CustomField < ApplicationRecord
   def cache_key
     tag = multi_value? ? "mv" : "sv"
 
-    super + '/' + tag
+    "#{super}/#{tag}"
   end
 
   private
@@ -278,7 +325,7 @@ class CustomField < ApplicationRecord
   def possible_user_values_options(obj)
     mapped_with_deduced_project(obj) do |project|
       if project&.persisted?
-        project.users
+        project.principals
       else
         Principal
           .in_visible_project_or_me(User.current)
@@ -292,9 +339,9 @@ class CustomField < ApplicationRecord
 
   def possible_values_from_arg(arg)
     if arg.is_a?(Array)
-      arg.compact.map(&:strip).reject(&:blank?)
+      arg.compact.map(&:strip).compact_blank
     else
-      arg.to_s.split(/[\n\r]+/).map(&:strip).reject(&:blank?)
+      arg.to_s.split(/[\n\r]+/).map(&:strip).compact_blank
     end
   end
 
@@ -310,5 +357,11 @@ class CustomField < ApplicationRecord
     result
       .sort
       .map { |u| [u.name, u.id.to_s] }
+  end
+
+  def destroy_help_text
+    AttributeHelpText
+      .where(attribute_name:)
+      .destroy_all
   end
 end

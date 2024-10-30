@@ -1,29 +1,51 @@
+#-- copyright
+# OpenProject is an open source project management software.
+# Copyright (C) the OpenProject GmbH
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License version 3.
+#
+# OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
+# Copyright (C) 2006-2013 Jean-Philippe Lang
+# Copyright (C) 2010-2013 the ChiliProject Team
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+#
+# See COPYRIGHT and LICENSE files for more details.
+#++
+
 class AnonymousUser < User
-  validate :validate_unique_anonymous_user, on: :create
-
-  # There should be only one AnonymousUser in the database
-  def validate_unique_anonymous_user
-    errors.add :base, 'An anonymous user already exists.' if AnonymousUser.any?
-  end
-
-  def available_custom_fields
-    []
-  end
-
-  # Overrides a few properties
-  def logged?; false end
-
-  def builtin?; true end
-
-  def admin; false end
+  include Users::FunctionUser
 
   def name(*_args); I18n.t(:label_user_anonymous) end
 
-  def mail; nil end
+  def self.first
+    anonymous_user = super
 
-  def time_zone; nil end
+    if anonymous_user.nil?
+      (anonymous_user = new.tap do |u|
+        u.lastname = "Anonymous"
+        u.login = ""
+        u.firstname = ""
+        u.mail = ""
+        u.status = User.statuses[:active]
+      end).save
 
-  def rss_key; nil end
+      raise "Unable to create the anonymous user." if anonymous_user.new_record?
+    end
 
-  def destroy; false end
+    anonymous_user
+  end
 end

@@ -1,13 +1,12 @@
-#-- encoding: UTF-8
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -24,29 +23,29 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module ::TypesHelper
   def types_tabs
     [
       {
-        name: 'settings',
-        partial: 'types/form/settings',
+        name: "settings",
+        partial: "types/form/settings",
         path: edit_type_tab_path(id: @type.id, tab: :settings),
-        label: 'types.edit.settings'
+        label: "types.edit.settings"
       },
       {
-        name: 'form_configuration',
-        partial: 'types/form/form_configuration',
+        name: "form_configuration",
+        partial: "types/form/form_configuration",
         path: edit_type_tab_path(id: @type.id, tab: :form_configuration),
-        label: 'types.edit.form_configuration'
+        label: "types.edit.form_configuration"
       },
       {
-        name: 'projects',
-        partial: 'types/form/projects',
+        name: "projects",
+        partial: "types/form/projects",
         path: edit_type_tab_path(id: @type.id, tab: :projects),
-        label: 'types.edit.projects'
+        label: "types.edit.projects"
       }
     ]
   end
@@ -55,18 +54,18 @@ module ::TypesHelper
     return unless type
 
     css_class = if type.is_milestone?
-                  'color--milestone-icon'
+                  "color--milestone-icon"
                 else
-                  'color--phase-icon'
+                  "color--phase-icon"
                 end
 
     color = if type.color.present?
               type.color.hexcode
             else
-              '#CCC'
+              "#CCC"
             end
 
-    content_tag(:span, ' ',
+    content_tag(:span, " ",
                 class: css_class,
                 style: "background-color: #{color}")
   end
@@ -103,10 +102,15 @@ module ::TypesHelper
   def query_to_query_props(group)
     return nil unless group.group_type == :query
 
+    query = group.attributes
+
+    # Reduce the query to its valid subset to avoid errors loading the form
+    query.valid_subset!
+
     # Modify the hash to match Rails array based +to_query+ transforms:
     # e.g., { columns: [1,2] }.to_query == "columns[]=1&columns[]=2" (unescaped)
     # The frontend will do that IFF the hash key is an array
-    ::API::V3::Queries::QueryParamsRepresenter.new(group.attributes).to_json
+    ::API::V3::Queries::QueryParamsRepresenter.new(query).to_json
   end
 
   private
@@ -130,7 +134,7 @@ module ::TypesHelper
 
   def attr_form_map(key, represented)
     {
-      key: key,
+      key:,
       is_cf: CustomField.custom_field_attribute?(key),
       is_required: represented[:required] && !represented[:has_default],
       translation: Type.translated_attribute_name(key, represented)

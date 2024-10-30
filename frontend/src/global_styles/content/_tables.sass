@@ -1,12 +1,12 @@
 //-- copyright
 // OpenProject is an open source project management software.
-// Copyright (C) 2012-2020 the OpenProject GmbH
+// Copyright (C) the OpenProject GmbH
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License version 3.
 //
 // OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-// Copyright (C) 2006-2017 Jean-Philippe Lang
+// Copyright (C) 2006-2013 Jean-Philippe Lang
 // Copyright (C) 2010-2013 the ChiliProject Team
 //
 // This program is free software; you can redistribute it and/or
@@ -23,7 +23,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 //
-// See docs/COPYRIGHT.rdoc for more details.
+// See COPYRIGHT and LICENSE files for more details.
 //++
 
 table
@@ -39,7 +39,7 @@ table
         padding-right: 1em
     span
       &.name
-        font-weight: bold
+        font-weight: var(--base-text-weight-bold)
       &.description, &.url
         @include text-shortener
         display: block
@@ -53,10 +53,8 @@ table
         font-style: normal
       &.total
         font-style: normal
-        font-weight: bold
+        font-weight: var(--base-text-weight-bold)
         background-color: #EEEEEE
-    .hours-dec
-      font-size: 0.9em
 
 #workflow_form
   .generic-table--results-container
@@ -68,7 +66,7 @@ table
     width: calc(100% - 30px)
 
     .workflow-table--current-status
-      font-weight: bold
+      font-weight: var(--base-text-weight-bold)
       text-transform: uppercase
       font-size: 0.875rem
 
@@ -81,7 +79,7 @@ table
         left: 0px
         transform-origin: 0 0
         text-transform: uppercase
-        font-weight: bold
+        font-weight: var(--base-text-weight-bold)
         max-width: 220px
         @include text-shortener
 
@@ -138,28 +136,28 @@ tr
         white-space: nowrap
 
   &.user
-    td
-      white-space: nowrap
     &.locked, &.registered, &.locked a, &.registered a
-      color: #aaa
+      color: var(--fgColor-muted)
 
-td.hours
-  font-weight: bold
-  .hours-dec
-    font-size: 0.9em
+td
+  &.hours
+    font-weight: var(--base-text-weight-bold)
+  .date
+    .spot-drop-modal
+      display: block
 
 th.hidden
   display: none
 
 tr.context-menu-selection,
 tr.-checked
-  background-color: var(--table-row-highlighting-color) !important
+  background-color: var(--codeMirror-selection-bgColor) !important
   &[class*=__hl_background]
     outline: var(--table-row-highlighting-outline-color) solid 2px
 
   td
-    border-top: 1px solid var(--table-row-highlighting-color) !important
-    border-bottom: 1px solid var(--table-row-highlighting-color) !important
+    border-top: 1px solid var(--codeMirror-selection-bgColor) !important
+    border-bottom: 1px solid var(--codeMirror-selection-bgColor) !important
     color: var(--body-font-color) !important
     a
       color: var(--body-font-color) !important

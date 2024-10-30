@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,10 +23,8 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
-
-require_dependency 'user'
 
 module OpenProject::Backlogs::Patches::UserPatch
   def self.included(base)
@@ -55,12 +53,12 @@ module OpenProject::Backlogs::Patches::UserPatch
     def read_backlogs_preference(attr)
       setting = pref[:"backlogs_#{attr}"]
 
-      setting.blank? ? nil : setting
+      setting.presence
     end
 
     def write_backlogs_preference(attr, new_value)
       pref[:"backlogs_#{attr}"] = new_value
-      pref.save! unless self.new_record?
+      pref.save! unless new_record?
 
       new_value
     end
@@ -68,9 +66,9 @@ module OpenProject::Backlogs::Patches::UserPatch
     def compute_backlogs_preference(attr)
       case attr
       when :task_color
-        ('#%0.6x' % rand(0xFFFFFF)).upcase
+        ("#%0.6x" % rand(0xFFFFFF)).upcase
       when :versions_default_fold_state
-        'open'
+        "open"
       else
         raise "Unsupported attribute '#{attr}'"
       end
@@ -78,4 +76,4 @@ module OpenProject::Backlogs::Patches::UserPatch
   end
 end
 
-User.send(:include, OpenProject::Backlogs::Patches::UserPatch)
+User.include OpenProject::Backlogs::Patches::UserPatch

@@ -1,14 +1,12 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -25,10 +23,11 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 class CustomActionsController < ApplicationController
+  include EnterpriseTrialHelper
   before_action :require_admin
   before_action :require_enterprise_token
 
@@ -36,9 +35,7 @@ class CustomActionsController < ApplicationController
   before_action :find_model_object, only: %i(edit update destroy)
   before_action :pad_params, only: %i(create update)
 
-  layout 'admin'
-
-  helper_method :gon
+  layout "admin"
 
   def index
     @custom_actions = CustomAction.order_by_position
@@ -48,14 +45,14 @@ class CustomActionsController < ApplicationController
     @custom_action = CustomAction.new
   end
 
+  def edit; end
+
   def create
     CustomActions::CreateService
       .new(user: current_user)
       .call(attributes: permitted_params.custom_action.to_h,
             &index_or_render(:new))
   end
-
-  def edit; end
 
   def update
     CustomActions::UpdateService
@@ -80,7 +77,6 @@ class CustomActionsController < ApplicationController
 
       call.on_failure do
         @custom_action = call.result
-        @errors = call.errors
         render action: render_action
       end
     }
@@ -90,11 +86,12 @@ class CustomActionsController < ApplicationController
     return if EnterpriseToken.allows_to?(:custom_actions)
 
     if request.get?
-      render template: 'common/upsale',
+      render template: "common/upsale",
              locals: {
-                 feature_title: I18n.t('custom_actions.upsale.title'),
-                 feature_description: I18n.t('custom_actions.upsale.description'),
-                 feature_reference: 'custom_actions_admin'
+               feature_title: I18n.t("custom_actions.upsale.title"),
+               feature_description: I18n.t("custom_actions.upsale.description"),
+               feature_reference: "custom_actions_admin",
+               feature_video: "enterprise/custom-actions.mp4"
              }
     else
       render_403
@@ -112,15 +109,9 @@ class CustomActionsController < ApplicationController
     params[:custom_action][:actions] ||= {}
   end
 
-  def default_breadcrumb
-    if action_name == 'index'
-      t('custom_actions.plural')
-    else
-      ActionController::Base.helpers.link_to(t('custom_actions.plural'), custom_actions_path)
-    end
+  def show_local_breadcrumb
+    false
   end
 
-  def show_local_breadcrumb
-    true
-  end
+  def default_breadcrumb; end
 end

@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module Members
@@ -37,19 +37,62 @@ module Members
 
     validate :user_allowed_to_manage
     validate :roles_grantable
+    validate :project_set
+    validate :project_manageable
+
+    def assignable_projects
+      Project
+        .active
+        .where(id: Project.allowed_to(user, :manage_members))
+    end
+
+    private
 
     def user_allowed_to_manage
-      if model.project && !user.allowed_to?(:manage_members, model.project)
-        errors.add :base, :error_unauthorized
-      end
+      errors.add :base, :error_unauthorized unless user_allowed_to_manage?
     end
 
     def roles_grantable
       unmarked_roles = model.member_roles.reject(&:marked_for_destruction?).map(&:role)
 
-      unless unmarked_roles.all? { |r| r.builtin == Role::NON_BUILTIN && r.class == Role }
-        errors.add(:roles, :ungrantable)
+      errors.add(:roles, :ungrantable) unless unmarked_roles.all? { |r| role_grantable?(r) }
+    end
+
+    def project_set
+      errors.add(:project, :blank) unless project_set_or_admin?
+    end
+
+    def project_manageable
+      errors.add(:project, :invalid) unless project_manageable_or_blank?
+    end
+
+    def role_grantable?(role)
+      role.builtin == Role::NON_BUILTIN &&
+        ((model.project && role.instance_of?(ProjectRole)) || (!model.project && role.instance_of?(GlobalRole)))
+    end
+
+    def user_allowed_to_manage? # rubocop:disable Metrics/AbcSize, Metrics/PerceivedComplexity
+      # rubocop:disable Performance/RedundantEqualityComparisonBlock
+      if model.project.present? && model.roles.empty?
+        user.allowed_in_any_project?(:manage_members)
+      elsif model.project.present? && model.roles.all? { |r| r.is_a?(ProjectRole) }
+        user.allowed_in_project?(:manage_members, model.project)
+      elsif model.project.nil? && model.roles.any? { |r| r.is_a?(GlobalRole) }
+        user.admin?
+      else
+        # This state is invalid to be saved so other validations will prevent this from being valid
+        # but we cannot tell whether the user is allowed to manage members for this.
+        true
       end
+      # rubocop:enable Performance/RedundantEqualityComparisonBlock
+    end
+
+    def project_manageable_or_blank?
+      !model.project || user.allowed_in_project?(:manage_members, model.project)
+    end
+
+    def project_set_or_admin?
+      model.project || user.admin?
     end
   end
 end

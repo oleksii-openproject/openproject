@@ -1,13 +1,12 @@
-#-- encoding: UTF-8
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -24,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 class Redmine::MenuManager::Mapper
@@ -34,10 +33,8 @@ class Redmine::MenuManager::Mapper
     @menu_items = items[menu]
   end
 
-  @@last_items_count = Hash.new { |h, k| h[k] = 0 }
-
   # Adds an item at the end of the menu. Available options:
-  # * param: the parameter name that is used for the project id (default is :id)
+  # * param: the parameter name that is used for the project id (default is :project_id)
   # * if: a Proc that is called before rendering the item, the item is displayed only if it returns true
   # * caption that can be:
   #   * a localized string Symbol
@@ -56,18 +53,14 @@ class Redmine::MenuManager::Mapper
 
     if options[:parent]
       subtree = find(options[:parent])
-      if subtree
-        target_root = subtree
-      else
-        target_root = @menu_items.root
-      end
+      target_root = subtree || @menu_items.root
 
     else
       target_root = @menu_items.root
     end
 
     # menu item position
-    if first = options.delete(:first)
+    if options.delete(:first)
       target_root.prepend(Redmine::MenuManager::MenuItem.new(name, url, options))
     elsif before = options.delete(:before)
 
@@ -119,24 +112,6 @@ class Redmine::MenuManager::Mapper
       if node.name == name
         return node.position
       end
-    end
-  end
-end
-
-class Redmine::MenuManager::MapDeferrer
-  def initialize(menu_builder_queue)
-    @menu_builder_queue = menu_builder_queue
-  end
-
-  def defer(method, *args)
-    ActiveSupport::Deprecation.warn "Calling #{method} and accessing the the menu object from outside of the block attached to the map method is deprecated and will be removed in ChiliProject 3.0. Please access the menu object from within the attached block instead. Please also note the differences between the APIs.", caller.drop(1)
-    menu_builder = proc { |menu_mapper| menu_mapper.send(method, *args) }
-    @menu_builder_queue.push(menu_builder)
-  end
-
-  [:push, :delete, :exists?, :find, :position_of].each do |method|
-    define_method method do |*args|
-      defer(method, *args)
     end
   end
 end

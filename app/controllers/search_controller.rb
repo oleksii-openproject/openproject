@@ -1,13 +1,12 @@
-#-- encoding: UTF-8
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -24,13 +23,13 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 class SearchController < ApplicationController
   include Layout
 
-  before_action :find_optional_project,
+  before_action :load_and_authorize_in_optional_project,
                 :prepare_tokens
 
   LIMIT = 10
@@ -54,22 +53,13 @@ class SearchController < ApplicationController
   private
 
   def prepare_tokens
-    @question = search_params[:q] || ''
+    @question = search_params[:q] || ""
     @question.strip!
     @tokens = scan_query_tokens(@question).uniq
 
     unless @tokens.any?
-      @question = ''
+      @question = ""
     end
-  end
-
-  def find_optional_project
-    return true unless params[:project_id]
-
-    @project = Project.find(params[:project_id])
-    check_project_privacy
-  rescue ActiveRecord::RecordNotFound
-    render_404
   end
 
   def limit_results_first_page
@@ -85,15 +75,15 @@ class SearchController < ApplicationController
     @pagination_next_date = @results[-1].event_datetime if offset && @results[-1]
 
     if @results.size > LIMIT
-      @pagination_previous_date = @results[-(LIMIT)].event_datetime
-      @results = @results[-(LIMIT), LIMIT]
+      @pagination_previous_date = @results[-LIMIT].event_datetime
+      @results = @results[-LIMIT, LIMIT]
     end
   end
 
   # extract tokens from the question
   # eg. hello "bye bye" => ["hello", "bye bye"]
   def scan_query_tokens(query)
-    tokens = query.scan(%r{((\s|^)"[\s\w]+"(\s|$)|\S+)}).map { |m| m.first.gsub(%r{(^\s*"\s*|\s*"\s*$)}, '') }
+    tokens = query.scan(%r{((\s|^)"[\s\w]+"(\s|$)|\S+)}).map { |m| m.first.gsub(%r{(^\s*"\s*|\s*"\s*$)}, "") }
 
     # no more than 5 tokens to search for
     tokens.slice! 5..-1 if tokens.size > 5
@@ -106,16 +96,15 @@ class SearchController < ApplicationController
   end
 
   def offset
-    Time.at(Rational(search_params[:offset])) if search_params[:offset]
-  rescue TypeError
-    nil
+    value = Rational(search_params[:offset], exception: false)
+    Time.zone.at(value) if value
   end
 
   def projects_to_search
     case search_params[:scope]
-    when 'all'
+    when "all"
       nil
-    when 'current_project'
+    when "current_project"
       @project
     else
       @project ? @project.self_and_descendants.active : nil
@@ -130,7 +119,7 @@ class SearchController < ApplicationController
       r, c = klass.search(tokens,
                           projects_to_search,
                           limit: (LIMIT + 1),
-                          offset: offset,
+                          offset:,
                           before: search_params[:previous].nil?)
 
       results += r
@@ -151,9 +140,9 @@ class SearchController < ApplicationController
 
     if projects_to_search.is_a? Project
       # don't search projects
-      types.delete('projects')
+      types.delete("projects")
       # only show what the user is allowed to view
-      types = types.select { |o| User.current.allowed_to?("view_#{o}".to_sym, projects_to_search) }
+      types = types.select { |o| User.current.allowed_in_project?(:"view_#{o}", projects_to_search) }
     end
 
     types
@@ -164,13 +153,13 @@ class SearchController < ApplicationController
 
     scope = if scope.empty?
               search_types
-            elsif scope & ['work_packages'] == scope
+            elsif scope & ["work_packages"] == scope
               []
             else
               scope
             end
 
-    scope.map { |s| [s, scope_class(s)] }.to_h
+    scope.index_with { |s| scope_class(s) }
   end
 
   def scope_class(scope)
@@ -178,7 +167,7 @@ class SearchController < ApplicationController
   end
 
   def provision_gon
-    available_search_types = Redmine::Search.available_search_types.dup.push('all')
+    available_search_types = search_types.dup.push("all")
 
     gon.global_search = {
       search_term: @question,
@@ -189,7 +178,7 @@ class SearchController < ApplicationController
           name: OpenProject::GlobalSearch.tab_name(search_type)
         }
       end,
-      current_tab: available_search_types.detect { |search_type| search_params[search_type] } || 'all'
+      current_tab: available_search_types.detect { |search_type| search_params[search_type] } || "all"
     }
   end
 end

@@ -1,14 +1,12 @@
-# encoding: utf-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -25,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module OpenProject
@@ -39,10 +37,10 @@ module OpenProject
     # length and other complexity rules.
     #
     module Evaluator
-      RULES = { 'uppercase' => /.*[A-Z].*/u,
-                'lowercase' => /.*[a-z].*/u,
-                'special'   => /.*[^\da-zA-Z].*/u,
-                'numeric'   => /.*\d.*/u }
+      RULES = { "uppercase" => /.*[A-Z].*/u,
+                "lowercase" => /.*[a-z].*/u,
+                "special" => /.*[^\da-zA-Z].*/u,
+                "numeric" => /.*\d.*/u }
       # Check whether password conforms to password complexity settings.
       # Checks complexity rules and password length.
       def self.conforming?(password)
@@ -57,8 +55,7 @@ module OpenProject
           errors << rules_description
         end
         unless password_long_enough(password)
-          errors << I18n.t(:too_short,
-                           scope: [:activerecord, :errors, :messages],
+          errors << I18n.t("activerecord.errors.messages.too_short",
                            count: OpenProject::Passwords::Evaluator.min_length)
         end
         errors
@@ -102,9 +99,9 @@ module OpenProject
       # Returns a text describing the active password complexity rules,
       # the minimum number of rules to adhere to and the total number of rules.
       def self.rules_description
-        return '' if min_adhered_rules == 0
+        return "" if min_adhered_rules == 0
 
-        rules = active_rules_list.join(', ')
+        rules = active_rules_list.join(", ")
         rules_description_locale(rules)
       end
 
@@ -114,12 +111,10 @@ module OpenProject
                count: OpenProject::Passwords::Evaluator.min_length)
       end
 
-      private
-
       # Returns the number of active rules password adheres to.
       def self.size_active_rules_adhered_by(password)
         active_rules.count do |name|
-          password =~ RULES[name] ? true : false
+          password&.match?(RULES[name]) ? true : false
         end
       end
 
@@ -127,14 +122,13 @@ module OpenProject
       def self.active_rules_list
         active_rules.map do |rule|
           I18n.t(rule.to_sym,
-                 scope: [:activerecord, :errors, :models, :user, :attributes, :password])
+                 scope: %i[activerecord errors models user attributes password])
         end
       end
 
       def self.rules_description_locale(rules)
-        I18n.t(:weak,
-               scope: [:activerecord, :errors, :models, :user, :attributes, :password],
-               rules: rules,
+        I18n.t("activerecord.errors.models.user.attributes.password.weak",
+               rules:,
                min_count: min_adhered_rules,
                all_count: active_rules.size)
       end
@@ -150,15 +144,15 @@ module OpenProject
       # password length, whichever is higher.
       # The generated password conforms to the active password rules.
       def self.random_password
-        chars = ('a'..'z').to_a +
-                ('A'..'Z').to_a +
-                ('0'..'9').to_a +
-                ['!', "\"", '#', '$', '%', '&', "'", '(', ')', '*', '+',
-                 ',', '-', '.', '/', ':', ';', '<', '=', '>', '?', '@', '[', '\\',
-                 ']', '^', '_', '`', '{', '|', '}', '~']
+        chars = ("a".."z").to_a +
+                ("A".."Z").to_a +
+                ("0".."9").to_a +
+                ["!", "\"", "#", "$", "%", "&", "'", "(", ")", "*", "+",
+                 ",", "-", ".", "/", ":", ";", "<", "=", ">", "?", "@", "[", "\\",
+                 "]", "^", "_", "`", "{", "|", "}", "~"]
 
         begin
-          password = ''
+          password = ""
           length = [RANDOM_PASSWORD_MIN_LENGTH, Evaluator.min_length].max
           length.times { |_i| password << chars[SecureRandom.random_number(chars.size - 1)] }
         end while not Evaluator.conforming? password

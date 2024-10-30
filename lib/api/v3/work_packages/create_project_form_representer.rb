@@ -1,13 +1,12 @@
-#-- encoding: UTF-8
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -24,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module API
@@ -53,8 +52,7 @@ module API
         end
 
         link :commit do
-          if current_user
-             .allowed_to?(:edit_work_packages, represented.project) &&
+          if current_user.allowed_in_work_package?(:edit_work_packages, represented) &&
              @errors.empty?
             {
               href: api_v3_paths.work_packages_by_project(represented.project_id),
@@ -64,13 +62,11 @@ module API
         end
 
         link :customFields do
-          if current_user.try(:admin?) ||
-             current_user_allowed_to(:edit_project,
-                                     context: represented.project)
+          if current_user.allowed_in_project?(:select_custom_fields, represented.project)
             {
-              href: settings_custom_fields_project_path(represented.project.identifier),
-              type: 'text/html',
-              title: I18n.t('label_custom_field_plural')
+              href: project_settings_custom_fields_path(represented.project.identifier),
+              type: "text/html",
+              title: I18n.t("label_custom_field_plural")
             }
           end
         end
@@ -81,8 +77,8 @@ module API
              represented.type_id != 0
             {
               href: edit_type_path(represented.type_id,
-                                   tab: 'form_configuration'),
-              type: 'text/html',
+                                   tab: "form_configuration"),
+              type: "text/html",
               title: "Configure form"
             }
           end

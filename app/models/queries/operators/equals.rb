@@ -1,13 +1,12 @@
-#-- encoding: UTF-8
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -24,30 +23,30 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module Queries::Operators
   class Equals < Base
-    label 'equals'
-    set_symbol '='
+    label "equals"
+    set_symbol "="
 
     def self.sql_for_field(values, db_table, db_field)
       # code expects strings (e.g. for quoting), but ints would work as well: unify them here
       values = values.map(&:to_s)
 
-      sql = ''
+      sql = ""
 
       if values.present?
-        if values.include?('-1')
+        if values.include?("-1")
           sql = "#{db_table}.#{db_field} IS NULL OR "
         end
 
         sql += "#{db_table}.#{db_field} IN (" +
-               values.map { |val| "'#{connection.quote_string(val)}'" }.join(',') + ')'
+               values.map { |val| "'#{connection.quote_string(val)}'" }.join(",") + ")"
       else
         # empty set of allowed values produces no result
-        sql = '0=1'
+        sql = "0=1"
       end
 
       sql

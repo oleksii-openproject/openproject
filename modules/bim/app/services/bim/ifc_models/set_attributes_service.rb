@@ -1,14 +1,12 @@
-#-- encoding: UTF-8
-
 #-- copyright
-# OpenProject is a project management system.
-# Copyright (C) 2012-2018 the OpenProject Foundation (OPF)
+# OpenProject is an open source project management software.
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -25,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module Bim
@@ -34,12 +32,16 @@ module Bim
       protected
 
       def set_attributes(params)
+        model.project = params[:project] if params.key?(:project)
         set_ifc_attachment(params.delete(:ifc_attachment))
+        # Do not proceed to build the IfcModel if the attachment contract is not valid
+        # Let the errors be displayed back to the user
+        return model if model.errors.any?
 
         super
 
-        change_by_system do
-          model.uploader = model.ifc_attachment&.author if model.ifc_attachment&.new_record? || model.ifc_attachment&.pending_direct_upload?
+        model.change_by_system do
+          model.uploader = model.ifc_attachment&.author
         end
       end
 
@@ -48,20 +50,15 @@ module Bim
       end
 
       def validate_and_result
-        super.tap do |call|
-          # map errors on attachments to better display them
-          if call.errors[:attachments].any?
-            model.ifc_attachment.errors.details.each do |_, errors|
-              errors.each do |error|
-                call.errors.add(:attachments, error[:error], **error.except(:error))
-              end
-            end
-          end
-        end
+        # Do not proceed to build the IfcModel if the attachment contract is not valid
+        # Let the errors be displayed back to the user before validating the IFC contract
+        return ServiceResult.failure(result: model, errors: model.errors) if model.errors.any?
+
+        super
       end
 
       def set_title
-        model.title ||= model.ifc_attachment&.file&.filename&.gsub(/\.\w+$/, '')
+        model.title ||= model.ifc_attachment&.file&.filename&.gsub(/\.\w+$/, "")
       end
 
       def set_ifc_attachment(ifc_attachment)
@@ -75,8 +72,19 @@ module Bim
 
           model.attachments << ifc_attachment
         else
-          model.attach_files('first' => {'file' => ifc_attachment, 'description' => 'ifc'})
+          build_ifc_attachment(ifc_attachment)
         end
+      end
+
+      def build_ifc_attachment(ifc_attachment)
+        ::Attachments::BuildService
+          .bypass_whitelist(user:)
+          .call(file: ifc_attachment, container: model, filename: ifc_attachment.original_filename, description: "ifc")
+          .on_failure do |build_attachment_result|
+            build_attachment_result.errors.each do |error|
+              model.errors.add(:attachments, error.type, **error.detail.except(:error))
+            end
+          end
       end
     end
   end

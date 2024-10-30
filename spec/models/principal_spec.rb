@@ -1,12 +1,14 @@
+# frozen_string_literal: true
+
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,164 +25,159 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'spec_helper'
+require "spec_helper"
 
-describe Principal, type: :model do
-  let(:user) { FactoryBot.build(:user) }
-  let(:group) { FactoryBot.build(:group) }
+RSpec.describe Principal do
+  let(:user) { build(:user) }
+  let(:group) { build(:group) }
 
-  def self.should_return_groups_and_users_if_active(method, *params)
-    it 'should return a user' do
+  def self.should_return_groups_and_users_if_active(method, *)
+    it "returns a user" do
       user.save!
 
-      expect(Principal.send(method, *params).where(id: user.id)).to eq([user])
+      expect(described_class.send(method, *).where(id: user.id)).to eq([user])
     end
 
-    it 'should return a group' do
+    it "returns a group" do
       group.save!
 
-      expect(Principal.send(method, *params).where(id: group.id)).to eq([group])
+      expect(described_class.send(method, *).where(id: group.id)).to eq([group])
     end
 
-    it 'should not return the anonymous user' do
+    it "does not return the anonymous user" do
       User.anonymous
 
-      expect(Principal.send(method, *params).where(id: user.id)).to eq([])
+      expect(described_class.send(method, *).where(id: user.id)).to eq([])
     end
 
-    it 'should not return an inactive user' do
-      user.status = User::STATUSES[:locked]
+    it "does not return an inactive user" do
+      user.status = User.statuses[:locked]
 
       user.save!
 
-      expect(Principal.send(method, *params).where(id: user.id).to_a).to eq([])
+      expect(described_class.send(method, *).where(id: user.id).to_a).to eq([])
     end
   end
 
-  describe 'active' do
-    should_return_groups_and_users_if_active(:active_or_registered)
+  describe "associations" do
+    subject { described_class.new }
 
-    it 'should not return a registerd user' do
-      user.status = User::STATUSES[:registered]
+    it { is_expected.to have_many(:work_package_shares).conditions(entity_type: WorkPackage.name) }
+  end
+
+  describe "active" do
+    should_return_groups_and_users_if_active(:active)
+
+    it "does not return a registered user" do
+      user.status = User.statuses[:registered]
 
       user.save!
 
-      expect(Principal.active.where(id: user.id)).to eq([])
+      expect(described_class.active.where(id: user.id)).to eq([])
     end
   end
 
-  describe 'active_or_registered' do
-    should_return_groups_and_users_if_active(:active_or_registered)
+  describe "not_locked" do
+    should_return_groups_and_users_if_active(:not_locked)
 
-    it 'should return a registerd user' do
-      user.status = User::STATUSES[:registered]
+    it "returns a registered user" do
+      user.status = User.statuses[:registered]
 
       user.save!
 
-      expect(Principal.active_or_registered.where(id: user.id)).to eq([user])
+      expect(described_class.not_locked.where(id: user.id)).to eq([user])
     end
   end
 
-  describe 'active_or_registered_like' do
-    def self.search
-      'blubs'
+  describe ".memberships" do
+    let(:project_role) { create(:project_role) }
+    let(:global_role) { create(:global_role) }
+    let(:work_package_role) { create(:view_work_package_role) }
+    let(:user) { create(:user) }
+    let!(:active_project_member) do
+      create(:member,
+             principal: user,
+             project: create(:project),
+             roles: [project_role])
+    end
+    let!(:inactive_project_member) do
+      create(:member,
+             principal: user,
+             project: create(:project, active: false),
+             roles: [project_role])
+    end
+    let!(:global_member) do
+      create(:member,
+             principal: user,
+             project: nil,
+             roles: [global_role])
+    end
+    let!(:work_package_member) do
+      create(:work_package_member,
+             principal: user,
+             project: create(:project),
+             entity: create(:work_package),
+             roles: [work_package_role])
     end
 
-    let(:search) { self.class.search }
-
-    before do
-      user.lastname = search
-      group.lastname = search
-    end
-
-    should_return_groups_and_users_if_active(:active_or_registered_like, search)
-
-    it 'should return a registerd user' do
-      user.status = User::STATUSES[:registered]
-
-      user.save!
-
-      expect(Principal.active_or_registered_like(search).where(id: user.id)).to eq([user])
-    end
-
-    it 'should not return a user if the name does not match' do
-      user.save!
-
-      expect(Principal.active_or_registered_like(user.lastname + '123').to_a).not_to include(user)
-    end
-
-    it 'should return a group if the name does match partially' do
-      user.save!
-
-      expect(Principal.active_or_registered_like(user.lastname[0, -1]).to_a).to include(user)
-    end
-  end
-
-  describe '.not_builtin' do
-    let!(:anonymous_user) { FactoryBot.create(:anonymous) }
-    let!(:system_user) { FactoryBot.create(:system) }
-    let!(:deleted_user) { FactoryBot.create(:deleted_user) }
-    let!(:group) { FactoryBot.create(:group) }
-    let!(:user) { FactoryBot.create(:user) }
-
-    subject { described_class.not_builtin }
-
-    it 'returns only actual users and groups', :aggregate_failures do
-      expect(subject).to include(user)
-      expect(subject).to include(group)
-      expect(subject).not_to include(anonymous_user)
-      expect(subject).not_to include(system_user)
-      expect(subject).not_to include(deleted_user)
+    it "returns all active projects and global members" do
+      expect(user.memberships)
+        .to contain_exactly(active_project_member, global_member)
     end
   end
 
-  context '.like' do
-    let!(:login) do
-      FactoryBot.create(:principal, login: 'login')
-    end
-    let!(:login2) do
-      FactoryBot.create(:principal, login: 'login2')
-    end
-    let!(:firstname) do
-      FactoryBot.create(:principal, firstname: 'firstname')
-    end
-    let!(:firstname2) do
-      FactoryBot.create(:principal, firstname: 'firstname2')
-    end
-    let!(:lastname) do
-      FactoryBot.create(:principal, lastname: 'lastname')
-    end
-    let!(:lastname2) do
-      FactoryBot.create(:principal, lastname: 'lastname2')
-    end
-    let!(:mail) do
-      FactoryBot.create(:principal, mail: 'mail@example.com')
-    end
-    let!(:mail2) do
-      FactoryBot.create(:principal, mail: 'mail2@example.com')
+  describe "#name" do
+    shared_let(:user_id) { create(:user, firstname: "John", lastname: "Smith", login: "john_smith").id }
+    shared_let(:group_id) { create(:group, name: "Folk").id }
+    shared_let(:placeholder_user_id) { create(:placeholder_user, name: "Wannabejohn").id }
+
+    shared_examples "name formatting" do
+      context "for lastname_coma_firstname formatter", with_settings: { user_format: :lastname_coma_firstname } do
+        it "returns formatted user name" do
+          expect(user.name).to eq "Smith, John"
+        end
+
+        it "returns formatted group name" do
+          expect(group.name).to eq "Folk"
+        end
+
+        it "returns formatted placeholder user name" do
+          expect(placeholder_user.name).to eq "Wannabejohn"
+        end
+      end
+
+      context "for username formatter", with_settings: { user_format: :username } do
+        it "returns formatted user name" do
+          expect(user.name).to eq "john_smith"
+        end
+
+        it "returns formatted group name" do
+          expect(group.name).to eq "Folk"
+        end
+
+        it "returns formatted placeholder user name" do
+          expect(placeholder_user.name).to eq "Wannabejohn"
+        end
+      end
     end
 
-    it 'finds by login' do
-      expect(Principal.like('login'))
-        .to match_array [login, login2]
+    context "when fetched individually" do
+      let(:user) { User.select_for_name.find(user_id) }
+      let(:group) { Group.select_for_name.find(group_id) }
+      let(:placeholder_user) { PlaceholderUser.select_for_name.find(placeholder_user_id) }
+
+      include_examples "name formatting"
     end
 
-    it 'finds by firstname' do
-      expect(Principal.like('firstname'))
-        .to match_array [firstname, firstname2]
-    end
+    context "when fetched as Principal" do
+      let(:user) { described_class.select(:type).select_for_name.find(user_id) }
+      let(:group) { described_class.select(:type).select_for_name.find(group_id) }
+      let(:placeholder_user) { described_class.select(:type).select_for_name.find(placeholder_user_id) }
 
-    it 'finds by lastname' do
-      expect(Principal.like('lastname'))
-        .to match_array [lastname, lastname2]
-    end
-
-    it 'finds by mail' do
-      expect(Principal.like('mail'))
-        .to match_array [mail, mail2]
+      include_examples "name formatting"
     end
   end
 end

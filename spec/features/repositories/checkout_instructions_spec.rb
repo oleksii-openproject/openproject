@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,14 +23,14 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'spec_helper'
+require "spec_helper"
 
-describe 'Create repository', type: :feature, js: true do
-  let(:current_user) { FactoryBot.create (:admin) }
-  let(:project) { FactoryBot.create(:project) }
+RSpec.describe "Create repository", :js do
+  let(:current_user) { create (:admin) }
+  let(:project) { create(:project) }
   let(:enabled_scms) { %w[git] }
 
   before do
@@ -39,39 +39,39 @@ describe 'Create repository', type: :feature, js: true do
     allow(Setting).to receive(:repository_checkout_data).and_return(checkout_data)
 
     allow(OpenProject::Configuration).to receive(:[]).and_call_original
-    allow(OpenProject::Configuration).to receive(:[]).with('scm').and_return(config)
+    allow(OpenProject::Configuration).to receive(:[]).with("scm").and_return(config)
   end
 
-  context 'managed repositories' do
-    include_context 'with tmpdir'
-    let(:config) {
+  context "managed repositories" do
+    include_context "with tmpdir"
+    let(:config) do
       {
-        git: { manages: File.join(tmpdir, 'git') }
+        git: { manages: File.join(tmpdir, "git") }
       }
-    }
-    let(:checkout_data) {
-      { 'git' => { 'enabled' => '1', 'base_url' => 'http://localhost/git/' } }
-    }
+    end
+    let(:checkout_data) do
+      { "git" => { "enabled" => "1", "base_url" => "http://localhost/git/" } }
+    end
 
-    let!(:repository) {
-      repo = FactoryBot.build(:repository_git, scm_type: :managed)
+    let!(:repository) do
+      repo = build(:repository_git, scm_type: :managed)
       repo.project = project
       repo.configure(:managed, nil)
       repo.save!
       perform_enqueued_jobs
 
       repo
-    }
+    end
 
-    it 'toggles checkout instructions' do
+    it "toggles checkout instructions" do
       visit project_repository_path(project)
 
-      expect(page).to have_selector('#repository--checkout-instructions')
+      expect(page).to have_css("#repository--checkout-instructions")
 
-      button = find('#repository--checkout-instructions-toggle')
+      button = find_by_id("repository--checkout-instructions-toggle")
       button.click
 
-      expect(page).not_to have_selector('#repository--checkout-instructions')
+      expect(page).to have_no_css("#repository--checkout-instructions")
     end
   end
 end

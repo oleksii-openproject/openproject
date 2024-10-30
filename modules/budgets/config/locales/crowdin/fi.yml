@@ -1,10 +1,10 @@
 #-- copyright
 #OpenProject is an open source project management software.
-#Copyright (C) 2012-2020 the OpenProject GmbH
+#Copyright (C) the OpenProject GmbH
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License version 3.
 #OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-#Copyright (C) 2006-2017 Jean-Philippe Lang
+#Copyright (C) 2006-2013 Jean-Philippe Lang
 #Copyright (C) 2010-2013 the ChiliProject Team
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License
@@ -17,9 +17,11 @@
 #You should have received a copy of the GNU General Public License
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-#See docs/COPYRIGHT.rdoc for more details.
+#See COPYRIGHT and LICENSE files for more details.
 #++
 fi:
+  plugin_budgets_engine:
+    name: 'Budjetit'
   activerecord:
     attributes:
       budget:
@@ -27,13 +29,11 @@ fi:
         available: "Saatavilla"
         budget: "Suunniteltu"
         budget_ratio: "Käytetty (suhde)"
-        created_on: "Luotu"
         description: "Kuvaus"
         spent: "Käytetty"
         status: "Tila"
         subject: "Aihe"
         type: "Kustannustyyppi"
-        updated_on: "Päivitetty"
         labor_budget: "Suunnitellut työvoimakustannukset"
         material_budget: "Suunnitellut yksikkökustannukset"
       work_package:
@@ -41,6 +41,9 @@ fi:
     models:
       budget: "Budjetti"
       material_budget_item: "Yksikkö"
+  activity:
+    filter:
+      budget: "Budjetit"
   attributes:
     budget: "Budjetti"
   button_add_budget_item: "Lisää suunniteltuja kustannuksia"
@@ -65,8 +68,11 @@ fi:
   label_example_placeholder: 'e.g., %{decimal}'
   label_view_all_budgets: "Näytä kaikki budjetit"
   label_yes: "Kyllä"
-  notice_budget_conflict: "Tehtävien tulee olla samasta projektista."
+  notice_budget_conflict: "Work packages must be of the same project."
   notice_no_budgets_available: "Budjetteja ei ole saatavilla."
   permission_edit_budgets: "Budjettien muokkaus"
   permission_view_budgets: "Budjettien tarkasteleminen"
   project_module_budgets: "Budjetit"
+  text_budget_reassign_to: "Reassign them to this budget:"
+  text_budget_delete: "Delete the budget from all work packages"
+  text_budget_destroy_assigned_wp: "There are %{count} work packages assigned to this budget. What do you want to do?"

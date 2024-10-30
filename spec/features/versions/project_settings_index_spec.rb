@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,34 +23,33 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'spec_helper'
+require "spec_helper"
 
-feature 'project settings index', type: :feature do
+RSpec.describe "project settings index" do
   let(:user) do
-    FactoryBot.create(:user,
-                      member_in_project: project,
-                      member_with_permissions: %i[manage_versions])
+    create(:user,
+           member_with_permissions: { project => %i[manage_versions] })
   end
-  let(:project) { FactoryBot.create(:project) }
-  let!(:version1) { FactoryBot.create(:version, name: "aaaaa 1.", project: project) }
-  let!(:version2) { FactoryBot.create(:version, name: "aaaaa", project: project) }
-  let!(:version3) { FactoryBot.create(:version, name: "1.10. aaa", project: project) }
-  let!(:version4) { FactoryBot.create(:version, name: "1.1. zzz", project: project) }
-  let!(:version5) { FactoryBot.create(:version, name: "1.2. mmm", project: project) }
-  let!(:version6) { FactoryBot.create(:version, name: "1. xxxx", project: project) }
+  let(:project) { create(:project) }
+  let!(:version1) { create(:version, name: "aaaaa 1.", project:) }
+  let!(:version2) { create(:version, name: "aaaaa", project:) }
+  let!(:version3) { create(:version, name: "1.10. aaa", project:) }
+  let!(:version4) { create(:version, name: "1.1. zzz", project:) }
+  let!(:version5) { create(:version, name: "1.2. mmm", project:) }
+  let!(:version6) { create(:version, name: "1. xxxx", project:) }
 
   before do
     login_as(user)
   end
 
   @javascript
-  scenario 'see versions listed in semver order' do
-    visit settings_versions_project_path(project)
+  it "see versions listed in semver order" do
+    visit project_settings_versions_path(project)
 
-    names_in_order = page.all('.version .name').map { |el| el.text.strip }
+    names_in_order = page.all(".version .name").map { |el| el.text.strip }
 
     expect(names_in_order)
       .to eql [version6.name, version4.name, version5.name, version3.name, version2.name, version1.name]

@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,15 +23,15 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'pg'
+require "pg"
 
-namespace 'openproject' do
-  desc 'Fixes an error in the migration to 10.4 by fetching data from a backup.'
+namespace "openproject" do
+  desc "Fixes an error in the migration to 10.4 by fetching data from a backup."
   task :reassign_time_entry_activities do
-    unless ENV['BACKUP_DATABASE_URL']
+    unless ENV["BACKUP_DATABASE_URL"]
       puts <<~MSG
 
 
@@ -66,24 +66,24 @@ namespace 'openproject' do
     SQL
 
     entries = begin
-                connection = ActiveRecord::Base
-                             .establish_connection(ENV['BACKUP_DATABASE_URL'])
-                             .connection
+      connection = ActiveRecord::Base
+                   .establish_connection(ENV.fetch("BACKUP_DATABASE_URL", nil))
+                   .connection
 
-                if connection.select_all(check_statement).any?
-                  connection.select_all(select_statement)
-                end
-              rescue PG::ConnectionBad, ActiveRecord::NoDatabaseError, LoadError => e
-                puts <<~MSG
+      if connection.select_all(check_statement).any?
+        connection.select_all(select_statement)
+      end
+    rescue PG::ConnectionBad, ActiveRecord::NoDatabaseError, LoadError => e
+      puts <<~MSG
 
-                  The 'BACKUP_DATABASE_URL' environment variable is incorrect. The script cannot connect to the backup database:
-                  #{e.message}
+        The 'BACKUP_DATABASE_URL' environment variable is incorrect. The script cannot connect to the backup database:
+        #{e.message}
 
-                MSG
-                next
-              ensure
-                connection&.close
-              end
+      MSG
+      next
+    ensure
+      connection&.close
+    end
 
     if entries.nil? || entries.empty?
       puts <<~MSG
@@ -96,7 +96,7 @@ namespace 'openproject' do
       next
     end
 
-    entries_string = entries.map { |entry| "(#{entry['id']}, #{entry['activity_id']})" }.join(', ')
+    entries_string = entries.map { |entry| "(#{entry['id']}, #{entry['activity_id']})" }.join(", ")
 
     update_statement = <<~SQL
       UPDATE time_entries

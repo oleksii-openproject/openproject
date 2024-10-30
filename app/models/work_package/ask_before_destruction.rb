@@ -1,13 +1,12 @@
-#-- encoding: UTF-8
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -24,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module WorkPackage::AskBeforeDestruction
@@ -43,12 +42,12 @@ module WorkPackage::AskBeforeDestruction
       !associated_to_ask_before_destruction_of(work_packages).empty?
     end
 
-    def cleanup_associated_before_destructing_if_required(work_packages, user, to_do = { action: 'destroy' })
+    def cleanup_associated_before_destructing_if_required(work_packages, user, to_do = { action: "destroy" })
       cleanup_required = cleanup_action_required_before_destructing?(work_packages)
 
-      (!cleanup_required ||
+      !cleanup_required ||
        (cleanup_required &&
-        cleanup_each_associated_class(work_packages, user, to_do)))
+        cleanup_each_associated_class(work_packages, user, to_do))
     end
 
     def associated_classes_to_address_before_destruction_of(work_packages)

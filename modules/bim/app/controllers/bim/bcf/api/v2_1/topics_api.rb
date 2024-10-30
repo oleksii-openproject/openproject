@@ -1,14 +1,12 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -25,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module Bim::Bcf::API::V2_1
@@ -65,37 +63,37 @@ module Bim::Bcf::API::V2_1
       end
 
       after_validation do
-        authorize :view_linked_issues, context: @project
+        authorize_in_project(:view_linked_issues, project: @project)
       end
 
       get &::Bim::Bcf::API::V2_1::Endpoints::Index
              .new(model: Bim::Bcf::Issue,
-                  api_name: 'Topics',
+                  api_name: "Topics",
                   scope: -> { topics })
              .mount
 
       post &::Bim::Bcf::API::V2_1::Endpoints::Create
              .new(model: Bim::Bcf::Issue,
-                  api_name: 'Topics',
+                  api_name: "Topics",
                   params_modifier: ->(attributes) {
                     transform_attributes(attributes)
                       .merge(project: @project)
                   })
              .mount
 
-      route_param :topic_uuid, regexp: /\A[a-f0-9\-]+\z/ do
+      route_param :topic_uuid, regexp: /\A[a-f0-9-]+\z/ do
         after_validation do
-          @issue = topics.find_by_uuid!(params[:topic_uuid])
+          @issue = topics.find_by!(uuid: params[:topic_uuid])
         end
 
         get &::Bim::Bcf::API::V2_1::Endpoints::Show
               .new(model: Bim::Bcf::Issue,
-                   api_name: 'Topics')
+                   api_name: "Topics")
               .mount
 
         put &::Bim::Bcf::API::V2_1::Endpoints::Update
                .new(model: Bim::Bcf::Issue,
-                    api_name: 'Topics',
+                    api_name: "Topics",
                     params_modifier: ->(attributes) {
                       transform_attributes(attributes)
                         .reverse_merge(default_put_params)
@@ -104,10 +102,11 @@ module Bim::Bcf::API::V2_1
 
         delete &::Bim::Bcf::API::V2_1::Endpoints::Delete
                   .new(model: Bim::Bcf::Issue,
-                       api_name: 'Topics')
+                       api_name: "Topics")
                   .mount
 
         mount ::Bim::Bcf::API::V2_1::Viewpoints::API
+        mount ::Bim::Bcf::API::V2_1::Comments::API
       end
     end
   end

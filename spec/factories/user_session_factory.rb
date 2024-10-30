@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,17 +23,24 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 FactoryBot.define do
-  factory :user_session do
-    sequence(:session_id) do |n| "session_#{n}" end
-    association :user
+  factory :user_session, class: "::Sessions::SqlBypass" do
+    to_create { |instance| instance.save }
+    # AR::SessionStore::SqlStore#initialize requires an attribute
+    initialize_with { new(**attributes) }
+    sequence(:session_id) { |n| "session_#{n}" }
 
-    callback(:after_build) do |session|
-      session.data = {}
-      session.data['user_id'] = session.user.id if session.user.present?
+    transient do
+      user { nil }
+      data { {} }
+    end
+
+    callback(:after_build) do |session, evaluator|
+      session.data = evaluator.data
+      session.data["user_id"] = evaluator.user&.id
     end
   end
 end

@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,18 +23,13 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
-
-require 'api/v3/users/user_representer'
-require 'api/v3/users/paginated_user_collection_representer'
 
 module API
   module V3
     module Users
       class UsersAPI < ::API::OpenProjectAPI
-        helpers ::API::Utilities::PageSizeHelper
-
         helpers do
           def user_transition(allowed)
             if allowed
@@ -42,7 +37,7 @@ module API
 
               # Show updated user
               status 200
-              UserRepresenter.new(@user, current_user: current_user)
+              UserRepresenter.create(@user, current_user:)
             else
               fail ::API::Errors::InvalidUserStatusTransition
             end
@@ -50,61 +45,49 @@ module API
         end
 
         resources :users do
-          helpers ::API::V3::Users::CreateUser
-
-          post do
-            authorize_admin
-            create_user(request_body, current_user)
-          end
-
-          get do
-            authorize_admin
-
-            query = ParamsToQueryService.new(User, current_user).call(params)
-
-            if query.valid?
-              users = query.results.includes(:preference)
-              PaginatedUserCollectionRepresenter.new(users,
-                                                     api_v3_paths.users,
-                                                     page: to_i_or_nil(params[:offset]),
-                                                     per_page: resolve_page_size(params[:pageSize]),
-                                                     current_user: current_user)
-            else
-              raise ::API::Errors::InvalidQuery.new(query.errors.full_messages)
+          # The namespace only exists to add the after_validation callback
+          namespace "" do
+            after_validation do
+              authorize_globally(:create_user)
             end
+
+            post &::API::V3::Utilities::Endpoints::Create.new(model: User).mount
           end
+
+          # The namespace only exists to add the after_validation callback
+          namespace "" do
+            after_validation do
+              authorize_globally(:manage_user)
+            end
+
+            get &::API::V3::Utilities::Endpoints::SqlFallbackedIndex
+                   .new(model: User,
+                        scope: -> { User.user.includes(:preference) })
+                   .mount
+          end
+
+          mount ::API::V3::Users::Schemas::UserSchemaAPI
+          mount ::API::V3::Users::CreateFormAPI
 
           params do
-            requires :id, desc: 'User\'s id'
+            requires :id, desc: "User's id"
           end
-          route_param :id  do
-            helpers ::API::V3::Users::UpdateUser
-
+          route_param :id do
             after_validation do
               @user =
-                if params[:id] == 'me'
+                if params[:id] == "me"
                   User.current
                 else
                   User.find_by_unique!(params[:id])
                 end
             end
 
-            get do
-              UserRepresenter.new(@user, current_user: current_user)
-            end
+            get &::API::V3::Utilities::Endpoints::Show.new(model: User).mount
+            patch &::API::V3::Utilities::Endpoints::Update.new(model: User).mount
+            delete &::API::V3::Utilities::Endpoints::Delete.new(model: User, success_status: 202).mount
 
-            patch do
-              authorize_admin
-              update_user(request_body, current_user)
-            end
-
-            delete do
-              if ::Users::DeleteService.new(@user, current_user).call
-                status 202
-              else
-                fail ::API::Errors::Unauthorized
-              end
-            end
+            mount ::API::V3::Users::UpdateFormAPI
+            mount ::API::V3::UserPreferences::PreferencesByUserAPI
 
             namespace :lock do
               # Authenticate lock transitions
@@ -112,14 +95,14 @@ module API
                 authorize_admin
               end
 
-              desc 'Set lock on user account'
+              desc "Set lock on user account"
               post do
                 user_transition(@user.active? || @user.locked?) do
                   @user.lock! unless @user.locked?
                 end
               end
 
-              desc 'Remove lock on user account'
+              desc "Remove lock on user account"
               delete do
                 user_transition(@user.locked? || @user.active?) do
                   @user.activate! unless @user.active?

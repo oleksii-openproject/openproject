@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,21 +23,20 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 class Backlog
-  attr_accessor :sprint
-  attr_accessor :stories
+  attr_accessor :sprint, :stories
 
   def self.owner_backlogs(project, options = {})
     options.reverse_merge!(limit: nil)
 
-    backlogs = Sprint.apply_to(project).with_status_open.displayed_right(project).order_by_name
+    backlogs = Sprint.apply_to(project).with_status_open.displayed_right(project).order(:name)
 
     stories_by_sprints = Story.backlogs(project.id, backlogs.map(&:id))
 
-    backlogs.map { |sprint| new(stories: stories_by_sprints[sprint.id], owner_backlog: true, sprint: sprint) }
+    backlogs.map { |sprint| new(stories: stories_by_sprints[sprint.id], owner_backlog: true, sprint:) }
   end
 
   def self.sprint_backlogs(project)
@@ -45,17 +44,17 @@ class Backlog
 
     stories_by_sprints = Story.backlogs(project.id, sprints.map(&:id))
 
-    sprints.map { |sprint| new(stories: stories_by_sprints[sprint.id], sprint: sprint) }
+    sprints.map { |sprint| new(stories: stories_by_sprints[sprint.id], sprint:) }
   end
 
   def initialize(options = {})
     options = options.with_indifferent_access
-    @sprint = options['sprint']
-    @stories = options['stories']
-    @owner_backlog = options['owner_backlog']
+    @sprint = options["sprint"]
+    @stories = options["stories"]
+    @owner_backlog = options["owner_backlog"]
   end
 
-  def updated_on
+  def updated_at
     @stories.max_by(&:updated_at).try(:updated_at)
   end
 

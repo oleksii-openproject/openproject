@@ -1,14 +1,12 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -25,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module API
@@ -70,9 +68,9 @@ module API
 
                           represented.operator = ::API::Utilities::ResourceLinkParser
                                                  .parse_id fragment["href"],
-                                                           property: 'operator',
-                                                           expected_version: '3',
-                                                           expected_namespace: 'queries/operators'
+                                                           property: "operator",
+                                                           expected_version: "3",
+                                                           expected_namespace: "queries/operators"
                         }
 
           resources :values,
@@ -84,13 +82,13 @@ module API
                           path_name = value_object.class.name.demodulize.underscore
 
                           api_v3_paths.send(path_name, value_object.id)
-                        rescue => e
+                        rescue StandardError => e
                           Rails.logger.error "Failed to get href for value_object #{value_object}: #{e}"
                           nil
                         end
 
                         link_object = {
-                          href: href,
+                          href:,
                           title: value_object.name
                         }
 
@@ -124,7 +122,7 @@ module API
 
           property :name,
                    exec_context: :decorator,
-                   writeable: false
+                   writable: false
 
           def _type
             "#{converted_name.camelize}QueryFilter"
@@ -159,7 +157,7 @@ module API
           end
 
           def query_filter_instance_links_representer(represented)
-            ::API::V3::Queries::Filters::QueryFilterInstanceLinksRepresenter.new represented, current_user: current_user
+            ::API::V3::Queries::Filters::QueryFilterInstanceLinksRepresenter.new represented, current_user:
           end
 
           def represented_is_boolean_list?(represented)

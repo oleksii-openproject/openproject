@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 ##
@@ -34,7 +34,7 @@ module Accounts::RedirectAfterLogin
     if user.first_login
       user.update_attribute(:first_login, false)
 
-      call_hook :user_first_login, { user: user }
+      call_hook :user_first_login, { user: }
 
       first_login_redirect
     else
@@ -42,21 +42,19 @@ module Accounts::RedirectAfterLogin
     end
   end
 
-  #    * * *
-
   def default_redirect
-    if url = OpenProject::Configuration.after_login_default_redirect_url
-      redirect_to url
+    if (url = OpenProject::Configuration.after_login_default_redirect_url)
+      redirect_back_or_default url
     else
       redirect_back_or_default my_page_path
     end
   end
 
   def first_login_redirect
-    if url = OpenProject::Configuration.after_first_login_redirect_url
-      redirect_to url
+    if (url = OpenProject::Configuration.after_first_login_redirect_url)
+      redirect_back_or_default url
     else
-      redirect_to home_url(first_time_user: true)
+      redirect_back_or_default home_url(first_time_user: true)
     end
   end
 end

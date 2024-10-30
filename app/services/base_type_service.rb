@@ -1,13 +1,12 @@
-#-- encoding: UTF-8
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -24,15 +23,14 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 class BaseTypeService
   include Shared::BlockService
   include Contracted
 
-  attr_accessor :contract_class
-  attr_accessor :type, :user
+  attr_accessor :contract_class, :type, :user
 
   def initialize(type, user)
     self.type = type
@@ -40,10 +38,10 @@ class BaseTypeService
     self.contract_class = ::Types::BaseContract
   end
 
-  def call(params, options, &block)
+  def call(params, options, &)
     result = update(params, options)
 
-    block_with_result(result, &block)
+    block_with_result(result, &)
   end
 
   private
@@ -53,17 +51,7 @@ class BaseTypeService
     errors = type.errors
 
     Type.transaction do
-      set_scalar_params(params)
-
-      # Only set attribute groups when it exists
-      # (Regression #28400)
-      unless params[:attribute_groups].nil?
-        set_attribute_groups(params)
-      end
-
-      set_active_custom_fields
-
-      success, errors = validate_and_save(type, user)
+      success, errors = set_params_and_validate(params)
       if success
         after_type_save(params, options)
       else
@@ -71,13 +59,36 @@ class BaseTypeService
       end
     end
 
-    ServiceResult.new(success: success,
-                      errors: errors,
+    ServiceResult.new(success:,
+                      errors:,
                       result: type)
-  rescue => e
-    ServiceResult.new(success: false).tap do |result|
+  rescue StandardError => e
+    ServiceResult.failure.tap do |result|
       result.errors.add(:base, e.message)
     end
+  end
+
+  def set_params_and_validate(params)
+    # Only set attribute groups when it exists
+    # (Regression #28400)
+    set_attribute_groups(params) unless params[:attribute_groups].nil?
+
+    # This should go before `set_scalar_params` call to get the
+    # project_ids, custom_field_ids diffs from the type and the params.
+    # For determining the active custom fields for the type, it is necessary
+    # to know whether the type is a milestone or not.
+    set_milestone_param(params) unless params[:is_milestone].nil?
+    set_active_custom_fields
+
+    set_active_custom_fields_for_project_ids(params[:project_ids]) if params[:project_ids].present?
+
+    set_scalar_params(params)
+
+    validate_and_save(type, user)
+  end
+
+  def set_milestone_param(params)
+    type.is_milestone = params[:is_milestone]
   end
 
   def set_scalar_params(params)
@@ -104,7 +115,7 @@ class BaseTypeService
 
   def transform_attribute_groups(groups)
     groups.map do |group|
-      if group['type'] == 'query'
+      if group["type"] == "query"
         transform_query_group(group)
       else
         transform_attribute_group(group)
@@ -114,30 +125,34 @@ class BaseTypeService
 
   def transform_attribute_group(group)
     name =
-      if group['key']
-        group['key'].to_sym
+      if group["key"]
+        group["key"].to_sym
       else
-        group['name']
+        group["name"]
       end
 
     [
       name,
-      group['attributes'].map { |attr| attr['key'] }
+      group["attributes"].pluck("key")
     ]
   end
 
   def transform_query_group(group)
-    name = group['name']
-    props = JSON.parse group['query']
+    name = group["name"]
+    props = JSON.parse group["query"]
 
     query = Query.new_default(name: "Embedded table: #{name}")
+
+    query.extend(OpenProject::ChangedBySystem)
+    query.change_by_system do
+      query.user = User.system
+    end
 
     ::API::V3::UpdateQueryFromV3ParamsService
       .new(query, user)
       .call(props.with_indifferent_access)
 
     query.show_hierarchies = false
-    query.hidden = true
 
     [
       name,
@@ -150,16 +165,25 @@ class BaseTypeService
   # for this type. If a custom field is not in a group, it is removed from the
   # custom_field_ids list.
   def set_active_custom_fields
-    active_cf_ids = []
+    type.custom_field_ids = type
+                              .attribute_groups
+                              .flat_map(&:members)
+                              .select { CustomField.custom_field_attribute? _1 }
+                              .map { _1.gsub(/^custom_field_/, "").to_i }
+                              .uniq
+  end
 
-    type.attribute_groups.each do |group|
-      group.members.each do |attribute|
-        if CustomField.custom_field_attribute? attribute
-          active_cf_ids << attribute.gsub(/^custom_field_/, '').to_i
-        end
-      end
-    end
+  def set_active_custom_fields_for_project_ids(project_ids)
+    new_project_ids_to_activate_cfs = project_ids.reject(&:empty?).map(&:to_i) - type.project_ids
 
-    type.custom_field_ids = active_cf_ids.uniq
+    values = Project
+               .where(id: new_project_ids_to_activate_cfs)
+               .to_a
+               .product(type.custom_field_ids)
+               .map { |p, cf_ids| { project_id: p.id, custom_field_id: cf_ids } }
+
+    return if values.empty?
+
+    CustomFieldsProject.insert_all(values)
   end
 end

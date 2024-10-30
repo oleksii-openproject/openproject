@@ -1,13 +1,12 @@
-#-- encoding: UTF-8
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -24,34 +23,38 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 class News < ApplicationRecord
   belongs_to :project
-  belongs_to :author, class_name: 'User', foreign_key: 'author_id'
+  belongs_to :author, class_name: "User"
   has_many :comments, -> {
-    order('created_on')
+    order(:created_at)
   }, as: :commented, dependent: :delete_all
 
-  validates_presence_of :title
-  validates_length_of :title, maximum: 60
-  validates_length_of :summary, maximum: 255
+  validates :project, presence: true
+  validates :title, presence: true
+  validates :title, length: { maximum: 256 }
+  validates :summary, length: { maximum: 255 }
 
   acts_as_journalized
 
-  acts_as_event url: Proc.new { |o| { controller: '/news', action: 'show', id: o.id } },
-                datetime: :created_at
+  acts_as_event url: Proc.new { |o| { controller: "/news", action: "show", id: o.id } }
 
-  acts_as_searchable columns: ["#{table_name}.title", "#{table_name}.summary", "#{table_name}.description"],
+  acts_as_searchable columns: %W[#{table_name}.title #{table_name}.summary #{table_name}.description],
                      include: :project,
                      references: :projects,
                      date_column: "#{table_name}.created_at"
 
+  acts_as_attachable view_permission: :view_news,
+                     add_on_new_permission: :manage_news,
+                     add_on_persisted_permission: :manage_news,
+                     delete_permission: :manage_news
+
   acts_as_watchable
 
-  after_create :add_author_as_watcher,
-               :send_news_added_mail
+  after_create :add_author_as_watcher
 
   scope :visible, ->(*args) do
     includes(:project)
@@ -60,16 +63,16 @@ class News < ApplicationRecord
   end
 
   def visible?(user = User.current)
-    !user.nil? && user.allowed_to?(:view_news, project)
+    !user.nil? && user.allowed_in_project?(:view_news, project)
   end
 
   def description=(val)
-    super val.presence || ''
+    super(val.presence || "")
   end
 
   # returns latest news for projects visible by user
   def self.latest(user: User.current, count: 5)
-    latest_for(user, count: count)
+    latest_for(user, count:)
   end
 
   def self.latest_for(user, count: 5)
@@ -105,13 +108,5 @@ class News < ApplicationRecord
 
   def add_author_as_watcher
     Watcher.create(watchable: self, user: author)
-  end
-
-  def send_news_added_mail
-    if Setting.notified_events.include?('news_added')
-      recipients.uniq.each do |user|
-        UserMailer.news_added(user, self, User.current).deliver_later
-      end
-    end
   end
 end

@@ -1,12 +1,12 @@
 <%#-- copyright
 OpenProject is an open source project management software.
-Copyright (C) 2012-2020 the OpenProject GmbH
+Copyright (C) the OpenProject GmbH
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License version 3.
 
 OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-Copyright (C) 2006-2017 Jean-Philippe Lang
+Copyright (C) 2006-2013 Jean-Philippe Lang
 Copyright (C) 2010-2013 the ChiliProject Team
 
 This program is free software; you can redistribute it and/or
@@ -23,14 +23,19 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-See docs/COPYRIGHT.rdoc for more details.
+See COPYRIGHT and LICENSE files for more details.
 
 ++#%>
 
 <% html_title(t(:label_my_account), t(:label_setting_plural)) %>
 
-<% breadcrumb_paths(t(:label_my_account), t(:label_setting_plural)) %>
-<%= toolbar title: t(:label_setting_plural) %>
+<%=
+  render(Primer::OpenProject::PageHeader.new) do |header|
+    header.with_title { t(:label_setting_plural) }
+    header.with_breadcrumbs([{ href: my_account_path, text: t(:label_my_account) },
+                             t(:label_setting_plural)])
+  end
+%>
 
 <%= error_messages_for 'user' %>
 <%= labelled_tabular_form_for @user, as: :user, url: { action: 'update_settings' },
@@ -41,5 +46,5 @@ See docs/COPYRIGHT.rdoc for more details.
       <%= render partial: 'users/preferences', locals: { input_size: :middle } %>
   </fieldset>
   <%= call_hook(:view_my_settings, user: @user, form: f) %>
-  <%= styled_button_tag t(:button_save), class: '-highlight -with-icon icon-checkmark' %>
+  <%= styled_button_tag t(:button_save), class: '-primary -with-icon icon-checkmark' %>
 <% end %>

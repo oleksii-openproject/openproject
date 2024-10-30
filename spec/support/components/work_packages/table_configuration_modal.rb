@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,13 +23,14 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module Components
   module WorkPackages
     class TableConfigurationModal
       include Capybara::DSL
+      include Capybara::RSpecMatchers
       include RSpec::Matchers
 
       attr_accessor :trigger_parent
@@ -51,36 +52,45 @@ module Components
       end
 
       def open_and_set_display_mode(mode)
-        open_and_switch_to 'Display settings'
+        open_and_switch_to "Display settings"
         choose("display_mode_switch", option: mode)
       end
 
       def open!
-        scroll_to_and_click trigger
-        expect_open
+        SeleniumHubWaiter.wait
+        retry_block do
+          next if open?
+
+          scroll_to_and_click trigger
+          expect_open
+        end
       end
 
       def set_display_sums(enable: true)
-        open_and_switch_to 'Display settings'
+        open_and_switch_to "Display settings"
 
         if enable
-          check 'display_sums_switch'
+          check "display_sums_switch"
         else
-          uncheck 'display_sums_switch'
+          uncheck "display_sums_switch"
         end
         save
       end
 
       def save
-        find("#{selector} .button.-highlight").click
+        find('[data-test-selector="spot-modal-wp-table-configuration-save-button"]').click
       end
 
       def cancel
-        find("#{selector} .button", text: 'Cancel').click
+        find("#{selector} .button", text: "Cancel").click
       end
 
       def expect_open
-        expect(page).to have_selector(selector, wait: 40)
+        raise "Expected modal to be open" unless open?
+      end
+
+      def open?
+        page.has_selector?(".wp-table--configuration-modal", wait: 1)
       end
 
       def expect_closed
@@ -88,27 +98,27 @@ module Components
       end
 
       def expect_disabled_tab(name)
-        expect(page).to have_selector("#{selector} li.-disabled", text: name.upcase)
+        expect(page).to have_css("#{selector} [data-qa-tab-disabled]", text: name.upcase, wait: 10)
       end
 
       def selected_tab(name)
-        page.find("#{selector} .tab-show.selected", text: name.upcase)
+        page.find("#{selector} .op-tab-row--link_selected", text: name.upcase)
         page.find("#{selector} .tab-content[data-tab-name='#{name}']")
       end
 
       def switch_to(target)
         # Switching too fast may result in the click handler not yet firing
         # so wait a bit initially
-        sleep 1
+        SeleniumHubWaiter.wait unless using_cuprite?
 
         retry_block do
-          find("#{selector} .tab-show", text: target.upcase, wait: 10).click
+          find("#{selector} .op-tab-row--link", text: target.upcase, wait: 2).click
           selected_tab(target)
         end
       end
 
       def selector
-        '.wp-table--configuration-modal'
+        ".spot-modal"
       end
 
       private
@@ -116,10 +126,10 @@ module Components
       def trigger
         if trigger_parent
           within trigger_parent do
-            find('.wp-table--configuration-modal--trigger')
+            find(".wp-table--configuration-modal--trigger")
           end
         else
-          find('.wp-table--configuration-modal--trigger')
+          find(".wp-table--configuration-modal--trigger")
         end
       end
     end

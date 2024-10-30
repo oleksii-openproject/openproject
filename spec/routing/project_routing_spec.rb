@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,153 +23,106 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'spec_helper'
+require "spec_helper"
 
-describe ProjectsController, type: :routing do
-  describe 'index' do
+RSpec.describe ProjectsController do
+  describe "index" do
     it do
-      expect(get('/projects')).to route_to(
-        controller: 'projects', action: 'index'
+      expect(get("/projects")).to route_to(
+        controller: "projects", action: "index"
       )
     end
 
     it do
-      expect(get('/projects.atom')).to route_to(
-        controller: 'projects', action: 'index', format: 'atom'
+      expect(get("/projects.csv")).to route_to(
+        controller: "projects", action: "index", format: "csv"
       )
     end
 
     it do
-      expect(get('/projects.xml')).to route_to(
-        controller: 'projects', action: 'index', format: 'xml'
-      )
-    end
-  end
-
-  describe 'new' do
-    it do
-      expect(get('/projects/new')).to route_to(
-        controller: 'projects', action: 'new'
+      expect(get("/projects.xls")).to route_to(
+        controller: "projects", action: "index", format: "xls"
       )
     end
   end
 
-  describe 'create' do
+  describe "new" do
     it do
-      expect(post('/projects')).to route_to(
-        controller: 'projects', action: 'create'
-      )
-    end
-
-    it do
-      expect(post('/projects.xml')).to route_to(
-        controller: 'projects', action: 'create', format: 'xml'
+      expect(get("/projects/new")).to route_to(
+        controller: "projects", action: "new"
       )
     end
   end
 
-  describe 'update' do
+  describe "destroy_info" do
     it do
-      expect(put('/projects/123')).to route_to(
-        controller: 'projects', action: 'update', id: '123'
-      )
-    end
-
-    it do
-      expect(put('/projects/123.xml')).to route_to(
-        controller: 'projects', action: 'update', id: '123', format: 'xml'
+      expect(get("/projects/123/destroy_info")).to route_to(
+        controller: "projects", action: "destroy_info", id: "123"
       )
     end
   end
 
-  describe 'destroy_info' do
+  describe "delete" do
     it do
-      expect(get('/projects/123/destroy_info')).to route_to(
-        controller: 'projects', action: 'destroy_info', id: '123'
+      expect(delete("/projects/123")).to route_to(
+        controller: "projects", action: "destroy", id: "123"
+      )
+    end
+
+    it do
+      expect(delete("/projects/123.xml")).to route_to(
+        controller: "projects", action: "destroy", id: "123", format: "xml"
       )
     end
   end
 
-  describe 'delete' do
+  describe "export_list_modal" do
     it do
-      expect(delete('/projects/123')).to route_to(
-        controller: 'projects', action: 'destroy', id: '123'
-      )
-    end
-
-    it do
-      expect(delete('/projects/123.xml')).to route_to(
-        controller: 'projects', action: 'destroy', id: '123', format: 'xml'
+      expect(get("/projects/export_list_modal")).to route_to(
+        controller: "projects", action: "export_list_modal"
       )
     end
   end
 
-  describe 'miscellaneous' do
+  describe "templated" do
     it do
-      expect(put('projects/123/modules')).to route_to(
-        controller: 'projects', action: 'modules', id: '123'
+      expect(delete("/projects/123/templated"))
+        .to route_to(controller: "projects/templated", action: "destroy", project_id: "123")
+    end
+
+    it do
+      expect(post("/projects/123/templated"))
+        .to route_to(controller: "projects/templated", action: "create", project_id: "123")
+    end
+  end
+
+  describe "miscellaneous" do
+    it do
+      expect(post("projects/123/archive")).to route_to(
+        controller: "projects/archive", action: "create", project_id: "123"
       )
     end
 
     it do
-      expect(put('projects/123/custom_fields')).to route_to(
-        controller: 'projects', action: 'custom_fields', id: '123'
+      expect(delete("projects/123/archive")).to route_to(
+        controller: "projects/archive", action: "destroy", project_id: "123"
       )
     end
 
     it do
-      expect(put('projects/123/archive')).to route_to(
-        controller: 'projects', action: 'archive', id: '123'
-      )
-    end
-
-    it do
-      expect(put('projects/123/unarchive')).to route_to(
-        controller: 'projects', action: 'unarchive', id: '123'
-      )
-    end
-
-    it do
-      expect(get('projects/123/copy_project_from_settings')).to route_to(
-        controller: 'copy_projects', action: 'copy_project', id: '123',
-        coming_from: 'settings'
-      )
-    end
-
-    it do
-      expect(post('projects/123/copy_from_settings')).to route_to(
-        controller: 'copy_projects',
-        action: 'copy',
-        id: '123',
-        coming_from: 'settings'
-      )
-    end
-
-    it do
-      expect(post('projects/123/copy_from_admin')).to route_to(
-        controller: 'copy_projects',
-        action: 'copy',
-        id: '123',
-        coming_from: 'admin'
+      expect(get("projects/123/copy")).to route_to(
+        controller: "projects", action: "copy", id: "123"
       )
     end
   end
 
-  describe 'types' do
+  describe "types" do
     it do
-      expect(patch('/projects/123/types')).to route_to(
-        controller: 'projects', action: 'types', id: '123'
-      )
-    end
-  end
-
-  describe 'level_list' do
-    it do
-      expect(get('/projects/level_list.json')).to route_to(
-        controller: 'projects', action: 'level_list', format: 'json'
+      expect(patch("/projects/123/types")).to route_to(
+        controller: "projects", action: "types", id: "123"
       )
     end
   end

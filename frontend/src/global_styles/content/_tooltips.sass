@@ -1,12 +1,12 @@
 //-- copyright
 // OpenProject is an open source project management software.
-// Copyright (C) 2012-2020 the OpenProject GmbH
+// Copyright (C) the OpenProject GmbH
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License version 3.
 //
 // OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-// Copyright (C) 2006-2017 Jean-Philippe Lang
+// Copyright (C) 2006-2013 Jean-Philippe Lang
 // Copyright (C) 2010-2013 the ChiliProject Team
 //
 // This program is free software; you can redistribute it and/or
@@ -23,14 +23,16 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 //
-// See docs/COPYRIGHT.rdoc for more details.
+// See COPYRIGHT and LICENSE files for more details.
 //++
 
 //***** Tooltips *****
 
 // tooltips used for arbitrary elements
 
-$tooltip--background-color: #e3f5ff
+@use "sass:math"
+
+$tooltip--background-color: var(--bgColor-emphasis)
 $tooltip--border: none
 $tooltip--height: 22px
 $tooltip--arrow-size: 6px
@@ -56,21 +58,21 @@ $advanced-tooltip--border: 1px solid #a7cbe1
   &:before
     margin-bottom: $tooltip--arrow-size * -1 + 1
   &:after
-    margin-bottom: $tooltip--height/-1.5
+    margin-bottom: math.div($tooltip--height, -1.5)
 
   &.-multiline
     &:before, &:after
       transform: translateY(50%)
       margin-bottom: 0
 
-@mixin tooltip--colorize($color: $tooltip--background-color, $textColor:var(--tooltip--font-color))
+@mixin tooltip--colorize($color: $tooltip--background-color, $textColor:var(--fgColor-onEmphasis))
   @each $position in top, right, bottom, left
     &.tooltip--#{$position}
       &:before
         border-#{$position}-color: $color
       &:after
         background-color: $tooltip--background-color
-        color: var(--tooltip--font-color)
+        color: $textColor
 
 %tooltip--reset-styles
   position: absolute
@@ -86,9 +88,9 @@ $advanced-tooltip--border: 1px solid #a7cbe1
 
 %tooltip--after
   height: $tooltip--height
-  padding: $tooltip--height/2 $tooltip--height/2 0 $tooltip--height/2
+  padding: $tooltip--height*0.5 $tooltip--height*0.5 0 $tooltip--height*0.5
   font-size: 13px
-  line-height: $tooltip--height/2
+  line-height: $tooltip--height*0.5
   white-space: nowrap
   content: attr(data-tooltip)
   border: $tooltip--border
@@ -125,52 +127,52 @@ $advanced-tooltip--border: 1px solid #a7cbe1
     &:after
       height: auto
       width: 150px
-      padding: $tooltip--height/2
+      padding: $tooltip--height*0.5
       line-height: $tooltip--height - 3px
       white-space: normal
       text-align: left
 
-  &.tooltip--right
-    @extend %tooltip--left-right
-    &:before, &:after
-      left: 100%
-    &:before
-      margin-left: -2px
-    &:after
-      margin-left: 10px
+.tooltip--right
+  @extend %tooltip--left-right
+  &:before, &:after
+    left: 100%
+  &:before
+    margin-left: -2px
+  &:after
+    margin-left: 10px
 
-  &.tooltip--left
-    @extend %tooltip--left-right
-    &:before, &:after
-      right: 100%
-    &:before
-      margin-right: -2px
-    &:after
-      margin-right: 10px
+.tooltip--left
+  @extend %tooltip--left-right
+  &:before, &:after
+    right: 100%
+  &:before
+    margin-right: -2px
+  &:after
+    margin-right: 10px
 
-  &.tooltip--top
-    @extend %tooltip--top-bottom
+.tooltip--top
+  @extend %tooltip--top-bottom
+  &:before, &:after
+    bottom: 100%
+  &:before
+    margin-bottom: $tooltip--arrow-size * -1 + 1
+  &:after
+    margin-bottom: 7px
+  &:hover
     &:before, &:after
-      bottom: 100%
-    &:before
-      margin-bottom: $tooltip--arrow-size * -1 + 1
-    &:after
-      margin-bottom: 7px
-    &:hover
-      &:before, &:after
-        transform: translate(-50%, 0px)
+      transform: translate(-50%, 0px)
 
-  &.tooltip--bottom
-    @extend %tooltip--top-bottom
+.tooltip--bottom
+  @extend %tooltip--top-bottom
+  &:before, &:after
+    top: 100%
+  &:before
+    margin-top: $tooltip--arrow-size * -1 + 1
+  &:after
+    margin-top: 7px
+  &:hover
     &:before, &:after
-      top: 100%
-    &:before
-      margin-top: $tooltip--arrow-size * -1 + 1
-    &:after
-      margin-top: 7px
-    &:hover
-      &:before, &:after
-        transform: translate(-50%, 0)
+      transform: translate(-50%, 0)
 
 // tooltips for table content (TODO: legacy?)
 table

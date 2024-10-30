@@ -1,13 +1,12 @@
-#-- encoding: UTF-8
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -24,11 +23,10 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 class WorkPackage::PDFExport::View
-
   include Prawn::View
   include Redmine::I18n
 
@@ -48,37 +46,40 @@ class WorkPackage::PDFExport::View
   end
 
   def document
-    @document ||= Prawn::Document.new(options.merge(info: info)).tap do |document|
+    @document ||= Prawn::Document.new(options.merge(info:)).tap do |document|
       register_fonts! document
 
-      document.set_font document.font('NotoSans')
+      document.set_font document.font("NotoSans")
       document.fallback_fonts = fallback_fonts
     end
   end
 
   def fallback_fonts
-    []
+    [noto_font_base_path.join("NotoSansSymbols2-Regular.ttf")]
   end
 
   def register_fonts!(document)
-    font_path = Rails.root.join('public/fonts')
+    register_font!("NotoSans", noto_font_base_path, document)
+    register_font!("SpaceMono", spacemono_font_base_path, document)
+  end
 
-    document.font_families['NotoSans'] = {
+  def register_font!(family, font_path, document)
+    document.font_families[family] = {
       normal: {
-        file: font_path.join('noto/NotoSans-Regular.ttf'),
-        font: 'NotoSans-Regular'
+        file: font_path.join("#{family}-Regular.ttf"),
+        font: "#{family}-Regular"
       },
       italic: {
-        file: font_path.join('noto/NotoSans-Italic.ttf'),
-        font: 'NotoSans-Italic'
+        file: font_path.join("#{family}-Italic.ttf" ""),
+        font: "#{family}-Italic"
       },
       bold: {
-        file: font_path.join('noto/NotoSans-Bold.ttf'),
-        font: 'NotoSans-Bold'
+        file: font_path.join("#{family}-Bold.ttf"),
+        font: "#{family}-Bold"
       },
       bold_italic: {
-        file: font_path.join('noto/NotoSans-BoldItalic.ttf'),
-        font: 'NotoSans-BoldItalic'
+        file: font_path.join("#{family}-BoldItalic.ttf"),
+        font: "#{family}-BoldItalic"
       }
     }
   end
@@ -91,14 +92,24 @@ class WorkPackage::PDFExport::View
     info[:Title]
   end
 
-  def font(name: nil, style: nil, size: nil)
-    name ||= document.font.basename.split('-').first # e.g. NotoSans-Bold => NotoSans
+  def apply_font(name: nil, font_style: nil, size: nil)
+    name ||= document.font.basename.split("-").first # e.g. NotoSans-Bold => NotoSans
     font_opts = {}
-    font_opts[:style] = style if style
+    font_opts[:style] = font_style if font_style
 
     document.font name, font_opts
     document.font_size size if size
 
     document.font
+  end
+
+  private
+
+  def noto_font_base_path
+    Rails.public_path.join("fonts/noto")
+  end
+
+  def spacemono_font_base_path
+    Rails.public_path.join("fonts/spacemono")
   end
 end

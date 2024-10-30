@@ -5,9 +5,10 @@ zh-CN:
       remove: '移除微件'
       configure: '配置微件'
       upsale:
-        text: "某些微件（例如工作包图微件）仅适用于"
+        text: "某些组件，如工作包图组件，只在企业版提供。"
         link: '企业版。'
       widgets:
+        missing_permission: "您没有查看此微件所需的权限。"
         custom_text:
           title: '自定义文本'
         documents:
@@ -26,18 +27,21 @@ zh-CN:
         project_description:
           title: '项目描述'
           no_results: "尚未写入任何描述。可以在“项目设置”中提供一个描述。"
-        project_details:
-          title: '项目详细信息'
-          no_results: '没有为项目定义自定义字段。'
         project_status:
           title: '项目状态'
+          not_started: '未开始'
           on_track: '按计划进行'
           off_track: '偏离计划'
           at_risk: '有风险'
           not_set: '未设置'
+          finished: '已完成'
+          discontinued: '已中断'
         subprojects:
           title: '子项目'
           no_results: '无子项目。'
+        project_favorites:
+          title: '收藏的项目'
+          no_results: '您目前没有收藏项目，单击项目仪表板中的星形图标将项目添加到收藏夹。'
         time_entries_current_user:
           title: '我花费的时间'
           displayed_days: '微件中显示的天数：'
@@ -51,7 +55,7 @@ zh-CN:
         work_packages_created:
           title: '我创建的工作包'
         work_packages_watched:
-          title: '由我汇报的工作包'
+          title: '我关注的工作包'
         work_packages_table:
           title: '工作包表'
         work_packages_graph:

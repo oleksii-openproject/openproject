@@ -1,14 +1,12 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -25,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module OpenProject::TextFormatting
@@ -78,10 +76,10 @@ module OpenProject::TextFormatting
 
       def self.regexp
         %r{
-          ([[[:space:]]\(,\-\[\>]|^) # Leading string
+          ([[[:space:]](,\-\[>]|^) # Leading string
           (!)? # Escaped marker
           (([a-z0-9\-_]+):)? # Project identifier
-          (#{allowed_prefixes.join("|")})? # prefix
+          (#{allowed_prefixes.join('|')})? # prefix
           (
             (\#+|r)(\d+) # separator and its identifier
             |
@@ -130,7 +128,7 @@ module OpenProject::TextFormatting
       def self.process_match(m, matched_string, context)
         # Leading string before match
         instance = new(
-          matched_string: matched_string,
+          matched_string:,
           leading: m[1],
           escaped: m[2],
           project_prefix: m[3],
@@ -139,7 +137,7 @@ module OpenProject::TextFormatting
           sep: m[7] || m[9],
           raw_identifier: m[8] || m[10],
           identifier: m[8] || m[11] || m[10],
-          context: context
+          context:
         )
 
         instance.process
@@ -158,8 +156,17 @@ module OpenProject::TextFormatting
                   :link,
                   :context
 
-      def initialize(matched_string:, leading:, escaped:, project_prefix:, project_identifier:,
-                     prefix:, sep:, raw_identifier:, identifier:, context:)
+      def initialize(matched_string:,
+                     leading:,
+                     escaped:,
+                     project_prefix:,
+                     project_identifier:,
+                     prefix:,
+                     sep:,
+                     raw_identifier:,
+                     identifier:,
+                     context:)
+        super()
         # The entire string that was matched
         @matched_string = matched_string
         # Leading string before the link match
@@ -217,14 +224,14 @@ module OpenProject::TextFormatting
       # Build a matching link by asking all handlers
       def link_from_match
         self.class.link_handlers.each do |klazz|
-          handler = klazz.new(self, context: context)
+          handler = klazz.new(self, context:)
 
           if handler.applicable?
             @link = handler.call
             break
           end
         end
-      rescue => e
+      rescue StandardError => e
         Rails.logger.error "Failed link resource handling for #{matched_string}: #{e}"
         Rails.logger.debug { "Backtrace:\n\t#{e.backtrace.join("\n\t")}" }
         # Keep the original string unmatched

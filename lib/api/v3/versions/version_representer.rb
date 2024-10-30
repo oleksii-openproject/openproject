@@ -1,14 +1,12 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -25,11 +23,11 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'roar/decorator'
-require 'roar/json/hal'
+require "roar/decorator"
+require "roar/json/hal"
 
 module API
   module V3
@@ -52,7 +50,7 @@ module API
         end
 
         link :update,
-             cache_if: -> { current_user_allowed_to(:manage_versions, context: represented.project) } do
+             cache_if: -> { current_user.allowed_in_project?(:manage_versions, represented.project) } do
           {
             href: api_v3_paths.version_form(represented.id),
             method: :post
@@ -60,7 +58,7 @@ module API
         end
 
         link :updateImmediately,
-             cache_if: -> { current_user_allowed_to(:manage_versions, context: represented.project) } do
+             cache_if: -> { current_user.allowed_in_project?(:manage_versions, represented.project) } do
           {
             href: api_v3_paths.version(represented.id),
             method: :patch
@@ -68,7 +66,7 @@ module API
         end
 
         link :delete,
-             cache_if: -> { current_user_allowed_to(:manage_versions, context: represented.project) } do
+             cache_if: -> { current_user.allowed_in_project?(:manage_versions, represented.project) } do
           {
             href: api_v3_paths.version(represented.id),
             method: :delete
@@ -97,21 +95,18 @@ module API
         date_property :start_date
 
         date_property :effective_date,
-                      as: 'endDate',
-                      writeable: true
+                      as: "endDate",
+                      writable: true
 
         property :status
 
         property :sharing
 
-        date_time_property :created_on,
-                           as: 'createdAt'
-
-        date_time_property :updated_on,
-                           as: 'updatedAt'
+        date_time_property :created_at
+        date_time_property :updated_at
 
         def _type
-          'Version'
+          "Version"
         end
       end
     end

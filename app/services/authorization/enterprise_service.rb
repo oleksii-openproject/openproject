@@ -1,14 +1,12 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -25,26 +23,34 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 class Authorization::EnterpriseService
   attr_accessor :token
 
-  GUARDED_ACTIONS = %i(define_custom_style
-                       multiselect_custom_fields
-                       edit_attribute_groups
-                       work_package_query_relation_columns
-                       attribute_help_texts
-                       two_factor_authentication
-                       ldap_groups
-                       custom_fields_in_projects_list
-                       custom_actions
-                       conditional_highlighting
-                       readonly_work_packages
-                       attachment_filters
-                       board_view
-                       grid_widget_wp_graph).freeze
+  GUARDED_ACTIONS = %i[
+    baseline_comparison
+    board_view
+    conditional_highlighting
+    custom_actions
+    date_alerts
+    define_custom_style
+    edit_attribute_groups
+    gantt_pdf_export
+    grid_widget_wp_graph
+    ldap_groups
+    one_drive_sharepoint_file_storage
+    placeholder_users
+    project_list_sharing
+    readonly_work_packages
+    sso_auth_providers
+    team_planner_view
+    two_factor_authentication
+    virus_scanning
+    work_package_query_relation_columns
+    work_package_sharing
+  ].freeze
 
   def initialize(token)
     self.token = token
@@ -66,7 +72,7 @@ class Authorization::EnterpriseService
 
   def process(action)
     # Every non-expired token
-    GUARDED_ACTIONS.include?(action)
+    GUARDED_ACTIONS.include?(action.to_sym)
   end
 
   def result(bool)

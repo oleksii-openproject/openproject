@@ -4,18 +4,17 @@ We are pleased that you are thinking about contributing to OpenProject! This gui
 
 ## Get in touch
 
-Please get in touch with us using our [develompment forum](https://community.openproject.com/projects/openproject/boards/7) or send us an email to info@openproject.org.
+Please get in touch with us using our [development forum](https://community.openproject.org/projects/openproject/boards/7) or send us an email to info@openproject.com.
 
 ## Issue tracking and coordination
 
 We eat our own ice cream so we use OpenProject for roadmap planning and team collaboration. Please have a look at the following pages:
 
-- [Development timeline](https://community.openproject.com/projects/openproject/timelines/36)
-- [Product roadmap and release planning](https://community.openproject.com/projects/openproject/roadmap)
-- [Wish list](https://community.openproject.com/versions/26)
-- [Bug backlog](https://community.openproject.com/versions/136)
-- [Report a bug](https://www.openproject.org/development/report-a-bug/)
-- [Submit a feature idea](https://www.openproject.org/development/submit-feature-idea/)
+- [Product roadmap](https://community.openproject.org/projects/openproject/roadmap)
+- [Wish list](https://community.openproject.org/projects/openproject/work_packages?query_id=180)
+- [Bug backlog board](https://community.openproject.org/projects/openproject/boards/2905)
+- [Report a bug](https://www.openproject.org/docs/development/report-a-bug/)
+- [Submit a feature idea](https://www.openproject.org/docs/development/submit-feature-idea/)
 
 
 ## Branching model
@@ -62,9 +61,9 @@ git push origin <your feature branch>
 
 - Create a pull request against a branch of of the <opf/openproject> repository, containing a ***clear description*** of what the pull request attempts to change and/or fix.
 
-If your pull request **does not contain a description** for what it does and what it's intentions are,
+If your pull request **does not contain a description** for what it does and what its intentions are,
 we will reject it.
-If you are working on a specific work package from the [list](https://community.openproject.com/projects/openproject/work_packages),
+If you are working on a specific work package from the [list](https://community.openproject.org/projects/openproject/work_packages),
 you may include a link to that work package in the description, so we can track your work.
 
 The core contributor team will then review your pull request according to our [code review guideline](https://www.openproject.org/open-source/development-free-project-management-software/code-review-guideliness/).
@@ -84,11 +83,9 @@ More on this topic can be found in our [blog post](https://www.openproject.org/h
 
 Please add tests to your code to verify functionality, especially if it is a new feature.
 
-Pull requests will be verified by TravisCI as well,
+Pull requests will be verified by GitHub Actions as well,
 but please run them locally as well and make sure they are green before creating your pull request.
 We have a lot of pull requests coming in and it takes some time to run the complete suite for each one.
-
-If you push to your branch in quick succession, please consider stopping the associated Travis builds, as Travis will run for each commit. This is especially true if you force push to the branch.
 
 Please also use `[ci skip]` in your commit message to suppress builds which are not necessary
 (e.g. after fixing a typo in the `README`).
@@ -101,17 +98,17 @@ A fix for the current version (called "Hotfix" and the branch ideally being name
 should target `release/*` and a fix for the former version
 (called "Backport" and the branch ideally being named `backport/XYZ`)
 should target `backport/*`. We will try to merge hotfixes into dev branch
-but if that is no trivial task, we might ask you to create another PR for that.
+but if that is a non-trivial task, we might ask you to create another PR for that.
 
 ## Inactive pull requests
 
-We want to keep the Pull request list as cleaned up as possible - we will aim close pull requests
+We want to keep the Pull request list as tidy as possible - we will aim close pull requests
 after an **inactivity period of 30 days** (no comments, no further pushes)
 which are not labelled as `work in progress` by us.
 
 ## Security
 
-If you notice a security issue in OpenProject, please send us a gpg encrypted email to security@openproject.com and describe the issue you found. Download our public gpg key [here](https://pgp.mit.edu/pks/lookup?op=get&search=0x7D669C6D47533958).
+If you notice a security issue in OpenProject, please send us a gpg encrypted email to security@openproject.com and describe the issue you found. [Download OpenProject security team public gpg key](https://keys.openpgp.org/vks/v1/by-fingerprint/BDCFE01EDE84EA199AE172CE7D669C6D47533958).
 
 Please include a description on how to reproduce the issue if possible. Our security team will get your email and will attempt to reproduce and fix the issue as soon as possible.
 
@@ -144,5 +141,5 @@ version 1.0.0, available at
 ## Contributors license agreement
 
 Contributors have to sign a CLA before contributing to OpenProject.
-The [CLA can be found here](https://www.openproject.org/wp-content/uploads/2015/08/Contributor-License-Agreement.pdf)
+The [CLA can be found here](https://www.openproject.org/legal/contributor-license-agreement/)
 and has to be filled out and sent to info@openproject.org.

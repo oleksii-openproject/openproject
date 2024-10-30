@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,11 +23,11 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'uri'
-require 'cgi'
+require "uri"
+require "cgi"
 
 # This capsulates the validation of a requested redirect URL.
 #
@@ -80,7 +80,7 @@ class RedirectPolicy
   # - Tries to parse it
   # - Escapes the redirect URL when requested so.
   def preprocess(requested)
-    url = URI.escape(CGI.unescape(requested.to_s))
+    url = URI::RFC2396_Parser.new.escape(CGI.unescape(requested.to_s))
     URI.parse(url)
   rescue URI::InvalidURIError => e
     Rails.logger.warn("Encountered invalid redirect URL '#{requested}': #{e.message}")
@@ -91,19 +91,19 @@ class RedirectPolicy
   # Postprocesses the validated URL
   def postprocess(redirect_url)
     # Remove basic auth credentials
-    redirect_url.userinfo = ''
+    redirect_url.userinfo = ""
 
     if @return_escaped
       redirect_url.to_s
     else
-      URI.unescape(redirect_url.to_s)
+      CGI.unescape(redirect_url.to_s)
     end
   end
 
   ##
   # Avoid paths with references to parent paths
   def no_upper_levels
-    !@requested_url.path.include? '../'
+    !@requested_url.path.include? "../"
   end
 
   ##
@@ -143,7 +143,7 @@ class RedirectPolicy
   ##
   # Requires the redirect URL to reside inside the relative root, when given.
   def matches_relative_root
-    relative_root = OpenProject::Configuration['rails_relative_url_root']
+    relative_root = OpenProject::Configuration["rails_relative_url_root"]
     relative_root.blank? || @requested_url.path.starts_with?(relative_root)
   end
 end

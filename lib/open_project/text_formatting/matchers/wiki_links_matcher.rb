@@ -1,14 +1,12 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -25,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module OpenProject::TextFormatting
@@ -51,18 +49,18 @@ module OpenProject::TextFormatting
       include OpenProject::StaticRouting::UrlHelpers
 
       def self.regexp
-        /(!)?(\[\[([^\]\n\|]+)(\|([^\]\n\|]+))?\]\])/
+        /(!)?(\[\[([^\]\n|]+)(\|([^\]\n|]+))?\]\])/
       end
 
       def self.process_match(m, matched_string, context)
         # Leading string before match
         instance = new(
-          matched_string: matched_string,
+          matched_string:,
           escaped: m[1],
           all: m[2],
           page: m[3],
           title: m[5],
-          context: context
+          context:
         )
 
         instance.process
@@ -96,7 +94,7 @@ module OpenProject::TextFormatting
         @context = context
 
         # Check if linking project exists
-        if page =~ /\A([^\:]+)\:(.*)\z/
+        if page =~ /\A([^:]+):(.*)\z/
           @project = Project.find_by(identifier: $1) || Project.find_by(name: $1)
           @page = $2
           @title ||= $1 if @page.blank?
@@ -138,19 +136,19 @@ module OpenProject::TextFormatting
               when :anchor
                 "##{title}" # used for single-file wiki export
               else
-                wiki_page_id = wiki_page.nil? ? page.to_url : wiki_page.slug
-                url_for only_path: context[:only_path],
-                        controller: '/wiki',
-                        action: 'show',
+                wiki_page_id = wiki_page.nil? ? WikiPage.slug(page) : wiki_page.slug
+                url_for(only_path: context[:only_path],
+                        controller: "/wiki",
+                        action: "show",
                         project_id: project.identifier,
                         title: wiki_page.nil? ? wiki_title.strip : nil,
                         id: wiki_page_id,
-                        anchor: anchor
+                        anchor:)
               end
 
         link_to h(wiki_title),
                 url,
-                class: ('wiki-page' + (wiki_page ? '' : ' new'))
+                class: ("wiki-page" + (wiki_page ? "" : " new"))
       end
     end
   end

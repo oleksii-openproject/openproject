@@ -1,14 +1,12 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -25,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module Projects
@@ -33,12 +31,9 @@ module Projects
     private
 
     def set_attributes(params)
-      attributes = params.dup
-      status_attributes = attributes.delete(:status) || {}
+      ret = super(params.except(:status_code))
 
-      ret = super(attributes)
-
-      update_status(status_attributes)
+      set_status_code(params[:status_code]) if status_code_provided?(params)
 
       ret
     end
@@ -46,16 +41,10 @@ module Projects
     def set_default_attributes(attributes)
       attribute_keys = attributes.keys.map(&:to_s)
 
-      set_default_identifier(attribute_keys.include?('identifier'))
-      set_default_public(attribute_keys.include?('public'))
-      set_default_module_names(attribute_keys.include?('enabled_module_names'))
-      set_default_types(attribute_keys.include?('types') || attribute_keys.include?('type_ids'))
-    end
-
-    def set_default_identifier(provided)
-      if !provided && Setting.sequential_project_identifiers?
-        model.identifier = Project.next_identifier
-      end
+      set_default_public(attribute_keys.include?("public"))
+      set_default_module_names(attribute_keys.include?("enabled_module_names"))
+      set_default_types(attribute_keys.include?("types") || attribute_keys.include?("type_ids"))
+      set_default_active_work_package_custom_fields(attribute_keys.include?("work_package_custom_fields"))
     end
 
     def set_default_public(provided)
@@ -70,41 +59,38 @@ module Projects
       model.types = ::Type.default if !provided && model.types.empty?
     end
 
-    def update_status(attributes)
-      with_hack_around_faulty_enum(attributes) do |safe_attributes|
-        if model.status
-          model.status.attributes = safe_attributes
-        else
-          model.build_status(safe_attributes)
-        end
-      end
+    def set_default_active_work_package_custom_fields(provided)
+      return if provided
+
+      model.work_package_custom_fields = WorkPackageCustomField
+        .joins(:types)
+        .where(types: { id: model.type_ids })
+        .distinct
     end
 
-    # Hack around ArgumentError on faulty enum values
-    # https://github.com/rails/rails/issues/13971
-    def with_hack_around_faulty_enum(attributes)
-      faulty_code = if faulty_code?(attributes)
-                      attributes.delete(:code)
-                    end
+    def status_code_provided?(params)
+      params.key?(:status_code)
+    end
 
-      yield(attributes)
-
-      if faulty_code
+    def set_status_code(status_code)
+      if faulty_code?(status_code)
         # set an arbitrary status code first to get rails internal into correct state
-        model.status.code = first_not_set_code
+        model.status_code = first_not_set_code
         # hack into rails internals to set faulty code
-        code_attributes = model.status.instance_variable_get(:@attributes)['code']
-        code_attributes.instance_variable_set(:@value_before_type_cast, faulty_code)
-        code_attributes.instance_variable_set(:@value, faulty_code)
+        code_attributes = model.instance_variable_get(:@attributes)["status_code"]
+        code_attributes.instance_variable_set(:@value_before_type_cast, status_code)
+        code_attributes.instance_variable_set(:@value, status_code)
+      else
+        model.status_code = status_code
       end
     end
 
-    def faulty_code?(attributes)
-      attributes && attributes[:code] && !Projects::Status.codes.keys.include?(attributes[:code].to_s)
+    def faulty_code?(status_code)
+      status_code && Project.status_codes.keys.exclude?(status_code.to_s)
     end
 
     def first_not_set_code
-      (Projects::Status.codes.keys - [model.status.code]).first
+      (Project.status_codes.keys - [model.status_code]).first
     end
   end
 end

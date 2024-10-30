@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,63 +23,207 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'spec_helper'
+require "spec_helper"
 
-describe JournalsController, type: :controller do
-  let(:user) { FactoryBot.create(:user, member_in_project: project, member_through_role: role) }
-  let(:project) { FactoryBot.create(:project_with_types) }
-  let(:role) { FactoryBot.create(:role, permissions: permissions) }
-  let(:member) {
-    FactoryBot.build(:member, project: project,
-                               roles: [role],
-                               principal: user)
-  }
-  let(:work_package) {
-    FactoryBot.build(:work_package, type: project.types.first,
-                                     author: user,
-                                     project: project,
-                                     description: '')
-  }
-  let(:journal) {
-    FactoryBot.create(:work_package_journal,
-                       journable: work_package,
-                       user: user)
-  }
-  let(:permissions) { [:view_work_packages] }
+RSpec.describe JournalsController do
+  shared_let(:project) { create(:project_with_types) }
+  shared_let(:user) { create(:user, member_with_permissions: { project => [:view_work_packages] }) }
 
-  before do
-    allow(User).to receive(:current).and_return user
+  current_user { user }
+  subject(:response) do
+    get :diff,
+        xhr: true,
+        params:
   end
 
-  describe 'GET diff' do
+  describe "GET diff" do
     render_views
 
-    let(:params) { { id: work_package.journals.last.id.to_s, field: :description, format: 'js' } }
+    context "for work package description" do
+      shared_let(:work_package) do
+        create(:work_package, type: project.types.first,
+                              author: user,
+                              project:,
+                              description: "")
+      end
+      let(:params) { { id: work_package.last_journal.id.to_s, field: :description, format: "js" } }
 
-    before do
-      work_package.update_attribute :description, 'description'
-
-      get :diff,
-          xhr: true,
-          params: params
-    end
-
-    describe 'w/ authorization' do
-      it 'should be successful' do
-        expect(response).to be_successful
+      before do
+        work_package.update_attribute :description, "description\nmore changes"
       end
 
-      it 'should present the diff correctly' do
-        expect(response.body.strip).to eq("<div class=\"text-diff\">\n  <label class=\"hidden-for-sighted\">Begin of the insertion</label><ins class=\"diffmod\">description</ins><label class=\"hidden-for-sighted\">End of the insertion</label>\n</div>")
+      describe "with a user having :view_work_package permission" do
+        it { expect(response).to have_http_status(:ok) }
+
+        it "presents the diff correctly" do
+          expect(response.body.strip).to be_html_eql <<-HTML
+            <div class="text-diff">
+              <label class="hidden-for-sighted">Begin of the insertion</label>
+              <ins class="diffmod">
+                description
+                <br/>
+                more changes
+              </ins>
+              <label class="hidden-for-sighted">End of the insertion</label>
+            </div>
+          HTML
+        end
+      end
+
+      describe "with a user not having the :view_work_package permission" do
+        before do
+          RolePermission.delete_all
+        end
+
+        it { expect(response).to have_http_status(:forbidden) }
       end
     end
 
-    describe 'w/o authorization' do
-      let(:permissions) { [] }
-      it { expect(response).not_to be_successful }
+    context "for work package text custom field" do
+      shared_let(:type) { project.types.first }
+
+      shared_let(:custom_field) do
+        create(:text_wp_custom_field).tap do |custom_field|
+          project.work_package_custom_fields << custom_field
+          type.custom_fields << custom_field
+        end
+      end
+
+      shared_let(:work_package) do
+        create(:work_package, type:,
+                              author: user,
+                              project:)
+      end
+      let(:params) { { id: work_package.last_journal.id.to_s, field: "custom_fields_#{custom_field.id}", format: "js" } }
+
+      before do
+        work_package.update custom_field_values: { custom_field.id => "foo" }
+      end
+
+      describe "with a user having :view_work_package permission" do
+        it { expect(response).to have_http_status(:ok) }
+
+        it "presents the diff correctly" do
+          expect(response.body.strip).to be_html_eql <<-HTML
+            <div class="text-diff">
+              <label class="hidden-for-sighted">Begin of the insertion</label>
+              <ins class="diffmod">foo</ins>
+              <label class="hidden-for-sighted">End of the insertion</label>
+            </div>
+          HTML
+        end
+      end
+
+      describe "with a user not having the :view_work_package permission" do
+        before do
+          RolePermission.delete_all
+        end
+
+        it { expect(response).to have_http_status(:forbidden) }
+      end
+    end
+
+    context "for work package string custom field" do
+      shared_let(:type) { project.types.first }
+
+      shared_let(:custom_field) do
+        create(:wp_custom_field).tap do |custom_field|
+          project.work_package_custom_fields << custom_field
+          type.custom_fields << custom_field
+        end
+      end
+
+      shared_let(:work_package) do
+        create(:work_package, type:,
+                              author: user,
+                              project:)
+      end
+      let(:params) { { id: work_package.last_journal.id.to_s, field: "custom_fields_#{custom_field.id}", format: "js" } }
+
+      before do
+        work_package.update custom_field_values: { custom_field.id => "foo" }
+      end
+
+      it { expect(response).to have_http_status(:not_found) }
+    end
+
+    context "for project description" do
+      let(:params) { { id: project.last_journal.id.to_s, field: :description, format: "js" } }
+
+      before do
+        project.update_attribute :description, "description"
+      end
+
+      describe "with a user being member of the project" do
+        it { expect(response).to have_http_status(:ok) }
+
+        it "presents the diff correctly" do
+          expect(response.body.strip).to be_html_eql <<-HTML
+            <div class="text-diff">
+              <label class="hidden-for-sighted">Begin of the insertion</label>
+              <ins class="diffmod">description</ins>
+              <label class="hidden-for-sighted">End of the insertion</label>
+            </div>
+          HTML
+        end
+      end
+
+      describe "with a user not being member of the project" do
+        before do
+          Member.delete_all
+        end
+
+        it { expect(response).to have_http_status(:forbidden) }
+      end
+
+      describe 'when "Work Package Tracking" module is disabled' do
+        before do
+          project.enabled_module_names -= ["work_package_tracking"]
+        end
+
+        it { expect(response).to have_http_status(:ok) }
+      end
+
+      describe "when project is archived" do
+        before do
+          project.update(active: false)
+        end
+
+        it { expect(response).to have_http_status(:forbidden) }
+      end
+    end
+
+    context "for another field than description" do
+      shared_let(:work_package) do
+        create(:work_package, type: project.types.first,
+                              author: user,
+                              project:)
+      end
+      let(:params) { { id: work_package.last_journal.id.to_s, field: :another_field, format: "js" } }
+
+      it { expect(response).to have_http_status(:not_found) }
+    end
+
+    context "for other types, like forum message" do
+      shared_let(:forum) { create(:forum, project:) }
+      shared_let(:message) { create(:message, forum:, content: "initial content") }
+
+      let(:params) { { id: message.last_journal.id.to_s, field: :description, format: "js" } }
+
+      before do
+        message.update_attribute :content, "initial content updated"
+      end
+
+      describe "even with a user having all permissions" do
+        before do
+          user.update(admin: true)
+        end
+
+        it { expect(response).to have_http_status(:forbidden) }
+      end
     end
   end
 end

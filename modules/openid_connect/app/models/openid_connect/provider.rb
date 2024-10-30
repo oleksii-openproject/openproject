@@ -1,75 +1,91 @@
 module OpenIDConnect
-  class Provider
-    ALLOWED_TYPES = ["azure", "google"].freeze
+  class Provider < AuthProvider
+    include HashBuilder
 
-    class NewProvider < OpenStruct
-      def to_h
-        @table.dup.delete_if { |_k, v| v.blank? }
+    OIDC_PROVIDERS = %w[google microsoft_entra custom].freeze
+    DISCOVERABLE_ATTRIBUTES_MANDATORY = %i[authorization_endpoint
+                                           userinfo_endpoint
+                                           token_endpoint
+                                           issuer].freeze
+    DISCOVERABLE_ATTRIBUTES_OPTIONAL = %i[end_session_endpoint jwks_uri].freeze
+    DISCOVERABLE_ATTRIBUTES_ALL = DISCOVERABLE_ATTRIBUTES_MANDATORY + DISCOVERABLE_ATTRIBUTES_OPTIONAL
+
+    MAPPABLE_ATTRIBUTES = %i[login email first_name last_name admin].freeze
+
+    store_attribute :options, :oidc_provider, :string
+    store_attribute :options, :metadata_url, :string
+    store_attribute :options, :icon, :string
+
+    DISCOVERABLE_ATTRIBUTES_ALL.each do |attribute|
+      store_attribute :options, attribute, :string
+    end
+    MAPPABLE_ATTRIBUTES.each do |attribute|
+      store_attribute :options, "mapping_#{attribute}", :string
+    end
+
+    store_attribute :options, :client_id, :string
+    store_attribute :options, :client_secret, :string
+    store_attribute :options, :post_logout_redirect_uri, :string
+    store_attribute :options, :tenant, :string
+    store_attribute :options, :host, :string
+    store_attribute :options, :scheme, :string
+    store_attribute :options, :port, :string
+
+    store_attribute :options, :claims, :string
+    store_attribute :options, :acr_values, :string
+
+    # azure specific option
+    store_attribute :options, :use_graph_api, :boolean
+
+    def self.slug_fragment = "oidc"
+
+    def human_type
+      "OpenID Connect"
+    end
+
+    def seeded_from_env?
+      (Setting.seed_oidc_provider || {}).key?(slug)
+    end
+
+    def advanced_details_configured?
+      client_id.present? && client_secret.present?
+    end
+
+    def metadata_configured?
+      return true if google? || entra_id?
+
+      DISCOVERABLE_ATTRIBUTES_MANDATORY.all? do |mandatory_attribute|
+        public_send(mandatory_attribute).present?
       end
     end
 
-    extend ActiveModel::Naming
-    include ActiveModel::Conversion
-    extend ActiveModel::Translation
-    attr_reader :errors, :omniauth_provider
-
-    attr_accessor :display_name
-    delegate :name, to: :omniauth_provider, allow_nil: true
-    delegate :identifier, to: :omniauth_provider, allow_nil: true
-    delegate :secret, to: :omniauth_provider, allow_nil: true
-    delegate :scope, to: :omniauth_provider, allow_nil: true
-    delegate :to_h, to: :omniauth_provider, allow_nil: false
-
-    def initialize(omniauth_provider)
-      @omniauth_provider = omniauth_provider
-      @errors = ActiveModel::Errors.new(self)
-      @display_name = omniauth_provider.to_h[:display_name]
+    def mapping_configured?
+      MAPPABLE_ATTRIBUTES.any? do |mandatory_attribute|
+        public_send(:"mapping_#{mandatory_attribute}").present?
+      end
     end
 
-    def self.initialize_with(params)
-      new(NewProvider.new(params))
+    def google?
+      oidc_provider == "google"
     end
 
-    def new_record?
-      !persisted?
+    def entra_id?
+      oidc_provider == "microsoft_entra"
     end
 
-    def persisted?
-      omniauth_provider.is_a?(OmniAuth::OpenIDConnect::Provider)
+    def configured?
+      display_name.present? && advanced_details_configured? && metadata_configured?
     end
 
-    def id
-      return nil unless persisted?
-      name
-    end
-
-    def valid?
-      @errors.add(:name, :invalid) unless ALLOWED_TYPES.include?(name)
-      @errors.add(:identifier, :blank) if identifier.blank?
-      @errors.add(:secret, :blank) if secret.blank?
-      @errors.none?
-    end
-
-    def save
-      return false unless valid?
-      config = Setting.plugin_openproject_openid_connect || Hash.new
-      config["providers"] ||= Hash.new
-      config["providers"][name] = omniauth_provider.to_h.stringify_keys
-      Setting.plugin_openproject_openid_connect = config
-      true
-    end
-
-    def destroy
-      config = Setting.plugin_openproject_openid_connect
-      config["providers"] ||= {}
-      config["providers"].delete(name)
-      Setting.plugin_openproject_openid_connect = config
-      true
-    end
-
-    # https://api.rubyonrails.org/classes/ActiveModel/Errors.html
-    def read_attribute_for_validation(attr)
-      send(attr)
+    def icon
+      case oidc_provider
+      when "google"
+        "openid_connect/auth_provider-google.png"
+      when "microsoft_entra"
+        "openid_connect/auth_provider-azure.png"
+      else
+        super.presence || "openid_connect/auth_provider-custom.png"
+      end
     end
   end
 end

@@ -1,14 +1,12 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -25,14 +23,14 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'spec_helper'
-require_relative './shared_contract_examples'
+require "spec_helper"
+require_relative "shared_contract_examples"
 
-describe Messages::CreateContract do
-  it_behaves_like 'message contract' do
+RSpec.describe Messages::CreateContract do
+  it_behaves_like "message contract" do
     let(:message) do
       Message.new(forum: message_forum,
                   parent: message_parent,
@@ -41,12 +39,14 @@ describe Messages::CreateContract do
                   author: message_author,
                   last_reply: message_last_reply,
                   locked: message_locked,
-                  sticky: message_sticky)
+                  sticky: message_sticky).tap do |m|
+        m.extend(OpenProject::ChangedBySystem)
+        m.changed_by_system("author_id" => [nil, message_author.id])
+      end
     end
-    let(:changed_by_system) { %w(author_id) }
 
     subject(:contract) do
-      described_class.new(message, current_user, options: { changed_by_system: changed_by_system })
+      described_class.new(message, current_user)
     end
   end
 end

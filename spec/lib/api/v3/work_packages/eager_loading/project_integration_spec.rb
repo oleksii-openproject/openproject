@@ -1,14 +1,12 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -25,24 +23,24 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++require 'rspec'
 
-require 'spec_helper'
-require_relative './eager_loading_mock_wrapper'
+require "spec_helper"
+require_relative "eager_loading_mock_wrapper"
 
-describe ::API::V3::WorkPackages::EagerLoading::Project do
-  let!(:parent_work_package1) { FactoryBot.create(:work_package, project: parent_project) }
-  let!(:work_package1) { FactoryBot.create(:work_package, project: project, parent: parent_work_package1) }
-  let!(:work_package2) { FactoryBot.create(:work_package, project: project, parent: parent_work_package1) }
-  let!(:child_work_package1) { FactoryBot.create(:work_package, project: child_project, parent: work_package1) }
-  let!(:child_work_package2) { FactoryBot.create(:work_package, project: child_project, parent: work_package2) }
-  let!(:project) { FactoryBot.create(:project) }
-  let!(:parent_project) { FactoryBot.create(:project) }
-  let!(:child_project) { FactoryBot.create(:project) }
+RSpec.describe API::V3::WorkPackages::EagerLoading::Project do
+  let!(:parent_work_package1) { create(:work_package, project: parent_project) }
+  let!(:work_package1) { create(:work_package, project:, parent: parent_work_package1) }
+  let!(:work_package2) { create(:work_package, project:, parent: parent_work_package1) }
+  let!(:child_work_package1) { create(:work_package, project: child_project, parent: work_package1) }
+  let!(:child_work_package2) { create(:work_package, project: child_project, parent: work_package2) }
+  let!(:project) { create(:project) }
+  let!(:parent_project) { create(:project) }
+  let!(:child_project) { create(:project) }
 
-  describe '.apply' do
-    it 'preloads the projects of the work packages, their parents and children' do
+  describe ".apply" do
+    it "preloads the projects of the work packages, their parents and children" do
       wrapped = EagerLoadingMockWrapper.wrap(described_class, [work_package1, work_package2])
 
       wrapped.each do |w|

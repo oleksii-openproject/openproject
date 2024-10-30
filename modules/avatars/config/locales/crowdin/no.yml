@@ -1,5 +1,9 @@
 #English strings go here
 "no":
+  plugin_openproject_avatars:
+    name: "Profilbilder"
+    description: >-
+      Dette programtillegget tillater OpenProject brukere å laste opp et bilde som skal brukes som avatar eller som bruker registrerte bilder fra Gravatar.
   label_avatar: "Profilbilde"
   label_avatar_plural: "Profilbilder"
   label_current_avatar: "Nåværende Profilbilde"
@@ -7,7 +11,6 @@
   message_avatar_uploaded: "Profilbildet har blitt endret."
   error_image_upload: "Feil ved lagring av bilde."
   error_image_size: "Bildet er for stor."
-  button_change_avatar: "Endre profilbilde"
   are_you_sure_delete_avatar: "Er du sikker på at du vil slette profilbildet din?"
   avatar_deleted: "Profilbildet har blitt endret."
   unable_to_delete_avatar: "Profilbildet kunne ikke slettes."
@@ -35,6 +38,3 @@
       enable_gravatars: 'Aktiver brukergravatarer'
       gravatar_default: "Standard Gravatar-bilde"
       enable_local_avatars: 'Aktiver brukerdefinerte profilbilder'
-
-
-

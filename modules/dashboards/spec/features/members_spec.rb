@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,47 +23,52 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'spec_helper'
+require "spec_helper"
 
-require_relative '../support/pages/dashboard'
+require_relative "../support/pages/dashboard"
 
-describe 'Members widget on dashboard', type: :feature, js: true do
-  let!(:project) { FactoryBot.create :project }
-  let!(:other_project) { FactoryBot.create :project }
+RSpec.describe "Members widget on dashboard", :js do
+  let!(:project) { create(:project) }
+  let!(:other_project) { create(:project) }
 
   let!(:manager_user) do
-    FactoryBot.create :user, lastname: "Manager", member_in_project: project, member_through_role: role
+    create(:user, lastname: "Manager", member_with_roles: { project => role })
   end
   let!(:no_edit_member_user) do
-    FactoryBot.create :user, lastname: "No_Edit", member_in_project: project, member_through_role: no_edit_member_role
+    create(:user, lastname: "No_Edit", member_with_roles: { project => no_edit_member_role })
   end
   let!(:no_view_member_user) do
-    FactoryBot.create :user, lastname: "No_View", member_in_project: project, member_through_role: no_view_member_role
+    create(:user, lastname: "No_View", member_with_roles: { project => no_view_member_role })
+  end
+  let!(:placeholder_user) do
+    create(:placeholder_user,
+           lastname: "Placeholder user",
+           member_with_roles: { project => no_view_member_role })
   end
   let!(:invisible_user) do
-    FactoryBot.create :user, lastname: "Invisible", member_in_project: other_project, member_through_role: role
+    create(:user, lastname: "Invisible", member_with_roles: { other_project => role })
   end
 
   let(:no_view_member_role) do
-    FactoryBot.create(:role,
-                      permissions: %i[manage_dashboards
-                                      view_dashboards])
+    create(:project_role,
+           permissions: %i[manage_dashboards
+                           view_dashboards])
   end
   let(:no_edit_member_role) do
-    FactoryBot.create(:role,
-                      permissions: %i[manage_dashboards
-                                      view_dashboards
-                                      view_members])
+    create(:project_role,
+           permissions: %i[manage_dashboards
+                           view_dashboards
+                           view_members])
   end
   let(:role) do
-    FactoryBot.create(:role,
-                      permissions: %i[manage_dashboards
-                                      view_dashboards
-                                      manage_members
-                                      view_members])
+    create(:project_role,
+           permissions: %i[manage_dashboards
+                           view_dashboards
+                           manage_members
+                           view_members])
   end
   let(:dashboard) do
     Pages::Dashboard.new(project)
@@ -89,23 +94,25 @@ describe 'Members widget on dashboard', type: :feature, js: true do
         .to have_content no_view_member_role
       expect(page)
         .to have_content no_view_member_user.name
+      expect(page)
+        .to have_content placeholder_user.name
     end
   end
 
-  it 'can add the widget and see the members if the permissions suffice' do
+  it "can add the widget and see the members if the permissions suffice" do
     # within top-right area, add an additional widget
-    dashboard.add_widget(1, 1, :within, 'Members')
+    dashboard.add_widget(1, 1, :within, "Members")
 
-    members_area = Components::Grids::GridArea.new('.grid--area.-widgeted:nth-of-type(1)')
+    members_area = Components::Grids::GridArea.new(".grid--area.-widgeted:nth-of-type(1)")
 
     expect_all_members_visible(members_area.area)
 
     expect(page)
-      .not_to have_content invisible_user.name
+      .to have_no_content invisible_user.name
 
     within members_area.area do
       expect(page)
-        .to have_link('Member')
+        .to have_link("Member")
     end
 
     # A user without edit permission will see the members but cannot add one
@@ -118,7 +125,7 @@ describe 'Members widget on dashboard', type: :feature, js: true do
 
     within members_area.area do
       expect(page)
-        .to have_no_link('Member')
+        .to have_no_link("Member")
     end
 
     # A user without view permission will not see any members
@@ -133,13 +140,13 @@ describe 'Members widget on dashboard', type: :feature, js: true do
         .to have_no_content manager_user.name
 
       expect(page)
-        .to have_content('No visible members')
+        .to have_content("No visible members")
 
       expect(page)
-        .to have_no_link('Member')
+        .to have_no_link("Member")
 
       expect(page)
-        .to have_no_link('View all members')
+        .to have_no_link("View all members")
     end
   end
 end

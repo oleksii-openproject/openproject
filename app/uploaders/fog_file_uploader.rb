@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,10 +23,10 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'carrierwave/storage/fog'
+require "carrierwave/storage/fog"
 
 class FogFileUploader < CarrierWave::Uploader::Base
   include FileUploader
@@ -40,7 +40,7 @@ class FogFileUploader < CarrierWave::Uploader::Base
   after :store, :delete_old_tmp_file
 
   def copy_to(attachment)
-    attachment.remote_file_url = remote_file.url
+    attachment.file = local_file
   end
 
   def store_dir
@@ -58,6 +58,16 @@ class FogFileUploader < CarrierWave::Uploader::Base
   end
 
   ##
+  # This is necessary for carrierwave to set the Content-Type in the S3 metadata for instance.
+  def fog_attributes
+    content_type = model.respond_to?(:content_type) ? model.content_type : ""
+
+    return super if content_type.blank?
+
+    super.merge "Content-Type": content_type
+  end
+
+  ##
   # Generates a download URL for this file.
   #
   # @param options [Hash] Options hash.
@@ -69,8 +79,8 @@ class FogFileUploader < CarrierWave::Uploader::Base
   def download_url(options = {})
     url_options = {}
 
-    set_content_disposition! url_options, options: options
-    set_expires_at! url_options, options: options
+    set_content_disposition!(url_options, options:)
+    set_expires_at!(url_options, options:)
 
     remote_file.url url_options
   end
@@ -104,8 +114,7 @@ class FogFileUploader < CarrierWave::Uploader::Base
 
   def set_expires_at!(url_options, options:)
     if options[:expires_in].present?
-      # AWS allows at max < 604800 expires time
-      expires = [options[:expires_in], 604799].min
+      expires = [options[:expires_in], OpenProject::Configuration.fog_download_url_expires_in].min
       url_options[:expire_at] = ::Fog::Time.now + expires
     end
 

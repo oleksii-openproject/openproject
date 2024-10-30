@@ -1,14 +1,12 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -25,32 +23,47 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module Queries::Projects
-  register = ::Queries::Register
-  filters = ::Queries::Projects::Filters
-  orders = ::Queries::Projects::Orders
-  query = ::Queries::Projects::ProjectQuery
+  ::Queries::Register.register(ProjectQuery) do
+    filter Filters::AncestorFilter
+    filter Filters::AvailableProjectAttributesFilter
+    filter Filters::AvailableCustomFieldsProjectsFilter
+    filter Filters::TypeFilter
+    filter Filters::ActiveFilter
+    filter Filters::TemplatedFilter
+    filter Filters::PublicFilter
+    filter Filters::NameFilter
+    filter Filters::NameAndIdentifierFilter
+    filter Filters::MemberOfFilter
+    filter Filters::TypeaheadFilter
+    filter Filters::CustomFieldFilter
+    filter Filters::CreatedAtFilter
+    filter Filters::LatestActivityAtFilter
+    filter Filters::PrincipalFilter
+    filter Filters::ParentFilter
+    filter Filters::IdFilter
+    filter Filters::ProjectStatusFilter
+    filter Filters::UserActionFilter
+    filter Filters::VisibleFilter
+    filter Filters::FavoredFilter
 
-  register.filter query, filters::AncestorFilter
-  register.filter query, filters::TypeFilter
-  register.filter query, filters::ActiveFilter
-  register.filter query, filters::TemplatedFilter
-  register.filter query, filters::NameAndIdentifierFilter
-  register.filter query, filters::CustomFieldFilter
-  register.filter query, filters::CreatedAtFilter
-  register.filter query, filters::LatestActivityAtFilter
-  register.filter query, filters::PrincipalFilter
-  register.filter query, filters::ParentFilter
-  register.filter query, filters::IdFilter
-  register.filter query, filters::ProjectStatusFilter
+    order Orders::DefaultOrder
+    order Orders::LatestActivityAtOrder
+    order Orders::RequiredDiskSpaceOrder
+    order Orders::CustomFieldOrder
+    order Orders::ProjectStatusOrder
+    order Orders::NameOrder
+    order Orders::TypeaheadOrder
 
-  register.order query, orders::DefaultOrder
-  register.order query, orders::LatestActivityAtOrder
-  register.order query, orders::RequiredDiskSpaceOrder
-  register.order query, orders::CustomFieldOrder
-  register.order query, orders::ProjectStatusOrder
-  register.order query, orders::NameOrder
+    select Selects::CreatedAt
+    select Selects::CustomField
+    select Selects::Default
+    select Selects::LatestActivityAt
+    select Selects::RequiredDiskSpace
+    select Selects::Status
+    select Selects::Favored
+  end
 end

@@ -1,13 +1,12 @@
-#-- encoding: UTF-8
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -24,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module API
@@ -55,6 +54,7 @@ module API
                    type:,
                    name_source: property,
                    as: camelize(property),
+                   location: nil,
                    required: true,
                    has_default: false,
                    writable: default_writable_property(property),
@@ -63,7 +63,9 @@ module API
                    max_length: nil,
                    regular_expression: nil,
                    options: {},
-                   show_if: true)
+                   show_if: true,
+                   description: nil,
+                   deprecated: nil)
           getter = ->(*) do
             schema_property_getter(type,
                                    name_source,
@@ -74,23 +76,26 @@ module API
                                    min_length,
                                    max_length,
                                    regular_expression,
-                                   options)
+                                   options,
+                                   location,
+                                   description,
+                                   deprecated)
           end
 
           schema_property(property,
-                          getter,
-                          show_if,
-                          required,
-                          has_default,
-                          name_source,
-                          as)
+                          getter:,
+                          show_if:,
+                          required:,
+                          has_default:,
+                          name_source:,
+                          as:)
         end
 
         def schema_with_allowed_link(property,
+                                     href_callback:,
                                      type: make_type(property),
                                      name_source: property,
                                      as: camelize(property),
-                                     href_callback:,
                                      required: true,
                                      has_default: false,
                                      writable: default_writable_property(property),
@@ -107,23 +112,23 @@ module API
           end
 
           schema_property(property,
-                          getter,
-                          show_if,
-                          required,
-                          has_default,
-                          name_source,
-                          as)
+                          getter:,
+                          show_if:,
+                          required:,
+                          has_default:,
+                          name_source:,
+                          as:)
         end
 
         def schema_with_allowed_collection(property,
+                                           value_representer:,
+                                           link_factory:,
                                            type: make_type(property),
                                            name_source: property,
                                            as: camelize(property),
                                            values_callback: -> do
                                              represented.assignable_values(property, current_user)
                                            end,
-                                           value_representer:,
-                                           link_factory:,
                                            required: true,
                                            has_default: false,
                                            writable: default_writable_property(property),
@@ -145,12 +150,12 @@ module API
           end
 
           schema_property(property,
-                          getter,
-                          show_if,
-                          required,
-                          has_default,
-                          name_source,
-                          as)
+                          getter:,
+                          show_if:,
+                          required:,
+                          has_default:,
+                          name_source:,
+                          as:)
         end
 
         def schema_with_allowed_string_collection(property,
@@ -184,30 +189,30 @@ module API
           end
 
           schema_property(property,
-                          getter,
-                          show_if,
-                          required,
-                          has_default,
-                          name_source,
-                          as)
+                          getter:,
+                          show_if:,
+                          required:,
+                          has_default:,
+                          name_source:,
+                          as:)
         end
 
         def schema_property(property,
-                            getter,
-                            show_if,
-                            required,
-                            has_default,
-                            name_source,
-                            property_alias)
+                            getter:,
+                            show_if:,
+                            required:,
+                            has_default:,
+                            name_source:,
+                            as:)
           raise ArgumentError unless property
 
           property property,
-                   as: property_alias,
+                   as:,
                    exec_context: :decorator,
-                   getter: getter,
+                   getter:,
                    if: show_if,
-                   required: required,
-                   has_default: has_default,
+                   required:,
+                   has_default:,
                    name_source: lambda {
                      API::Decorators::SchemaRepresenter::InstanceMethods
                        .call_or_translate name_source, represented_class
@@ -225,7 +230,13 @@ module API
         def default_writable_property(property)
           -> do
             if represented.respond_to?(:writable?)
-              represented.writable?(property)
+              property_name = ::API::Utilities::PropertyNameConverter.to_ar_name(
+                property,
+                context: represented.model,
+                collapse_cf_name: false
+              )
+
+              represented.writable?(property_name)
             else
               false
             end
@@ -235,15 +246,15 @@ module API
 
       include InstanceMethods
 
-      def self.create(represented, self_link = nil, current_user:, form_embedded: false)
+      def self.create(represented, current_user:, self_link: nil, form_embedded: false)
         new(represented,
-            self_link,
-            current_user: current_user,
-            form_embedded: form_embedded)
+            self_link:,
+            current_user:,
+            form_embedded:)
       end
 
       def self.representable_definitions
-        representable_config = self.representable_attrs
+        representable_config = representable_attrs
 
         # For reasons beyond me, Representable::Config contains the definitions
         #  * nested in [:definitions] in some envs, e.g. development
@@ -252,14 +263,14 @@ module API
       end
 
       def initialize(represented,
-                     self_link = nil,
                      current_user:,
+                     self_link: nil,
                      form_embedded: false)
 
         self.form_embedded = form_embedded
         self.self_link = self_link
 
-        super(represented, current_user: current_user)
+        super(represented, current_user:)
       end
 
       link :self do
@@ -273,7 +284,7 @@ module API
                     :self_link
 
       def _type
-        'Schema'
+        "Schema"
       end
 
       def _dependencies
@@ -289,15 +300,21 @@ module API
                                  min_length,
                                  max_length,
                                  regular_expression,
-                                 options)
+                                 options,
+                                 location,
+                                 description,
+                                 deprecated)
         name = call_or_translate(name_source)
         schema = ::API::Decorators::PropertySchemaRepresenter
                  .new(type: call_or_use(type),
-                      name: name,
+                      name:,
+                      location:,
+                      description: call_or_use(description),
                       required: call_or_use(required),
                       has_default: call_or_use(has_default),
                       writable: call_or_use(writable),
-                      attribute_group: call_or_use(attribute_group))
+                      attribute_group: call_or_use(attribute_group),
+                      deprecated:)
         schema.min_length = min_length
         schema.max_length = max_length
         schema.regular_expression = regular_expression
@@ -316,6 +333,7 @@ module API
         representer = ::API::Decorators::AllowedValuesByLinkRepresenter
                       .new(type: call_or_use(type),
                            name: call_or_translate(name_source),
+                           location: :link,
                            required: call_or_use(required),
                            has_default: call_or_use(has_default),
                            writable: call_or_use(writable),
@@ -348,8 +366,8 @@ module API
 
         attributes = { type: call_or_use(type),
                        name: call_or_translate(name_source),
-                       current_user: current_user,
-                       value_representer: value_representer,
+                       current_user:,
+                       value_representer:,
                        link_factory: wrapped_link_factory,
                        required: call_or_use(required),
                        has_default: call_or_use(has_default),

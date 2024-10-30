@@ -1,13 +1,12 @@
-#-- encoding: UTF-8
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -24,26 +23,28 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module TabsHelper
   # Renders tabs and their content
-  def render_tabs(tabs, form = nil)
+  def render_tabs(tabs, form = nil, with_tab_nav: true)
     if tabs.any?
-      selected_tab = tabs.detect { |t| t[:name] == params[:tab] } if params[:tab].present?
-      render partial: 'common/tabs', locals: { f: form, tabs: tabs, selected_tab: selected_tab || tabs.first }
+      selected = selected_tab(tabs)
+      render partial: "common/tabs", locals: { f: form, tabs:, selected_tab: selected, with_tab_nav: }
     else
-      content_tag 'p', I18n.t(:label_no_data), class: 'nodata'
+      content_tag "p", I18n.t(:label_no_data), class: "nodata"
     end
   end
 
-  # Render tabs from the ui/extensible tabs manager
-  def render_extensible_tabs(key, params = {})
-    tabs = ::OpenProject::Ui::ExtensibleTabs.enabled_tabs(key).map do |tab|
+  def selected_tab(tabs)
+    tabs.detect { |t| t[:name] == params[:tab] } || tabs.first
+  end
+
+  def tabs_for_key(key, params = {})
+    ::OpenProject::Ui::ExtensibleTabs.enabled_tabs(key, params.reverse_merge(current_user:)).map do |tab|
       path = tab[:path].respond_to?(:call) ? instance_exec(params, &tab[:path]) : tab[:path]
-      tab.dup.merge path: path
+      tab.dup.merge(path:)
     end
-    render_tabs(tabs)
   end
 end

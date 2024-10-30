@@ -1,10 +1,10 @@
 #-- copyright
 #OpenProject is an open source project management software.
-#Copyright (C) 2012-2020 the OpenProject GmbH
+#Copyright (C) the OpenProject GmbH
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License version 3.
 #OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-#Copyright (C) 2006-2017 Jean-Philippe Lang
+#Copyright (C) 2006-2013 Jean-Philippe Lang
 #Copyright (C) 2010-2013 the ChiliProject Team
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License
@@ -17,15 +17,16 @@
 #You should have received a copy of the GNU General Public License
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-#See docs/COPYRIGHT.rdoc for more details.
+#See COPYRIGHT and LICENSE files for more details.
 #++
 fr:
+  plugin_openproject_backlogs:
+    name: "Backlogs OpenProject"
+    description: "Ce module ajoute des fonctionnalités permettant aux équipes agiles de travailler avec OpenProject dans le cadre de projets Scrum."
   activerecord:
     attributes:
       work_package:
         position: "Position"
-        remaining_hours: "Heures restantes"
-        remaining_time: "Heures restantes"
         story_points: "Points d'histoire"
         backlogs_work_package_type: "Type de backlog"
     errors:
@@ -35,9 +36,6 @@ fr:
             blocks_ids:
               can_only_contain_work_packages_of_current_sprint: "ne peut contenir que des ID de lots de travaux du sprint actuel."
               must_block_at_least_one_work_package: "doit contenir l'ID d'au moins un ticket."
-            parent_id:
-              parent_child_relationship_across_projects: "n'est pas valide parce que le lot de travaux «%{work_package_name}» est une tâche de backlog et par conséquent ne peut avoir un parent en dehors du projet actuel."
-              type_must_be_one_of_the_following: "Type doit être parmi : %{type_names}."
             version_id:
               task_version_must_be_the_same_as_story_version: "doit être identique à la version de l'histoire parente."
         sprint:
@@ -49,7 +47,7 @@ fr:
     burndown_graph: "Graphique d'avancement"
     card_paper_size: "Format de papier pour l'impression des cartes"
     chart_options: "Options du graphique"
-    close: "Fermer"
+    close: "Clôturer"
     column_width: "Largeur de la colonne :"
     date: "Jour"
     definition_of_done: "Définition de Fait"
@@ -66,8 +64,8 @@ fr:
     properties: "Propriétés"
     rebuild: "Reconstruire"
     rebuild_positions: "Reconstruire les positions"
-    remaining_hours: "Heures restantes"
-    remaining_hours_ideal: "Heures restantes (idéal)"
+    remaining_hours: "Travail restant"
+    remaining_hours_ideal: "Travail restant (idéal)"
     show_burndown_chart: "Graphique d'avancement"
     story: "Histoire"
     story_points: "Points d'histoire"
@@ -78,7 +76,6 @@ fr:
     x_more: "%{count} de plus..."
   backlogs_active: "actif"
   backlogs_any: "tout"
-  backlogs_card_specification: "Types d'étiquettes pour l'impression de cartes"
   backlogs_inactive: "Le projet ne montre aucune activité"
   backlogs_points_burn_direction: "Les points évoluent vers le haut/bas"
   backlogs_product_backlog: "Backlog de produit"
@@ -99,6 +96,7 @@ fr:
   backlogs_empty_title: "Aucune version n'est définie pour être utilisée dans les backlogs"
   backlogs_empty_action_text: "Pour démarrer avec les backlogs, créez une nouvelle version et assignez-y une colonne de backlogs."
   button_edit_wiki: "Éditer la page du wiki"
+  error_backlogs_task_cannot_be_story: "Les paramètres ne sont pas valides. Le type de tâche sélectionné ne peut pas aussi être un type d'histoire."
   error_intro_plural: "Les erreurs suivantes ont été rencontrées :"
   error_intro_singular: "L'erreur suivante a été rencontrée :"
   error_outro: "Veuillez corriger les erreurs ci-dessus avant de soumettre à nouveau."
@@ -110,7 +108,7 @@ fr:
   label_backlog: "Backlog"
   label_backlogs: "Backlogs"
   label_backlogs_unconfigured: "Vous n'avez pas encore configuré Backlogs. Veuillez vous rendre dans %{administration} > %{plugins}, puis cliquer sur le lien %{configure} pour ce plugin. Une fois que vous avez défini les champs, revenez sur cette page pour commencer à utiliser l'outil."
-  label_blocks_ids: "IDs des lots de travaux bloqués"
+  label_blocks_ids: "ID des lots de travaux bloqués"
   label_burndown: "Avancement"
   label_column_in_backlog: "Colonne dans le backlog"
   label_hours: "heures"
@@ -119,7 +117,7 @@ fr:
   label_not_prioritized: "non priorisé"
   label_points: "points"
   label_points_burn_down: "Vers le bas"
-  label_points_burn_up: "Haut"
+  label_points_burn_up: "Vers le haut"
   label_product_backlog: "carnet de produit"
   label_select_all: "Tout sélectionner"
   label_sprint_backlog: "carnet de sprint"
@@ -136,6 +134,7 @@ fr:
   label_wiki: "Wiki"
   permission_view_master_backlog: "Afficher le backlog principal"
   permission_view_taskboards: "Voir les tableaux des tâches"
+  permission_select_done_statuses: "Sélectionner les statuts terminés"
   permission_update_sprints: "Éditer les sprints"
   points_accepted: "points acceptés"
   points_committed: "points soumis"
@@ -145,10 +144,10 @@ fr:
   project_module_backlogs: "Backlogs"
   rb_label_copy_tasks: "Copier lots de travaux"
   rb_label_copy_tasks_all: "Toutes"
-  rb_label_copy_tasks_none: "Aucun"
+  rb_label_copy_tasks_none: "Aucune"
   rb_label_copy_tasks_open: "Ouvertes"
   rb_label_link_to_original: "Inclure le lien vers l'histoire originale"
-  remaining_hours: "heures restantes"
+  remaining_hours: "travail restant"
   required_burn_rate_hours: "rythme nécessaire (heures)"
   required_burn_rate_points: "rythme nécessaire (points)"
   todo_work_package_description: "%{summary} : %{url}\n%{description}"

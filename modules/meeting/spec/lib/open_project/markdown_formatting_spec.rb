@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,16 +23,13 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'spec_helper'
+require "spec_helper"
 
-describe OpenProject::TextFormatting,
-         'Meeting links',
-         # Speeds up the spec by avoiding event mailers to be procssed
-         with_settings: { notified_events: [] } do
-
+RSpec.describe OpenProject::TextFormatting,
+               "Meeting links" do
   include ActionView::Helpers::UrlHelper # soft-dependency
   include ActionView::Context
   include OpenProject::StaticRouting::UrlHelpers
@@ -42,15 +39,15 @@ describe OpenProject::TextFormatting,
   end
 
   shared_let(:project) do
-    FactoryBot.create :project, enabled_module_names: %w[meetings]
+    create(:project, enabled_module_names: %w[meetings])
   end
 
   shared_let(:meeting) do
-    FactoryBot.create :meeting, project: project, title: 'Monthly coordination'
+    create(:meeting, project:, title: "Monthly coordination")
   end
 
   subject do
-    ::OpenProject::TextFormatting::Renderer.format_text(text, only_path: true)
+    OpenProject::TextFormatting::Renderer.format_text(text, only_path: true)
   end
 
   before do
@@ -67,47 +64,48 @@ describe OpenProject::TextFormatting,
     TEXT
   end
 
-  context 'when visible' do
-    let(:role) { FactoryBot.create :role, permissions: %i[view_meetings view_project] }
-    let(:user) { FactoryBot.create :user, member_in_project: project, member_through_role: role }
+  context "when visible" do
+    let(:role) { create(:project_role, permissions: %i[view_meetings view_project]) }
+    let(:user) { create(:user, member_with_roles: { project => role }) }
 
     let(:expected) do
       <<~HTML
-        <p>#{meeting_link}</p>
+        <p class="op-uc-p">#{meeting_link}</p>
 
-        <p>#{meeting_link}</p>
+        <p class="op-uc-p">#{meeting_link}</p>
 
-        <p>#{meeting_link}</p>
+        <p class="op-uc-p">#{meeting_link}</p>
       HTML
     end
 
     let(:meeting_link) do
       link_to(
-        'Monthly coordination',
-        { controller: '/meetings', action: 'show', id: meeting.id, only_path: true },
-        class: 'meeting'
+        "Monthly coordination",
+        { controller: "/meetings", action: "show", id: meeting.id, only_path: true },
+        class: "meeting op-uc-link",
+        target: "_top"
       )
     end
 
-    it 'renders the links' do
+    it "renders the links" do
       expect(subject).to be_html_eql(expected)
     end
   end
 
-  context 'when not visible' do
-    let(:user) { FactoryBot.create :user }
+  context "when not visible" do
+    let(:user) { create(:user) }
 
     let(:expected) do
       <<~HTML
-        <p>meeting##{meeting.id}</p>
+        <p class="op-uc-p">meeting##{meeting.id}</p>
 
-        <p>meeting:"monthly coordination"</p>
+        <p class="op-uc-p">meeting:"monthly coordination"</p>
 
-        <p>meeting:"Monthly coordination"</p>
+        <p class="op-uc-p">meeting:"Monthly coordination"</p>
       HTML
     end
 
-    it 'renders the raw text' do
+    it "renders the raw text" do
       expect(subject).to be_html_eql(expected)
     end
   end

@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,10 +23,10 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'csv'
+require "csv"
 
 module BudgetsHelper
   include ActionView::Helpers::NumberHelper
@@ -35,14 +35,14 @@ module BudgetsHelper
   # Check if the current user is allowed to manage the budget.  Based on Role
   # permissions.
   def allowed_management?
-    User.current.allowed_to?(:edit_budgets, @project)
+    User.current.allowed_in_project?(:edit_budgets, @project)
   end
 
   def budgets_to_csv(budgets)
     CSV.generate(col_sep: t(:general_csv_separator)) do |csv|
       # csv header fields
       headers = [
-        '#',
+        "#",
         Project.model_name.human,
         Budget.human_attribute_name(:subject),
         Budget.human_attribute_name(:author),
@@ -54,7 +54,7 @@ module BudgetsHelper
         Budget.human_attribute_name(:updated_at),
         Budget.human_attribute_name(:description)
       ]
-      csv << headers.map { |c| begin; c.to_s.encode('UTF-8'); rescue; c.to_s; end }
+      csv << headers.map { |c| begin; c.to_s.encode("UTF-8"); rescue StandardError; c.to_s; end }
       # csv lines
       budgets.each do |budget|
         fields = [
@@ -70,14 +70,14 @@ module BudgetsHelper
           format_time(budget.updated_at),
           budget.description
         ]
-        csv << fields.map { |c| begin; c.to_s.encode('UTF-8'); rescue; c.to_s; end }
+        csv << fields.map { |c| begin; c.to_s.encode("UTF-8"); rescue StandardError; c.to_s; end }
       end
     end
   end
 
   def budget_attachment_representer(message)
     ::API::V3::Budgets::BudgetRepresenter.new(message,
-                                              current_user: current_user,
+                                              current_user:,
                                               embed_links: true)
   end
 end

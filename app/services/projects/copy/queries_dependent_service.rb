@@ -1,14 +1,12 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -25,39 +23,46 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module Projects::Copy
   class QueriesDependentService < Dependency
     def self.human_name
-      I18n.t(:label_query_plural)
+      I18n.t(:"projects.copy.queries")
+    end
+
+    def source_count
+      source.queries.count
     end
 
     protected
 
     # Copies queries from +project+
-    # Only includes the queries visible in the wp table view.
+    # Only includes the queries having a view so the ones that are e.g. in:
+    # * the work packages table
+    # * the team planner
+    # * the bcf module
     def copy_dependency(params:)
       mapping = queries_to_copy.map do |query|
         copy = duplicate_query(query, params)
-        # Either assign the succesfully copied query's ID or nil to indicate
+        # Either assign the successfully copied query's ID or nil to indicate
         # it could not be copied.
         new_id = copy.map(&:id).to_a.first
 
         [query.id, new_id]
       end
 
-      state.query_id_lookup = Hash[mapping]
+      state.query_id_lookup = mapping.to_h
     end
 
     def queries_to_copy
-      source.queries.non_hidden.includes(:query_menu_item)
+      source.queries.having_views.includes(:views)
     end
 
     def duplicate_query(query, params)
       ::Queries::CopyService
-        .new(source: query, user: user)
+        .new(source: query, user:)
         .with_state(state)
         .call(params.merge)
         .on_failure { |result| add_error! query, result.errors }

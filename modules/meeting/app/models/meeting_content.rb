@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 #
 
@@ -31,13 +31,9 @@ class MeetingContent < ApplicationRecord
   include OpenProject::Journal::AttachmentHelper
 
   belongs_to :meeting
-  belongs_to :author, class_name: 'User', foreign_key: 'author_id'
-
-  attr_accessor :comment
-
-  validates_length_of :comment, maximum: 255, allow_nil: true
-
-  before_save :comment_to_journal_notes
+  # Show the project on activity and search views
+  has_one :project, through: :meeting
+  belongs_to :author, class_name: "User"
 
   acts_as_attachable(
     after_remove: :attachments_changed,
@@ -50,13 +46,15 @@ class MeetingContent < ApplicationRecord
   )
 
   acts_as_journalized
-  acts_as_event type: Proc.new { |o| "#{o.class.to_s.underscore.dasherize}" },
+  acts_as_event type: Proc.new { |o| o.class.to_s.underscore.dasherize.to_s },
                 title: Proc.new { |o| "#{o.class.model_name.human}: #{o.meeting.title}" },
-                url: Proc.new { |o| { controller: '/meetings', action: 'show', id: o.meeting } }
+                url: Proc.new { |o| { controller: "/meetings", action: "show", id: o.meeting } }
 
-  User.before_destroy do |user|
-    MeetingContent.where(['author_id = ?', user.id]).update_all ['author_id = ?', DeletedUser.first]
-  end
+  scope :visible, ->(*args) {
+    includes(meeting: :project)
+      .references(:projects)
+      .merge(Project.allowed_to(args.first || User.current, :view_meetings))
+  }
 
   def editable?
     true
@@ -76,23 +74,7 @@ class MeetingContent < ApplicationRecord
   def at_version(version)
     journals
       .joins("JOIN meeting_contents ON meeting_contents.id = journals.journable_id AND meeting_contents.type='#{self.class}'")
-      .where(version: version)
+      .where(version:)
       .first.data
-  end
-
-  # Compatibility for mailer.rb
-  def updated_on
-    updated_at
-  end
-
-  # Show the project on activity and search views
-  def project
-    meeting.project
-  end
-
-  private
-
-  def comment_to_journal_notes
-    add_journal(author, comment) unless changes.empty?
   end
 end

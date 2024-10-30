@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module OpenProject::Backlogs::Burndown
@@ -32,30 +32,28 @@ module OpenProject::Backlogs::Burndown
       @collect = args.pop
       @sprint = args.pop
       @project = args.pop
-      super(*args)
+      super
     end
 
-    attr_reader :collect
-    attr_reader :sprint
-    attr_reader :project
+    attr_reader :collect, :sprint, :project
 
     def collect_names
       @names ||= @collect.to_a.map(&:last).flatten
     end
 
     def unit_for(name)
-      return :points if @collect[:points].include? name
+      :points if @collect[:points].include? name
     end
 
     def collect_data
       initialize_self_for_collection
 
       data_for_dates(collected_days).each do |day_data|
-        date = day_data['date']
-        date = date.is_a?(Date) ? date : Date.parse(date)
+        date = day_data["date"]
+        date = Date.parse(date) unless date.is_a?(Date)
 
         day_data.each do |key, value|
-          next if key == 'date'
+          next if key == "date"
 
           self[key][date] = value.to_f
         end
@@ -85,6 +83,7 @@ module OpenProject::Backlogs::Burndown
 
     def data_for_dates(dates)
       return [] if dates.empty?
+
       query_string = <<-SQL
       SELECT
         date_journals.date,
@@ -92,7 +91,8 @@ module OpenProject::Backlogs::Burndown
       FROM
         work_package_journals
       JOIN journals AS id_journals
-      ON work_package_journals.journal_id = id_journals.id
+      ON work_package_journals.id = id_journals.data_id
+        AND id_journals.data_type = '#{Journal::WorkPackageJournal.name}'
         AND #{version_query}
         AND #{project_id_query}
         AND #{type_id_query}
@@ -112,9 +112,9 @@ module OpenProject::Backlogs::Burndown
     end
 
     def authoritative_journal_for_date(dates)
-      raise 'dates must not be empty!' if dates.empty?
+      raise "dates must not be empty!" if dates.empty?
 
-      query = <<-SQL
+      <<-SQL
       SELECT
         d.date,
         j.journable_id,
@@ -138,7 +138,8 @@ module OpenProject::Backlogs::Burndown
                 journals
               JOIN
                 work_package_journals
-              ON journals.id = work_package_journals.journal_id
+              ON work_package_journals.id = journals.data_id
+                AND journals.data_type = '#{Journal::WorkPackageJournal.name}'
                 AND #{version_query}
                 AND #{project_id_query}
                 AND #{type_id_query}
@@ -154,16 +155,14 @@ module OpenProject::Backlogs::Burndown
       GROUP BY d.date, j.journable_id
       ORDER BY j.journable_id, d.date, version
       SQL
-
-      query
     end
 
     def dates_of_interest_join_table(dates)
-      raise 'dates must not be empty!' if dates.empty?
+      raise "dates must not be empty!" if dates.empty?
 
-      @date_join ||= dates.map { |date|
+      @date_join ||= dates.map do |date|
         "SELECT CAST('#{date}' AS DATE) AS date"
-      }.join(' UNION ')
+      end.join(" UNION ")
     end
 
     def and_status_query
@@ -175,7 +174,7 @@ module OpenProject::Backlogs::Burndown
         open_status_ids = non_closed_statuses - done_statuses_for_project
 
         if open_status_ids.empty?
-          ''
+          ""
         else
           "AND (#{Journal::WorkPackageJournal.table_name}.status_id IN (#{open_status_ids.join(',')}))"
         end
@@ -199,7 +198,7 @@ module OpenProject::Backlogs::Burndown
     end
 
     def collected_from_children?(key, story)
-      key == 'remaining_hours' && story_has_children?(story)
+      key == "remaining_hours" && story_has_children?(story)
     end
 
     def collected_types

@@ -1,14 +1,12 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -25,19 +23,19 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-class WorkPackages::Scopes::IncludeSpentTime
-  class << self
-    def fetch(user, work_package = nil)
-      query = join_time_entries(user)
+module WorkPackages::Scopes::IncludeSpentTime
+  extend ActiveSupport::Concern
 
-      scope = WorkPackage
-              .left_join_self_and_descendants(user, work_package)
-              .joins(query.join_sources)
+  class_methods do
+    def include_spent_time(user, work_package = nil)
+      scope = left_join_self_and_descendants(user, work_package)
+              .with(visible_time_entries_cte.name => allowed_to_view_time_entries(user))
+              .joins(join_visible_time_entries.join_sources)
               .group(:id)
-              .select('SUM(time_entries.hours) AS hours')
+              .select("SUM(#{visible_time_entries_cte.name}.hours) AS hours")
 
       if work_package
         scope.where(id: work_package.id)
@@ -48,32 +46,28 @@ class WorkPackages::Scopes::IncludeSpentTime
 
     protected
 
-    def join_time_entries(user)
-      join_condition = time_entries_table[:work_package_id]
-                       .eq(wp_descendants[:id])
-                       .and(allowed_to_view_time_entries(user))
-
+    def join_visible_time_entries
       wp_table
-        .outer_join(time_entries_table)
-        .on(join_condition)
+        .outer_join(visible_time_entries_cte)
+        .on(visible_time_entries_cte[:work_package_id].eq(wp_descendants[:id]))
     end
 
     def allowed_to_view_time_entries(user)
-      time_entries_table[:id].in(TimeEntry.visible(user).select(:id).arel)
+      TimeEntry.not_ongoing.visible(user).select(:id, :work_package_id, :hours).arel
     end
 
     def wp_table
-      @wp_table ||= WorkPackage.arel_table
+      @wp_table ||= arel_table
     end
 
     def wp_descendants
       # Relies on a table called descendants to exist in the scope
       # which is provided by left_join_self_and_descendants
-      @wp_descendants ||= wp_table.alias('descendants')
+      @wp_descendants ||= wp_table.alias("descendants")
     end
 
-    def time_entries_table
-      @time_entries_table ||= TimeEntry.arel_table
+    def visible_time_entries_cte
+      @visible_time_entries_cte ||= Arel::Table.new("visible_time_entries")
     end
   end
 end

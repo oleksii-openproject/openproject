@@ -1,14 +1,12 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -25,19 +23,19 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module Projects
   class BaseContract < ::ModelContract
     include AssignableValuesContract
     include AssignableCustomFieldValues
-    include Projects::Archiver
 
     attribute :name
     attribute :identifier
     attribute :description
     attribute :public
+    attribute :settings
     attribute :active do
       validate_active_present
       validate_changing_active
@@ -45,12 +43,17 @@ module Projects
     attribute :parent do
       validate_parent_assignable
     end
-    attribute :status do
+    attribute :status_code do
       validate_status_code_included
     end
+    attribute :status_explanation
     attribute :templated do
       validate_templated_set_by_admin
     end
+
+    attribute :_limit_custom_fields_validation_to_section_id
+    # `_limit_custom_fields_validation_to_section_id` used in Projects::ActsAsCustomizablePatches in order to
+    # only validate custom fields of the touched section
 
     validate :validate_user_allowed_to_manage
 
@@ -64,16 +67,28 @@ module Projects
       if user.admin?
         model.available_custom_fields
       else
-        model.available_custom_fields.select(&:visible?)
+        model.available_custom_fields.reject(&:admin_only?)
       end
     end
 
-    def assignable_versions
-      model.assignable_versions
-    end
+    delegate :assignable_versions, to: :model
 
     def assignable_status_codes
-      Projects::Status.codes.keys
+      Project.status_codes.keys
+    end
+
+    protected
+
+    def collect_available_custom_field_attributes
+      # required because project custom fields are now activated on a per-project basis
+      #
+      # if we wouldn't query available_custom field on a global level here,
+      # implicitly enabling project custom fields through this contract would fail
+      # as the disabled custom fields would be treated as not-writable
+      #
+      # relevant especially for the project API
+
+      model.all_available_custom_fields.map(&:attribute_name)
     end
 
     private
@@ -94,14 +109,12 @@ module Projects
 
     def validate_user_allowed_to_manage
       with_unchanged_id do
-        with_active_assumed do
-          errors.add :base, :error_unauthorized unless user.allowed_to?(manage_permission, model)
-        end
+        errors.add :base, :error_unauthorized unless user.allowed_in_project?(manage_permission, model)
       end
     end
 
     def validate_status_code_included
-      errors.add :status, :inclusion if model.status&.code && !Projects::Status.codes.keys.include?(model.status.code.to_s)
+      errors.add :status, :inclusion if model.status_code && Project.status_codes.keys.exclude?(model.status_code.to_s)
     end
 
     def validate_templated_set_by_admin
@@ -123,25 +136,14 @@ module Projects
       model.id = project_id
     end
 
-    def with_active_assumed
-      active = model.active
-      model.active = true
-
-      yield
-    ensure
-      model.active = active
-    end
-
     def validate_changing_active
       return unless model.active_changed?
 
-      validate_admin_only
+      contract_klass = model.being_archived? ? ArchiveContract : UnarchiveContract
+      contract = contract_klass.new(model, user)
 
-      if model.active?
-        # switched to active -> unarchiving
-        validate_all_ancestors_active
-      else
-        validate_no_foreign_wp_references
+      with_merged_former_errors do
+        contract.validate
       end
     end
   end

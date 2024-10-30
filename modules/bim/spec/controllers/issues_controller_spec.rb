@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,71 +23,74 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'spec_helper'
+require "spec_helper"
 
-describe ::Bim::Bcf::IssuesController, type: :controller do
+RSpec.describe Bim::Bcf::IssuesController do
   let(:manage_bcf_role) do
-    FactoryBot.create(:role,
-                      permissions: %i[manage_bcf view_linked_issues view_work_packages add_work_packages edit_work_packages])
+    create(:project_role,
+           permissions: %i[manage_bcf view_linked_issues view_work_packages add_work_packages edit_work_packages])
   end
   let(:collaborator_role) do
-    FactoryBot.create(:role,
-                      permissions: %i[view_linked_issues view_work_packages add_work_packages edit_work_packages])
+    create(:project_role,
+           permissions: %i[view_linked_issues view_work_packages add_work_packages edit_work_packages])
   end
-  let(:bcf_manager) { FactoryBot.create(:user, firstname: "BCF Manager") }
-  let(:collaborator) { FactoryBot.create(:user) }
+  let(:bcf_manager) { create(:user, firstname: "BCF Manager") }
+  let(:collaborator) { create(:user) }
 
-  let(:non_member) { FactoryBot.create(:user) }
+  let(:non_member) { create(:user) }
   let(:project) do
-    FactoryBot.create(:project, enabled_module_names: %w[bim], identifier: 'bim_project')
+    create(:project, enabled_module_names: %w[bim], identifier: "bim_project")
   end
   let(:member) do
-    FactoryBot.create(:member,
-                      project: project,
-                      user: collaborator,
-                      roles: [collaborator_role])
+    create(:member,
+           project:,
+           user: collaborator,
+           roles: [collaborator_role])
   end
   let(:bcf_manager_member) do
-    FactoryBot.create(:member,
-                      project: project,
-                      user: bcf_manager,
-                      roles: [manage_bcf_role])
+    create(:member,
+           project:,
+           user: bcf_manager,
+           roles: [manage_bcf_role])
   end
+
   before do
     bcf_manager_member
     member
     login_as(bcf_manager)
   end
 
-  shared_examples_for 'check permissions' do
-    context 'without sufficient permissions' do
+  shared_examples_for "check permissions" do
+    context "without sufficient permissions" do
       before { action }
 
-      context 'not member of project' do
+      context "not member of project" do
         let(:bcf_manager_member) {}
-        it 'will return "not authorized"' do
-          expect(response).to_not be_successful
+
+        it 'returns "not authorized"' do
+          expect(response).not_to be_successful
         end
       end
 
-      context 'no manage_bcf permission' do
+      context "no manage_bcf permission" do
         let(:bcf_manager_member) do
-          FactoryBot.create(:member,
-                            project: project,
-                            user: bcf_manager,
-                            roles: [collaborator_role])
+          create(:member,
+                 project:,
+                 user: bcf_manager,
+                 roles: [collaborator_role])
         end
-        it 'will return "not authorized"' do
-          expect(response).to_not be_successful
+
+        it 'returns "not authorized"' do
+          expect(response).not_to be_successful
         end
       end
     end
   end
 
-  describe '#prepare_import' do
+  describe "#prepare_import" do
     let(:params) do
       {
         project_id: project.identifier.to_s,
@@ -95,19 +98,19 @@ describe ::Bim::Bcf::IssuesController, type: :controller do
       }
     end
     let(:action) do
-      post :prepare_import, params: params
+      post :prepare_import, params:
     end
 
-    context 'with valid BCF file' do
-      let(:filename) { 'MaximumInformation.bcf' }
+    context "with valid BCF file" do
+      let(:filename) { "MaximumInformation.bcf" }
       let(:file) do
         Rack::Test::UploadedFile.new(
-          File.join(Rails.root, "modules/bim/spec/fixtures/files/#{filename}"),
-          'application/octet-stream'
+          Rails.root.join("modules/bim/spec/fixtures/files/#{filename}").to_s,
+          "application/zip"
         )
       end
 
-      it 'should be successful' do
+      it "is successful" do
         expect { action }.to change { Attachment.count }.by(1)
         expect(response).to be_successful
       end
@@ -115,27 +118,27 @@ describe ::Bim::Bcf::IssuesController, type: :controller do
       it_behaves_like "check permissions"
     end
 
-    context 'with invalid BCF file' do
+    context "with invalid BCF file" do
       let(:file) { FileHelpers.mock_uploaded_file }
 
-      it 'should redirect back to where we started from' do
-        expect { action }.to change { Attachment.count }.by(1)
-        expect(response).to redirect_to '/projects/bim_project/issues/upload'
+      it "redirects back to where we started from" do
+        expect { action }.not_to change { Attachment.count }
+        expect(response).to redirect_to "/projects/bim_project/issues/upload"
       end
     end
   end
 
-  describe '#configure_import' do
+  describe "#configure_import" do
     let(:action) do
       post :configure_import, params: { project_id: project.identifier.to_s }
     end
 
-    context 'with valid BCF file' do
-      let(:filename) { 'MaximumInformation.bcf' }
+    context "with valid BCF file" do
+      let(:filename) { "MaximumInformation.bcf" }
       let(:file) do
         Rack::Test::UploadedFile.new(
-            File.join(Rails.root, "modules/bim/spec/fixtures/files/#{filename}"),
-            'application/octet-stream'
+          Rails.root.join("modules/bim/spec/fixtures/files/#{filename}").to_s,
+          "application/octet-stream"
         )
       end
 
@@ -144,8 +147,8 @@ describe ::Bim::Bcf::IssuesController, type: :controller do
         allow(Attachment).to receive(:find_by).and_return(Attachment.new)
       end
 
-      it 'should be successful' do
-        expect { action }.to change { Attachment.count }.by(0)
+      it "is successful" do
+        expect { action }.not_to change { Attachment.count }
         expect(response).to be_successful
       end
 
@@ -153,18 +156,17 @@ describe ::Bim::Bcf::IssuesController, type: :controller do
     end
   end
 
-
-  describe '#perform_import' do
+  describe "#perform_import" do
     let(:action) do
       post :perform_import, params: { project_id: project.identifier.to_s }
     end
 
-    context 'with valid BCF file' do
-      let(:filename) { 'MaximumInformation.bcf' }
+    context "with valid BCF file" do
+      let(:filename) { "MaximumInformation.bcf" }
       let(:file) do
         Rack::Test::UploadedFile.new(
-          File.join(Rails.root, "modules/bim/spec/fixtures/files/#{filename}"),
-          'application/octet-stream'
+          Rails.root.join("modules/bim/spec/fixtures/files/#{filename}").to_s,
+          "application/octet-stream"
         )
       end
 
@@ -173,8 +175,8 @@ describe ::Bim::Bcf::IssuesController, type: :controller do
         allow(Attachment).to receive(:find_by).and_return(Attachment.new)
       end
 
-      it 'should be successful' do
-        expect { action }.to change { Attachment.count }.by(0)
+      it "is successful" do
+        expect { action }.not_to change { Attachment.count }
         expect(response).to be_successful
       end
 

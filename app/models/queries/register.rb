@@ -1,14 +1,12 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -25,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module Queries::Register
@@ -38,6 +36,12 @@ module Queries::Register
       @filters[query] << filter
     end
 
+    # Exclude filter from filters collection representer.
+    def exclude(filter)
+      @excluded_filters ||= []
+      @excluded_filters << filter
+    end
+
     def order(query, order)
       @orders ||= Hash.new do |hash, order_key|
         hash[order_key] = []
@@ -46,16 +50,59 @@ module Queries::Register
       @orders[query] << order
     end
 
-    def column(query, column)
-      @columns ||= Hash.new do |hash, column_key|
-        hash[column_key] = []
+    def group_by(query, group_by)
+      @group_bys ||= Hash.new do |hash, group_key|
+        hash[group_key] = []
       end
 
-      @columns[query] << column
+      @group_bys[query] << group_by
+    end
+
+    def select(query, select)
+      @selects ||= Hash.new do |hash, select_key|
+        hash[select_key] = []
+      end
+
+      @selects[query] << select
+    end
+
+    def register(query, &)
+      Registration.new(query).instance_exec(&)
     end
 
     attr_accessor :filters,
+                  :excluded_filters,
                   :orders,
-                  :columns
+                  :selects,
+                  :group_bys
+  end
+
+  class Registration
+    attr_reader :query
+
+    def initialize(query)
+      @query = query
+    end
+
+    def filter(filter)
+      Queries::Register.filter(query, filter)
+    end
+
+    # Exclude filter from filters collection representer.
+    def exclude(filter)
+      Queries::Register.exclude(filter)
+    end
+
+    def order(order)
+      Queries::Register.order(query, order)
+    end
+
+    def group_by(group_by)
+      Queries::Register.group_by(query, group_by)
+    end
+
+    def select(select)
+      Queries::Register.select(query, select)
+    end
   end
 end

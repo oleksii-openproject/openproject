@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module OpenProject
@@ -35,15 +35,15 @@ module OpenProject
       # Checks whether the given user is authorized to login by calling
       # all registered callbacks. If all callbacks approve the user is authorized and may log in.
       def self.authorized?(auth_hash)
-        rejection = callbacks.find_map { |callback|
+        rejection = callbacks.find_map do |callback|
           d = callback.authorize auth_hash
 
           if d.is_a? Decision
             d if d.reject?
           else
-            fail ArgumentError, 'Expecting Callback#authorize to return a Decision.'
+            fail ArgumentError, "Expecting Callback#authorize to return a Decision."
           end
-        }
+        end
 
         rejection || Approval.new
       end
@@ -74,18 +74,18 @@ module OpenProject
       # @yieldparam [AuthHash] OmniAuth authentication information including user info
       #                        and credentials.
       # @yieldreturn [Decision] A Decision indicating whether or not to authorize the user.
-      def self.authorize_user(opts = {}, &block)
+      def self.authorize_user(opts = {}, &)
         if opts[:provider]
-          authorize_user_for_provider opts[:provider], &block
+          authorize_user_for_provider(opts[:provider], &)
         else
-          add_authorize_user_callback AuthorizationBlockCallback.new(&block)
+          add_authorize_user_callback AuthorizationBlockCallback.new(&)
         end
       end
 
-      def self.authorize_user_for_provider(provider, &block)
+      def self.authorize_user_for_provider(provider)
         callback = AuthorizationBlockCallback.new do |dec, auth_hash|
           if auth_hash.provider.to_sym == provider.to_sym
-            block.call dec, auth_hash
+            yield dec, auth_hash
           else
             dec.approve
           end
@@ -105,9 +105,14 @@ module OpenProject
       # @yieldparam user [User] User who has been logged in.
       # @yieldparam auth_hash [AuthHash] auth_hash OmniAuth authentication information
       #                                  including user info and credentials.
-      # @yieldparam context The context from which the callback is called, e.g. a Controller.                    
-      def self.after_login(&block)
-        add_after_login_callback AfterLoginBlockCallback.new(&block)
+      # @yieldparam context The context from which the callback is called, e.g. a Controller.
+      def self.after_login(&)
+        ActiveSupport::Deprecation.warn(
+          "after_login does not return the actually logged in user and has been deprecated. " \
+          "Please use OpenProject::Hook omniauth_user_authorized or user_logged_in hooks instead",
+          caller
+        )
+        add_after_login_callback AfterLoginBlockCallback.new(&)
       end
 
       ##
@@ -162,7 +167,7 @@ module OpenProject
           store = DecisionStore.new
           block.call store, auth_hash
           # failure to make a decision results in a rejection
-          store.decision || Rejection.new(I18n.t('user.authorization_rejected'))
+          store.decision || Rejection.new(I18n.t("user.authorization_rejected"))
         end
       end
 
@@ -255,9 +260,9 @@ module OpenProject
         ##
         # Passes each element to the given block and returns the
         # result of the block as soon as it's truthy.
-        def find_map(&block)
+        def find_map
           each do |e|
-            result = block.call e
+            result = yield e
 
             return result if result
           end

@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 class CostReportsController < ApplicationController
@@ -40,7 +40,7 @@ class CostReportsController < ApplicationController
 
   before_action :check_cache
   before_action :load_all
-  before_action :find_optional_project
+  before_action :load_and_authorize_in_optional_project
   before_action :find_optional_user
 
   include Layout
@@ -48,27 +48,24 @@ class CostReportsController < ApplicationController
   helper_method :cost_types
   helper_method :cost_type
   helper_method :unit_id
-  helper_method :public_queries
-  helper_method :private_queries
 
-  attr_accessor :report_engine
+  attr_accessor :report_engine, :cost_types, :unit_id, :cost_type
+
   helper_method :current_user
-  helper_method :allowed_to?
+  helper_method :allowed_in_report?
 
   include ReportingHelper
   helper ReportingHelper
   helper { def engine; @report_engine; end }
 
   before_action :determine_engine
-  before_action :prepare_query, only: [:index, :create]
-  before_action :find_optional_report, only: [:index, :show, :update, :destroy, :rename]
+  before_action :prepare_query, only: %i[index create]
+  before_action :find_optional_report, only: %i[index show update destroy rename]
   before_action :possibly_only_narrow_values
-
-  attr_accessor :cost_types, :unit_id, :cost_type
 
   before_action :set_cost_types # has to be set AFTER the Report::Controller filters run
 
-  layout 'angular'
+  layout "angular/angular"
 
   # Checks if custom fields have been updated, added or removed since we
   # last saw them, to rebuild the filters and group bys.
@@ -80,11 +77,23 @@ class CostReportsController < ApplicationController
   def index
     table
 
-    respond_to do |format|
-      format.html {
-        session[report_engine.name.underscore.to_sym].try(:delete, :name)
-      }
-    end unless performed?
+    unless performed?
+      respond_to do |format|
+        format.html do
+          session[report_engine.name.underscore.to_sym].try(:delete, :name)
+          render locals: { menu_name: project_or_global_menu }
+        end
+
+        format.xls do
+          job_id = ::CostQuery::ScheduleExportService
+            .new(user: current_user)
+            .call(filter_params:, project: @project, cost_types: @cost_types)
+            .result
+
+          redirect_to job_status_path(job_id)
+        end
+      end
+    end
   end
 
   ##
@@ -95,7 +104,7 @@ class CostReportsController < ApplicationController
     end
   end
 
-  current_menu_item :index do |controller|
+  current_menu_item [:index, :show] do |controller|
     controller.menu_item_to_highlight_on_index
   end
 
@@ -106,12 +115,12 @@ class CostReportsController < ApplicationController
   ##
   # Create a new saved query. Returns the redirect url to an XHR or redirects directly
   def create
-    @query.name = params[:query_name].present? ? params[:query_name] : ::I18n.t(:label_default)
+    @query.name = params[:query_name].presence || ::I18n.t(:label_default)
     @query.public! if make_query_public?
-    @query.send("#{user_key}=", current_user.id)
+    @query.send(:"#{user_key}=", current_user.id)
     @query.save!
 
-    redirect_params = { action: 'show', id: @query.id }
+    redirect_params = { action: "show", id: @query.id }
     redirect_params[:project_id] = @project.identifier if @project
 
     if request.xhr? # Update via AJAX - return url for redirect
@@ -128,7 +137,7 @@ class CostReportsController < ApplicationController
     if @query
       store_query(@query)
       table
-      render action: 'index' unless performed?
+      render action: "index", locals: { menu_name: project_or_global_menu } unless performed?
     else
       raise ActiveRecord::RecordNotFound
     end
@@ -139,11 +148,11 @@ class CostReportsController < ApplicationController
   # RecordNotFound if the query at :id does not exist
   def destroy
     if @query
-      @query.destroy if allowed_to? :destroy, @query
+      @query.destroy if allowed_in_report?(:destroy, @query)
     else
       raise ActiveRecord::RecordNotFound
     end
-    redirect_to action: 'index', default: 1
+    redirect_to action: "index", default: 1, id: nil
   end
 
   ##
@@ -160,7 +169,7 @@ class CostReportsController < ApplicationController
     if request.xhr?
       table
     else
-      redirect_to action: 'show', id: @query.id
+      redirect_to action: "show", id: @query.id
     end
   end
 
@@ -172,10 +181,10 @@ class CostReportsController < ApplicationController
     @query.public! if make_query_public?
     @query.save!
     store_query(@query)
-    unless request.xhr?
-      redirect_to action: 'show', id: @query.id
-    else
+    if request.xhr?
       render plain: @query.name
+    else
+      redirect_to action: "show", id: @query.id
     end
   end
 
@@ -189,11 +198,11 @@ class CostReportsController < ApplicationController
 
     return unless name
 
-    f_cls = report_engine::Filter.const_get(name.to_s.camelcase)
+    f_cls = get_filter_class(name)
     filter = f_cls.new.tap do |f|
-      f.values = JSON.parse(params[:values].gsub("'", '"')) if params[:values].present? && params[:values]
+      f.values = JSON.parse(params[:values].tr("'", '"')) if params[:values].present? && params[:values]
     end
-    render_widget Widget::Filters::Option, filter, to: canvas = ''
+    render_widget Widget::Filters::Option, filter, to: canvas = ""
 
     render plain: canvas, layout: !request.xhr?
   end
@@ -215,8 +224,8 @@ class CostReportsController < ApplicationController
   # Set a default query to cut down initial load time
   def default_filter_parameters
     {
-      operators: { spent_on: '>d' },
-      values: { spent_on: [30.days.ago.strftime('%Y-%m-%d')] }
+      operators: { spent_on: ">d" },
+      values: { spent_on: [30.days.ago.strftime("%Y-%m-%d")] }
     }.tap do |hash|
       if @project
         set_project_filter(hash, @project.id)
@@ -251,7 +260,6 @@ class CostReportsController < ApplicationController
   ##
   # Clear the query if the project context changed
   def update_project_context!(filters)
-
     # Only in project context
     return unless @project
 
@@ -273,12 +281,12 @@ class CostReportsController < ApplicationController
 
   def set_project_filter(filters, project_id)
     filters[:project_context] = project_id
-    filters[:operators].merge! project_id: '='
+    filters[:operators].merge! project_id: "="
     filters[:values].merge! project_id: [project_id]
   end
 
   def set_me_filter(filters)
-    filters[:operators].merge! user_id: '='
+    filters[:operators].merge! user_id: "="
     filters[:values].merge! user_id: [CostQuery::Filter::UserId.me_value]
   end
 
@@ -286,11 +294,11 @@ class CostReportsController < ApplicationController
   # Set a default query to cut down initial load time
   def default_group_parameters
     { columns: [:week], rows: [] }.tap do |h|
-      if @project
-        h[:rows] << :work_package_id
-      else
-        h[:rows] << :project_id
-      end
+      h[:rows] << if @project
+                    :work_package_id
+                  else
+                    :project_id
+                  end
     end
   end
 
@@ -311,7 +319,7 @@ class CostReportsController < ApplicationController
                  cost_type_filter = @query.filters.detect { |f| f.is_a?(CostQuery::Filter::CostTypeId) }
 
                  cost_type_filter.values.first.to_i if cost_type_filter
-    end
+               end
 
     @unit_id = -1 unless @cost_types.include? @unit_id
   end
@@ -321,14 +329,14 @@ class CostReportsController < ApplicationController
   def set_cost_type
     return unless @query
 
-    @query.filter :cost_type_id, operator: '=', value: @unit_id.to_s, display: false
+    @query.filter :cost_type_id, operator: "=", value: @unit_id.to_s, display: false
     @cost_type = CostType.find(@unit_id) if @unit_id > 0
   end
 
   #   set the @cost_types -> this is used to determine which tabs to display
   def set_active_cost_types
     unless session[:report] && (@cost_types = session[:report][:filters][:values][:cost_type_id].try(:collect, &:to_i))
-      relevant_cost_types = CostType.select(:id).order(Arel.sql('id ASC')).select do |t|
+      relevant_cost_types = CostType.select(:id).order(Arel.sql("id ASC")).select do |t|
         t.cost_entries.count > 0
       end.collect(&:id)
       @cost_types = [-1, 0, *relevant_cost_types]
@@ -350,7 +358,7 @@ class CostReportsController < ApplicationController
   # save_private_cost_reports permission as well
   #
   # @Override
-  def allowed_to?(action, report, user = User.current)
+  def allowed_in_report?(action, report, user = User.current) # rubocop:disable Metrics/AbcSize, Metrics/PerceivedComplexity
     # admins may do everything
     return true if user.admin?
 
@@ -358,62 +366,29 @@ class CostReportsController < ApplicationController
     # should not do anything with it. It fact, this should never happen.
     return false if report.project.present? && report.project != @project
 
+    permissions =
+      case action
+      when :create
+        %i[save_cost_reports save_private_cost_reports]
+      when :save, :destroy, :rename
+        if report.is_public?
+          %i[save_cost_reports]
+        else
+          %i[save_cost_reports save_private_cost_reports]
+        end
+      when :save_as_public
+        %i[save_cost_reports]
+      end
+
     # If report does not belong to a project, it is ok to look for the
     # permission in any project. Otherwise, the user should have the permission
     # in this project.
-    if report.project.present?
-      options = {}
+
+    if report.project
+      Array(permissions).any? { |permission| user.allowed_in_project?(permission, @project) }
     else
-      options = { global: true }
+      Array(permissions).any? { |permission| user.allowed_in_any_project?(permission) }
     end
-
-    case action
-    when :create
-      user.allowed_to?(:save_cost_reports, @project, options) or
-        user.allowed_to?(:save_private_cost_reports, @project, options)
-
-    when :save, :destroy, :rename
-      if report.is_public?
-        user.allowed_to?(:save_cost_reports, @project, options)
-      else
-        user.allowed_to?(:save_cost_reports, @project, options) or
-          user.allowed_to?(:save_private_cost_reports, @project, options)
-      end
-
-    when :save_as_public
-      user.allowed_to?(:save_cost_reports, @project, options)
-
-    else
-      false
-    end
-  end
-
-  def public_queries
-    if @project
-      CostQuery.where(['is_public = ? AND (project_id IS NULL OR project_id = ?)', true, @project])
-               .order(Arel.sql('name ASC'))
-    else
-      CostQuery.where(['is_public = ? AND project_id IS NULL', true])
-               .order(Arel.sql('name ASC'))
-    end
-  end
-
-  def private_queries
-    if @project
-      CostQuery.where(['user_id = ? AND is_public = ? AND (project_id IS NULL OR project_id = ?)',
-                       current_user,
-                       false,
-                       @project])
-               .order(Arel.sql('name ASC'))
-    else
-      CostQuery.where(['user_id = ? AND is_public = ? AND project_id IS NULL', current_user, false])
-               .order(Arel.sql('name ASC'))
-    end
-  end
-
-  def display_report_list
-    report_type = params[:report_type] || :public
-    render partial: 'report_list', locals: { report_type: report_type }, layout: !request.xhr?
   end
 
   private
@@ -422,11 +397,21 @@ class CostReportsController < ApplicationController
     @current_user = User.current || User.anonymous
   end
 
+  def get_filter_class(name)
+    filter = report_engine::Filter
+      .all
+      .detect { |cls| cls.to_s.demodulize.underscore == name.to_s }
+
+    raise ArgumentError.new("Filter with name #{name} does not exist.") unless filter
+
+    filter
+  end
+
   ##
   # Determine the available values for the specified filter and return them as
   # json, if that was requested. This will be executed INSTEAD of the actual action
   def possibly_only_narrow_values
-    if params[:narrow_values] == '1'
+    if params[:narrow_values] == "1"
       sources = params[:sources]
       dependent = params[:dependent]
 
@@ -437,12 +422,12 @@ class CostReportsController < ApplicationController
                      values: params[:values][dependency])
       end
       query.column(dependent)
-      values = [[::I18n.t(:label_inactive), '<<inactive>>']] + query.result.map { |r| r.fields[query.group_bys.first.field] }
+      values = [[::I18n.t(:label_inactive), "<<inactive>>"]] + query.result.map { |r| r.fields[query.group_bys.first.field] }
       # replace null-values with corresponding placeholder
-      values = values.map { |value| value.nil? ? [::I18n.t(:label_none), '<<null>>'] : value }
+      values = values.map { |value| value.nil? ? [::I18n.t(:label_none), "<<null>>"] : value }
       # try to find corresponding labels to the given values
       values = values.map do |value|
-        filter = report_engine::Filter.const_get(dependent.camelcase.to_sym)
+        filter = get_filter_class(dependent)
         filter_value = filter.label_for_value value
         if filter_value && filter_value.first.is_a?(Symbol)
           [::I18n.t(filter_value.first), filter_value.second]
@@ -458,7 +443,8 @@ class CostReportsController < ApplicationController
 
   ##
   # Determines if the request contains filters to set
-  def set_filter? # FIXME: rename to set_query?
+  # FIXME: rename to set_query?
+  def set_filter?
     params[:set_filter].to_i == 1
   end
 
@@ -477,10 +463,10 @@ class CostReportsController < ApplicationController
   # Extract active group bys from the http params
   def http_group_parameters
     if params[:groups]
-      rows = params[:groups]['rows']
-      columns = params[:groups]['columns']
+      rows = params[:groups]["rows"]
+      columns = params[:groups]["columns"]
     end
-    { rows: (rows || []), columns: (columns || []) }
+    { rows: rows || [], columns: columns || [] }
   end
 
   ##
@@ -512,7 +498,7 @@ class CostReportsController < ApplicationController
       groups  = group_params
     end
     cookie = session[report_engine.name.underscore.to_sym] || {}
-    session[report_engine.name.underscore.to_sym] = cookie.merge(filters: filters, groups: groups)
+    session[report_engine.name.underscore.to_sym] = cookie.merge(filters:, groups:)
   end
 
   ##
@@ -521,11 +507,11 @@ class CostReportsController < ApplicationController
     query = report_engine.new project: @project
     query.tap do |q|
       filters[:operators].each do |filter, operator|
-        unless filters[:values][filter] == ['<<inactive>>']
-          values = Array(filters[:values][filter]).map { |v| v == '<<null>>' ? nil : v }
+        unless filters[:values][filter] == ["<<inactive>>"]
+          values = Array(filters[:values][filter]).map { |v| v == "<<null>>" ? nil : v }
           q.filter(filter.to_sym,
-                   operator: operator,
-                   values: values)
+                   operator:,
+                   values:)
         end
       end
     end
@@ -553,7 +539,7 @@ class CostReportsController < ApplicationController
   ##
   # Override in subclass if user key
   def user_key
-    'user_id'
+    "user_id"
   end
 
   ##
@@ -571,7 +557,7 @@ class CostReportsController < ApplicationController
   # Raises RecordNotFound if an invalid :id was passed.
   #
   # @param query An optional query added to the disjunction qualifiying reports to be returned.
-  def find_optional_report(query = '1=0')
+  def find_optional_report(query = "1=0")
     if params[:id]
       @query = report_engine
                  .where(["#{is_public_sql} OR (#{user_key} = ?) OR (#{query})", current_user.id])

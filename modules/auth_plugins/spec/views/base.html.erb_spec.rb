@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,37 +23,37 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'spec_helper'
+require "spec_helper"
 
-describe 'layouts/base', type: :view do
-  describe 'authenticator plugin' do
+RSpec.describe "layouts/base" do
+  describe "authenticator plugin" do
     include Redmine::MenuManager::MenuHelper
     helper Redmine::MenuManager::MenuHelper
-    let(:anonymous) { FactoryBot.build_stubbed(:anonymous) }
+    let(:anonymous) { build_stubbed(:anonymous) }
 
     before do
-      allow(view).to receive(:current_menu_item).and_return('overview')
-      allow(view).to receive(:default_breadcrumb)
-      allow(view).to receive(:current_user).and_return anonymous
+      without_partial_double_verification do
+        allow(view).to receive(:default_breadcrumb)
+        allow(view).to receive_messages(current_menu_item: "overview", current_user: anonymous)
+      end
       allow(OpenProject::Plugins::AuthPlugin).to receive(:providers).and_return([provider])
     end
 
-    context 'with an authenticator with given icon' do
+    context "with an authenticator with given icon" do
       let(:provider) do
-        { name: 'foob_auth', icon: 'image.png' }
+        { name: "foob_auth", icon: "image.png" }
       end
 
       before do
         render
       end
 
-      it 'adds the CSS to render the icon' do
+      it "adds the CSS to render the icon" do
         expect(rendered).to have_text(/background-image:(?:.*)image.png/)
       end
     end
   end
 end
-

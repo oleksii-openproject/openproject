@@ -1,10 +1,10 @@
 #-- copyright
 #OpenProject is an open source project management software.
-#Copyright (C) 2012-2020 the OpenProject GmbH
+#Copyright (C) the OpenProject GmbH
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License version 3.
 #OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-#Copyright (C) 2006-2017 Jean-Philippe Lang
+#Copyright (C) 2006-2013 Jean-Philippe Lang
 #Copyright (C) 2010-2013 the ChiliProject Team
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License
@@ -17,12 +17,15 @@
 #You should have received a copy of the GNU General Public License
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-#See docs/COPYRIGHT.rdoc for more details.
+#See COPYRIGHT and LICENSE files for more details.
 #++
 uk:
-  button_save_as: "Зберегти звіт до:"
+  plugin_openproject_reporting:
+    name: "Звіти OpenProject"
+    description: "Цей плагін дає змогу створювати звіти про витрати з можливостями фільтрування й групування, створеними плагіном «Час і витрати» в OpenProject."
+  button_save_report_as: "Зберегти звіт як..."
   comments: "Коментар"
-  cost_reports_title: "Time and costs"
+  cost_reports_title: "Час і витрати"
   label_cost_report: "Звіт про витрати"
   label_cost_report_plural: "Звіти про витрати"
   description_drill_down: "Детальніше"
@@ -44,6 +47,7 @@ uk:
   label_is_project_with_subprojects: "є (включає підпроекти)"
   label_work_package_attributes: "Атрибути робочого пакету"
   label_less: "<"
+  label_logged_by_reporting: "Ви ввійшли як"
   label_money: "Грошова вартість"
   label_month_reporting: "Місяць (витрачений)"
   label_new_report: "Новий звіт про витрати"
@@ -60,6 +64,18 @@ uk:
   label_units: "Одиниці"
   label_week_reporting: "Тиждень (витрачений)"
   label_year_reporting: "Рік (витрачений)"
+  label_count: "Підрахунок"
+  label_filter: "Фільтр"
+  label_filter_add: "Додати фільтр"
+  label_filter_plural: "Фільтри"
+  label_group_by: "Групувати за"
+  label_group_by_add: "Додати групу за атрибутом"
+  label_inactive: "«неактивний»"
+  label_no: "Ні"
+  label_none: "(немає даних)"
+  label_no_reports: "Поки немає звітів про витрати."
+  label_report: "Звіт"
+  label_yes: "Так"
   load_query_question: "Звіт матиме %{size} комірок таблиці і може зайняти деякий час для візуалізації. Ви все ще бажаєте спробувати її відобразити?"
   permission_save_cost_reports: "Зберегти публічні звіти про витрати"
   permission_save_private_cost_reports: "Зберегти приватні звіти про витрати"
@@ -69,3 +85,10 @@ uk:
   units: "Одиниці"
   validation_failure_date: "є недійсною датою"
   validation_failure_integer: "не є дійсним цілим числом"
+  export:
+    cost_reports:
+      title: "Експорт звітів про витрати у форматі XLS"
+  reporting:
+    group_by:
+      selected_columns: "Вибрані стовпці"
+      selected_rows: "Виділені рядки"

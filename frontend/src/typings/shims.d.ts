@@ -11,38 +11,61 @@
 /// <reference path="../../node_modules/@types/moment-timezone/index.d.ts" />
 /// <reference path="../../node_modules/@types/urijs/index.d.ts" />
 /// <reference path="../../node_modules/@types/webpack-env/index.d.ts" />
-/// <reference path="../../node_modules/@types/es6-shim/index.d.ts" />
 /// <reference path="../../node_modules/@types/dragula/index.d.ts" />
+/// <reference path="../../node_modules/@types/resize-observer-browser/index.d.ts" />
 
-import {ErrorReporter} from "core-app/sentry/sentry-reporter";
-import {Injector} from '@angular/core';
+import { Injector } from '@angular/core';
 
-import {OpenProject} from 'core-app/globals/openproject';
+import { OpenProject } from 'core-app/core/setup/globals/openproject';
 import * as TLodash from 'lodash';
-import * as TMoment from 'moment';
-import {GlobalI18n} from "core-app/modules/common/i18n/i18n.service";
-import {Dragula} from "dragula";
-import {Screenfull} from "screenfull";
+import { Dragula } from 'dragula';
+import { Screenfull } from 'screenfull';
+import { ErrorReporterBase } from 'core-app/core/errors/error-reporter-base';
+import { I18n } from 'i18n-js';
+import '@hotwired/turbo';
 
 declare module 'observable-array';
 declare module 'dom-autoscroller';
 declare module 'core-vendor/enjoyhint';
 
+declare module '@hotwired/turbo' {
+  interface BrowserAdapter {
+    formSubmissionStarted:() => void;
+    formSubmissionFinished:() => void;
+  }
+
+  export const session:{
+    drive:boolean;
+    adapter:BrowserAdapter;
+  };
+
+  export const navigator:{
+    submitForm:(form:HTMLFormElement, submitter?:HTMLElement) => void;
+  };
+
+  export interface StreamElement {
+    templateElement:HTMLTemplateElement;
+  }
+
+  export function start():void;
+}
+
 declare global {
   const _:typeof TLodash;
-  const moment:typeof TMoment;
-  const I18n:GlobalI18n;
+  const I18n:I18n;
   const dragula:Dragula;
 }
 
 declare global {
   interface Window {
+    I18n:I18n;
     appBasePath:string;
     ng2Injector:Injector;
     OpenProject:OpenProject;
-    ErrorReporter:ErrorReporter;
+    ErrorReporter:ErrorReporterBase;
     onboardingTourInstance:any;
     screenfull:Screenfull;
+    MiniProfiler?:{ pageTransition:() => void };
   }
 
   interface JQuery {

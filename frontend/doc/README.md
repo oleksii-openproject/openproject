@@ -42,7 +42,7 @@ For more information, see [TESTING](./TESTING.md).
 
 ## Plugins
 
-OpenProject Community Edition has some plugins that contain a frontend,
+OpenProject Community edition has some plugins that contain a frontend,
 e.g., [Costs](https://github.com/finnlabs/openproject-costs/)
 or [My Project Page](https://github.com/finnlabs/openproject-my_project_page/).
 
@@ -59,14 +59,15 @@ For more information on styling the application, see [STYLING](./STYLING.md).
 
 ## Changing or updating Dependencies
 
-We use `npm shrinkwrap` to lock down runtime (but not development)
-dependencies. When adding or removing dependencies, please adhere to the
-following workflow:
+We use a `package-lock` to lock down runtime (but not development)
+dependencies. When adding or removing dependencies, please use `npm install` to also update the lockfile.
+Please commit `package-lock.json` along with any changes to `package.json`.
 
-    npm install
-    npm shrinkwrap
+If you want to install the packages from the lockfile without updating it, please use the following command:
 
-Please commit `npm-shrinkwrap.json` along with any changes to `package.json`.
+```
+npm ci
+```
 
 ## Topics
 

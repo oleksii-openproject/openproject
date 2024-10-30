@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module FileUploader
@@ -49,7 +49,7 @@ module FileUploader
     file.to_file
   end
 
-  def download_url(options = {})
+  def download_url(_options = {})
     file.is_path? ? file.path : file.url
   end
 
@@ -63,17 +63,17 @@ module FileUploader
     File.readable?(local_file)
   end
 
-   # store! nil's the cache_id after it finishes so we need to remember it for deletion
- def remember_cache_id(_new_file)
+  # store! nil's the cache_id after it finishes so we need to remember it for deletion
+  def remember_cache_id(_new_file)
     @cache_id_was = cache_id
   end
 
   def delete_tmp_dir(_new_file)
     # make sure we don't delete other things accidentally by checking the name pattern
-    if @cache_id_was.present? && @cache_id_was =~ /\A[\d]{8}\-[\d]{4}\-[\d]+\-[\d]{4}\z/
+    if @cache_id_was.present? && @cache_id_was =~ /\A\d{8}-\d{4}-\d+-\d{4}\z/
       FileUtils.rm_rf(File.join(cache_dir, @cache_id_was))
     end
-  rescue => e
+  rescue StandardError => e
     Rails.logger.error "Failed cleanup of upload file #{@cache_id_was}: #{e}"
   end
 
@@ -81,19 +81,19 @@ module FileUploader
   def cache!(new_file = sanitized_file)
     super
     @old_tmp_file = new_file
-  rescue => e
+  rescue StandardError => e
     Rails.logger.error "Failed cache! of temporary upload file: #{e}"
   end
 
   def delete_old_tmp_file(_dummy)
     @old_tmp_file.try :delete
-  rescue => e
+  rescue StandardError => e
     Rails.logger.error "Failed cleanup of temporary upload file: #{e}"
   end
 
   module ClassMethods
     def cache_dir
-      @cache_dir ||= File.join(Dir.tmpdir, 'op_uploaded_files')
+      @cache_dir ||= File.join(Dir.tmpdir, "op_uploaded_files")
     end
   end
 end

@@ -1,4 +1,7 @@
 tr:
+  plugin_openproject_webhooks:
+    name: "OpenProject Webhooks"
+    description: "Provides a plug-in API to support OpenProject webhooks for better 3rd party integration."
   activerecord:
     attributes:
       webhooks/webhook:
@@ -27,18 +30,22 @@ tr:
       events:
         created: "Oluşturuldu"
         updated: "Güncellenmiş"
+      explanation:
+        text: >
+          Bir iş paketinin oluşturulması veya bir projede güncelleme gibi bir olayın meydana gelmesi üzerine, OpenProject yapılandırılmış web uç noktalarına bir POST isteği gönderir. Çoğu zaman olay, %{link} geçtikten sonra gönderilir.
+        link: yapılandırılmış toplama dönemi
       status:
         enabled: 'Web kancası etkin'
         disabled: 'Web kancası devre dışı'
         enabled_text: 'Web kancası, aşağıda tanımlanan etkinlikler için yük taşıyacaktır.'
         disabled_text: 'Web kancasını etkinleştirmek için düzenle düğmesine tıklayın.'
       deliveries:
-        no_results_table: Bu web kancası için teslimat yapılmamıştır.
+        no_results_table: Geçtiğimiz günlerde bu web kancası için teslimat yapılmadı.
         title: 'Son teslimatlar'
         time: 'Teslimat süresi'
       form:
         introduction: >
-          Abone olduğunuz projedeki herhangi bir olay için aşağıdaki taşıma yükü URL'sine bir POST isteği gönderin. Yük, değiştirilen nesnenin APIv3 temsiline karşılık gelir.
+          Abone olduğunuz projedeki herhangi bir etkinlik için aşağıdaki payload URL'sine bir POST isteği gönderin. Yük, değiştirilen nesnenin APIv3 temsiline karşılık gelir.
         apiv3_doc_url: Daha fazla bilgi için API belgelerini ziyaret edin
         description:
           placeholder: 'Web kancası için isteğe bağlı açıklama.'

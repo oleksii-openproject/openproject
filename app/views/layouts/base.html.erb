@@ -1,12 +1,12 @@
 <%#-- copyright
 OpenProject is an open source project management software.
-Copyright (C) 2012-2020 the OpenProject GmbH
+Copyright (C) the OpenProject GmbH
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License version 3.
 
 OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-Copyright (C) 2006-2017 Jean-Philippe Lang
+Copyright (C) 2006-2013 Jean-Philippe Lang
 Copyright (C) 2010-2013 the ChiliProject Team
 
 This program is free software; you can redistribute it and/or
@@ -23,7 +23,7 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-See docs/COPYRIGHT.rdoc for more details.
+See COPYRIGHT and LICENSE files for more details.
 
 ++#%><!DOCTYPE html>
 <% show_decoration = params["layout"].nil? %>
@@ -32,72 +32,23 @@ See docs/COPYRIGHT.rdoc for more details.
       xml:lang="<%= I18n.locale.to_s %>"
       class="<%= 'in_modal' unless show_decoration %>">
 <head>
-  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
-  <meta name="viewport" content="width=device-width">
-  <%= output_title_and_meta_tags %>
-
-  <% relative_url_root = OpenProject::Configuration['rails_relative_url_root'] || '' %>
-  <meta name="app_base_path" content="<%= relative_url_root %>"/>
-  <base href="<%= relative_url_root %>/" />
-  <% if @project %>
-    <meta name="current_project"
-          data-project-name="<%= h @project.name %>"
-          data-project-id="<%= @project.id %>"
-          data-project-identifier="<%= @project.identifier %>"/>
-  <% end %>
-  <% unless User.current.anonymous? %>
-    <meta name="current_user"
-          data-name="<%= User.current.name %>"
-          data-mail="<%= User.current.mail %>"
-          data-id="<%= User.current.id %>" />
-  <% end %>
-
-  <% if OpenProject::Configuration.sentry_frontend_dsn %>
-    <%= tag :meta, name: 'openproject_sentry', data: { dsn: OpenProject::Configuration.sentry_frontend_dsn } %>
-  <% end %>
-
-  <meta name="openproject_initializer"
-        data-locale="<%= I18n.locale %>"
-        data-first-day-of-week="<%= locale_first_day_of_week %>"
-        data-default-locale="<%= I18n.default_locale %>"
-        data-environment="<%= Rails.env %>"
-        data-edition="<%= OpenProject::Configuration.edition %>"/>
-  <meta name="current_menu_item" content="<%= current_menu_item %>"/>
-  <% if Setting.demo_projects_available %><meta name="demo_projects_available" content="true"/><% end %>
-  <% if Setting.boards_demo_data_available %><meta name="boards_demo_data_available" content="true"/><% end %>
-  <%= csrf_meta_tags %>
-
-  <!-- global meta hooks before any scripts are loaded-->
-  <%= call_hook :view_layouts_base_html_meta %>
-
-  <%= render 'common/favicons' %>
-
-  <%# Include CLI assets (development) or prod build assets %>
-  <%= include_frontend_assets %>
-
-  <%# Render CSS highlighting %>
-  <%= stylesheet_link_tag "/highlighting/styles/#{highlight_css_version_tag}",
-                          media: :all,
-                          skip_pipeline: true %>
-
+  <%= render partial: 'layouts/common_head' %>
   <!-- project specific tags -->
   <%= call_hook :view_layouts_base_html_head %>
   <!-- page specific tags -->
   <%= content_for(:header_tags) if content_for?(:header_tags) %>
-  <% if EnterpriseToken.allows_to?(:define_custom_style) && CustomStyle.try(:current).present? %>
-    <% cache(CustomStyle.current) do %>
-      <%= render partial: "custom_styles/inline_css" %>
-      <% if CustomStyle.current.favicon.present? %>
-        <link rel="icon" type="image/png" href="<%= custom_style_favicon_path(digest: CustomStyle.current.digest, filename: CustomStyle.current.favicon_identifier) %>" sizes="32x32">
-      <% end %>
-      <% if CustomStyle.current.touch_icon.present? %>
-        <link rel="apple-touch-icon" sizes="180x180" href="<%= custom_style_touch_icon_path(digest: CustomStyle.current.digest, filename: CustomStyle.current.touch_icon_identifier) %>">
-      <% end %>
-    <% end %>
-  <% end %>
-  <%= crowdin_in_context_translation %>
+  <meta name="current_menu_item" content="<%= current_menu_item %>"/>
+  <%# Disable prefetching while we have data-turbo=false on body %>
+  <meta name="turbo-prefetch" content="false">
 </head>
-<body class="<%= body_css_classes %> __overflowing_element_container __overflowing_body" data-relative_url_root="<%= root_path %>" data-overflowing-identifier=".__overflowing_body">
+<body
+  class="<%= body_css_classes %> __overflowing_element_container __overflowing_body"
+  data-relative_url_root="<%= root_path %>"
+  data-overflowing-identifier=".__overflowing_body"
+  data-rendered-at="<%= Time.zone.now.iso8601 %>"
+  data-controller="application"
+  <%= user_theme_data_attributes %>
+>
 <%= render partial: 'warning_bar/warning_bar' %>
 <noscript>
   <div class="top-shelf">
@@ -111,82 +62,99 @@ See docs/COPYRIGHT.rdoc for more details.
     </p>
   </div>
 </noscript>
-<notifications-container></notifications-container>
+<opce-toasts-container></opce-toasts-container>
+<opce-modal-overlay></opce-modal-overlay>
+<opce-spot-drop-modal-portal></opce-spot-drop-modal-portal>
 <% main_menu = render_main_menu(local_assigns.fetch(:menu_name, nil), @project) %>
 <% side_displayed = content_for?(:sidebar) || content_for?(:main_menu) || !main_menu.blank? %>
 <% initial_classes = initial_menu_classes(side_displayed, show_decoration) %>
-<div id="wrapper" style="<%= initial_menu_styles %>" class="<%= initial_classes %>">
+<div id="wrapper" style="<%= initial_menu_styles(side_displayed) %>" class="<%= initial_classes %>">
   <% if show_decoration %>
-    <div id="top-menu">
-      <div id="header">
-        <div id="top-menu-items">
-          <h1 class="hidden-for-sighted">
-            <%= t(:label_top_menu) %>
-          </h1>
-          <main-menu-toggle></main-menu-toggle>
-          <a href="" class="hidden-for-sighted skip-navigation-link"
-             aria-label="<%= I18n.t('js.work_packages.jump_marks.label_content') %>">
-            <%= I18n.t('js.work_packages.jump_marks.content') %>
-          </a>
-          <%= render_top_menu_left %>
-          <div id="logo" class="hidden-for-mobile">
-            <%= link_to(I18n.t('label_home'), fixed_home_url, class: 'home-link') %>
-          </div>
-          <%= call_hook :view_layouts_base_top_menu %>
-          <div class="top-menu-items-right">
-            <%= render partial: 'search/mini_form' %>
-            <%= render_top_menu_right %>
-          </div>
-        </div>
+    <header class="op-app-header<%= ' op-app-header_development' if OpenProject::Configuration.development_highlight_enabled? %>">
+      <div class="op-app-header--start">
+        <h1 class="hidden-for-sighted">
+          <%= t(:label_top_menu) %>
+        </h1>
+        <opce-main-menu-toggle></opce-main-menu-toggle>
+        <a href="" class="hidden-for-sighted skip-navigation-link"
+           id="skip-navigation--content"
+           aria-label="<%= I18n.t('js.work_packages.jump_marks.label_content') %>">
+          <%= I18n.t('js.work_packages.jump_marks.content') %>
+        </a>
+        <%= render_top_menu_left %>
       </div>
-    </div>
+      <div class="op-app-header--center">
+        <%= render_top_menu_center %>
+      </div>
+      <div class="op-app-header--end">
+        <%= call_hook :view_layouts_base_top_menu %>
+        <%= render_top_menu_right %>
+      </div>
+    </header>
   <% end %>
   <div id="main"
        class="<%= initial_classes %>">
     <% if (side_displayed && show_decoration) %>
-      <div id="main-menu" class="main-menu">
+      <div
+        id="main-menu"
+        class="main-menu"
+        data-controller="menus--main"
+        data-application-target="dynamic"
+      >
         <h1 class="hidden-for-sighted"><%= t(:label_main_menu) %></h1>
-        <main-menu-resizer></main-menu-resizer>
+        <opce-main-menu-resizer></opce-main-menu-resizer>
         <div id="menu-sidebar">
-          <div class="main-menu-wrapper">
-            <%= main_menu %>
-            <%= content_for :main_menu %>
-            <%= call_hook :view_layouts_base_main_menu %>
-            <!-- Sidebar -->
-            <div id="sidebar">
-              <%= content_for :sidebar %>
-              <%= call_hook :view_layouts_base_sidebar %>
-            </div>
+          <%= main_menu %>
+          <%= content_for :main_menu %>
+          <%= call_hook :view_layouts_base_main_menu %>
+          <!-- Sidebar -->
+          <div id="sidebar" data-menus--main-target="sidebar">
+            <%= content_for :sidebar %>
+            <%= call_hook :view_layouts_base_sidebar %>
           </div>
         </div>
       </div>
     <% end %>
     <div class="content-overlay"></div>
-    <div id="content-wrapper" class="<%= initial_classes %>">
-      <% if show_decoration %>
-        <div id="breadcrumb" class="<%= initial_classes %><%= show_breadcrumb ? ' -show' : '' %>">
-          <%= you_are_here_info %>
-          <%= full_breadcrumb %>
-          <%= call_hook :view_layouts_base_breadcrumb %>
-        </div>
-      <% end %>
-      <%= render_flash_messages %>
+    <%= content_tag :main, id: "content-wrapper", class: initial_classes, data: stimulus_content_data do %>
+      <%= render partial: "layouts/flashes" %>
       <% if show_onboarding_modal? %>
         <section data-augmented-model-wrapper
                  data-modal-initialize-now="true"
-                 data-modal-class-name="onboarding-modal -highlight">
+                 data-modal-class-name="onboarding-modal">
           <%= render partial: '/onboarding/configuration_modal' %>
         </section>
       <% end %>
-      <div id="content" class="<%= initial_classes %>">
-        <h1 class="hidden-for-sighted"><%= t(:label_content) %></h1>
-        <%= content_for :content_body %>
-        <% unless local_assigns[:no_action_menu] %>
-          <%= yield %>
+      <%= content_tag :div,
+                      id: 'content',
+                      class: "#{initial_classes} #{'content--split' if content_for?(:content_body_right)}" do %>
+        <h1 class="hidden-for-sighted accessibility-helper"><%= t(:label_content) %></h1>
+        <% if content_for?(:content_header) %>
+          <div id="content-header">
+            <%= content_for :content_header %>
+          </div>
         <% end %>
-        <%= call_hook :view_layouts_base_content %>
-      </div>
-    </div>
+
+        <div id="content-body">
+          <% if show_decoration %>
+            <div id="breadcrumb" class="<%= show_breadcrumb ? ' -show' : '' %>">
+              <%= you_are_here_info %>
+              <div id="full_breadcrumbs">
+                <%= full_breadcrumbs %>
+              </div>
+              <%= call_hook :view_layouts_base_breadcrumb %>
+            </div>
+          <% end %>
+          <%= content_for :content_body %>
+          <% unless local_assigns[:no_layout_yield] %>
+            <%= yield %>
+          <% end %>
+        </div>
+        <%= turbo_frame_tag "content-bodyRight" do %>
+          <%= content_for :content_body_right %>
+        <% end %>
+      <% end %>
+    <% end %>
   </div>
   <div id="ajax-indicator" style="display:none;"><span><%= t(:label_loading) %></span></div>
 </div>
@@ -200,8 +168,8 @@ See docs/COPYRIGHT.rdoc for more details.
     var savedMainMenuWidth = window.OpenProject.guardedLocalStorage("openProject-mainMenuWidth");
     var mainMenuCollapsed =  window.OpenProject.guardedLocalStorage("openProject-mainMenuCollapsed");
 
-    if (window.innerWidth < 680) {
-      // force hide on load for mobile
+    if (window.innerWidth < 1012) {
+      // force hide on load for small desktops
       $('.can-hide-navigation').addClass('hidden-navigation');
     }
 
@@ -220,6 +188,7 @@ See docs/COPYRIGHT.rdoc for more details.
     <%= content_for :additional_js_dom_ready %>
   }(jQuery));
 <% end %>
+<div class="op-wide-autocomplete-wrapper"></div>
 <%= call_hook :view_layouts_base_body_bottom %>
 </body>
 </html>

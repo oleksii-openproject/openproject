@@ -1,13 +1,12 @@
-#-- encoding: UTF-8
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -24,12 +23,10 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 # We need to ensure that we operate on a well-known TRANSACTION ISOLATION LEVEL
-# However, the default isolation level is different for MySQL and PostgreSQL and it is also
-# possible (at least for MySQL) to globally override the default for your DBMS installation.
 # Therefore we want to ensure that the isolation level is consistent on a session basis.
 # We chose READ COMMITTED as our expected default isolation level, this is the default of
 # PostgreSQL.
@@ -43,15 +40,11 @@ module ConnectionIsolationLevel
   end
 
   def self.set_connection_isolation_level(connection)
-    isolation_level = 'ISOLATION LEVEL READ COMMITTED'
-    if OpenProject::Database.postgresql?(connection)
-      connection.execute("SET SESSION CHARACTERISTICS AS TRANSACTION #{isolation_level}")
-    end
+    connection.execute("SET SESSION CHARACTERISTICS AS TRANSACTION ISOLATION LEVEL READ COMMITTED")
   end
 end
 
-ActiveRecord::ConnectionAdapters::ConnectionPool.send(:prepend,
-                                                      ConnectionIsolationLevel::ConnectionPoolPatch)
+ActiveRecord::ConnectionAdapters::ConnectionPool.prepend ConnectionIsolationLevel::ConnectionPoolPatch
 
 # in case the existing connection was created before our patch
 # N.B.: this assumes that our process only has this single thread, which is at least true today...

@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,37 +23,37 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'spec_helper'
+require "spec_helper"
 
-describe ::OpenProject::Bim::BcfXml::IssueReader do
+RSpec.describe OpenProject::Bim::BcfXml::IssueReader do
   let(:absolute_file_path) { "63E78882-7C6A-4BF7-8982-FC478AFB9C97/markup.bcf" }
-  let(:type) { FactoryBot.create :type, name: 'Issue', is_standard: true, is_default: true }
+  let(:type) { create(:type, name: "Issue", is_standard: true, is_default: true) }
   let(:project) do
-    FactoryBot.create(:project,
-                      identifier: 'bim_project',
-                      types: [type])
+    create(:project,
+           identifier: "bim_project",
+           types: [type])
   end
   let(:manage_bcf_role) do
-    FactoryBot.create(
-      :role,
+    create(
+      :project_role,
       permissions: %i[manage_bcf view_linked_issues view_work_packages edit_work_packages add_work_packages]
     )
   end
-  let(:bcf_manager) { FactoryBot.create(:user) }
+  let(:bcf_manager) { create(:user) }
   let(:workflow) do
-    FactoryBot.create(:workflow_with_default_status,
-                      role: manage_bcf_role,
-                      type: type)
+    create(:workflow_with_default_status,
+           role: manage_bcf_role,
+           type:)
   end
-  let(:priority) { FactoryBot.create :default_priority }
+  let(:priority) { create(:default_priority) }
   let(:bcf_manager_member) do
-    FactoryBot.create(:member,
-                      project: project,
-                      user: bcf_manager,
-                      roles: [manage_bcf_role])
+    create(:member,
+           project:,
+           user: bcf_manager,
+           roles: [manage_bcf_role])
   end
   let(:markup) do
     <<-MARKUP
@@ -94,7 +94,7 @@ describe ::OpenProject::Bim::BcfXml::IssueReader do
                         nil,
                         entry,
                         current_user: bcf_manager,
-                        import_options: import_options)
+                        import_options:)
   end
 
   before do
@@ -104,20 +104,20 @@ describe ::OpenProject::Bim::BcfXml::IssueReader do
     allow(User).to receive(:current).and_return(bcf_manager)
   end
 
-  context 'on initial import' do
+  context "on initial import" do
     let(:bcf_issue) { subject.extract! }
 
-    context 'with happy path, everything has a match' do
-      it 'WP start date gets initialized with BCF CreationDate' do
+    context "with happy path, everything has a match" do
+      it "WP start date gets initialized with BCF CreationDate" do
         expect(bcf_issue.work_package.start_date).to eql(subject.extractor.creation_date.to_date)
       end
 
-      it 'Bim::Bcf::Issue get initialized with the GUID form the XML file' do
+      it "Bim::Bcf::Issue get initialized with the GUID form the XML file" do
         expect(bcf_issue.uuid).to eql("63E78882-7C6A-4BF7-8982-FC478AFB9C97")
       end
     end
 
-    context 'Topic does not provide any title, status, type or priority' do
+    context "Topic does not provide any title, status, type or priority" do
       let(:markup) do
         <<-MARKUP
         <Markup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
@@ -131,18 +131,18 @@ describe ::OpenProject::Bim::BcfXml::IssueReader do
         MARKUP
       end
 
-      context 'with no import options provided' do
+      context "with no import options provided" do
         let(:bcf_issue) { subject.extract! }
 
-        it 'sets a status' do
+        it "sets a status" do
           expect(bcf_issue.work_package.status).to eql(Status.default)
         end
 
-        it 'sets a type' do
+        it "sets a type" do
           expect(bcf_issue.work_package.type).to eql(type)
         end
 
-        it 'ignores missing priority' do
+        it "ignores missing priority" do
           # as it gets set automatically when creating new work packages.
           expect(bcf_issue.work_package.priority).to eql(priority)
         end
@@ -150,27 +150,27 @@ describe ::OpenProject::Bim::BcfXml::IssueReader do
     end
   end
 
-  context 'on updating import' do
-    context '#update_comment' do
-      let(:work_package) { FactoryBot.create(:work_package) }
-      let!(:bcf_issue) { FactoryBot.create :bcf_issue_with_comment, work_package: work_package }
+  context "on updating import" do
+    describe "#update_comment" do
+      let(:work_package) { create(:work_package) }
+      let!(:bcf_issue) { create(:bcf_issue_with_comment, work_package:) }
 
       before do
         allow(subject).to receive(:issue).and_return(bcf_issue)
       end
 
-      it '#update_comment' do
+      it "#update_comment" do
         modified_time = Time.now + 1.minute
-        comment_data = { uuid: bcf_issue.comments.first.uuid, comment: 'Updated comment', modified_date: modified_time }
+        comment_data = { uuid: bcf_issue.comments.first.uuid, comment: "Updated comment", modified_date: modified_time }
         expect(subject).to receive(:update_comment_viewpoint_by_uuid)
 
         subject.send(:update_comment, comment_data)
 
-        expect(bcf_issue.comments.first.journal.notes).to eql('Updated comment')
+        expect(bcf_issue.comments.first.journal.notes).to eql("Updated comment")
         expect(bcf_issue.comments.first.journal.created_at.utc.to_s).to eql(modified_time.utc.to_s)
       end
 
-      it '#update_comment_viewpoint_by_uuid' do
+      it "#update_comment_viewpoint_by_uuid" do
         bcf_comment = bcf_issue.comments.first
         viewpoint = bcf_comment.viewpoint
         bcf_comment.viewpoint = nil
@@ -182,9 +182,10 @@ describe ::OpenProject::Bim::BcfXml::IssueReader do
         expect(bcf_comment.viewpoint).to be_nil
       end
 
-      it '#viewpoint_by_uuid' do
+      it "#viewpoint_by_uuid" do
         expect(subject.send(:viewpoint_by_uuid, nil)).to be_nil
-        expect(subject.send(:viewpoint_by_uuid, bcf_issue.comments.first.viewpoint.uuid)).to eql(bcf_issue.comments.first.viewpoint)
+        expect(subject.send(:viewpoint_by_uuid,
+                            bcf_issue.comments.first.viewpoint.uuid)).to eql(bcf_issue.comments.first.viewpoint)
       end
     end
   end

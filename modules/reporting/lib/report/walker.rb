@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,29 +23,30 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 class Report::Walker
   attr_accessor :query, :header_stack
+
   def initialize(query)
     @query = query
   end
 
-  def for_row(&block)
-    access_block(:row, &block)
+  def for_row(&)
+    access_block(:row, &)
   end
 
-  def for_final_row(&block)
-    access_block(:final_row, &block) || access_block(:row)
+  def for_final_row(&)
+    access_block(:final_row, &) || access_block(:row)
   end
 
-  def for_cell(&block)
-    access_block(:cell, &block)
+  def for_cell(&)
+    access_block(:cell, &)
   end
 
-  def for_empty_cell(&block)
-    access_block(:empty_cell, &block) || access_block(:cell)
+  def for_empty_cell(&)
+    access_block(:empty_cell, &) || access_block(:cell)
   end
 
   def access_block(name, &block)
@@ -58,7 +59,7 @@ class Report::Walker
     cell ? for_cell[cell] : for_empty_cell[nil]
   end
 
-  def headers(result = nil, &_block)
+  def headers(result = nil, &)
     @header_stack = []
     result ||= query.column_first
     sort result
@@ -68,6 +69,7 @@ class Report::Walker
     sublevel   = 0
     result.recursive_each_with_level(0, false) do |level, result|
       break if result.final_column?
+
       if first_in_col = (last_level < level)
         list        = []
         last_level  = level
@@ -85,7 +87,8 @@ class Report::Walker
   end
 
   def reverse_headers
-    fail 'call header first' unless @header_stack
+    fail "call header first" unless @header_stack
+
     first = true
     @header_stack.reverse_each do |list|
       list.each do |result, first_in_col, last_in_col|
@@ -96,12 +99,13 @@ class Report::Walker
   end
 
   def headers_empty?
-    fail 'call header first' unless @header_stack
+    fail "call header first" unless @header_stack
+
     @header_stack.empty?
   end
 
   def sort_keys
-    @sort_keys ||= query.chain.map { |c| c.group_fields.map(&:to_s) if c.group_by? }.compact.flatten
+    @sort_keys ||= query.chain.filter_map { |c| c.group_fields.map(&:to_s) if c.group_by? }.flatten
   end
 
   def sort(result)
@@ -109,8 +113,9 @@ class Report::Walker
     result.sort!
   end
 
-  def body(result = nil)
-    return [*body(result)].each { |a| yield a } if block_given?
+  def body(result = nil, &)
+    return [*body(result)].each(&) if block_given?
+
     result ||= query.result.tap { |r| sort(r) }
     if result.row?
       if result.final_row?

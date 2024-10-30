@@ -1,14 +1,12 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -25,41 +23,40 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'spec_helper'
+require "spec_helper"
 
-describe WorkPackage, 'custom_actions', type: :model do
+RSpec.describe WorkPackage, "custom_actions" do
   let(:work_package) do
-    FactoryBot.build_stubbed(:stubbed_work_package,
-                              project: project)
+    build_stubbed(:work_package,
+                  project:)
   end
-  let(:project) { FactoryBot.create(:project) }
-  let(:status) { FactoryBot.create(:status) }
-  let(:other_status) { FactoryBot.create(:status) }
+  let(:project) { create(:project) }
+  let(:status) { create(:status) }
+  let(:other_status) { create(:status) }
   let(:user) do
-    FactoryBot.create(:user,
-                       member_in_project: work_package.project,
-                       member_through_role: role)
+    create(:user,
+           member_with_roles: { work_package.project => role })
   end
   let(:role) do
-    FactoryBot.create(:role)
+    create(:project_role)
   end
   let(:conditions) do
     [CustomActions::Conditions::Status.new([status.id])]
   end
 
   let!(:custom_action) do
-    action = FactoryBot.build(:custom_action)
+    action = build(:custom_action)
     action.conditions = conditions
 
     action.save!
     action
   end
 
-  describe '#custom_actions' do
-    context 'with the custom action having no restriction' do
+  describe "#custom_actions" do
+    context "with the custom action having no restriction" do
       let(:conditions) do
         []
       end
@@ -68,56 +65,56 @@ describe WorkPackage, 'custom_actions', type: :model do
         work_package.status_id = status.id
       end
 
-      it 'returns the action' do
+      it "returns the action" do
         expect(work_package.custom_actions(user))
-          .to match_array [custom_action]
+          .to contain_exactly(custom_action)
       end
     end
 
-    context 'with a status restriction' do
-      context 'with the work package having the same status' do
+    context "with a status restriction" do
+      context "with the work package having the same status" do
         before do
           work_package.status_id = status.id
         end
 
-        it 'returns the action' do
+        it "returns the action" do
           expect(work_package.custom_actions(user))
-            .to match_array [custom_action]
+            .to contain_exactly(custom_action)
         end
       end
 
-      context 'with the work package having a different status' do
+      context "with the work package having a different status" do
         before do
           work_package.status_id = other_status.id
         end
 
-        it 'does not return the action' do
+        it "does not return the action" do
           expect(work_package.custom_actions(user))
             .to be_empty
         end
       end
     end
 
-    context 'with a role restriction' do
+    context "with a role restriction" do
       let(:conditions) do
         [CustomActions::Conditions::Role.new(role.id)]
       end
 
-      context 'with the user having the same role' do
-        it 'returns the action' do
+      context "with the user having the same role" do
+        it "returns the action" do
           expect(work_package.custom_actions(user))
-            .to match_array [custom_action]
+            .to contain_exactly(custom_action)
         end
       end
 
-      context 'with the condition requiring a different role' do
-        let(:other_role) { FactoryBot.create(:role) }
+      context "with the condition requiring a different role" do
+        let(:other_role) { create(:project_role) }
 
         let(:conditions) do
           [CustomActions::Conditions::Role.new(other_role.id)]
         end
 
-        it 'does not return the action' do
+        it "does not return the action" do
           expect(work_package.custom_actions(user))
             .to be_empty
         end

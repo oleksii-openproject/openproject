@@ -1,14 +1,12 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -25,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 # Provides helper methods for a project's calendar view.
@@ -37,7 +35,7 @@ module CalendarsHelper
   # @return [String] link to the calendar
   def link_to_previous_month(year, month, options = {})
     target_date = Date.new(year, month, 1) - 1.month
-    link_to_month(target_date, options.merge(class: 'navigate-left',
+    link_to_month(target_date, options.merge(class: "navigate-left",
                                              display_year: target_date.year != year))
   end
 
@@ -48,7 +46,7 @@ module CalendarsHelper
   # @return [String] link to the calendar
   def link_to_next_month(year, month, options = {})
     target_date = Date.new(year, month, 1) + 1.month
-    link_to_month(target_date, options.merge(class: 'navigate-right',
+    link_to_month(target_date, options.merge(class: "navigate-right",
                                              display_year: target_date.year != year))
   end
 
@@ -59,7 +57,7 @@ module CalendarsHelper
   # @return [String] link to the calendar
   def link_to_month(date_to_show, options = {})
     date = date_to_show.to_date
-    name = ::I18n.l date, format: options.delete(:display_year) ? '%B %Y' : '%B'
+    name = ::I18n.l date, format: options.delete(:display_year) ? "%B %Y" : "%B"
 
     merged_params = permitted_params
                     .calendar_filter

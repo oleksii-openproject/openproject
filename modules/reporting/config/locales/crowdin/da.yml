@@ -1,10 +1,10 @@
 #-- copyright
 #OpenProject is an open source project management software.
-#Copyright (C) 2012-2020 the OpenProject GmbH
+#Copyright (C) the OpenProject GmbH
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License version 3.
 #OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-#Copyright (C) 2006-2017 Jean-Philippe Lang
+#Copyright (C) 2006-2013 Jean-Philippe Lang
 #Copyright (C) 2010-2013 the ChiliProject Team
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License
@@ -17,10 +17,13 @@
 #You should have received a copy of the GNU General Public License
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-#See docs/COPYRIGHT.rdoc for more details.
+#See COPYRIGHT and LICENSE files for more details.
 #++
 da:
-  button_save_as: "Gem rapport som..."
+  plugin_openproject_reporting:
+    name: "OpenProject Reporting"
+    description: "This plugin allows creating custom cost reports with filtering and grouping created by the OpenProject Time and costs plugin."
+  button_save_report_as: "Save report as..."
   comments: "Kommentér"
   cost_reports_title: "Time and costs"
   label_cost_report: "Omkostningsrapport"
@@ -44,10 +47,11 @@ da:
   label_is_project_with_subprojects: "findes (inkluderer underprojekter)"
   label_work_package_attributes: "Egenskaber for arbejdspakker"
   label_less: "<"
+  label_logged_by_reporting: "Logged by"
   label_money: "Kontantværdi"
   label_month_reporting: "Måned (Brugt)"
   label_new_report: "Ny omkostningsrapport"
-  label_open: "åbn"
+  label_open: "åben"
   label_operator: "Operator"
   label_private_report_plural: "Privat omkostningsrapporter"
   label_progress_bar_explanation: "Genererer rapport..."
@@ -60,6 +64,18 @@ da:
   label_units: "Enheder"
   label_week_reporting: "Uge (Brugt)"
   label_year_reporting: "År (Brugt)"
+  label_count: "Antal"
+  label_filter: "Filter"
+  label_filter_add: "Tilføj filter"
+  label_filter_plural: "Filtre"
+  label_group_by: "Gruppér efter"
+  label_group_by_add: "Tilføj Gruppér efter-attribut"
+  label_inactive: "«inaktiv»"
+  label_no: "Nej"
+  label_none: "(ingen data)"
+  label_no_reports: "Der er endnu ingen omkostningsrapporter."
+  label_report: "Rapport"
+  label_yes: "Ja"
   load_query_question: "Rapporten vil indeholde %{size} celler og kan tage nogen tid at danne. Fortsæt alligevel?"
   permission_save_cost_reports: "Gem offentlig omkostningsrapport"
   permission_save_private_cost_reports: "Gem privat omkostningsrapport"
@@ -69,3 +85,10 @@ da:
   units: "Enheder"
   validation_failure_date: "er en ugyldig dato"
   validation_failure_integer: "er et ugyldigt heltal"
+  export:
+    cost_reports:
+      title: "Your Cost Reports XLS export"
+  reporting:
+    group_by:
+      selected_columns: "Selected columns"
+      selected_rows: "Selected rows"

@@ -1,14 +1,12 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -25,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module Grids::Configuration
@@ -38,7 +36,7 @@ module Grids::Configuration
       private
 
       def macroed_getter_setter(name, type = :single)
-        private_name = :"_#{name.to_s}"
+        private_name = :"_#{name}"
 
         class_attribute private_name
 
@@ -67,11 +65,11 @@ module Grids::Configuration
     macroed_getter_setter :to_scope
 
     class << self
-      def widget_strategy(widget_name, &block)
+      def widget_strategy(widget_name, &)
         self._widget_strategies ||= {}
 
         if block_given?
-          self._widget_strategies[widget_name.to_s] = Class.new(Grids::Configuration::WidgetStrategy, &block)
+          self._widget_strategies[widget_name.to_s] = Class.new(Grids::Configuration::WidgetStrategy, &)
         end
 
         self._widget_strategies[widget_name.to_s] ||= Grids::Configuration::WidgetStrategy
@@ -129,13 +127,13 @@ module Grids::Configuration
 
       def register!
         unless grid_class
-          raise 'Need to define the grid class first. Use grid_class to do so.'
+          raise "Need to define the grid class first. Use grid_class to do so."
         end
         unless widgets
-          raise 'Need to define at least one widget first. Use widgets to do so.'
+          raise "Need to define at least one widget first. Use widgets to do so."
         end
         unless to_scope
-          raise 'Need to define a scope. Use to_scope to do so'
+          raise "Need to define a scope. Use to_scope to do so"
         end
 
         Grids::Configuration.register_grid(grid_class, self)

@@ -1,13 +1,14 @@
-#-- encoding: UTF-8
+# frozen_string_literal: true
+
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -24,7 +25,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module API
@@ -33,9 +34,13 @@ module API
       module Schemas
         class RoleFilterDependencyRepresenter <
           FilterDependencyRepresenter
-
           def href_callback
-            api_v3_paths.roles
+            params = [
+              allows_becoming_assignee: { operator: "=", values: ["t"] },
+              grantable: { operator: "=", values: ["t"] }
+            ]
+            escaped = CGI.escape(::JSON.dump(params))
+            "#{api_v3_paths.roles}?filters=#{escaped}"
           end
 
           def type

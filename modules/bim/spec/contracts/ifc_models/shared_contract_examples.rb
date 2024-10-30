@@ -1,14 +1,12 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -25,37 +23,31 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'spec_helper'
+require "spec_helper"
 
-shared_examples_for 'ifc model contract' do
-  let(:current_user) do
-    FactoryBot.build_stubbed(:user) do |user|
-      allow(user)
-        .to receive(:allowed_to?) do |permission, permission_project|
-        permissions.include?(permission) && model_project == permission_project
-      end
-    end
-  end
-  let(:other_user) do
-    FactoryBot.build_stubbed(:user) do |user|
-      allow(user)
-        .to receive(:allowed_to?) do |permission, permission_project|
-        permissions.include?(permission) && model_project == permission_project
-      end
-    end
-  end
-  let(:model_project) { FactoryBot.build_stubbed(:project) }
-  let(:ifc_attachment) { FactoryBot.build_stubbed(:attachment, author: model_user) }
+RSpec.shared_examples_for "ifc model contract" do
+  let(:current_user) { build_stubbed(:user) }
+  let(:other_user) { build_stubbed(:user) }
+  let(:model_project) { build_stubbed(:project) }
+  let(:ifc_attachment) { build_stubbed(:attachment, author: model_user) }
   let(:model_user) { current_user }
-  let(:model_title) { 'some title' }
+  let(:model_title) { "some title" }
 
   before do
     allow(ifc_model)
       .to receive(:ifc_attachment)
       .and_return(ifc_attachment)
+
+    mock_permissions_for(current_user) do |mock|
+      mock.allow_in_project(*permissions, project: model_project) if model_project
+    end
+
+    mock_permissions_for(other_user) do |mock|
+      mock.allow_in_project(*permissions, project: model_project) if model_project
+    end
   end
 
   def expect_valid(valid, symbols = {})
@@ -66,86 +58,86 @@ shared_examples_for 'ifc model contract' do
     end
   end
 
-  shared_examples 'is valid' do
-    it 'is valid' do
+  shared_examples "is valid" do
+    it "is valid" do
       expect_valid(true)
     end
   end
 
-  it_behaves_like 'is valid'
+  it_behaves_like "is valid"
 
-  context 'if the title is nil' do
+  context "if the title is nil" do
     let(:model_title) { nil }
 
-    it 'is invalid' do
+    it "is invalid" do
       expect_valid(false, title: %i(blank))
     end
   end
 
-  context 'if the title is blank' do
-    let(:model_title) { '' }
+  context "if the title is blank" do
+    let(:model_title) { "" }
 
-    it 'is invalid' do
+    it "is invalid" do
       expect_valid(false, title: %i(blank))
     end
   end
 
-  context 'if the project is nil' do
+  context "if the project is nil" do
     let(:model_project) { nil }
 
-    it 'is invalid' do
+    it "is invalid" do
       expect_valid(false, project: %i(blank))
     end
   end
 
-  context 'if there is no ifc attachment' do
+  context "if there is no ifc attachment" do
     let(:ifc_attachment) { nil }
 
-    it 'is invalid' do
+    it "is invalid" do
       expect_valid(false, base: %i(ifc_attachment_missing))
     end
   end
 
-  context 'if the new ifc file is no valid ifc file' do
-    let(:ifc_file) { FileHelpers.mock_uploaded_file name: "model.ifc", content_type: 'application/binary', binary: true }
+  context "if the new ifc file is no valid ifc file" do
+    let(:ifc_file) { FileHelpers.mock_uploaded_file name: "model.ifc", content_type: "application/binary", binary: true }
     let(:ifc_attachment) do
-      User.execute_as current_user do
-        ifc_model.attach_files('first' => { 'file' => ifc_file, 'description' => 'ifc' })
-        ifc_model.attachments.last
-      end
+      Attachments::BuildService
+        .bypass_whitelist(user: current_user)
+        .call(file: ifc_file, filename: "model.ifc")
+        .result
     end
 
-    it 'is invalid' do
+    it "is invalid" do
       expect_valid(false, base: %i(invalid_ifc_file))
     end
   end
 
-  context 'if the new ifc file is a valid ifc file' do
+  context "if the new ifc file is a valid ifc file" do
     let(:ifc_file) do
-      FileHelpers.mock_uploaded_file name: "model.ifc", content_type: 'application/binary', binary: true, content: "ISO-10303-21;"
+      FileHelpers.mock_uploaded_file name: "model.ifc", content_type: "application/binary", binary: true, content: "ISO-10303-21;"
     end
     let(:ifc_attachment) do
-      User.execute_as current_user do
-        ifc_model.attach_files('first' => { 'file' => ifc_file, 'description' => 'ifc' })
-        ifc_model.attachments.last
-      end
+      Attachments::BuildService
+        .bypass_whitelist(user: current_user)
+        .call(file: ifc_file, filename: "model.ifc")
+        .result
     end
 
-    it_behaves_like 'is valid'
+    it_behaves_like "is valid"
   end
 
-  context 'if user is not allowed to manage ifc models' do
+  context "if user is not allowed to manage ifc models" do
     let(:permissions) { [] }
 
-    it 'is invalid' do
+    it "is invalid" do
       expect_valid(false, base: %i(error_unauthorized))
     end
   end
 
-  context 'if user of attachment and uploader are different' do
-    let(:ifc_attachment) { FactoryBot.build_stubbed(:attachment, author: other_user) }
+  context "if user of attachment and uploader are different" do
+    let(:ifc_attachment) { build_stubbed(:attachment, author: other_user) }
 
-    it 'is invalid' do
+    it "is invalid" do
       expect_valid(false, uploader_id: %i(invalid))
     end
   end

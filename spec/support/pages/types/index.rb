@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,10 +23,10 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'support/pages/page'
+require "support/pages/page"
 
 module Pages
   module Types
@@ -36,7 +36,7 @@ module Pages
       end
 
       def expect_listed(*types)
-        rows = page.all 'td.timelines-pet-name'
+        rows = page.all "td.timelines-pet-name"
 
         expected = types.map { |t| canonical_name(t) }
 
@@ -44,17 +44,15 @@ module Pages
       end
 
       def expect_successful_create
-        expect_notification message: I18n.t(:notice_successful_create)
+        expect_toast message: I18n.t(:notice_successful_create)
       end
 
       def expect_successful_update
-        expect_notification message: I18n.t(:notice_successful_update)
+        expect_toast message: I18n.t(:notice_successful_update)
       end
 
       def click_new
-        within '.toolbar-items' do
-          click_link 'Type'
-        end
+        page.find_test_selector("op-admin-types--button-new", text: "Type").click
       end
 
       def click_edit(type)
@@ -64,17 +62,17 @@ module Pages
       end
 
       def delete(type)
-        within_row(type) do
-          find('.icon-delete').click
+        accept_alert do
+          within_row(type) do
+            find(".icon-delete").click
+          end
         end
-
-        accept_alert_dialog!
       end
 
       private
 
       def within_row(type)
-        row = page.find('table tr', text: canonical_name(type))
+        row = page.find("table tr", text: canonical_name(type))
 
         within row do
           yield row
@@ -83,10 +81,6 @@ module Pages
 
       def canonical_name(type)
         type.respond_to?(:name) ? type.name : type
-      end
-
-      def notification_type
-        :rails
       end
     end
   end

@@ -1,4 +1,7 @@
 es:
+  plugin_openproject_webhooks:
+    name: "Webhooks de OpenProject"
+    description: "Proporciona una API plug-in para soportar webhooks de OpenProject para una mejor integración de terceros."
   activerecord:
     attributes:
       webhooks/webhook:
@@ -27,18 +30,22 @@ es:
       events:
         created: "Creado"
         updated: "Actualizado"
+      explanation:
+        text: >
+          Cuando se produzcan eventos como la creación de un paquete de trabajo o la actualización de un proyecto, OpenProject enviará una solicitud POST a los puntos de conexión web configurados. Con frecuencia, el evento se enviará después de que haya pasado el %{link}.
+        link: período de agregación configurado
       status:
         enabled: 'El webhook está habilitado'
         disabled: 'El webhook está deshabilitado'
         enabled_text: 'El webhook emitirá cargas para los eventos definidos a continuación.'
         disabled_text: 'Haga clic en el botón Editar para activar el webhook.'
       deliveries:
-        no_results_table: No se han realizado entregas para este webhook.
+        no_results_table: No se han realizado entregas para este webhook en los últimos días.
         title: 'Entregas recientes'
         time: 'Hora de entrega'
       form:
         introduction: >
-          Envíe una solicitud POST a la URL de carga siguiente para cualquier evento en el proyecto al que se haya suscrito. La carga se corresponderá con la representación de APIv3 del objeto que se vaya a modificar.
+          Envíe una solicitud POST a la URL de carga siguiente para cualquier evento en el proyecto al que está suscrito. La carga corresponderá con la representación APIv3 del objeto a modificar.
         apiv3_doc_url: Para obtener más información, visite la documentación de la API
         description:
           placeholder: 'Descripción opcional del webhook.'

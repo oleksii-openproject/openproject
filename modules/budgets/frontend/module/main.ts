@@ -1,6 +1,6 @@
 // -- copyright
 // OpenProject is an open source project management software.
-// Copyright (C) 2012-2020 the OpenProject GmbH
+// Copyright (C) the OpenProject GmbH
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License version 3.
@@ -22,49 +22,37 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 //
-// See docs/COPYRIGHT.rdoc for more details.
+// See COPYRIGHT and LICENSE files for more details.
 
-import {Injector, NgModule} from '@angular/core';
-import {OpenProjectPluginContext} from 'core-app/modules/plugins/plugin-context';
-import {BudgetResource} from './hal/resources/budget-resource';
-import {multiInput} from 'reactivestates';
-import {CostSubformAugmentService} from "./augment/cost-subform.augment.service";
-import {PlannedCostsFormAugment} from "core-app/modules/plugins/linked/budgets/augment/planned-costs-form";
-import {CostBudgetSubformAugmentService} from "core-app/modules/plugins/linked/budgets/augment/cost-budget-subform.augment.service";
+import { Injector, NgModule } from '@angular/core';
+import { OpenProjectPluginContext } from 'core-app/features/plugins/plugin-context';
+import { multiInput } from '@openproject/reactivestates';
+import { PlannedCostsFormAugment } from 'core-app/features/plugins/linked/budgets/augment/planned-costs-form';
+import { CostSubformAugmentService } from './augment/cost-subform.augment.service';
+import { BudgetResource } from './hal/resources/budget-resource';
 
 export function initializeCostsPlugin(injector:Injector) {
   window.OpenProject.getPluginContext().then((pluginContext:OpenProjectPluginContext) => {
     pluginContext.services.editField.extendFieldType('select', ['Budget']);
 
-    let displayFieldService = pluginContext.services.displayField;
+    const displayFieldService = pluginContext.services.displayField;
     displayFieldService.extendFieldType('resource', ['Budget']);
 
-    let halResourceService = pluginContext.services.halResource;
-    halResourceService.registerResource('Budget', {cls: BudgetResource});
+    const halResourceService = pluginContext.services.halResource;
+    halResourceService.registerResource('Budget', { cls: BudgetResource });
 
-    let states = pluginContext.services.states;
+    const { states } = pluginContext.services;
     states.add('budgets', multiInput<BudgetResource>());
 
     // Augment previous cost-subforms
     new CostSubformAugmentService();
     PlannedCostsFormAugment.listen();
-
-    const budgetSubform = injector.get(CostBudgetSubformAugmentService);
-    budgetSubform.listen();
   });
 }
 
-
-@NgModule({
-  providers: [
-    CostBudgetSubformAugmentService,
-  ],
-})
+@NgModule({})
 export class PluginModule {
   constructor(injector:Injector) {
     initializeCostsPlugin(injector);
   }
 }
-
-
-

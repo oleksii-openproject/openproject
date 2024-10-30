@@ -1,10 +1,10 @@
 #-- copyright
 #OpenProject is an open source project management software.
-#Copyright (C) 2012-2020 the OpenProject GmbH
+#Copyright (C) the OpenProject GmbH
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License version 3.
 #OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-#Copyright (C) 2006-2017 Jean-Philippe Lang
+#Copyright (C) 2006-2013 Jean-Philippe Lang
 #Copyright (C) 2010-2013 the ChiliProject Team
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License
@@ -17,9 +17,11 @@
 #You should have received a copy of the GNU General Public License
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-#See docs/COPYRIGHT.rdoc for more details.
+#See COPYRIGHT and LICENSE files for more details.
 #++
 sv:
+  plugin_budgets_engine:
+    name: 'Budget'
   activerecord:
     attributes:
       budget:
@@ -27,13 +29,11 @@ sv:
         available: "Tillgängliga"
         budget: "Planerade"
         budget_ratio: "Spenderade (förhållande)"
-        created_on: "Skapat den"
         description: "Beskrivning"
         spent: "Spenderat"
         status: "Status"
         subject: "Ämne"
         type: "Kostnadstyp"
-        updated_on: "Uppdaterat den"
         labor_budget: "Planerade arbetskostnader"
         material_budget: "Planerade enhetskostnader"
       work_package:
@@ -41,6 +41,9 @@ sv:
     models:
       budget: "Budget"
       material_budget_item: "Enhet"
+  activity:
+    filter:
+      budget: "Budget"
   attributes:
     budget: "Budget"
   button_add_budget_item: "Lägg till planerade kostnader"
@@ -62,11 +65,14 @@ sv:
   label_budget_plural: "Budgetar"
   label_budget_id: "Budget #%{id}"
   label_deliverable: "Budget"
-  label_example_placeholder: 'e.g., %{decimal}'
+  label_example_placeholder: 't.ex., %{decimal}'
   label_view_all_budgets: "Visa alla budgetar"
   label_yes: "Ja"
-  notice_budget_conflict: "Arbetspaketen måste tillhöra samma projekt."
+  notice_budget_conflict: "Work packages must be of the same project."
   notice_no_budgets_available: "Inga budgetar tillgängliga."
   permission_edit_budgets: "Redigera budgetar"
   permission_view_budgets: "Visa budgetar"
   project_module_budgets: "Budgetar"
+  text_budget_reassign_to: "Omfördela dessa till denna budget:"
+  text_budget_delete: "Ta bort budgeten från alla arbetspaket"
+  text_budget_destroy_assigned_wp: "Det finns %{count} arbetspaket tilldelade till denna budget. Vad vill du göra?"

@@ -1,14 +1,12 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -25,31 +23,37 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module Projects
   class ArchiveService < ::BaseServices::BaseContracted
     include Contracted
+    prepend Projects::Concerns::UpdateDemoData
 
     def initialize(user:, model:, contract_class: Projects::ArchiveContract)
-      super(user: user, contract_class: contract_class)
+      super(user:, contract_class:)
       self.model = model
     end
 
     private
 
     def persist(service_call)
-      archive_project(model) and model.children.each do |child|
-        archive_project(child)
+      archive_project(model) and model.active_subprojects.each do |subproject|
+        archive_project(subproject)
       end
 
       service_call
     end
 
+    def after_perform(service_call)
+      OpenProject::Notifications.send(OpenProject::Events::PROJECT_ARCHIVED, project: model)
+      service_call
+    end
+
     def archive_project(project)
-      # we do not care for validations
-      project.update_column(:active, false)
+      # We do not care for validations but want the timestamps to be updated
+      project.update_attribute(:active, false)
     end
   end
 end

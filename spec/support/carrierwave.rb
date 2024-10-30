@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module MockCarrierwave
@@ -33,22 +33,22 @@ module MockCarrierwave
     Fog.mock!
     Fog.credentials = credentials
 
-    CarrierWave::Configuration.configure_fog! directory: bucket, credentials: credentials
+    CarrierWave::Configuration.configure_fog!(directory: bucket, credentials:)
 
     connection = Fog::Storage.new provider: credentials[:provider]
     connection.directories.create key: bucket
   end
 
   def bucket
-    'test-bucket'
+    "test-bucket"
   end
 
   def credentials
     {
-      provider: 'AWS',
-      aws_access_key_id: 'someaccesskeyid',
-      aws_secret_access_key: 'someprivateaccesskey',
-      region: 'us-east-1'
+      provider: "AWS",
+      aws_access_key_id: "someaccesskeyid",
+      aws_secret_access_key: "someprivateaccesskey",
+      region: "us-east-1"
     }
   end
 end

@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,104 +23,111 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'spec_helper'
+require "spec_helper"
 
-describe ::API::Decorators::LinkObject do
-  include ::API::V3::Utilities::PathHelper
+RSpec.describe API::Decorators::LinkObject do
+  include API::V3::Utilities::PathHelper
 
-  let(:represented) { Hashie::Mash.new }
+  let(:represented) { API::ParserStruct.new }
 
-  context 'minimal constructor call' do
+  context "minimal constructor call" do
     let(:representer) { described_class.new(represented, property_name: :foo) }
 
     before do
       represented.foo_id = 1
-      allow(api_v3_paths).to receive(:foo) { |id| "/api/v3/foos/#{id}" }
+      without_partial_double_verification do
+        allow(api_v3_paths).to receive(:foo) { |id| "/api/v3/foos/#{id}" }
+      end
     end
 
-    describe 'generation' do
+    describe "generation" do
       subject { representer.to_json }
 
-      it { is_expected.to be_json_eql('/api/v3/foos/1'.to_json).at_path('href') }
+      it { is_expected.to be_json_eql("/api/v3/foos/1".to_json).at_path("href") }
     end
 
-    describe 'parsing' do
+    describe "parsing" do
       subject { represented }
 
-      let(:parsed_hash) {
+      let(:parsed_hash) do
         {
-          'href' => '/api/v3/foos/42'
+          "href" => "/api/v3/foos/42"
         }
-      }
-
-      it 'parses the id from the URL' do
-        representer.from_hash parsed_hash
-        expect(subject.foo_id).to eql('42')
       end
 
-      context 'wrong namespace' do
-        let(:parsed_hash) {
-          {
-            'href' => '/api/v3/bars/42'
-          }
-        }
+      it "parses the id from the URL" do
+        representer.from_hash parsed_hash
+        expect(subject.foo_id).to eql("42")
+      end
 
-        it 'throws an error' do
+      context "wrong namespace" do
+        let(:parsed_hash) do
+          {
+            "href" => "/api/v3/bars/42"
+          }
+        end
+
+        it "throws an error" do
           expect { representer.from_hash parsed_hash }.to raise_error(
-            ::API::Errors::InvalidResourceLink)
+            API::Errors::InvalidResourceLink
+          )
         end
       end
     end
   end
 
-  context 'full constructor call' do
-    let(:representer) {
+  context "full constructor call" do
+    let(:representer) do
       described_class.new(represented,
                           property_name: :foo,
                           path: :foo_path,
-                          namespace: 'fuhs',
+                          namespace: "fuhs",
                           getter: :getter,
-                          setter: :'setter=')
-    }
+                          setter: :"setter=")
+    end
 
     before do
       represented.getter = 1
-      allow(api_v3_paths).to receive(:foo_path) { |id| "/api/v3/fuhs/#{id}" }
+
+      without_partial_double_verification do
+        allow(api_v3_paths).to receive(:foo_path) { |id| "/api/v3/fuhs/#{id}" }
+      end
     end
 
-    describe 'generation' do
+    describe "generation" do
       subject { representer.to_json }
 
-      it { is_expected.to be_json_eql('/api/v3/fuhs/1'.to_json).at_path('href') }
+      it { is_expected.to be_json_eql("/api/v3/fuhs/1".to_json).at_path("href") }
     end
 
-    describe 'parsing' do
+    describe "parsing" do
       subject { represented }
 
-      let(:parsed_hash) {
+      let(:parsed_hash) do
         {
-          'href' => '/api/v3/fuhs/42'
+          "href" => "/api/v3/fuhs/42"
         }
-      }
-
-      it 'parses the id from the URL' do
-        representer.from_hash parsed_hash
-        expect(subject.setter).to eql('42')
       end
 
-      context 'wrong namespace' do
-        let(:parsed_hash) {
-          {
-            'href' => '/api/v3/foos/42'
-          }
-        }
+      it "parses the id from the URL" do
+        representer.from_hash parsed_hash
+        expect(subject.setter).to eql("42")
+      end
 
-        it 'throws an error' do
+      context "wrong namespace" do
+        let(:parsed_hash) do
+          {
+            "href" => "/api/v3/foos/42"
+          }
+        end
+
+        it "throws an error" do
           expect { representer.from_hash parsed_hash }.to raise_error(
-                                                            ::API::Errors::InvalidResourceLink)
+            API::Errors::InvalidResourceLink
+          )
         end
       end
     end

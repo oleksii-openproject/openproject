@@ -1,14 +1,12 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -25,11 +23,11 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'roar/decorator'
-require 'roar/json/hal'
+require "roar/decorator"
+require "roar/json/hal"
 
 module API
   module Decorators
@@ -43,6 +41,7 @@ module API
                      name:,
                      value_representer:,
                      link_factory:,
+                     location: :link,
                      required: true,
                      has_default: false,
                      writable: true,
@@ -53,13 +52,14 @@ module API
         @link_factory = link_factory
         @allowed_values_getter = allowed_values_getter
 
-        super(type: type,
-              name: name,
-              required: required,
-              has_default: has_default,
-              writable: writable,
-              attribute_group: attribute_group,
-              current_user: current_user)
+        super(type:,
+              name:,
+              required:,
+              has_default:,
+              writable:,
+              attribute_group:,
+              location:,
+              current_user:)
       end
 
       links :allowedValues do
@@ -93,7 +93,7 @@ module API
                           value_representer
                         end
 
-          representer.new(value, current_user: current_user)
+          representer.create(value, current_user:)
         end
       end
     end

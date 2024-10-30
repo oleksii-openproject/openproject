@@ -3,7 +3,6 @@ sidebar_navigation:
   title: Time and costs
   priority: 790
 description: Time tracking and cost reporting in OpenProject.
-robots: index, follow
 keywords: Time tracking, cost reporting
 ---
 
@@ -11,23 +10,23 @@ keywords: Time tracking, cost reporting
 
 Time and costs functionality in OpenProject allows keeping track of the resources,  both in terms of labor and budgets. With OpenProject you can always keep control of the time and costs planned for and spent on the projects.
 
-Create budgets, log time and costs on specific work packages and  create time and cost reports based on your needs. Browse through the following sections of this user guide to learn how to do this.
+Create budgets, log time and costs on specific work packages and create time and cost reports based on your needs.
 
-## Overview
+| Topic                                | Content                                     |
+|--------------------------------------|:--------------------------------------------|
+| [Progress tracking](progress-tracking)| How to track progress for work packages     |
+| [Time tracking](time-tracking)       | How to log time to work packages.           |
+| [Cost tracking](cost-tracking)       | How to track unit costs spent in a project. |
+| [Time and cost reporting](reporting) | How to create time and cost reports.        |
 
-| Popular Topics                        | Description                                 |
-| ------------------------------------- | :------------------------------------------ |
-| [Time tracking](time-tracking)       | How to log time to work packages?           |
-| [Cost tracking](cost-tracking)       | How to track unit costs spent in a project? |
-| [Time and cost reporting](reporting) | How to create time and cost reports?        |
-
-## Time tracking, cost tracking  and reporting video tutorial
+## Time tracking, cost tracking and reporting video tutorial
 
 Watch this short video to get a first overview about time and cost reporting in OpenProject.
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/2B_CXZRsZxI" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<video src="https://openproject-docs.s3.eu-central-1.amazonaws.com/videos/OpenProject-Track-Time-and-Costs.mp4" type="video/mp4" controls="" style="width:100%"></video>
+
 ## Frequently asked questions (FAQ)
 
 ### Does OpenProject provide resource management?
 
-Please note that OpenProject currently does not yet support resource management. However, this is scheduled as our main topic for 2020. You can check out our roadmap [here](https://community.openproject.com/projects/openproject/work_packages?query_id=1993)
+Please note that OpenProject currently does not yet support resource management. However, this is scheduled in our [roadmap](https://community.openproject.org/projects/openproject/roadmap) as one of our main topics. Our [use cases](../../use-cases/resource-management/) provide examples for workarounds to support resource management within OpenProject.

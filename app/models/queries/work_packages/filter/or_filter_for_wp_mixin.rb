@@ -1,14 +1,12 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -25,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module Queries::WorkPackages::Filter::OrFilterForWpMixin
@@ -45,16 +43,8 @@ module Queries::WorkPackages::Filter::OrFilterForWpMixin
     @filters.keep_if(&:validate)
   end
 
-  def joins
-    filters.map(&:joins).flatten.compact
-  end
-
-  def includes
-    filters.map(&:includes).flatten.uniq.reject(&:blank?)
-  end
-
   def where
-    filters.map(&:where).join(' OR ')
+    filters.map(&:where).join(" OR ")
   end
 
   def filter_configurations
@@ -64,9 +54,9 @@ module Queries::WorkPackages::Filter::OrFilterForWpMixin
   def create_instances
     filter_configurations.map do |conf|
       conf.filter_class.create!(name: conf.filter_name,
-                                context: context,
+                                context:,
                                 operator: conf.operator,
-                                values: values)
+                                values:)
     end
   end
 

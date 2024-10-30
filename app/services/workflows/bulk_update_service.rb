@@ -1,14 +1,12 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -25,10 +23,10 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-class Workflows::BulkUpdateService < ::BaseServices::Update
+class Workflows::BulkUpdateService < BaseServices::Update
   def initialize(role:, type:)
     @role = role
     @type = type
@@ -60,12 +58,12 @@ class Workflows::BulkUpdateService < ::BaseServices::Update
 
     (status_transitions || {}).each do |status_id, transitions|
       transitions.each do |new_status_id, options|
-        new_workflows << Workflow.new(type: type,
-                                      role: role,
+        new_workflows << Workflow.new(type:,
+                                      role:,
                                       old_status: status_map[status_id.to_i],
                                       new_status: status_map[new_status_id.to_i],
-                                      author: options_include(options, 'author'),
-                                      assignee: options_include(options, 'assignee'))
+                                      author: options_include(options, "author"),
+                                      assignee: options_include(options, "assignee"))
       end
     end
 
@@ -80,20 +78,9 @@ class Workflows::BulkUpdateService < ::BaseServices::Update
     return unless workflows.any?
 
     columns = %w(role_id type_id old_status_id new_status_id author assignee)
-    values = workflows
-             .map { |w| "(#{w.attributes.slice(*columns).values.join(', ')})" }
-             .join(', ')
+    values = workflows.map { |w| w.attributes.slice(*columns) }
 
-    # use Workflow.insert_all in rails 6
-    sql = <<-SQL
-          INSERT
-            INTO #{Workflow.table_name}
-            (#{columns.join(', ')})
-          VALUES
-            #{values}
-    SQL
-
-    Workflow.connection.execute(sql)
+    Workflow.insert_all values
   end
 
   def status_map
@@ -101,6 +88,6 @@ class Workflows::BulkUpdateService < ::BaseServices::Update
   end
 
   def options_include(options, string)
-    options.is_a?(Array) && options.include?(string) && !options.include?('always')
+    options.is_a?(Array) && options.include?(string) && !options.include?("always")
   end
 end

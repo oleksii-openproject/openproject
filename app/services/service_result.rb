@@ -1,14 +1,14 @@
-#-- encoding: UTF-8
+# frozen_string_literal: true
 
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -25,22 +25,58 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 class ServiceResult
+  SUCCESS = true
+  FAILURE = false
+
   attr_accessor :success,
                 :result,
                 :errors,
-                :message_type,
-                :state,
+                :message,
                 :dependent_results
+
+  attr_writer :state
+
+  # Creates a successful ServiceResult.
+  def self.success(errors: nil,
+                   message: nil,
+                   message_type: nil,
+                   state: nil,
+                   dependent_results: [],
+                   result: nil)
+    new(success: SUCCESS,
+        errors:,
+        message:,
+        message_type:,
+        state:,
+        dependent_results:,
+        result:)
+  end
+
+  # Creates a failed ServiceResult.
+  def self.failure(errors: nil,
+                   message: nil,
+                   message_type: nil,
+                   state: nil,
+                   dependent_results: [],
+                   result: nil)
+    new(success: FAILURE,
+        errors:,
+        message:,
+        message_type:,
+        state:,
+        dependent_results:,
+        result:)
+  end
 
   def initialize(success: false,
                  errors: nil,
                  message: nil,
                  message_type: nil,
-                 state: ::Shared::ServiceState.new,
+                 state: nil,
                  dependent_results: [],
                  result: nil)
     self.success = success
@@ -49,6 +85,7 @@ class ServiceResult
 
     initialize_errors(errors)
     @message = message
+    @message_type = message_type
 
     self.dependent_results = dependent_results
   end
@@ -69,18 +106,10 @@ class ServiceResult
   end
 
   ##
-  # Rollback the state if possible
-  def rollback!
-    state.rollback!
-  end
-
-  ##
   # Print messages to flash
   def apply_flash_message!(flash)
-    type = get_message_type
-
-    if message && type
-      flash[type] = message
+    if message
+      flash[message_type] = message
     end
   end
 
@@ -107,7 +136,7 @@ class ServiceResult
   # Collect all present errors for the given result
   # and dependent results.
   #
-  # Returns a map of the service reuslt to the error object
+  # Returns a map of the service result to the error object
   def results_with_errors(include_self: true)
     results =
       if include_self
@@ -118,7 +147,6 @@ class ServiceResult
 
     results.reject { |call| call.errors.empty? }
   end
-
 
   def self_and_dependent
     [self] + dependent_results
@@ -134,13 +162,13 @@ class ServiceResult
     self.dependent_results += inner_results
   end
 
-  def on_success
-    yield(self) if success?
+  def on_success(&)
+    tap(&) if success?
     self
   end
 
-  def on_failure
-    yield(self) if failure?
+  def on_failure(&)
+    tap(&) if failure?
     self
   end
 
@@ -165,6 +193,24 @@ class ServiceResult
     end
   end
 
+  def deconstruct_keys(keys)
+    if keys
+      value = {}
+      keys.each do |key|
+        case key
+        when :success then value[key] = success?
+        when :failure then value[key] = failure?
+        when :result then value[key] = result
+        when :errors then value[key] = errors
+        end
+      end
+
+      value
+    else
+      { success: success?, failure: failure?, result:, errors: }
+    end
+  end
+
   def message
     if @message
       @message
@@ -173,23 +219,25 @@ class ServiceResult
     end
   end
 
+  def state
+    @state ||= ::Shared::ServiceState.build
+  end
+
   private
 
   def initialize_errors(errors)
-    self.errors =
-      if errors
-        errors
-      elsif result.respond_to?(:errors)
-        result.errors
-      else
-        ActiveModel::Errors.new(self)
-      end
+    self.errors = errors || new_errors_with_result
   end
 
+  def new_errors_with_result
+    ActiveModel::Errors.new(self).tap do |errors|
+      errors.merge!(result) if result.try(:errors).present?
+    end
+  end
 
-  def get_message_type
-    if message_type.present?
-      message_type.to_sym
+  def message_type
+    if @message_type
+      @message_type.to_sym
     elsif success?
       :notice
     else
@@ -202,7 +250,7 @@ class ServiceResult
   end
 
   def merge_errors!(other)
-    self.errors.merge! other.errors
+    errors.merge! other.errors
   end
 
   def merge_dependent!(other)

@@ -1,25 +1,25 @@
-$hierarchy-span-width: 25px
-$tree-menu-item-height: 30px
+$tree-menu-item-height: 40px
 
 #main-menu ul ul.main-menu--children ul.pages-hierarchy,
 div.wiki ul.pages-hierarchy,
 .pages-hierarchy
-  line-height: $tree-menu-item-height
   margin-left: 0
   padding-left: 0
+  overflow-x: hidden
 
   .tree-menu--title
     display: inline-block
-    width: calc(100% - #{$hierarchy-span-width})
-    vertical-align: bottom
+    width: inherit
+    vertical-align: middle
     height: $tree-menu-item-height
     line-height: $tree-menu-item-height
+    text-decoration: none !important
+
+    &.-parent-node
+      font-weight: var(--base-text-weight-bold)
 
   .tree-menu--hierarchy-span
     display: inline-block
-    width: $hierarchy-span-width
-    padding-left: 8px
-    line-height: $tree-menu-item-height
 
   .tree-menu--hierarchy-indicator-icon,
   .tree-menu--leaf-indicator
@@ -30,9 +30,10 @@ div.wiki ul.pages-hierarchy,
   // default: open arrow down
   // collapsed: right arrow
   .tree-menu--hierarchy-indicator
-    color: var(--content-link-color)
+    color: var(--accent-color)
     height: $tree-menu-item-height
     line-height: $tree-menu-item-height
+    text-decoration: none !important
 
     &:hover
       text-decoration: none
@@ -53,10 +54,11 @@ div.wiki ul.pages-hierarchy,
     @include icon-common
     @extend .icon-arrow-down1
     font-size: 0.6rem
+    padding-right: 10px
 
   &.-with-hierarchy
     .-with-hierarchy
-      padding-left: 18px
+      padding-left: 22px
 
   .-hierarchy-collapsed
     > .tree-menu--item > .tree-menu--hierarchy-span > .tree-menu--hierarchy-indicator > .tree-menu--hierarchy-indicator-icon
@@ -76,19 +78,13 @@ div.wiki ul.pages-hierarchy,
     width: 100%
     border-radius: 3px
     line-height: $tree-menu-item-height
-    height: $tree-menu-item-height
+    padding: 0 10px 0 0
+    white-space: nowrap
     &.-selected
-      background: var(--drop-down-selected-bg-color)
+      background: var(--main-menu-bg-hover-background)
       .tree-menu--title
-        color: var(--drop-down-selected-font-color)
+        color: var(--main-menu-hover-font-color)
     &:hover
-      background: var(--drop-down-hover-bg-color)
+      background: var(--main-menu-bg-hover-background)
       .tree-menu--title
-        color: var(--drop-down-hover-font-color)
-
-
-
-
-
-
-
+        color: var(--main-menu-hover-font-color)

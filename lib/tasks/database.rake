@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,12 +23,12 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-namespace 'db:sessions' do
-  desc 'Expire old sessions from the sessions table'
-  task :expire, [:days_ago] => [:environment, 'db:load_config'] do |_task, args|
+namespace "db:sessions" do
+  desc "Expire old sessions from the sessions table"
+  task :expire, [:days_ago] => [:environment, "db:load_config"] do |_task, args|
     # sessions expire after 30 days of inactivity by default
     days_ago = Integer(args[:days_ago] || 30)
     expiration_time = Date.today - days_ago.days
@@ -38,15 +38,29 @@ namespace 'db:sessions' do
   end
 end
 
-namespace 'openproject' do
-  namespace 'db' do
-    desc 'Ensure database version compatibility'
-    task ensure_database_compatibility: ['environment', 'db:load_config'] do
+namespace "openproject" do
+  namespace "db" do
+    desc "Ensure database version compatibility"
+    task check_connection: %w[environment db:load_config] do
+      ActiveRecord::Base.establish_connection
+      ActiveRecord::Base.connection.execute "SELECT 1;"
+      unless ActiveRecord::Base.connected?
+        puts "Database connection failed"
+        Kernel.exit 1
+      end
+    rescue StandardError => e
+      puts "Database connection failed with error: #{e}"
+      Kernel.exit 1
+    end
+
+    desc "Ensure database version compatibility"
+    task ensure_database_compatibility: %w[openproject:db:check_connection] do
       ##
       # Ensure database server version is compatible
       OpenProject::Database::check!
     rescue OpenProject::Database::UnsupportedDatabaseError => e
       warn <<~MESSAGE
+
         ---------------------------------------------------
         DATABASE UNSUPPORTED ERROR
 
@@ -59,6 +73,7 @@ namespace 'openproject' do
       Kernel.exit(1)
     rescue OpenProject::Database::InsufficientVersionError => e
       warn <<~MESSAGE
+
         ---------------------------------------------------
         DATABASE INCOMPATIBILITY ERROR
 
@@ -69,11 +84,25 @@ namespace 'openproject' do
         ---------------------------------------------------
       MESSAGE
       Kernel.exit(1)
+    rescue OpenProject::Database::DeprecatedVersionWarning => e
+      warn <<~MESSAGE
+
+        ---------------------------------------------------
+        DATABASE DEPRECATION WARNING
+
+        #{e.message}
+        ---------------------------------------------------
+      MESSAGE
     rescue ActiveRecord::ActiveRecordError => e
       warn "Failed to perform postgres version check: #{e} - #{e.message}. #{override_msg}"
       raise e
+    end
+
+    task remove_statement_timeout: %w[openproject:db:check_connection] do
+      ActiveRecord::Base.connection.execute("SET statement_timeout = 0;")
     end
   end
 end
 
 Rake::Task["db:migrate"].enhance ["openproject:db:ensure_database_compatibility"]
+Rake::Task["db:migrate"].enhance ["openproject:db:remove_statement_timeout"]

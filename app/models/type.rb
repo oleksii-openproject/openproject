@@ -1,13 +1,12 @@
-#-- encoding: UTF-8
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -24,16 +23,16 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-class ::Type < ApplicationRecord
-  extend Pagination::Model
-
+class Type < ApplicationRecord
   # Work Package attributes for this type
-  # and constraints to specifc attributes (by plugins).
+  # and constraints to specific attributes (by plugins).
   include ::Type::Attributes
   include ::Type::AttributeGroups
+
+  include ::Scopes::Scoped
 
   before_destroy :check_integrity
 
@@ -47,13 +46,13 @@ class ::Type < ApplicationRecord
   has_and_belongs_to_many :projects
 
   has_and_belongs_to_many :custom_fields,
-                          class_name: 'WorkPackageCustomField',
+                          class_name: "WorkPackageCustomField",
                           join_table: "#{table_name_prefix}custom_fields_types#{table_name_suffix}",
-                          association_foreign_key: 'custom_field_id'
+                          association_foreign_key: "custom_field_id"
 
   belongs_to :color,
-             class_name: 'Color',
-             foreign_key: 'color_id'
+             optional: true,
+             class_name: "Color"
 
   acts_as_list
 
@@ -62,9 +61,11 @@ class ::Type < ApplicationRecord
             uniqueness: { case_sensitive: false },
             length: { maximum: 255 }
 
-  validates_inclusion_of :is_default, :is_milestone, in: [true, false]
+  validates :is_default, :is_milestone, inclusion: { in: [true, false] }
 
-  default_scope { order('position ASC') }
+  scopes :milestone
+
+  default_scope { order("position ASC") }
 
   scope :without_standard, -> {
     where(is_standard: false)
@@ -79,7 +80,7 @@ class ::Type < ApplicationRecord
 
   def self.statuses(types)
     workflow_table, status_table = [Workflow, Status].map(&:arel_table)
-    old_id_subselect, new_id_subselect = [:old_status_id, :new_status_id].map do |foreign_key|
+    old_id_subselect, new_id_subselect = %i[old_status_id new_status_id].map do |foreign_key|
       workflow_table.project(workflow_table[foreign_key]).where(workflow_table[:type_id].in(types))
     end
     Status.where(status_table[:id].in(old_id_subselect).or(status_table[:id].in(new_id_subselect)))

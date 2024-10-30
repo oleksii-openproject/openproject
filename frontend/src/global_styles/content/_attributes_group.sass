@@ -1,12 +1,12 @@
 //-- copyright
 // OpenProject is an open source project management software.
-// Copyright (C) 2012-2020 the OpenProject GmbH
+// Copyright (C) the OpenProject GmbH
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License version 3.
 //
 // OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-// Copyright (C) 2006-2017 Jean-Philippe Lang
+// Copyright (C) 2006-2013 Jean-Philippe Lang
 // Copyright (C) 2010-2013 the ChiliProject Team
 //
 // This program is free software; you can redistribute it and/or
@@ -23,18 +23,17 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 //
-// See docs/COPYRIGHT.rdoc for more details.
+// See COPYRIGHT and LICENSE files for more details.
 //++
 
 .attributes-group
   margin-top: 1.6875rem
   position: relative
 
-
 .attributes-group--header
   @include grid-block
-  margin:  0 0 0.5rem 0
-  border-bottom: 1px solid #ddd
+  margin: 0 0 0.5rem 0
+  border-bottom: 1px solid var(--borderColor-default)
   align-items: flex-end
 
 
@@ -59,15 +58,26 @@
   overflow-y: hidden
 
   .button
-    margin: 0 0 8px 0
+    margin: 0 0 4px 0
+
+.attributes-group--icon-indented-text
+  display: grid
+  margin-top: 1rem
+  grid-template-columns: auto auto 1fr
+  column-gap: 8px
+
 
 // HACK. TODO: Remove H3 element rules in various places.
 .attributes-group--header-text,
 #content h3.attributes-group--header-text
-  font-size: 1rem
-  font-weight: bold
+  font-size: var(--body-font-size)
+  font-weight: var(--base-text-weight-bold)
   text-transform: uppercase
   // properties to reset h3
   margin: 0
   padding: 0
   border: 0
+
+.attributes-group--attributes
+  display: flex
+  flex-direction: column

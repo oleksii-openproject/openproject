@@ -1,6 +1,3 @@
-require_dependency 'token/hashed_token'
-require_dependency 'token/expirable_token'
-
 module TwoFactorAuthentication
   class RememberedAuthToken < ::Token::HashedToken
     include ::Token::ExpirableToken
@@ -25,7 +22,7 @@ module TwoFactorAuthentication
 
     def validate_remember_time
       unless self.class.allow_remember_for_days > 0
-        errors.add :base, 'Invalid remember time'
+        errors.add :base, "Invalid remember time"
       end
     end
 

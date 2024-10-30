@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,27 +23,25 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'spec_helper'
+require "spec_helper"
 
-describe 'wiki child pages', type: :feature, js: true do
+RSpec.describe "wiki child pages", :js do
   let(:project) do
-    FactoryBot.create(:project)
+    create(:project)
   end
   let(:user) do
-    FactoryBot.create :user,
-                      member_in_project: project,
-                      member_through_role: role
+    create(:user, member_with_roles: { project => role })
   end
   let(:role) do
-    FactoryBot.create(:role,
-                      permissions: %i[view_wiki_pages edit_wiki_pages])
+    create(:project_role,
+           permissions: %i[view_wiki_pages edit_wiki_pages])
   end
   let(:parent_page) do
-    FactoryBot.create(:wiki_page_with_content,
-                      wiki: project.wiki)
+    create(:wiki_page,
+           wiki: project.wiki)
   end
   let(:child_page_name) { 'The child page !@#{$%^&*()_},./<>?;\':' }
 
@@ -51,24 +49,25 @@ describe 'wiki child pages', type: :feature, js: true do
     login_as user
   end
 
-  scenario 'adding a childpage' do
+  it "adding a childpage" do
     visit project_wiki_path(project, parent_page.title)
 
-    click_on 'Wiki page'
+    click_on "Wiki page"
 
-    fill_in 'content_page_title', with: child_page_name
+    SeleniumHubWaiter.wait
+    fill_in "page_title", with: child_page_name
 
-    find('.ck-content').set('The child page\'s content')
+    find(".ck-content").set("The child page's content")
 
-    click_button 'Save'
+    click_button "Save"
 
     # hierarchy displayed in the breadcrumb
-    expect(page).to have_selector('#breadcrumb .breadcrumb',
-                                  text: "#{parent_page.title}")
+    expect(page).to have_css("#breadcrumb #{test_selector('op-breadcrumb')}",
+                             text: parent_page.title.to_s)
 
     # hierarchy displayed in the sidebar
-    expect(page).to have_selector('.pages-hierarchy',
-                                  text: "#{parent_page.title}\n#{child_page_name}")
+    expect(page).to have_css(".pages-hierarchy",
+                             text: "#{parent_page.title}\n#{child_page_name}")
 
     # on toc page
     visit index_project_wiki_index_path(project)

@@ -1,10 +1,10 @@
 #-- copyright
 #OpenProject is an open source project management software.
-#Copyright (C) 2012-2020 the OpenProject GmbH
+#Copyright (C) the OpenProject GmbH
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License version 3.
 #OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-#Copyright (C) 2006-2017 Jean-Philippe Lang
+#Copyright (C) 2006-2013 Jean-Philippe Lang
 #Copyright (C) 2010-2013 the ChiliProject Team
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License
@@ -17,10 +17,13 @@
 #You should have received a copy of the GNU General Public License
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-#See docs/COPYRIGHT.rdoc for more details.
+#See COPYRIGHT and LICENSE files for more details.
 #++
 de:
-  button_save_as: "Speichern unter ..."
+  plugin_openproject_reporting:
+    name: "OpenProject Berichterstattung"
+    description: "Dieses Plugin ermöglicht die Erstellung benutzerdefinierter Kostenberichte mit Filtern und Gruppierungen"
+  button_save_report_as: "Speichern unter ..."
   comments: "Kommentar"
   cost_reports_title: "Zeit und Kosten"
   label_cost_report: "Report"
@@ -44,6 +47,7 @@ de:
   label_is_project_with_subprojects: "ist (mit Unterprojekten)"
   label_work_package_attributes: "Attribute am Ticket"
   label_less: "<"
+  label_logged_by_reporting: "Gebucht von"
   label_money: "Geldwert"
   label_month_reporting: "Monat der Buchung"
   label_new_report: "Neue Kostenauswertung"
@@ -60,6 +64,18 @@ de:
   label_units: "Einheiten"
   label_week_reporting: "Woche der Buchung"
   label_year_reporting: "Jahr der Buchung"
+  label_count: "Anzahl"
+  label_filter: "Filter"
+  label_filter_add: "Filter hinzufügen"
+  label_filter_plural: "Filter"
+  label_group_by: "Gruppieren nach"
+  label_group_by_add: "Gruppierung hinzufügen"
+  label_inactive: "«nicht aktiviert»"
+  label_no: "Nein"
+  label_none: "(Keine Angabe)"
+  label_no_reports: "Es gibt noch keine Kostenauswertungen."
+  label_report: "Report"
+  label_yes: "Ja"
   load_query_question: "Der Report wird %{size} Tabellen-Zellen haben, was sehr rechenintensiv sein kann. Wollen Sie dennoch versuchen, den Report durch zu führen?"
   permission_save_cost_reports: "Speichern gemeinsamer Kostenauswertungen"
   permission_save_private_cost_reports: "Speichern persönlicher Kostenauswertungen"
@@ -69,3 +85,10 @@ de:
   units: "Einheiten"
   validation_failure_date: "ist kein gültiges Datum"
   validation_failure_integer: "ist keine ganze Zahl"
+  export:
+    cost_reports:
+      title: "Kostenbericht als XLS-Export"
+  reporting:
+    group_by:
+      selected_columns: "Ausgewählte Spalten"
+      selected_rows: "Ausgewählte Zeilen"

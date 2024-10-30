@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,126 +23,145 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'spec_helper'
+require "spec_helper"
 
-describe 'Project templates', type: :feature, js: true do
-  describe 'making project a template' do
-    let(:project) { FactoryBot.create :project }
-    using_shared_fixtures :admin
+RSpec.describe "Project templates", :js, :with_cuprite,
+               with_good_job_batches: [CopyProjectJob, SendCopyProjectStatusEmailJob] do
+  describe "making project a template" do
+    let(:project) { create(:project) }
+
+    shared_let(:admin) { create(:admin) }
 
     before do
       login_as admin
     end
 
-    it 'can make the project a template from settings' do
-      visit settings_generic_project_path(project)
+    it "can make the project a template from settings" do
+      visit project_settings_general_path(project)
 
       # Make a template
-      find('.button', text: 'Set as template').click
+      find(".button", text: "Set as template").click
+      expect_and_dismiss_flash(message: "Successful update.")
 
-      expect(page).to have_selector('.button', text: 'Remove from templates')
+      expect(page).to have_css(".button", text: "Remove from templates")
       project.reload
       expect(project).to be_templated
 
       # unset template
-      find('.button', text: 'Remove from templates').click
-      expect(page).to have_selector('.button', text: 'Set as template')
+      find(".button", text: "Remove from templates").click
+      expect(page).to have_css(".button", text: "Set as template")
 
       project.reload
       expect(project).not_to be_templated
     end
   end
 
-  describe 'instantiating templates' do
-    let!(:template) {
-      FactoryBot.create(:template_project, name: 'My template', enabled_module_names: %w[wiki work_package_tracking])
-    }
-    let!(:template_status) { FactoryBot.create(:project_status, project: template, explanation: 'source') }
-    let!(:other_project) { FactoryBot.create(:project, name: 'Some other project') }
-    let!(:work_package) { FactoryBot.create :work_package, project: template }
-    let!(:wiki_page) { FactoryBot.create(:wiki_page_with_content, wiki: template.wiki) }
+  describe "instantiating templates" do
+    let!(:template) do
+      create(:template_project,
+             status_code: "on_track",
+             status_explanation: "some explanation",
+             name: "My template",
+             enabled_module_names: %w[wiki work_package_tracking])
+    end
+    let!(:other_project) { create(:project, name: "Some other project") }
+    let!(:work_package) { create(:work_package, project: template) }
+    let!(:wiki_page) { create(:wiki_page, wiki: template.wiki) }
 
-    let!(:role) { FactoryBot.create(:role, permissions: %i[view_project view_work_packages copy_projects add_subprojects add_project]) }
-    let!(:current_user) { FactoryBot.create(:user, member_in_projects: [template, other_project], member_through_role: role) }
+    let!(:role) do
+      create(:project_role, permissions: %i[view_project view_work_packages copy_projects add_subprojects])
+    end
+    let!(:global_permissions) do
+      %i[add_project]
+    end
     let(:status_field_selector) { 'ckeditor-augmented-textarea[textarea-selector="#project_status_explanation"]' }
-    let(:status_description) { ::Components::WysiwygEditor.new status_field_selector }
+    let(:status_description) { Components::WysiwygEditor.new status_field_selector }
 
-    before do
-      login_as current_user
+    let!(:other_user) do
+      create(:user, member_with_roles: { template => role })
     end
 
-    it 'can instantiate the project with the copy permission' do
+    let(:name_field) { FormFields::InputFormField.new :name }
+    let(:template_field) { FormFields::SelectFormField.new :use_template }
+    let(:status_field) { FormFields::SelectFormField.new :status }
+    let(:parent_field) { FormFields::SelectFormField.new :parent }
+
+    current_user do
+      create(:user,
+             member_with_roles: { template => role, other_project => role },
+             global_permissions:)
+    end
+
+    it "can instantiate the project with the copy permission" do
       visit new_project_path
 
-      fill_in 'project[name]', with: 'Foo bar'
+      name_field.set_value "Foo bar"
 
-      # Choosing template reloads the page and sets advanced settings
-      select 'My template', from: 'project-select-template'
+      expect(page)
+        .to have_no_content("COPY OPTIONS")
 
-      # It reloads the page without any warning dialog and keeps the name
-      expect(page).to have_field 'Name', with: 'Foo bar'
-      expect(page).to have_select 'project-select-template', selected: 'My template'
+      template_field.select_option "My template"
+
+      # Only when a template is selected, the options are displayed.
+      # Using this to know when the copy form has been fetched from the backend.
+      expect(page)
+        .to have_content("COPY OPTIONS")
+
+      # It keeps the name
+      name_field.expect_value "Foo bar"
+      template_field.expect_selected "My template"
 
       # Updates the identifier in advanced settings
-      page.find('#advanced-settings').click
-      expect(page).to have_field 'project_identifier', with: 'foo-bar'
-      expect(page).to have_select 'project_status_code', selected: 'On track'
-
-      # Changing the template now causes a dialog
-      select '(none)', from: 'project-select-template'
-      page.driver.browser.switch_to.alert.accept
-
-      # Choosing template reloads the page and sets advanced settings
-      select 'My template', from: 'project-select-template'
-
-      # It reloads the page without any warning dialog and keeps the name
-      expect(page).to have_field 'Name', with: 'Foo bar'
-      expect(page).to have_select 'project-select-template', selected: 'My template'
-
-      # Expend advanced settings
-      page.find('#advanced-settings').click
-      expect(page).to have_field 'project_identifier', with: 'foo-bar'
-      expect(page).to have_select 'project_status_code', selected: 'On track'
+      page.find(".op-fieldset--toggle", text: "ADVANCED SETTINGS").click
+      status_field.expect_selected "ON TRACK"
 
       # Update status to off track
-      select 'Off track', from: 'project_status_code'
-      select other_project.name, from: 'project_parent_id'
+      status_field.select_option "Off track"
+      parent_field.select_option other_project.name
 
-      click_on 'Create'
+      page.find(".op-fieldset--toggle", text: "COPY OPTIONS").click
 
-      expect(page).to have_content I18n.t('project.template.copying')
-      expect(page).to have_content I18n.t('js.job_status.generic_messages.in_queue')
-      expect(page).to have_current_path /\/job_statuses\/[\w-]+/
+      # Now shows the send notifications field.
+      expect(page).to have_css('[data-qa-field-name="sendNotifications"]')
 
-      # Email notification should be sent
-      perform_enqueued_jobs
+      # And allows to deselect copying the members.
+      uncheck I18n.t(:"projects.copy.members")
+
+      page.find("button:not([disabled])", text: "Save").click
+
+      expect(page).to have_content I18n.t(:label_copy_project)
+      expect(page).to have_content I18n.t("job_status_dialog.generic_messages.in_queue")
+
+      # Run background jobs twice: the background job which itself enqueues the mailer job
+      GoodJob.perform_inline
+      2.times { perform_enqueued_jobs }
 
       mail = ActionMailer::Base
         .deliveries
-        .detect { |mail| mail.subject == 'Created project Foo bar' }
+        .detect { |mail| mail.subject == "Created project Foo bar" }
 
       expect(mail).not_to be_nil
 
-      expect(page).to have_current_path '/projects/foo-bar/', wait: 20
+      expect(page).to have_current_path /\/projects\/foo-bar\/?/, wait: 20
 
-      project = Project.find_by identifier: 'foo-bar'
-      expect(project.name).to eq 'Foo bar'
+      project = Project.find_by identifier: "foo-bar"
+      expect(project.name).to eq "Foo bar"
       expect(project).not_to be_templated
-      expect(project.users.first).to eq current_user
+      # Does not include the member excluded from being copied but sets the copying user as member.
+      expect(project.users).to match_array(current_user)
       expect(project.enabled_module_names.sort).to eq(template.enabled_module_names.sort)
 
       wp_source = template.work_packages.first.attributes.except(*%w[id author_id project_id updated_at created_at])
       wp_target = project.work_packages.first.attributes.except(*%w[id author_id project_id updated_at created_at])
-      expect(wp_source).to eq(wp_target)
+      expect(wp_target).to eq(wp_source)
 
       wiki_source = template.wiki.pages.first
       wiki_target = project.wiki.pages.first
       expect(wiki_source.title).to eq(wiki_target.title)
-      expect(wiki_source.content.text).to eq(wiki_target.content.text)
+      expect(wiki_source.text).to eq(wiki_target.text)
     end
   end
 end
-

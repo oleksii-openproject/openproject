@@ -1,13 +1,12 @@
-#-- encoding: UTF-8
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -24,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module API
@@ -34,13 +33,17 @@ module API
         helpers ::AvatarHelper
         helpers ::API::Helpers::AttachmentRenderer
 
-        get '/avatar' do
+        finally do
+          set_cache_headers
+        end
+
+        get "/avatar" do
           cache_seconds = @user == current_user ? nil : avatar_link_expires_in
 
           if (local_avatar = local_avatar?(@user))
-            respond_with_attachment(local_avatar, cache_seconds: cache_seconds)
+            respond_with_attachment(local_avatar, cache_seconds:)
           elsif avatar_manager.gravatar_enabled?
-            set_cache_headers!(cache_seconds) unless cache_seconds.nil?
+            set_cache_headers!(cache_seconds) if cache_seconds
 
             redirect build_gravatar_image_url(@user)
           else

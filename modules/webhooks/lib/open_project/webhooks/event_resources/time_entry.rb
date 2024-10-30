@@ -1,11 +1,11 @@
-require_relative 'base'
+require_relative "base"
 
 module OpenProject::Webhooks::EventResources
   class TimeEntry < Base
     class << self
       def notification_names
         [
-          OpenProject::Events::NEW_TIME_ENTRY_CREATED
+          OpenProject::Events::TIME_ENTRY_CREATED
         ]
       end
 
@@ -14,7 +14,7 @@ module OpenProject::Webhooks::EventResources
       end
 
       def resource_name
-        I18n.t 'webhooks.resources.time_entry.name'
+        I18n.t "webhooks.resources.time_entry.name"
       end
 
       protected

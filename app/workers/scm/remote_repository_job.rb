@@ -1,13 +1,12 @@
-#-- encoding: UTF-8
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -24,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 ##
@@ -35,7 +34,7 @@
 # creation and deletion of repositories BOTH on the database and filesystem.
 # Until then, a synchronous process is more failsafe.
 
-require 'net/http'
+require "net/http"
 
 class SCM::RemoteRepositoryJob < ApplicationJob
   attr_reader :repository
@@ -50,11 +49,11 @@ class SCM::RemoteRepositoryJob < ApplicationJob
   # Submits the request to the configured managed remote as JSON.
   def send_request(request)
     uri = repository.class.managed_remote
-    req = ::Net::HTTP::Post.new(uri, 'Content-Type' => 'application/json')
+    req = ::Net::HTTP::Post.new(uri, "Content-Type" => "application/json")
     req.body = request.to_json
 
     http = Net::HTTP.new(uri.host, uri.port)
-    http.use_ssl = uri.scheme == 'https'
+    http.use_ssl = uri.scheme == "https"
     http.verify_mode = configured_verification
     response = http.request(req)
 
@@ -62,11 +61,10 @@ class SCM::RemoteRepositoryJob < ApplicationJob
 
     unless response.is_a? ::Net::HTTPSuccess
       raise OpenProject::SCM::Exceptions::SCMError.new(
-              I18n.t('repositories.errors.remote_call_failed',
-                     code: response.code,
-                     message: info['message']
-              )
-            )
+        I18n.t("repositories.errors.remote_call_failed",
+               code: response.code,
+               message: info["message"])
+      )
     end
 
     info
@@ -76,8 +74,8 @@ class SCM::RemoteRepositoryJob < ApplicationJob
     JSON.parse(body)
   rescue JSON::JSONError => e
     raise OpenProject::SCM::Exceptions::SCMError.new(
-            I18n.t('repositories.errors.remote_invalid_response')
-          )
+      I18n.t("repositories.errors.remote_invalid_response")
+    )
   end
 
   def repository_request
@@ -91,7 +89,7 @@ class SCM::RemoteRepositoryJob < ApplicationJob
       project: {
         id: project.id,
         name: project.name,
-        identifier: project.identifier,
+        identifier: project.identifier
       }
     }
   end

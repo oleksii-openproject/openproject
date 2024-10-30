@@ -16,8 +16,6 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-require_dependency 'token/base'
-
 module Token
   class HashedToken < Base
     # Allow access to the plain value during initial access / creation of the token
@@ -25,7 +23,7 @@ module Token
 
     class << self
       def create_and_return_value(user)
-        create(user: user).plain_value
+        create(user:).plain_value
       end
 
       ##
@@ -48,7 +46,7 @@ module Token
       # Use a fixed salt for hashing token values.
       # We still want to be able to index the hash value for fast lookups,
       # so we need to determine the hash without knowing the associated user (and thus its salt) first.
-      Digest::SHA256.hexdigest(input + Rails.application.secrets.fetch(:secret_key_base))
+      Digest::SHA256.hexdigest(input + Rails.application.secret_key_base)
     end
     delegate :hash_function, to: :class
 

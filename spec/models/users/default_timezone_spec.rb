@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,23 +23,23 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 require "spec_helper"
 
-describe User, "default time zone" do
-  let(:user) { FactoryBot.create :user }
+RSpec.describe User, "default time zone" do
+  let(:user) { create(:user) }
 
   context "with no system default set" do
-    it "is not set" do
-      expect(user.pref.time_zone).to be_nil
+    it "is still set to Etc/UTC as that will be calculated with internally" do
+      expect(user.pref.time_zone).to eq "Etc/UTC"
     end
   end
 
-  context "with a system default set", with_settings: { user_default_timezone: "Edinburgh" } do
+  context "with a system default set", with_settings: { user_default_timezone: "Europe/London" } do
     it "is set to the default" do
-      expect(user.pref.time_zone).to eq "Edinburgh"
+      expect(user.pref.time_zone).to eq "Europe/London"
     end
   end
 end

@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,317 +23,420 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'spec_helper'
-require File.expand_path('../../support/shared/become_member', __FILE__)
+require "spec_helper"
+require File.expand_path("../support/shared/become_member", __dir__)
 
-describe Project, type: :model do
+RSpec.describe Project do
   include BecomeMember
-  using_shared_fixtures :admin
+  shared_let(:admin) { create(:admin) }
 
   let(:active) { true }
-  let(:project) { FactoryBot.create(:project, active: active) }
-  let(:build_project) { FactoryBot.build_stubbed(:project, active: active) }
-  let(:user) { FactoryBot.create(:user) }
+  let(:project) { create(:project, active:) }
+  let(:build_project) { build_stubbed(:project, active:) }
+  let(:user) { create(:user) }
 
-  describe '#active?' do
-    context 'if active' do
-      it 'is true' do
+  describe "#active?" do
+    context "if active" do
+      it "is true" do
         expect(project).to be_active
       end
     end
 
-    context 'if not active' do
+    context "if not active" do
       let(:active) { false }
 
-      it 'is false' do
+      it "is false" do
         expect(project).not_to be_active
       end
     end
   end
 
-  describe '#archived?' do
-    context 'if active' do
-      it 'is true' do
-        expect(project).not_to be_archived
-      end
+  describe "#archived?" do
+    subject { project.archived? }
+
+    context "if active is true" do
+      let(:active) { true }
+
+      it { is_expected.to be false }
     end
 
-    context 'if not active' do
+    context "if active is false" do
       let(:active) { false }
 
-      it 'is false' do
-        expect(project).to be_archived
-      end
+      it { is_expected.to be true }
     end
   end
 
-  context 'when the wiki module is enabled' do
-    let(:project) { FactoryBot.create(:project, disable_modules: 'wiki') }
+  describe "#being_archived?" do
+    subject { project.being_archived? }
 
-    before :each do
-      project.enabled_module_names = project.enabled_module_names | ['wiki']
+    context "if active is true" do
+      let(:active) { true }
+
+      it { is_expected.to be false }
+    end
+
+    context "if active was true and changes to false (marking as archived)" do
+      let(:active) { true }
+
+      before do
+        project.active = false
+      end
+
+      it { is_expected.to be true }
+    end
+
+    context "if active is false" do
+      let(:active) { false }
+
+      it { is_expected.to be false }
+    end
+
+    context "if active was false and changes to true (marking as active)" do
+      let(:active) { false }
+
+      before do
+        project.active = true
+      end
+
+      it { is_expected.to be false }
+    end
+  end
+
+  context "when the wiki module is enabled" do
+    let(:project) { create(:project, disable_modules: "wiki") }
+
+    before do
+      project.enabled_module_names = project.enabled_module_names | ["wiki"]
       project.save
       project.reload
     end
 
-    it 'creates a wiki' do
+    it "creates a wiki" do
       expect(project.wiki).to be_present
     end
 
-    it 'creates a wiki menu item named like the default start page' do
+    it "creates a wiki menu item named like the default start page" do
       expect(project.wiki.wiki_menu_items).to be_one
       expect(project.wiki.wiki_menu_items.first.title).to eq(project.wiki.start_page)
     end
   end
 
-  describe '#copy_allowed?' do
-    let(:user) { FactoryBot.build_stubbed(:user) }
-    let(:project) { FactoryBot.build_stubbed(:project) }
+  describe "#copy_allowed?" do
+    let(:user) { build_stubbed(:user) }
+    let(:project) { build_stubbed(:project) }
     let(:permission_granted) { true }
 
     before do
-      allow(user)
-        .to receive(:allowed_to?)
-        .with(:copy_projects, project)
-        .and_return(permission_granted)
+      mock_permissions_for(user) do |mock|
+        mock.allow_in_project :copy_projects, project:
+      end
 
       login_as(user)
     end
 
-    context 'with copy project permission' do
-      it 'is true' do
-        expect(project.copy_allowed?).to be_truthy
+    context "with copy project permission" do
+      it "is true" do
+        expect(project).to be_copy_allowed
       end
     end
 
-    context 'without copy project permission' do
-      let(:permission_granted) { false }
+    context "without copy project permission" do
+      before { mock_permissions_for(user, &:forbid_everything) }
 
-      it 'is false' do
-        expect(project.copy_allowed?).to be_falsey
+      it "is false" do
+        expect(project).not_to be_copy_allowed
       end
     end
   end
 
-  describe 'available principles' do
-    let(:user) { FactoryBot.create(:user) }
-    let(:group) { FactoryBot.create(:group) }
-    let(:role) { FactoryBot.create(:role) }
-    let!(:user_member) do
-      FactoryBot.create(:member,
-                        principal: user,
-                        project: project,
-                        roles: [role])
-    end
-    let!(:group_member) do
-      FactoryBot.create(:member,
-                        principal: group,
-                        project: project,
-                        roles: [role])
-    end
+  describe "name" do
+    let(:name) { "     Hello    World   " }
+    let(:project) { described_class.new attributes_for(:project, name:) }
 
-    shared_examples_for 'respecting group assignment settings' do
-      context 'with group assignment' do
-        before { allow(Setting).to receive(:work_package_group_assignment?).and_return(true) }
-
-        it { is_expected.to match_array([user, group]) }
-      end
-
-      context 'w/o group assignment' do
-        before { allow(Setting).to receive(:work_package_group_assignment?).and_return(false) }
-
-        it { is_expected.to match_array([user]) }
+    context "with white spaces in the name" do
+      it "trims the name" do
+        project.save
+        expect(project.name).to eql("Hello World")
       end
     end
 
-    describe 'assignees' do
-      subject { project.possible_assignees }
+    context "when updating the name" do
+      it "persists the update" do
+        project.save
+        project.name = "A new name"
+        project.save
+        project.reload
 
-      it_behaves_like 'respecting group assignment settings'
-    end
-
-    describe 'responsibles' do
-      subject { project.possible_responsibles }
-
-      it_behaves_like 'respecting group assignment settings'
-    end
-  end
-
-  describe 'status' do
-    let(:status) { FactoryBot.build_stubbed(:project_status) }
-    let(:stubbed_project) do
-      FactoryBot.build_stubbed(:project,
-                               status: status)
-    end
-
-    it 'has a status' do
-      expect(stubbed_project.status)
-        .to eql status
-    end
-
-    it 'is destroyed along with the project' do
-      status = project.create_status explanation: 'some description'
-
-      project.destroy!
-
-      expect(Projects::Status.where(id: status.id))
-        .not_to exist
+        expect(project.name).to eql("A new name")
+      end
     end
   end
 
-  describe 'name' do
-    let(:project) { FactoryBot.build_stubbed :project, name: '     Hello    World   '}
-
-    before do
-      project.valid?
-    end
-
-    it 'trims the name' do
-      expect(project.name).to eql('Hello World')
-    end
-  end
-
-  describe '#types_used_by_work_packages' do
-    let(:project) { FactoryBot.create(:project_with_types) }
+  describe "#types_used_by_work_packages" do
+    let(:project) { create(:project_with_types) }
     let(:type) { project.types.first }
-    let(:other_type) { FactoryBot.create(:type) }
-    let(:project_work_package) { FactoryBot.create(:work_package, type: type, project: project) }
-    let(:other_project) { FactoryBot.create(:project, types: [other_type, type]) }
-    let(:other_project_work_package) { FactoryBot.create(:work_package, type: other_type, project: other_project) }
+    let(:other_type) { create(:type) }
+    let(:project_work_package) { create(:work_package, type:, project:) }
+    let(:other_project) { create(:project, types: [other_type, type]) }
+    let(:other_project_work_package) { create(:work_package, type: other_type, project: other_project) }
 
-    it 'returns the type used by a work package of the project' do
+    it "returns the type used by a work package of the project" do
       project_work_package
       other_project_work_package
 
-      expect(project.types_used_by_work_packages).to match_array [project_work_package.type]
+      expect(project.types_used_by_work_packages).to contain_exactly(project_work_package.type)
     end
   end
 
-  context '#rolled_up_versions' do
-    let!(:project) { FactoryBot.create(:project) }
-    let!(:parent_version1) { FactoryBot.create(:version, project: project) }
-    let!(:parent_version2) { FactoryBot.create(:version, project: project) }
+  describe "Views belonging to queries that belong to the project" do
+    let(:query) { create(:query, project:) }
+    let(:view) { create(:view, query:) }
 
-    it 'should include the versions for the current project' do
-      expect(project.rolled_up_versions)
-        .to match_array [parent_version1, parent_version2]
-    end
+    it "destroys the views and queries when project gets destroyed" do
+      view
+      project.destroy
 
-    it 'should include versions for a subproject' do
-      subproject = FactoryBot.create(:project, parent: project)
-      subproject_version = FactoryBot.create(:version, project: subproject)
-
-      project.reload
-
-      expect(project.rolled_up_versions)
-        .to match_array [parent_version1, parent_version2, subproject_version]
-    end
-
-    it 'should include versions for a sub-subproject' do
-      subproject = FactoryBot.create(:project, parent: project)
-      sub_subproject = FactoryBot.create(:project, parent: subproject)
-      sub_subproject_version = FactoryBot.create(:version, project: sub_subproject)
-
-      project.reload
-
-      expect(project.rolled_up_versions)
-        .to match_array [parent_version1, parent_version2, sub_subproject_version]
-    end
-
-    it 'should only check active projects' do
-      subproject = FactoryBot.create(:project, parent: project)
-      FactoryBot.create(:version, project: subproject)
-      subproject.update(active: false)
-
-      project.reload
-
-      expect(subproject)
-        .not_to be_active
-      expect(project.rolled_up_versions)
-        .to match_array [parent_version1, parent_version2]
+      expect { query.reload }.to raise_error ActiveRecord::RecordNotFound
+      expect { view.reload }.to raise_error ActiveRecord::RecordNotFound
     end
   end
 
-  context '#notified_users' do
-    let(:project) { FactoryBot.create(:project) }
-    let(:role) { FactoryBot.create(:role) }
+  describe "#members" do
+    let(:role) { create(:project_role) }
+    let(:active_user) { create(:user) }
+    let!(:active_member) { create(:member, project:, user: active_user, roles: [role]) }
 
-    let(:principal) { raise NotImplementedError }
-    let(:mail_notification) { false }
+    let(:inactive_user) { create(:user, status: Principal.statuses[:locked]) }
+    let!(:inactive_member) { create(:member, project:, user: inactive_user, roles: [role]) }
+
+    it "only includes active members" do
+      expect(project.members)
+        .to eq [active_member]
+    end
+  end
+
+  it_behaves_like "creates an audit trail on destroy" do
+    subject { create(:attachment) }
+  end
+
+  describe "#users" do
+    let(:role) { create(:project_role) }
+    let(:active_user) { create(:user) }
+    let!(:active_member) { create(:member, project:, user: active_user, roles: [role]) }
+
+    let(:inactive_user) { create(:user, status: Principal.statuses[:locked]) }
+    let!(:inactive_member) { create(:member, project:, user: inactive_user, roles: [role]) }
+
+    it "only includes active users" do
+      expect(project.users)
+        .to eq [active_user]
+    end
+  end
+
+  describe "#close_completed_versions" do
+    let!(:completed_version) do
+      create(:version, project:, effective_date: Date.parse("2000-01-01")).tap do |v|
+        create(:work_package, version: v, status: create(:closed_status))
+      end
+    end
+    let!(:ineffective_version) do
+      create(:version, project:, effective_date: Date.current + 1.day).tap do |v|
+        create(:work_package, version: v, status: create(:closed_status))
+      end
+    end
+    let!(:version_with_open_wps) do
+      create(:version, project:, effective_date: Date.parse("2000-01-01")).tap do |v|
+        create(:work_package, version: v)
+      end
+    end
 
     before do
-      FactoryBot.create(:member,
-                        project: project,
-                        principal: principal,
-                        roles: [role],
-                        mail_notification: mail_notification)
+      project.close_completed_versions
     end
 
-    context 'members with selected mail notification' do
-      let(:principal) { FactoryBot.create(:user, mail_notification: 'selected') }
-      let(:mail_notification) { true }
+    it "closes the completed version" do
+      expect(completed_version.reload.status)
+        .to eq "closed"
+    end
 
-      it 'are included' do
-        expect(project.notified_users)
-          .to include(principal)
+    it "keeps the version with the not yet reached date open" do
+      expect(ineffective_version.reload.status)
+        .to eq "open"
+    end
+
+    it "keeps the version with open work packages open" do
+      expect(version_with_open_wps.reload.status)
+        .to eq "open"
+    end
+  end
+
+  describe "hierarchy methods" do
+    shared_let(:root_project) { create(:project) }
+    shared_let(:parent_project) { create(:project, parent: root_project) }
+    shared_let(:child_project1) { create(:project, parent: parent_project) }
+    shared_let(:child_project2) { create(:project, parent: parent_project) }
+
+    describe "#parent" do
+      it "returns the parent" do
+        expect(parent_project.parent)
+          .to eq root_project
       end
     end
 
-    context 'members with unselected mail notification' do
-      let(:principal) { FactoryBot.create(:user, mail_notification: 'selected') }
-      let(:mail_notification) { false }
+    describe "#root" do
+      it "returns the root of the hierarchy" do
+        expect(child_project1.root)
+          .to eq root_project
+      end
+    end
 
-      it 'are not included' do
-        expect(project.notified_users)
+    describe "#ancestors" do
+      it "returns the ancestors of the work package" do
+        expect(child_project1.ancestors)
+          .to eq [root_project, parent_project]
+      end
+
+      it "returns empty array if there are no ancestors" do
+        expect(root_project.ancestors)
           .to be_empty
       end
     end
 
-    context 'members with `all` notification' do
-      let(:principal) { FactoryBot.create(:user, mail_notification: 'all') }
-
-      it 'are included' do
-        expect(project.notified_users)
-          .to include(principal)
+    describe "#descendants" do
+      it "returns the descendants of the work package" do
+        expect(root_project.descendants)
+          .to contain_exactly(parent_project, child_project1, child_project2)
       end
-    end
 
-    context 'members with `none` mail notification' do
-      let(:principal) { FactoryBot.create(:user, mail_notification: 'none') }
-
-      it 'are not included' do
-        expect(project.notified_users)
+      it "returns empty array if there are no descendants" do
+        expect(child_project2.descendants)
           .to be_empty
       end
     end
 
-    context 'members with `only_my_events` mail notification' do
-      let(:principal) { FactoryBot.create(:user, mail_notification: 'only_my_events') }
+    describe "#children" do
+      it "returns the children of the work package" do
+        expect(parent_project.children)
+          .to contain_exactly(child_project1, child_project2)
+      end
 
-      it 'are not included' do
-        expect(project.notified_users)
+      it "returns empty array if there are no descendants" do
+        expect(child_project2.children)
           .to be_empty
       end
     end
+  end
 
-    context 'members with `only_assigned` mail notification' do
-      let(:principal) { FactoryBot.create(:user, mail_notification: 'only_assigned') }
+  describe "#active_subprojects" do
+    subject { root_project.active_subprojects }
 
-      it 'are not included' do
-        expect(project.notified_users)
-          .to be_empty
+    shared_let(:root_project) { create(:project) }
+    shared_let(:parent_project) { create(:project, parent: root_project) }
+    shared_let(:child_project1) { create(:project, parent: parent_project) }
+
+    context "with an archived subproject" do
+      before do
+        child_project1.active = false
+        child_project1.save
+      end
+
+      it { is_expected.to eq [parent_project] }
+    end
+
+    context "with all active subprojects" do
+      it { is_expected.to eq [parent_project, child_project1] }
+    end
+  end
+
+  describe "#rolled_up_types" do
+    let!(:parent) do
+      create(:project, types: [parent_type]).tap do |p|
+        project.update_attribute(:parent, p)
+      end
+    end
+    let!(:child1) { create(:project, parent: project, types: [child1_type, shared_type]) }
+    let!(:child2) { create(:project, parent: project, types: [child2_type], active: false) }
+
+    let!(:unused_type) { create(:type) }
+    let!(:parent_type) { create(:type) }
+    let!(:child1_type) { create(:type) }
+    let!(:child2_type) { create(:type) }
+    let!(:shared_type) { create(:type) }
+
+    let!(:project_type) do
+      create(:type).tap do |t|
+        project.types = [t, shared_type]
       end
     end
 
-    context 'members with `only_owner` mail notification' do
-      let(:principal) { FactoryBot.create(:user, mail_notification: 'only_owner') }
+    it "includes all types of active projects starting from receiver down to the leaves" do
+      project.reload
 
-      it 'are not included' do
-        expect(project.notified_users)
-          .to be_empty
+      expect(project.rolled_up_types)
+        .to eq [child1_type, project_type, shared_type].sort_by(&:position)
+    end
+  end
+
+  describe "#enabled_module_names=", with_settings: { default_projects_modules: %w(work_package_tracking repository) } do
+    context "when assigning a new value" do
+      let(:new_value) { %w(work_package_tracking news) }
+
+      subject do
+        project.enabled_module_names = new_value
+      end
+
+      it "sets the value" do
+        subject
+
+        expect(project.reload.enabled_module_names.sort)
+          .to eql new_value.sort
+      end
+
+      it "keeps already assigned modules intact (same id)" do
+        expect { subject }
+          .not_to change { project.reload.enabled_modules.find { |em| em.name == "work_package_tracking" }.id }
+      end
+    end
+  end
+
+  it_behaves_like "acts_as_favorable included" do
+    let(:instance) { project }
+  end
+
+  it_behaves_like "acts_as_customizable included" do
+    let(:model_instance) { project }
+    let(:custom_field) { create(:string_project_custom_field) }
+  end
+
+  describe "url identifier" do
+    let(:reserved) do
+      Rails.application.routes.routes
+        .map { |route| route.path.spec.to_s }
+        .filter_map { |path| path[%r{^/projects/(\w+)\(\.:format\)$}, 1] }
+        .uniq
+    end
+
+    it "is set from name" do
+      project = described_class.new(name: "foo")
+
+      project.validate
+
+      expect(project.identifier).to eq("foo")
+    end
+
+    it "is not allowed to clash with projects routing" do
+      expect(reserved).not_to be_empty
+
+      reserved.each do |word|
+        project = described_class.new(name: word)
+
+        project.validate
+
+        expect(project.identifier).not_to eq(word)
       end
     end
   end

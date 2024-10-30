@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,31 +23,31 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'spec_helper'
+require "spec_helper"
 
-describe Queries::Queries::QueryQuery, type: :model do
-  let(:user) { FactoryBot.build_stubbed(:user) }
-  let(:instance) { described_class.new(user: user) }
-  let(:base_scope) { Query.visible(to: user).order(id: :desc) }
+RSpec.describe Queries::Queries::QueryQuery do
+  let(:user) { build_stubbed(:user) }
+  let(:instance) { described_class.new(user:) }
+  let(:base_scope) { Query.visible(user).order(id: :desc) }
 
-  context 'without a filter' do
-    describe '#results' do
-      it 'is the same as getting all visible queries' do
+  context "without a filter" do
+    describe "#results" do
+      it "is the same as getting all visible queries" do
         expect(instance.results.to_sql).to eql base_scope.to_sql
       end
     end
   end
 
-  context 'with an updated_at filter' do
+  context "with an updated_at filter" do
     before do
-      instance.where('updated_at', '<>d', ['2018-03-22 20:00:00'])
+      instance.where("updated_at", "<>d", ["2018-03-22 20:00:00"])
     end
 
-    describe '#results' do
-      it 'is the same as handwriting the query' do
+    describe "#results" do
+      it "is the same as handwriting the query" do
         expected = base_scope.merge(Query.where("queries.updated_at >= '2018-03-22 20:00:00'"))
 
         expect(instance.results.to_sql).to eql expected.to_sql
@@ -55,13 +55,13 @@ describe Queries::Queries::QueryQuery, type: :model do
     end
   end
 
-  context 'with a project filter' do
+  context "with a project filter" do
     before do
-      instance.where('project_id', '=', ['1', '2'])
+      instance.where("project_id", "=", ["1", "2"])
     end
 
-    describe '#results' do
-      it 'is the same as handwriting the query' do
+    describe "#results" do
+      it "is the same as handwriting the query" do
         # apparently, strings are accepted to be compared to
         # integers in the postgresql
         expected = base_scope
@@ -71,13 +71,13 @@ describe Queries::Queries::QueryQuery, type: :model do
       end
     end
 
-    describe '#valid?' do
-      it 'is true' do
+    describe "#valid?" do
+      it "is true" do
         expect(instance).to be_valid
       end
 
-      it 'is invalid if the filter is invalid' do
-        instance.where('name', '=', [''])
+      it "is invalid if the filter is invalid" do
+        instance.where("name", "=", [""])
         expect(instance).to be_invalid
       end
     end

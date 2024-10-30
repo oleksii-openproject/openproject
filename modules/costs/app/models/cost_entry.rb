@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,21 +23,22 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 class CostEntry < ApplicationRecord
   belongs_to :project
   belongs_to :work_package
   belongs_to :user
+  belongs_to :logged_by, class_name: "User"
   include ::Costs::DeletedUserFallback
   belongs_to :cost_type
   belongs_to :budget
-  belongs_to :rate, class_name: 'CostRate'
+  belongs_to :rate, class_name: "CostRate"
 
   include ActiveModel::ForbiddenAttributesProtection
 
-  validates_presence_of :work_package_id, :project_id, :user_id, :cost_type_id, :units, :spent_on
+  validates_presence_of :work_package_id, :project_id, :user_id, :logged_by_id, :cost_type_id, :units, :spent_on
   validates_numericality_of :units, allow_nil: false, message: :invalid
   validates_length_of :comments, maximum: 255, allow_nil: true
 
@@ -53,10 +54,13 @@ class CostEntry < ApplicationRecord
   include Entry::SplashedDates
 
   def after_initialize
-    if new_record? && cost_type.nil?
-      if default_cost_type = CostType.default
-        self.cost_type_id = default_cost_type.id
-      end
+    return unless new_record?
+
+    # This belongs in a SetAttributesService, but cost_entries are not yet created as such
+    self.logged_by = User.current
+
+    if cost_type.nil? && default_cost_type = CostType.default
+      self.cost_type_id = default_cost_type.id
     end
   end
 
@@ -97,17 +101,17 @@ class CostEntry < ApplicationRecord
 
   # Returns true if the cost entry can be edited by usr, otherwise false
   def editable_by?(usr)
-    usr.allowed_to?(:edit_cost_entries, project) ||
-      (usr.allowed_to?(:edit_own_cost_entries, project) && user_id == usr.id)
+    usr.allowed_in_project?(:edit_cost_entries, project) ||
+      (usr.allowed_in_project?(:edit_own_cost_entries, project) && user_id == usr.id)
   end
 
   def creatable_by?(usr)
-    usr.allowed_to?(:log_costs, project) ||
-      (usr.allowed_to?(:log_own_costs, project) && user_id == usr.id)
+    usr.allowed_in_project?(:log_costs, project) ||
+      (usr.allowed_in_project?(:log_own_costs, project) && user_id == usr.id)
   end
 
   def costs_visible_by?(usr)
-    usr.allowed_to?(:view_cost_rates, project) ||
+    usr.allowed_in_project?(:view_cost_rates, project) ||
       (usr.id == user_id && !overridden_costs.nil?)
   end
 

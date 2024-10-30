@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,26 +23,26 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'spec_helper'
+require "spec_helper"
 
-describe 'Loggin (with brute force protection)', type: :feature do
-  let(:login) { 'my_user' }
+RSpec.describe "Loggin (with brute force protection)" do
+  let(:login) { "my_user" }
   let(:password) { "PassW0rd!!!" }
   let(:invalid_password) { password[0..-2] }
   let!(:user) do
-    FactoryBot.create(:user,
-                      login: login,
-                      password: password,
-                      password_confirmation: password)
+    create(:user,
+           login:,
+           password:,
+           password_confirmation: password)
   end
 
   def new_login_attempt(login_attempt, password_attempt)
     # The login name already provided is retained
     expect(page)
-      .to have_field 'Username', with: login_attempt
+      .to have_field "Username", with: login_attempt
 
     login_with(login_attempt, password_attempt)
   end
@@ -53,7 +53,7 @@ describe 'Loggin (with brute force protection)', type: :feature do
       .update_all(last_failed_login_on: time)
   end
 
-  it 'blocks login attempts after too many tries for the configured time',
+  it "blocks login attempts after too many tries for the configured time",
      with_settings: { brute_force_block_minutes: 5, brute_force_block_after_failed_logins: 2 } do
     login_with login, invalid_password
 
@@ -93,12 +93,11 @@ describe 'Loggin (with brute force protection)', type: :feature do
 
     # resets the failed login count
     expect(User.where(id: user.id).pluck(:failed_login_count).first)
-      .to eql 0
+      .to be 0
   end
 
-  it 'does not block if brute force is disabled',
+  it "does not block if brute force is disabled",
      with_settings: { brute_force_block_minutes: 5, brute_force_block_after_failed_logins: 0 } do
-
     login_with login, invalid_password
 
     expect(page)

@@ -1,13 +1,12 @@
-#-- encoding: UTF-8
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -24,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 # When included, it adds the ability to rebuild nested sets, thus fixing
@@ -55,9 +54,9 @@ module OpenProject::NestedSet::RebuildPatch
       scope = lambda { |_node| }
       if acts_as_nested_set_options[:scope]
         scope = lambda { |node|
-          scope_column_names.inject('') {|str, column_name|
+          scope_column_names.inject("") do |str, column_name|
             str << "AND #{connection.quote_column_name(column_name)} = #{connection.quote(node.send(column_name.to_sym))} "
-          }
+          end
         }
       end
 
@@ -74,17 +73,17 @@ module OpenProject::NestedSet::RebuildPatch
         children = where(["#{quoted_parent_column_name} = ? #{scope.call(node)}", node])
                    .order([quoted_left_column_name,
                            quoted_right_column_name,
-                           acts_as_nested_set_options[:order]].compact.join(', '))
+                           acts_as_nested_set_options[:order]].compact.join(", "))
 
-        children.each do |n| set_left_and_rights.call(n) end
+        children.each { |n| set_left_and_rights.call(n) }
 
         # set right
         node[right_column_name] = indices[scope.call(node)] += 1
 
-        changes = node.changes.inject({}) { |hash, (attribute, _values)|
+        changes = node.changes.inject({}) do |hash, (attribute, _values)|
           hash[attribute] = node.send(attribute.to_s)
           hash
-        }
+        end
 
         where(id: node.id).update_all(changes) unless changes.empty?
       }
@@ -99,7 +98,7 @@ module OpenProject::NestedSet::RebuildPatch
                      where("#{quoted_parent_column_name} IS NULL")
                      .order([quoted_left_column_name,
                              quoted_right_column_name,
-                             acts_as_nested_set_options[:order]].compact.join(', '))
+                             acts_as_nested_set_options[:order]].compact.join(", "))
                    end
 
       root_nodes.each do |root_node|

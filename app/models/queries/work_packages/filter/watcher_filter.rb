@@ -1,14 +1,12 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -25,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 class Queries::WorkPackages::Filter::WatcherFilter <
@@ -39,7 +37,7 @@ class Queries::WorkPackages::Filter::WatcherFilter <
       # more, e.g. all users could watch issues in public projects,
       # but won't necessarily be shown here
       values = me_allowed_value
-      if User.current.allowed_to?(:view_work_package_watchers, project, global: project.nil?)
+      if view_work_package_watchers_allowed?
         values += principal_loader.user_values
       end
       values
@@ -65,9 +63,17 @@ class Queries::WorkPackages::Filter::WatcherFilter <
 
   private
 
+  def view_work_package_watchers_allowed?
+    if project
+      User.current.allowed_in_project?(:view_work_package_watchers, project)
+    else
+      User.current.allowed_in_any_project?(:view_work_package_watchers)
+    end
+  end
+
   def where_any_watcher
     db_table = Watcher.table_name
-    db_field = 'user_id'
+    db_field = "user_id"
 
     <<-SQL
       #{WorkPackage.table_name}.id #{operator == '=' ? 'IN' : 'NOT IN'}
@@ -88,7 +94,7 @@ class Queries::WorkPackages::Filter::WatcherFilter <
     # filter watchers only in projects the user has the permission to view watchers in
     sql_parts << where_watcher_in_view_watchers_allowed
 
-    sql_parts.join(' OR ')
+    sql_parts.join(" OR ")
   end
 
   def where_self_watcher(user_id)
@@ -118,7 +124,7 @@ class Queries::WorkPackages::Filter::WatcherFilter <
   end
 
   def db_field
-    'user_id'
+    "user_id"
   end
 
   def view_watcher_allowed_scoped

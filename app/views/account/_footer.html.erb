@@ -1,3 +1,8 @@
-<% if footer = registration_footer %>
-  <span class="registration-footer"><%= footer %></span>
-<% end %>
+<div class="spot-action-bar">
+  <div class="spot-action-bar--right">
+    <% if footer = registration_footer %>
+      <span><%= footer %></span>
+    <% end %>
+    <%= styled_button_tag t(:button_create), class: 'button_no-margin -primary -with-icon icon-checkmark spot-action-bar--action' %>
+  </div>
+</div>

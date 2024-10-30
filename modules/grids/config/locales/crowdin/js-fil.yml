@@ -2,12 +2,13 @@ fil:
   js:
     grid:
       add_widget: 'Add widget'
-      remove: 'Remove widget'
+      remove: 'Alisin ang widget'
       configure: 'Configure widget'
       upsale:
-        text: "Some widgets, like the work package graph widget, are only available in the "
-        link: 'enterprise edition.'
+        text: "Some widgets, like the work package graph widget, are only available in the Enterprise edition."
+        link: 'Enterprise edition.'
       widgets:
+        missing_permission: "You don't have the necessary permissions to view this widget."
         custom_text:
           title: 'Custom text'
         documents:
@@ -26,18 +27,21 @@ fil:
         project_description:
           title: 'Project description'
           no_results: "No description has been written yet. One can be provided in the 'Project settings'."
-        project_details:
-          title: 'Project details'
-          no_results: 'No custom fields have been defined for projects.'
         project_status:
           title: 'Estado ng proyekto'
+          not_started: 'Not started'
           on_track: 'On track'
           off_track: 'Off track'
           at_risk: 'At risk'
           not_set: 'Not set'
+          finished: 'Finished'
+          discontinued: 'Discontinued'
         subprojects:
           title: 'Ang mga subproject'
           no_results: 'No subprojects.'
+        project_favorites:
+          title: 'Favorite projects'
+          no_results: 'You currently have no favorite projects. Click on the star icon in the project dashboard to add one to your favorites.'
         time_entries_current_user:
           title: 'My spent time'
           displayed_days: 'Days displayed in the widget:'

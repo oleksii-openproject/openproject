@@ -1,14 +1,12 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -25,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module Grids::Copy
@@ -41,7 +39,7 @@ module Grids::Copy
         new_widget = duplicate_widget widget, new_grid, params
 
         if new_widget && !new_widget.save
-          add_error! new_widget, new_widget.errors
+          add_error! new_widget, new_widget.errors, model_name: widget_model_name(widget)
         end
       end
     end
@@ -56,11 +54,16 @@ module Grids::Copy
             new_widget.options[option] = value
           end
         else
-          add_error! widget, result.errors
+          add_error! widget, result.errors, model_name: widget_model_name(widget)
         end
       end
 
       new_widget if references.all?(&:success?)
+    end
+
+    # Provide a human readable name for the widget
+    def widget_model_name(widget)
+      I18n.t("grids.label_widget_in_grid", grid_name: widget.grid.to_s)
     end
 
     def map_references(widget, params)
@@ -75,7 +78,7 @@ module Grids::Copy
       if mapper
         mapper.call(value, params).map { |id| [option, id] }
       else
-        ServiceResult.new success: true, result: [option, value]
+        ServiceResult.success result: [option, value]
       end
     end
 
@@ -98,25 +101,25 @@ module Grids::Copy
       existing_query_id = state.query_id_lookup[query_id.to_i] if state.query_id_lookup
 
       if existing_query_id
-        ServiceResult.new(result: existing_query_id, success: true)
+        ServiceResult.success(result: existing_query_id)
       else
         duplicate_query(query_id, params).map(&:id)
       end
     end
 
     def map_query_filters(filters, _params)
-      ::Queries::Copy::FiltersMapper
-        .new(state, filters)
-        .map_filters!
+      result = ::Queries::Copy::FiltersMapper
+        .new(state)
+        .map_filters(filters)
 
-      ServiceResult.new success: true, result: filters
+      ServiceResult.success(result:)
     end
 
     def duplicate_query(query_id, params)
       query = Query.find query_id
 
       ::Queries::CopyService
-        .new(user: user, source: query)
+        .new(user:, source: query)
         .with_state(state)
         .call(params)
     end

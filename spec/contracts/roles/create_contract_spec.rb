@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,24 +23,30 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'spec_helper'
-require_relative './shared_contract_examples'
+require "spec_helper"
+require_relative "shared_contract_examples"
 
-describe Roles::CreateContract do
-  it_behaves_like 'roles contract' do
-    let(:role) do
-      Role.new.tap do |r|
+RSpec.describe Roles::CreateContract do
+  it_behaves_like "roles contract" do
+    let(:work_package_role) do
+      build(:work_package_role) do |r|
         r.name = role_name
-        r.assignable = role_assignable
+        r.permissions = role_permissions
+      end
+    end
+
+    let(:role) do
+      build(:project_role) do |r|
+        r.name = role_name
         r.permissions = role_permissions
       end
     end
 
     let(:global_role) do
-      GlobalRole.new.tap do |r|
+      build(:global_role) do |r|
         r.name = role_name
         r.permissions = role_permissions
       end
@@ -48,22 +54,26 @@ describe Roles::CreateContract do
 
     subject(:contract) { described_class.new(role, current_user) }
 
-    describe 'validation' do
-      context 'with the type set manually' do
+    describe "validation" do
+      context "with the type set manually" do
         before do
-          role.type = 'GlobalRole'
+          role.type = "GlobalRole"
         end
 
-        it_behaves_like 'is valid'
+        it_behaves_like "is valid"
       end
 
-      context 'with the type set manually to something other than Role or GlobalRole' do
+      context "with the type set manually to something other than Role or GlobalRole" do
         before do
-          role.type = 'MyRole'
+          role.type = "MyRole"
         end
 
-        it 'is invalid' do
-          expect_valid(false, type: %i(inclusion))
+        it "is invalid" do
+          # The inclusion is in here twice because:
+          # * The contract validates the type (to check that only GlobalRole and ProjectRole are created)
+          # * The model validates the type (to check that only Role subclasses are created)
+          # This should not cause an issue for users so we disregard this imperfect duplication.
+          expect_valid(false, type: %i(inclusion inclusion))
         end
       end
     end

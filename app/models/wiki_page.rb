@@ -1,14 +1,12 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -25,13 +23,14 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 class WikiPage < ApplicationRecord
   belongs_to :wiki, touch: true
   has_one :project, through: :wiki
-  has_one :content, class_name: 'WikiContent', foreign_key: 'page_id', dependent: :destroy
+  belongs_to :author, class_name: 'User'
+
   acts_as_attachable delete_permission: :delete_wiki_pages_attachments
   acts_as_tree dependent: :nullify, order: 'title'
 
@@ -39,23 +38,33 @@ class WikiPage < ApplicationRecord
   acts_as_url :title,
               url_attribute: :slug,
               scope: :wiki_id, # Unique slugs per WIKI
-              sync_url: true # Keep slug updated on #rename
+              sync_url: true, # Keep slug updated on #rename
+              locale: :en,
+              adapter: OpenProject::ActsAsUrl::Adapter::OpActiveRecord # use a custom adapter able to handle edge cases
 
   acts_as_watchable
   acts_as_event title: Proc.new { |o| "#{Wiki.model_name.human}: #{o.title}" },
                 description: :text,
-                datetime: :created_on,
                 url: Proc.new { |o| { controller: '/wiki', action: 'show', project_id: o.wiki.project, id: o.title } }
 
-  acts_as_searchable columns: ["#{WikiPage.table_name}.title", "#{WikiContent.table_name}.text"],
-                     include: [{ wiki: :project }, :content],
-                     references: [:wikis, :wiki_contents],
+  acts_as_searchable columns: %W[#{WikiPage.table_name}.title text],
+                     include: [{ wiki: :project }],
+                     references: %i[wikis],
                      project_key: "#{Wiki.table_name}.project_id"
+
+  acts_as_journalized
+
+  register_journal_formatted_fields "text", formatter_key: :wiki_diff
 
   attr_accessor :redirect_existing_links
 
-  validates_presence_of :title
-  validates_associated :content
+  validates :title, presence: true
+  validates :slug,
+            presence: {
+              message: ->(object, _) {
+                I18n.t('activerecord.errors.models.wiki_page.attributes.slug.undeducible', title: object.title)
+              }
+            }
 
   validate :validate_consistency_of_parent_title
   validate :validate_non_circular_dependency
@@ -64,14 +73,8 @@ class WikiPage < ApplicationRecord
   before_save :update_redirects
   before_destroy :remove_redirects
 
-  # eager load information about last updates, without loading text
-  scope :with_updated_on, -> {
-    select("#{WikiPage.table_name}.*, #{WikiContent.table_name}.updated_on")
-      .joins("LEFT JOIN #{WikiContent.table_name} ON #{WikiContent.table_name}.page_id = #{WikiPage.table_name}.id")
-  }
-
   scope :main_pages, ->(wiki_id) {
-    where(wiki_id: wiki_id, parent_id: nil)
+    where(wiki_id:, parent_id: nil)
   }
 
   scope :visible, ->(user = User.current) {
@@ -82,36 +85,52 @@ class WikiPage < ApplicationRecord
 
   after_destroy :delete_wiki_menu_item
 
-  def slug
-    read_attribute(:slug).presence || title.try(:to_url)
+  ##
+  # Create a slug for the given title
+  # We always want to generate english slugs
+  # to avoid using the current user's locale
+  def self.slug(title)
+    title.to_localized_slug(locale: :en)
   end
 
+  # Using a hook will not allow us to retry the call
+  # rubocop:disable Rails/ActiveRecordOverride
+  def destroy
+    super
+  rescue ActiveRecord::StaleObjectError
+    # Due to closure_tree, parent_id might have changed
+    # when destroying all wiki pages
+    reload
+    super
+  end
+  # rubocop:enable Rails/ActiveRecordOverride
+
   def delete_wiki_menu_item
-    menu_item.destroy if menu_item
+    menu_item&.destroy
     # ensure there is a menu item for the wiki
     wiki.create_menu_item_for_start_page if MenuItems::WikiMenuItem.main_items(wiki).empty?
   end
 
   def visible?(user = User.current)
-    !user.nil? && user.allowed_to?(:view_wiki_pages, project)
+    !user.nil? && user.allowed_in_project?(:view_wiki_pages, project)
   end
 
   def title=(value)
-    @previous_title = read_attribute(:title) if @previous_title.blank?
+    @previous_title = self[:title] if @previous_title.blank?
     write_attribute(:title, value)
   end
 
   def update_redirects
     # Manage redirects if the title has changed
-    if !@previous_title.blank? && (@previous_title != title) && !new_record?
+    if @previous_title.present? && (@previous_title != title) && !new_record?
       # Update redirects that point to the old title
-      previous_slug = @previous_title.to_url
-      wiki.redirects.where(redirects_to: previous_slug).each do |r|
+      previous_slug = WikiPage.slug(@previous_title)
+      wiki.redirects.where(redirects_to: previous_slug).find_each do |r|
         r.redirects_to = title
         r.title == r.redirects_to ? r.destroy : r.save
       end
       # Remove redirects for the new title
-      wiki.redirects.where(title: slug).each(&:destroy)
+      wiki.redirects.where(title: slug).find_each(&:destroy)
       # Create a redirect to the new title
       wiki.redirects << WikiRedirect.new(title: previous_slug, redirects_to: slug) unless redirect_existing_links == '0'
 
@@ -129,62 +148,33 @@ class WikiPage < ApplicationRecord
 
   # Remove redirects to this page
   def remove_redirects
-    wiki.redirects.where(redirects_to: slug).each(&:destroy)
-  end
-
-  def content_for_version(version = nil)
-    journal = content.versions.find_by(version: version.to_i) if version
-
-    unless journal.nil? || content.version == journal.version
-      content_version = WikiContent.new journal.data.attributes.except('id', 'journal_id')
-      content_version.updated_on = journal.created_at
-      content_version.journals = content.journals.select { |j| j.version <= version.to_i }
-
-      content_version
-    else
-      content
-    end
+    wiki.redirects.where(redirects_to: slug).find_each(&:destroy)
   end
 
   def diff(version_to = nil, version_from = nil)
-    version_to = version_to ? version_to.to_i : content.version
+    version_to = version_to ? version_to.to_i : version
     version_from = version_from ? version_from.to_i : version_to - 1
     version_to, version_from = version_from, version_to unless version_from < version_to
 
-    content_to = content.versions.find_by(version: version_to)
-    content_from = content.versions.find_by(version: version_from)
+    content_to = journals.find_by(version: version_to)
+    content_from = journals.find_by(version: version_from)
 
-    (content_to && content_from) ? Wikis::Diff.new(content_to, content_from) : nil
+    content_to && content_from ? Wikis::Diff.new(content_to, content_from) : nil
   end
 
-  def annotate(version = nil)
-    version = version ? version.to_i : content.version
-    c = content.versions.find_by(version: version)
+  def version
+    last_journal.nil? ? 0 : last_journal.version
+  end
+
+  def annotate(compare_version = nil)
+    compare_version = compare_version ? compare_version.to_i : version
+    c = journals.find_by(version: compare_version)
     c ? Wikis::Annotate.new(c) : nil
-  end
-
-  def text
-    content.text if content
-  end
-
-  def updated_on
-    unless @updated_on
-      if time = read_attribute(:updated_on)
-        # content updated_on was eager loaded with the page
-        unless time.is_a? Time
-          time = Time.zone.parse(time) rescue nil
-        end
-        @updated_on = time
-      else
-        @updated_on = content && content.updated_on
-      end
-    end
-    @updated_on
   end
 
   # Returns true if usr is allowed to edit the page, otherwise false
   def editable_by?(usr)
-    !protected? || usr.allowed_to?(:protect_wiki_pages, wiki.project)
+    !protected? || usr.allowed_in_project?(:protect_wiki_pages, wiki.project)
   end
 
   def attachments_deletable?(usr = User.current)
@@ -192,7 +182,7 @@ class WikiPage < ApplicationRecord
   end
 
   def parent_title
-    @parent_title || (parent && parent.title)
+    @parent_title || parent&.title
   end
 
   def parent_title=(t)
@@ -217,25 +207,11 @@ class WikiPage < ApplicationRecord
   end
 
   def breadcrumb_title
-    if item = menu_item
-      item.title
-    else
-      title
-    end
+    menu_item&.title || title
   end
 
   def to_param
-    slug || title.to_url
-  end
-
-  def save_with_content
-    if valid? && content.valid?
-      ActiveRecord::Base.transaction do
-        save!
-        content.save!
-      end
-      true
-    end
+    slug || WikiPage.slug(title)
   end
 
   def only_wiki_page?

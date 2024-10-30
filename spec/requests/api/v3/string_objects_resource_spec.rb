@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,34 +23,40 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'spec_helper'
-require 'rack/test'
+require "spec_helper"
+require "rack/test"
 
-describe 'API v3 String Objects resource' do
+RSpec.describe "API v3 String Objects resource" do
   include Rack::Test::Methods
   include API::V3::Utilities::PathHelper
 
-  describe 'string_objects' do
+  describe "string_objects" do
     subject(:response) { last_response }
 
-    let(:path) { api_v3_paths.string_object 'foo bar' }
+    let(:path) { api_v3_paths.string_object "foo bar" }
 
     before do
       get path
     end
 
-    it 'return 410 GONE' do
-      expect(subject.status).to eql(410)
+    context "when login_required", with_settings: { login_required: true } do
+      it_behaves_like "unauthenticated access"
     end
 
-    context 'nil string' do
-      let(:path) { '/api/v3/string_objects?value' }
+    context "when not login_required", with_settings: { login_required: false } do
+      it "return 410 GONE" do
+        expect(subject.status).to be(410)
+      end
 
-      it 'return 410 GONE' do
-        expect(subject.status).to eql(410)
+      context "nil string" do
+        let(:path) { "/api/v3/string_objects?value" }
+
+        it "return 410 GONE" do
+          expect(subject.status).to be(410)
+        end
       end
     end
   end

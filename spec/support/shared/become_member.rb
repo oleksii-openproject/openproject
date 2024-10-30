@@ -1,13 +1,12 @@
-#-- encoding: UTF-8
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -24,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module BecomeMember
@@ -33,15 +32,19 @@ module BecomeMember
   end
 
   module InstanceMethods
-    def become_member_with_permissions(project, user, permissions = [])
-      role = FactoryBot.create :role, permissions: Array(permissions)
+    def become_member_with_permissions(project, user, permissions)
+      role = create(:project_role, permissions: Array(permissions), add_public_permissions: false)
 
-      add_user_to_project! user: user, project: project, role: role
+      add_user_to_project! user:, project:, role:
+    end
+
+    def become_member(project, user)
+      become_member_with_permissions(project, user, [])
     end
 
     def add_user_to_project!(user:, project:, role: nil, permissions: nil)
-      role ||= FactoryBot.create :existing_role, permissions: Array(permissions)
-      FactoryBot.create :member, principal: user, project: project, roles: [role]
+      role ||= create(:existing_project_role, permissions: Array(permissions))
+      create(:member, principal: user, project:, roles: [role])
     end
   end
 end

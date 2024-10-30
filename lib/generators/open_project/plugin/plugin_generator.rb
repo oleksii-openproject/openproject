@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,16 +23,16 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'rails/generators'
+require "rails/generators"
 
-class Generators::OpenProject::Plugin::PluginGenerator < Rails::Generators::Base
-  source_root File.expand_path('../templates', __FILE__)
+class OpenProject::PluginGenerator < Rails::Generators::Base
+  source_root File.expand_path("templates", __dir__)
 
-  argument :plugin_name, type: :string, default: 'openproject-new-plugin'
-  argument :root_folder, type: :string, default: 'vendor/gems'
+  argument :plugin_name, type: :string, default: "openproject-new-plugin"
+  argument :root_folder, type: :string, default: "vendor/gems"
 
   # every public method is run when the generator is invoked
   def generate_plugin
@@ -42,9 +42,7 @@ class Generators::OpenProject::Plugin::PluginGenerator < Rails::Generators::Base
   end
 
   def full_name
-    @full_name ||= begin
-      "openproject-#{plugin_name}"
-    end
+    @full_name ||= "openproject-#{plugin_name}"
   end
 
   private
@@ -59,9 +57,7 @@ class Generators::OpenProject::Plugin::PluginGenerator < Rails::Generators::Base
   end
 
   def plugin_dir
-    @plugin_dir ||= begin
-      directory('', plugin_path, recursive: false)
-    end
+    @plugin_dir ||= directory("", plugin_path, recursive: false)
   end
 
   def lib_path
@@ -69,9 +65,7 @@ class Generators::OpenProject::Plugin::PluginGenerator < Rails::Generators::Base
   end
 
   def lib_dir
-    @lib_dir ||= begin
-      directory('lib', lib_path)
-    end
+    @lib_dir ||= directory("lib", lib_path)
   end
 
   def bin_path
@@ -79,8 +73,6 @@ class Generators::OpenProject::Plugin::PluginGenerator < Rails::Generators::Base
   end
 
   def bin_dir
-    @bin_dir ||= begin
-      directory('bin', bin_path)
-    end
+    @bin_dir ||= directory("bin", bin_path)
   end
 end

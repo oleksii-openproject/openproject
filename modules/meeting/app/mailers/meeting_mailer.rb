@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,60 +23,74 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'icalendar'
-require 'icalendar/tzinfo'
-
 class MeetingMailer < UserMailer
-  def content_for_review(content, content_type, user)
-    @meeting = content.meeting
-    @content_type = content_type
+  def invited(meeting, user, actor)
+    @actor = actor
+    @meeting = meeting
+    @user = user
 
-    open_project_headers 'Project' => @meeting.project.identifier,
-                         'Meeting-Id' => @meeting.id
+    open_project_headers "Project" => @meeting.project.identifier,
+                         "Meeting-Id" => @meeting.id
 
-    with_locale_for(user) do
-      subject = "[#{@meeting.project.name}] #{I18n.t(:"label_#{content_type}")}: #{@meeting.title}"
-      mail to: user.mail, subject: subject
+    with_attached_ics(meeting, user) do
+      subject = "[#{@meeting.project.name}] #{@meeting.title}"
+      mail(to: user, subject:)
     end
   end
 
-  def icalendar_notification(content, content_type, user)
-    @meeting = content.meeting
-    @content_type = content_type
+  def rescheduled(meeting, user, actor, changes:)
+    @actor = actor
+    @user = user
+    @meeting = meeting
+    @changes = changes
 
-    open_project_headers 'Project' => @meeting.project.identifier,
-                         'Meeting-Id' => @meeting.id
-    headers['Content-Type'] = 'text/calendar; charset=utf-8; method="PUBLISH"; name="meeting.ics"'
-    headers['Content-Transfer-Encoding'] = '8bit'
+    open_project_headers "Project" => @meeting.project.identifier,
+                         "Meeting-Id" => @meeting.id
 
-    author = Icalendar::Values::CalAddress.new("mailto:#{@meeting.author.mail}",
-                                               cn: @meeting.author.name)
+    with_attached_ics(meeting, user) do
+      subject = "[#{@meeting.project.name}] "
+      subject << I18n.t("meeting.email.rescheduled.header", title: @meeting.title)
+      mail(to: user, subject:)
+    end
+  end
 
-    # Create a calendar with an event (standard method)
-    entry = ::Icalendar::Calendar.new
+  def icalendar_notification(meeting, user, _actor, **)
+    @meeting = meeting
 
-    with_locale_for(user) do
-      subject = "[#{@meeting.project.name}] #{I18n.t(:"label_#{@content_type}")}: #{@meeting.title}"
-      tzid = @meeting.start_time.zone
-      tz = TZInfo::Timezone.get tzid
-      timezone = tz.ical_timezone @meeting.start_time
-      entry.add_timezone timezone
+    set_headers @meeting
 
-      entry.event do |e|
-        e.dtstart     = Icalendar::Values::DateTime.new @meeting.start_time, 'tzid' => tzid
-        e.dtend       = Icalendar::Values::DateTime.new @meeting.end_time, 'tzid' => tzid
-        e.url         = meeting_url(@meeting)
-        e.summary     = "[#{@meeting.project.name}] #{@meeting.title}"
-        e.description = subject
-        e.uid         = "#{@meeting.id}@#{@meeting.project.identifier}"
-        e.organizer   = author
+    with_attached_ics(meeting, user) do
+      subject = "[#{@meeting.project.name}] #{@meeting.title}"
+      mail(to: user, subject:)
+    end
+  end
+
+  private
+
+  def with_attached_ics(meeting, user)
+    User.execute_as(user) do
+      call = ::Meetings::ICalService
+        .new(user:, meeting: @meeting)
+        .call
+
+      call.on_success do
+        attachments["meeting.ics"] = call.result
+
+        yield
       end
 
-      attachments['meeting.ics'] = entry.to_ical
-      mail(to: user.mail, subject: subject)
+      call.on_failure do
+        Rails.logger.error { "Failed to create ICS attachment for meeting #{meeting.id}: #{call.message}" }
+      end
     end
+  end
+
+  def set_headers(meeting)
+    open_project_headers "Project" => meeting.project.identifier, "Meeting-Id" => meeting.id
+    headers["Content-Type"] = 'text/calendar; charset=utf-8; method="PUBLISH"; name="meeting.ics"'
+    headers["Content-Transfer-Encoding"] = "8bit"
   end
 end

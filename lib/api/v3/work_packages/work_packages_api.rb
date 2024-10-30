@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,10 +23,10 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'api/v3/work_packages/work_package_representer'
+require "api/v3/work_packages/work_package_representer"
 
 module API
   module V3
@@ -42,20 +42,15 @@ module API
           mount ::API::V3::WorkPackages::Schema::WorkPackageSchemasAPI
 
           get do
-            authorize(:view_work_packages, global: true)
-            service = WorkPackageCollectionFromQueryParamsService
-                      .new(current_user)
-                      .call(params)
+            authorize_in_any_work_package(:view_work_packages)
 
-            if service.success?
-              service.result
-            else
-              api_errors = service.errors.full_messages.map do |message|
-                ::API::Errors::InvalidQuery.new(message)
-              end
-
-              raise ::API::Errors::MultipleErrors.create_if_many api_errors
+            call = raise_invalid_query_on_service_failure do
+              WorkPackageCollectionFromQueryParamsService
+                .new(current_user)
+                .call(params)
             end
+
+            call.result
           end
 
           post &::API::V3::Utilities::Endpoints::Create.new(model: WorkPackage,
@@ -66,7 +61,7 @@ module API
                                                             })
                                                        .mount
 
-          route_param :id, type: Integer, desc: 'Work package ID' do
+          route_param :id, type: Integer, desc: "Work package ID" do
             helpers WorkPackagesSharedHelpers
 
             helpers do
@@ -76,12 +71,12 @@ module API
             after_validation do
               @work_package = WorkPackage.find(declared_params[:id])
 
-              authorize(:view_work_packages, context: @work_package.project) do
-                raise API::Errors::NotFound.new
+              authorize_in_work_package(:view_work_packages, work_package: @work_package) do
+                raise API::Errors::NotFound.new model: :work_package
               end
             end
 
-            get &::API::V3::Utilities::Endpoints::Show.new(model: WorkPackage).mount
+            get &API::V3::WorkPackages::ShowEndPoint.new(model: WorkPackage).mount
 
             patch &::API::V3::WorkPackages::UpdateEndPoint.new(model: WorkPackage,
                                                                parse_service: ::API::V3::WorkPackages::ParseParamsService,
@@ -99,6 +94,7 @@ module API
             mount ::API::V3::Attachments::AttachmentsByWorkPackageAPI
             mount ::API::V3::Repositories::RevisionsByWorkPackageAPI
             mount ::API::V3::WorkPackages::UpdateFormAPI
+            mount ::API::V3::WorkPackages::AvailableAssigneesAPI
             mount ::API::V3::WorkPackages::AvailableProjectsOnEditAPI
             mount ::API::V3::WorkPackages::AvailableRelationCandidatesAPI
             mount ::API::V3::WorkPackages::WorkPackageRelationsAPI

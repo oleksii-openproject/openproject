@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,23 +23,23 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'spec_helper'
+require "spec_helper"
 
-describe News::CommentsController, 'routing', type: :routing do
-  context 'news scoped' do
+RSpec.describe News::CommentsController, "routing" do
+  context "news scoped" do
     it {
-      is_expected.to route(:post, '/news/567/comments').to(controller: 'news/comments',
-                                                           action: 'create',
-                                                           news_id: '567')
+      expect(subject).to route(:post, "/news/567/comments").to(controller: "news/comments",
+                                                               action: "create",
+                                                               news_id: "567")
     }
   end
 
   it {
-    is_expected.to route(:delete, '/comments/15').to(controller: 'news/comments',
-                                                     action: 'destroy',
-                                                     id: '15')
+    expect(subject).to route(:delete, "/comments/15").to(controller: "news/comments",
+                                                         action: "destroy",
+                                                         id: "15")
   }
 end

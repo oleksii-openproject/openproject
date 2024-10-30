@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,19 +23,19 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'spec_helper'
+require "spec_helper"
 
-describe 'Work package attribute help texts', type: :feature, js: true do
-  let(:project) { FactoryBot.create :project }
-  let(:work_package) { FactoryBot.create :work_package, project: project }
+RSpec.describe "Work package attribute help texts", :js do
+  let(:project) { create(:project) }
+  let(:work_package) { create(:work_package, project:) }
 
   let(:instance) do
-    FactoryBot.create :work_package_help_text,
-                      attribute_name: :status,
-                      help_text: 'Some **help text** for status.'
+    create(:work_package_help_text,
+           attribute_name: :status,
+           help_text: "Some **help text** for status.")
   end
 
   let(:modal) { Components::AttributeHelpTextModal.new(instance) }
@@ -50,34 +50,30 @@ describe 'Work package attribute help texts', type: :feature, js: true do
     wp_page.ensure_page_loaded
   end
 
-  shared_examples 'allows to view help texts' do
-    it 'shows an indicator for whatever help text exists' do
-      expect(page).to have_selector('.work-package--single-view .help-text--for-status')
+  shared_examples "allows to view help texts" do
+    it "shows an indicator for whatever help text exists" do
+      expect(page).to have_css('.work-package--single-view [data-qa-help-text-for="status"]')
 
       # Open help text modal
       modal.open!
-      expect(modal.modal_container).to have_selector('strong', text: 'help text')
-      modal.expect_edit(admin: user.admin?)
+      expect(modal.modal_container).to have_css("strong", text: "help text")
+      modal.expect_edit(editable: user.allowed_globally?(:edit_attribute_help_texts))
 
       modal.close!
     end
   end
 
-  describe 'as admin' do
-    let(:user) { FactoryBot.create(:admin) }
-    it_behaves_like 'allows to view help texts'
+  describe "as admin" do
+    let(:user) { create(:admin) }
+
+    it_behaves_like "allows to view help texts"
   end
 
-  describe 'as regular user' do
-    let(:view_wps_role) do
-      FactoryBot.create :role, permissions: [:view_work_packages]
-    end
+  describe "as regular user" do
     let(:user) do
-      FactoryBot.create :user,
-                        member_in_project: project,
-                        member_through_role: view_wps_role
+      create(:user, member_with_permissions: { project => [:view_work_packages] })
     end
 
-    it_behaves_like 'allows to view help texts'
+    it_behaves_like "allows to view help texts"
   end
 end

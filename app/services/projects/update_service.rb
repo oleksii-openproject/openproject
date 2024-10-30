@@ -1,14 +1,12 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -25,11 +23,13 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module Projects
   class UpdateService < ::BaseServices::Update
+    prepend Projects::Concerns::UpdateDemoData
+
     private
 
     attr_accessor :memoized_changes
@@ -45,14 +45,15 @@ module Projects
     end
 
     def after_perform(service_call)
+      ret = super
+      reset_section_scoped_validation
       touch_on_custom_values_update
       notify_on_identifier_renamed
       send_update_notification
       update_wp_versions_on_parent_change
-      persist_status
       handle_archiving
 
-      service_call
+      ret
     end
 
     def touch_on_custom_values_update
@@ -60,7 +61,7 @@ module Projects
     end
 
     def notify_on_identifier_renamed
-      return unless memoized_changes['identifier']
+      return unless memoized_changes["identifier"]
 
       OpenProject::Notifications.send(OpenProject::Events::PROJECT_RENAMED, project: model)
     end
@@ -74,29 +75,33 @@ module Projects
     end
 
     def update_wp_versions_on_parent_change
-      return unless memoized_changes['parent_id']
+      return unless memoized_changes["parent_id"]
 
       WorkPackage.update_versions_from_hierarchy_change(model)
-    end
-
-    def persist_status
-      model.status.save if model.status.changed?
     end
 
     def handle_archiving
       return unless model.saved_change_to_active?
 
-      if model.active?
-        # was unarchived
-        Projects::UnarchiveService
-          .new(user: user, model: model)
-          .call
-      else
-        # as archived
-        Projects::ArchiveService
-          .new(user: user, model: model)
-          .call
-      end
+      service_class =
+        if model.active?
+          # was unarchived
+          Projects::UnarchiveService
+        else
+          # was archived
+          Projects::ArchiveService
+        end
+
+      # EmptyContract is used because archive/unarchive conditions have
+      # already been checked in Projects::UpdateContract
+      service = service_class.new(user:, model:, contract_class: EmptyContract)
+      service.call
+    end
+
+    def reset_section_scoped_validation
+      # Reset the section scope after saving in order to not silently
+      # carry this setting in this instance.
+      model._limit_custom_fields_validation_to_section_id = nil
     end
   end
 end

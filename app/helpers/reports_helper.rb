@@ -1,13 +1,12 @@
-#-- encoding: UTF-8
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -24,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module ReportsHelper
@@ -32,16 +31,18 @@ module ReportsHelper
 
   def aggregate(data, criteria)
     data&.inject(0) do |sum, row|
-      match = criteria&.all? { |k, v| row[k].to_s == v.to_s || (k == 'closed' && row[k] == ActiveRecord::Type::Boolean.new.cast(v)) }
+      match = criteria&.all? do |k, v|
+        row[k].to_s == v.to_s || (k == "closed" && row[k] == ActiveRecord::Type::Boolean.new.cast(v))
+      end
 
-      sum += row['total'].to_i if match
+      sum += row["total"].to_i if match
 
       sum
     end || 0
   end
 
-  def aggregate_link(data, criteria, *args)
+  def aggregate_link(data, criteria, *)
     a = aggregate data, criteria
-    a.positive? ? link_to(h(a), *args) : '-'
+    a.positive? ? link_to(h(a), *) : "-"
   end
 end

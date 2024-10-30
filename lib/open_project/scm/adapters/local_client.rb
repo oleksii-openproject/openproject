@@ -1,13 +1,12 @@
-#-- encoding: UTF-8
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -24,11 +23,11 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'open3'
-require 'find'
+require "open3"
+require "find"
 module OpenProject
   module SCM
     module Adapters
@@ -41,8 +40,8 @@ module OpenProject
           ##
           # Reads the configuration for this strategy from OpenProject's `configuration.yml`.
           def config
-            ['scm', vendor].inject(OpenProject::Configuration) do |acc, key|
-              HashWithIndifferentAccess.new acc[key]
+            ["scm", vendor].inject(OpenProject::Configuration) do |acc, key|
+              ActiveSupport::HashWithIndifferentAccess.new acc[key]
             end
           end
         end
@@ -68,7 +67,7 @@ module OpenProject
           if storage_available?
             count_required_storage
           else
-            raise Exceptions::SCMError.new I18n.t('repositories.storage.not_available')
+            raise Exceptions::SCMError.new I18n.t("repositories.storage.not_available")
           end
         end
 
@@ -76,7 +75,7 @@ module OpenProject
         # Retrieve the local FS path
         # of this repository.
         #
-        # Overriden by some vendors, as not
+        # Overridden by some vendors, as not
         # all vendors have a path root_url.
         # (e.g., subversion uses file:// URLs)
         def local_repository_path
@@ -90,7 +89,7 @@ module OpenProject
         ##
         # client executable command
         def client_command
-          ''
+          ""
         end
 
         def client_available
@@ -108,8 +107,8 @@ module OpenProject
         # Returns the version string of the scm client
         # Eg: '1.5.0' or 'Unknown version' if unknown
         def client_version_string
-          v = client_version || 'Unknown version'
-          v.is_a?(Array) ? v.join('.') : v.to_s
+          v = client_version || "Unknown version"
+          v.is_a?(Array) ? v.join(".") : v.to_s
         end
 
         ##
@@ -126,11 +125,11 @@ module OpenProject
         end
 
         def supports_annotate?
-          respond_to?('annotate')
+          respond_to?(:annotate)
         end
 
-        def target(path = '')
-          base = path.match(/\A\//) ? root_url : url
+        def target(path = "")
+          base = path.start_with?("/") ? root_url : url
           "#{base}/#{path}"
         end
 
@@ -176,12 +175,12 @@ module OpenProject
         #
         # If the operation throws an exception or the operation we rethrow a
         # +CommandFailed+ with a meaningful error message.
-        def popen3(args, opts = {}, &block)
+        def popen3(args, opts = {}, &)
           logger.debug "Shelling out: `#{stripped_command(args)}`"
-          Open3.popen3(client_command, *args, opts, &block)
+          Open3.popen3(client_command, *args, opts, &)
         rescue Exceptions::SCMError => e
           raise e
-        rescue => e
+        rescue StandardError => e
           error_msg = "SCM command for `#{client_command}` failed: #{strip_credential(e.message)}"
           logger.error(error_msg)
           raise Exceptions::CommandFailed.new(client_command, error_msg)
@@ -198,16 +197,17 @@ module OpenProject
         # with a placeholder
         def strip_credential(cmd)
           q = Redmine::Platform.mswin? ? '"' : "'"
-          cmd.to_s.gsub(/(\-\-(password|username))\s+(#{q}[^#{q}]+#{q}|[^#{q}]\S+)/, '\\1 xxxx')
+          cmd.to_s.gsub(/(--(password|username))\s+(#{q}[^#{q}]+#{q}|[^#{q}]\S+)/, '\\1 xxxx')
         end
 
         def scm_encode(to, from, str)
           return nil if str.nil?
           return str if to == from
+
           begin
             str.to_s.encode(to, from)
-          rescue Encoding::InvalidByteSequenceError, Encoding::UndefinedConversionError => err
-            logger.error("failed to convert from #{from} to #{to}. #{err}")
+          rescue Encoding::InvalidByteSequenceError, Encoding::UndefinedConversionError => e
+            logger.error("failed to convert from #{from} to #{to}. #{e}")
             nil
           end
         end
@@ -233,7 +233,7 @@ module OpenProject
         # being unavailable on, e.g., Mac OS X.
         # On incompatible systems, will fall back to in-ruby counting
         def count_storage_du
-          output, err, code = Open3.capture3('du', '-bs', local_repository_path)
+          output, err, code = Open3.capture3("du", "-bs", local_repository_path)
 
           if code == 0 && output =~ /^(\d+)/
             Regexp.last_match(1).to_i
@@ -244,7 +244,7 @@ module OpenProject
           # May be raised when the command is not found.
           # Nothing we can do here.
           Rails.logger.error("Counting with 'du' failed with: '#{e.message}'." +
-                             'Falling back to in-ruby counting.')
+                             "Falling back to in-ruby counting.")
           nil
         end
 
@@ -256,13 +256,11 @@ module OpenProject
         # being ~25% slower than shelling out to du
         def count_storage_fallback
           ::Find.find(local_repository_path).inject(0) do |sum, f|
-            begin
-              sum + File.stat(f).size
-            rescue SystemCallError
-              # File.stat raises for permission and access errors,
-              # we won't be able to get this file's size.
-              sum
-            end
+            sum + File.stat(f).size
+          rescue SystemCallError
+            # File.stat raises for permission and access errors,
+            # we won't be able to get this file's size.
+            sum
           end
         end
       end

@@ -1,14 +1,12 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -25,11 +23,11 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'roar/decorator'
-require 'roar/json/hal'
+require "roar/decorator"
+require "roar/json/hal"
 
 module API
   module V3
@@ -42,12 +40,15 @@ module API
 
         associated_resource :project,
                             setter: ->(fragment:, **) {
-                              id = id_from_href "projects", fragment['href']
+                              id = id_from_href "projects", fragment["href"]
 
-                              id = if id.to_i.nonzero?
-                                     id # return numerical ID
+                              # In case an identifier is provided, which might
+                              # start with numbers, the id needs to be looked up
+                              # in the DB.
+                              id = if id.to_i.to_s == id
+                                     id.to_i # return numerical ID
                                    else
-                                     Project.where(identifier: id).pluck(:id).first # lookup Project by identifier
+                                     Project.where(identifier: id).pick(:id) # lookup Project by identifier
                                    end
 
                               represented.project_id = id if id
@@ -70,7 +71,7 @@ module API
             .new(represented)
             .to_url_query(merge_params: params.slice(:offset, :pageSize))
           {
-            href: [path, url_query].join('?')
+            href: [path, url_query].join("?")
           }
         end
 
@@ -99,7 +100,7 @@ module API
                    api_v3_paths.query_schema
                  end
           {
-            href: href
+            href:
           }
         end
 
@@ -111,14 +112,14 @@ module API
                  end
 
           {
-            href: href,
+            href:,
             method: :post
           }
         end
 
         link :updateImmediately do
-          next unless represented.new_record? && allowed_to?(:create) ||
-                      represented.persisted? && allowed_to?(:update)
+          next unless (represented.new_record? && allowed_to?(:create)) ||
+                      (represented.persisted? && allowed_to?(:update))
 
           {
             href: api_v3_paths.query(represented.id),
@@ -127,8 +128,8 @@ module API
         end
 
         link :updateOrderedWorkPackages do
-          next unless represented.new_record? && allowed_to?(:create) ||
-                      represented.persisted? && allowed_to?(:reorder_work_packages)
+          next unless (represented.new_record? && allowed_to?(:create)) ||
+                      (represented.persisted? && allowed_to?(:reorder_work_packages))
 
           {
             href: api_v3_paths.query_order(represented.id),
@@ -143,6 +144,17 @@ module API
           {
             href: api_v3_paths.query(represented.id),
             method: :delete
+          }
+        end
+
+        link :icalUrl do
+          next if represented.new_record? ||
+                  !allowed_to?(:share_via_ical) ||
+                  !Setting.ical_enabled?
+
+          {
+            href: api_v3_paths.query_ical_url(represented.id),
+            method: :post
           }
         end
 
@@ -180,7 +192,7 @@ module API
                    end
                  },
                  setter: ->(fragment:, **) {
-                   attr = id_from_href "queries/group_bys", fragment['href']
+                   attr = id_from_href "queries/group_bys", fragment["href"]
 
                    represented.group_by =
                      if attr.nil?
@@ -213,12 +225,12 @@ module API
                   },
                   setter: ->(fragment:, **) {
                     columns = Array(fragment).map do |column|
-                      name = id_from_href "queries/columns", column['href']
+                      name = id_from_href "queries/columns", column["href"]
 
                       ::API::Utilities::PropertyNameConverter.to_ar_name(name, context: WorkPackage.new) if name
                     end
 
-                    represented.column_names = columns.map(&:to_sym).compact if fragment
+                    represented.column_names = columns.filter_map(&:to_sym) if fragment
                   },
                   link: ->(*) {
                     represented.columns.map do |column|
@@ -237,12 +249,12 @@ module API
                   },
                   setter: ->(fragment:, **) {
                     columns = Array(fragment).map do |column|
-                      name = id_from_href "queries/columns", column['href']
+                      name = id_from_href "queries/columns", column["href"]
 
                       ::API::Utilities::PropertyNameConverter.to_ar_name(name, context: WorkPackage.new) if name
                     end
 
-                    represented.highlighted_attributes = columns.map(&:to_sym).compact if fragment
+                    represented.highlighted_attributes = columns.filter_map(&:to_sym) if fragment
                   },
                   link: ->(*) {
                     represented.highlighted_columns.map do |column|
@@ -254,19 +266,10 @@ module API
                   }
 
         property :ordered_work_packages,
-                 skip_render: true,
-                 exec_context: :decorator,
-                 getter: nil,
-                 setter: ->(fragment:, **) {
-                   next unless represented.new_record?
-
-                   Hash(fragment).each do |wp_id, position|
-                     represented.ordered_work_packages.build(work_package_id: wp_id, position: position)
-                   end
-                 }
+                 skip_render: true
 
         property :starred,
-                 writeable: true
+                 writable: true
 
         property :results,
                  exec_context: :decorator,
@@ -277,7 +280,7 @@ module API
                  }
 
         property :id,
-                 writeable: false
+                 writable: false
         property :name
 
         date_time_property :created_at
@@ -287,9 +290,15 @@ module API
         property :filters,
                  exec_context: :decorator
 
+        property :include_subprojects
+
         property :display_sums, as: :sums
-        property :is_public, as: :public
-        property :hidden
+        property :public
+
+        # The property is deprecated and should be removed
+        # in the next major version.
+        property :hidden,
+                 setter: ->(*) {} # ignored
 
         # Timeline properties
         property :timeline_visible
@@ -299,6 +308,9 @@ module API
         property :timeline_zoom_level
 
         property :timeline_labels
+
+        property :timestamps,
+                 getter: ->(*) { timestamps.map(&:to_s) }
 
         # Visible representation of the results
         property :display_representation
@@ -319,15 +331,15 @@ module API
           self.results = results
           self.params = params
 
-          super(model, current_user: current_user, embed_links: embed_links)
+          super(model, current_user:, embed_links:)
         end
 
-        self.to_eager_load = [:query_menu_item,
-                              :user,
-                              project: :work_package_custom_fields]
+        self.to_eager_load = [:user,
+                              :views,
+                              { project: :work_package_custom_fields }]
 
         def _type
-          'Query'
+          "Query"
         end
 
         def filters
@@ -343,8 +355,10 @@ module API
           filters_hash.each do |filter_attributes|
             name = get_filter_name filter_attributes
 
-            if name && (filter = represented.filter_for name)
-              filter_representer = ::API::V3::Queries::Filters::QueryFilterInstanceRepresenter.new(filter)
+            if name
+              filter_class = Query.find_registered_filter(name) || ::Queries::Filters::NotExistingFilter
+              filter_representer = ::API::V3::Queries::Filters::QueryFilterInstanceRepresenter
+                                     .new(filter_class.create!(name:))
 
               filter = filter_representer.from_hash filter_attributes
               represented.filters << filter
@@ -371,7 +385,7 @@ module API
                    super
                  end
 
-          [base, query_props].select(&:present?).join('?')
+          [base, query_props].select(&:present?).join("?")
         end
 
         def convert_attribute(attribute)
@@ -390,14 +404,14 @@ module API
 
           ::API::Utilities::ResourceLinkParser.parse_id(
             href,
-            property: (expected_namespace && expected_namespace.split("/").last) || "filter_value",
+            property: expected_namespace&.split("/")&.last || "filter_value",
             expected_version: "3",
-            expected_namespace: expected_namespace
+            expected_namespace:
           )
         end
 
         def column_direction_from_href(sort_by)
-          if id = id_from_href("queries/sort_bys", sort_by['href'])
+          if id = id_from_href("queries/sort_bys", sort_by["href"])
             column, direction = id.split("-") # e.g. ["start_date", "desc"]
 
             if column && direction

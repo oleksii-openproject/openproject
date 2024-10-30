@@ -1,14 +1,12 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -25,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module Projects
@@ -42,10 +40,24 @@ module Projects
 
     attr_reader :selected_project_ids
 
-    ##
-    # Returns the current query or the default one if none was saved
-    def self.current_query
-      Setting.project_gantt_query.presence || DEFAULT_GANTT_QUERY
+    class << self
+      ##
+      # Returns the current query or the default one if none was saved
+      def current_query
+        Setting.project_gantt_query.presence || default_gantt_query
+      end
+
+      def default_gantt_query
+        default_with_filter = JSON
+                              .parse(Projects::GanttQueryGeneratorService::DEFAULT_GANTT_QUERY)
+
+        milestone_ids = Type.milestone.pluck(:id).map(&:to_s)
+        if milestone_ids.any?
+          default_with_filter.merge!("f" => [{ "n" => "type", "o" => "=", "v" => milestone_ids }])
+        end
+
+        JSON.dump(default_with_filter)
+      end
     end
 
     def initialize(selected_project_ids)
@@ -57,22 +69,22 @@ module Projects
       params = params_from_settings.dup
 
       # Delete the parent filter
-      params['f'] =
-        if params['f']
-          params['f'].reject { |filter| filter['n'] == 'project' }
+      params["f"] =
+        if params["f"]
+          params["f"].reject { |filter| filter["n"] == "project" }
         else
           []
         end
 
       # Ensure grouped by project
-      params['g'] = 'project'
-      params['hi'] = false
+      params["g"] = "project"
+      params["hi"] = false
 
       # Ensure timeline visible
-      params['tv'] = true
+      params["tv"] = true
 
       # Add the parent filter
-      params['f'] << { 'n' => 'project', 'o' => '=', 'v' => selected_project_ids }
+      params["f"] << { "n" => "project", "o" => "=", "v" => selected_project_ids }
 
       params.to_json
     end
@@ -83,9 +95,9 @@ module Projects
       JSON.parse(self.class.current_query)
     rescue JSON::JSONError => e
       Rails.logger.error "Failed to read project gantt view, resetting to default. Error was: #{e.message}"
-      Setting.project_gantt_query = DEFAULT_GANTT_QUERY
+      Setting.project_gantt_query = self.class.default_gantt_query
 
-      JSON.parse(DEFAULT_GANTT_QUERY)
+      JSON.parse(self.class.default_gantt_query)
     end
   end
 end

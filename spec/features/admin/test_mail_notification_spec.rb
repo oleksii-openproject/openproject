@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,28 +23,28 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'spec_helper'
+require "spec_helper"
 
-describe 'Test mail notification', type: :feature do
-  using_shared_fixtures :admin
+RSpec.describe "Test mail notification", :js, :with_cuprite do
+  shared_let(:admin) { create(:admin) }
 
   before do
-    login_as(admin)
-    visit admin_mail_notifications_path(tab: :notifications)
+    login_as admin
+    visit admin_settings_mail_notifications_path(tab: :notifications)
   end
 
-  it 'shows the correct message on errors in test notification (Regression #28226)' do
+  it "shows the correct message on errors in test notification (Regression #28226)" do
     error_message = '"error" with <strong>Markup?</strong>'
     expect(UserMailer).to receive(:test_mail).with(admin)
       .and_raise error_message
 
-    click_link 'Send a test email'
+    click_link "Send a test email"
 
     expected = "An error occurred while sending mail (#{error_message})"
-    expect(page).to have_selector('.flash.error', text: expected)
-    expect(page).to have_no_selector('.flash.error strong')
+    expect_flash(type: :error, message: expected)
+    expect(page).to have_no_css(".op-toast.-error strong")
   end
 end

@@ -1,13 +1,12 @@
-#-- encoding: UTF-8
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -24,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module Redmine::MenuManager::MenuController
@@ -54,7 +53,7 @@ module Redmine::MenuManager::MenuController
     end
 
     def current_menu_item(actions = :default, &block)
-      raise ArgumentError '#current_menu_item requires a block' unless block_given?
+      raise ArgumentError "#current_menu_item requires a block" unless block
 
       if actions == :default
         menu_items[controller_path.to_sym][:default] = block
@@ -68,7 +67,7 @@ module Redmine::MenuManager::MenuController
   def menu_items
     self.class.menu_items
   end
-  
+
   # Returns the menu item name according to the current action
   def current_menu_item
     return @current_menu_item if @current_menu_item_determined
@@ -81,7 +80,7 @@ module Redmine::MenuManager::MenuController
                          elsif @current_menu_item.is_a?(Proc)
                            @current_menu_item.call(self)
                          else
-                           raise ArgumentError 'Invalid'
+                           raise ArgumentError "Invalid"
                          end
 
     @current_menu_item_determined = true
@@ -93,13 +92,30 @@ module Redmine::MenuManager::MenuController
   # Returns false if user is not authorized
   def redirect_to_project_menu_item(project, name)
     item = project_menu_item(name)
-    if user_allowed_to_access_item?(project, item)
+    if user_allowed_to_see_item?(project, item)
       engine = item.engine ? send(item.engine) : main_app
 
       redirect_to(engine.url_for({ item.param => project }.merge(item.url(project))))
       return true
     end
     false
+  end
+
+  # Redirects user to the global menu item
+  # Returns false if user is not authorized
+  def redirect_to_global_menu_item(name)
+    item = global_menu_item(name)
+    if globally_allowed_to_see_item?(item)
+      engine = item.engine ? send(item.engine) : main_app
+
+      redirect_to(engine.url_for(item.url))
+      return true
+    end
+    false
+  end
+
+  def global_menu_item(name)
+    Redmine::MenuManager.items(:global_menu).detect { |i| i.name.to_s == name.to_s }
   end
 
   def project_menu_item(name)
@@ -110,7 +126,11 @@ module Redmine::MenuManager::MenuController
     Redmine::MenuManager.items(:admin_menu).detect { |i| i.name.to_s == name.to_s }
   end
 
-  def user_allowed_to_access_item?(project, item)
-    item && User.current.allowed_to?(item.url(project), project) && (item.condition.nil? || item.condition.call(project))
+  def user_allowed_to_see_item?(project, item)
+    item && User.current.allowed_in_project?(item.url(project), project) && (item.condition.nil? || item.condition.call(project))
+  end
+
+  def globally_allowed_to_see_item?(item)
+    item && User.current.allowed_in_any_project?(item.url) && (item.condition.nil? || item.condition.call)
   end
 end

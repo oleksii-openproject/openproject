@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,19 +23,19 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'spec_helper'
+require "spec_helper"
 
-describe Queries::WorkPackages::Filter::VersionFilter, type: :model do
-  let(:version) { FactoryBot.build_stubbed(:version) }
+RSpec.describe Queries::WorkPackages::Filter::VersionFilter do
+  let(:version) { build_stubbed(:version) }
 
-  it_behaves_like 'basic query filter' do
+  it_behaves_like "basic query filter" do
     let(:type) { :list_optional }
     let(:class_key) { :version_id }
     let(:values) { [version.id.to_s] }
-    let(:name) { WorkPackage.human_attribute_name('version') }
+    let(:name) { WorkPackage.human_attribute_name("version") }
 
     before do
       if project
@@ -49,66 +49,66 @@ describe Queries::WorkPackages::Filter::VersionFilter, type: :model do
       end
     end
 
-    describe '#valid?' do
-      context 'within a project' do
-        it 'is true if the value exists as a version' do
+    describe "#valid?" do
+      context "within a project" do
+        it "is true if the value exists as a version" do
           expect(instance).to be_valid
         end
 
-        it 'is false if the value does not exist as a version' do
+        it "is false if the value does not exist as a version" do
           allow(project)
             .to receive_message_chain(:shared_versions, :pluck)
             .and_return []
 
-          expect(instance).to_not be_valid
+          expect(instance).not_to be_valid
         end
       end
 
-      context 'outside of a project' do
+      context "outside of a project" do
         let(:project) { nil }
 
-        it 'is true if the value exists as a version' do
+        it "is true if the value exists as a version" do
           expect(instance).to be_valid
         end
 
-        it 'is false if the value does not exist as a version' do
+        it "is false if the value does not exist as a version" do
           allow(Version)
             .to receive_message_chain(:visible, :systemwide, :pluck)
             .and_return []
 
-          expect(instance).to_not be_valid
+          expect(instance).not_to be_valid
         end
       end
     end
 
-    describe '#allowed_values' do
-      context 'within a project' do
+    describe "#allowed_values" do
+      context "within a project" do
         before do
           expect(instance.allowed_values)
-            .to match_array [[version.id.to_s, version.id.to_s]]
+            .to contain_exactly([version.id.to_s, version.id.to_s])
         end
       end
 
-      context 'outside of a project' do
+      context "outside of a project" do
         let(:project) { nil }
 
         before do
           expect(instance.allowed_values)
-            .to match_array [[version.id.to_s, version.id.to_s]]
+            .to contain_exactly([version.id.to_s, version.id.to_s])
         end
       end
     end
 
-    describe '#ar_object_filter?' do
-      it 'is true' do
+    describe "#ar_object_filter?" do
+      it "is true" do
         expect(instance)
           .to be_ar_object_filter
       end
     end
 
-    describe '#value_objects' do
-      let(:version1) { FactoryBot.build_stubbed(:version) }
-      let(:version2) { FactoryBot.build_stubbed(:version) }
+    describe "#value_objects" do
+      let(:version1) { build_stubbed(:version) }
+      let(:version2) { build_stubbed(:version) }
 
       before do
         allow(project)
@@ -118,9 +118,9 @@ describe Queries::WorkPackages::Filter::VersionFilter, type: :model do
         instance.values = [version1.id.to_s]
       end
 
-      it 'returns an array of versions' do
+      it "returns an array of versions" do
         expect(instance.value_objects)
-          .to match_array([version1])
+          .to contain_exactly(version1)
       end
     end
   end

@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,51 +23,51 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'spec_helper'
+require "spec_helper"
 
-describe 'Show the date of a Work Package', type: :feature, js: true do
-  let(:project) { FactoryBot.create :project }
-  let(:admin) { FactoryBot.create :admin}
+RSpec.describe "Show the date of a Work Package", :js do
+  let(:project) { create(:project) }
+  let(:admin) { create(:admin) }
   let(:work_package) do
-    FactoryBot.create :work_package,
-                      project: project,
-                      due_date: Date.yesterday,
-                      type: type,
-                      status: open_status
+    create(:work_package,
+           project:,
+           due_date: Date.yesterday,
+           type:,
+           status: open_status)
   end
 
-  let(:open_status) { FactoryBot.create :default_status }
-  let(:closed_status) { FactoryBot.create :closed_status }
+  let(:open_status) { create(:default_status) }
+  let(:closed_status) { create(:closed_status) }
 
   let(:wp_page) { Pages::FullWorkPackage.new(work_package, project) }
 
-  let(:type) { FactoryBot.create :type }
+  let(:type) { create(:type) }
   let!(:workflow) do
-    FactoryBot.create :workflow,
-                      type_id: type.id,
-                      old_status: open_status,
-                      new_status: closed_status
+    create(:workflow,
+           type_id: type.id,
+           old_status: open_status,
+           new_status: closed_status)
   end
 
-  context 'with an overdue date' do
+  context "with an overdue date" do
     before do
       login_as(admin)
       wp_page.visit!
     end
 
-    it 'should be highlighted only if the WP status is open (#33457)' do
+    it "is highlighted only if the WP status is open (#33457)" do
       # Highlighted with an open status
-      expect(page).to have_selector('.inline-edit--display-field.combinedDate .__hl_date_overdue')
+      expect(page).to have_css(".inline-edit--display-field.combinedDate .__hl_date_overdue")
 
       # Change status to closed
       status_field = WorkPackageStatusField.new(page)
       status_field.update(closed_status.name)
 
       # Not highlighted with a closed status
-      expect(page).not_to have_selector('.inline-edit--display-field.combinedDate .__hl_date_overdue')
+      expect(page).to have_no_css(".inline-edit--display-field.combinedDate .__hl_date_overdue")
     end
   end
 end

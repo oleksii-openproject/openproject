@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module API
@@ -33,37 +33,21 @@ module API
         helpers ::API::V3::Relations::RelationsHelper
 
         resources :relations do
-          ##
-          # @todo Redirect to relations endpoint as soon as `list relations` API endpoint
-          #       including filters is complete.
           get do
-            query = ::Queries::Relations::RelationQuery.new(user: current_user)
+            filters = [{ involved: { operator: "=", values: [@work_package.id.to_s] } }]
+            url = api_v3_paths.path_for(:relations, filters:)
 
-            relations = query
-                        .where(:involved, '=', @work_package.id)
-                        .results
-                        .non_hierarchy
-                        .includes(::API::V3::Relations::RelationCollectionRepresenter.to_eager_load)
-
-            ::API::V3::Relations::RelationCollectionRepresenter.new(
-              relations,
-              api_v3_paths.work_package_relations(@work_package.id),
-              current_user: current_user
-            )
+            redirect url, body: "The requested resource is deprecated and permanently moved to #{url}"
+            status 308
           end
 
-          post do
-            rep = parse_representer.new Relation.new, current_user: current_user
-            relation = rep.from_json request.body.read
-            service = ::Relations::CreateService.new user: current_user
-            call = service.call relation, send_notifications: (params[:notify] != 'false')
-
-            if call.success?
-              representer.new call.result, current_user: current_user, embed_links: true
-            else
-              fail ::API::Errors::ErrorBase.create_and_merge_errors(call.all_errors.reject(&:empty?).first)
-            end
-          end
+          post &::API::V3::Utilities::Endpoints::Create
+                  .new(model: Relation,
+                       params_modifier: ->(params) do
+                         params.merge(send_notifications: (params[:notify] != "false"),
+                                      from: @work_package)
+                       end)
+                  .mount
         end
       end
     end

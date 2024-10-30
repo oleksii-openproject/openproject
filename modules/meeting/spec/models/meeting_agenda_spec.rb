@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,19 +23,19 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require File.dirname(__FILE__) + '/../spec_helper'
+require File.dirname(__FILE__) + "/../spec_helper"
 
-describe 'MeetingAgenda', type: :model do
-  before(:each) do
-    @a = FactoryBot.build :meeting_agenda, text: "Some content...\n\nMore content!\n\nExtraordinary content!!"
+RSpec.describe "MeetingAgenda" do
+  before do
+    @a = build(:meeting_agenda, text: "Some content...\n\nMore content!\n\nExtraordinary content!!")
   end
 
   # TODO: Test the right user and messages are set in the history
-  describe '#lock!' do
-    it 'locks the agenda' do
+  describe "#lock!" do
+    it "locks the agenda" do
       @a.save
       @a.reload
       @a.lock!
@@ -44,8 +44,8 @@ describe 'MeetingAgenda', type: :model do
     end
   end
 
-  describe '#unlock!' do
-    it 'unlocks the agenda' do
+  describe "#unlock!" do
+    it "unlocks the agenda" do
       @a.locked = true
       @a.save
       @a.reload
@@ -56,12 +56,13 @@ describe 'MeetingAgenda', type: :model do
   end
 
   # a meeting agenda is editable when it is not locked
-  describe '#editable?' do
-    it 'is editable when not locked' do
+  describe "#editable?" do
+    it "is editable when not locked" do
       @a.locked = false
       expect(@a.editable?).to be_truthy
     end
-    it 'is not editable when locked' do
+
+    it "is not editable when locked" do
       @a.locked = true
       expect(@a.editable?).to be_falsey
     end

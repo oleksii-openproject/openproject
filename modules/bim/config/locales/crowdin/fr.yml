@@ -1,5 +1,8 @@
 #English strings go here for Rails i18n
 fr:
+  plugin_openproject_bim:
+    name: "Fonctionnalités BIM et BCF d'OpenProject"
+    description: "Ce plugin OpenProject introduit les fonctionnalités BIM et BCF."
   bim:
     label_bim: 'BIM'
   bcf:
@@ -10,7 +13,7 @@ fr:
     recommended: 'recommandé'
     not_recommended: 'déconseillé'
     no_viewpoints: 'Aucun point de vue'
-    new_badge: "nouveau"
+    new_badge: "Nouveau"
     exceptions:
       file_invalid: "Fichier BCF invalide"
     x_bcf_issues:
@@ -91,7 +94,7 @@ fr:
           bitmaps_not_writable: "bitmaps n'est pas accessible en écriture car il n'est pas encore implémenté."
           index_not_integer: "l'index n'est pas un entier."
           invalid_clipping_planes: "clipping_planes n'est pas valide."
-          invalid_components: "components n'est pas valide."
+          invalid_components: "les composants sont invalides."
           invalid_lines: "lines n'est pas valide."
           invalid_orthogonal_camera: "orthogonal_camera n'est pas valide."
           invalid_perspective_camera: "perspective_camera n'est pas valide."
@@ -113,10 +116,12 @@ fr:
       check_1: 'Vérifiez que vous avez téléversé au moins un modèle IFC.'
       check_2: 'Vérifiez qu''au moins un modèle IFC est défini comme « Par défaut ».'
     no_results: "Aucun modèle IFC n'a été téléversé dans ce projet."
-    processing_state:
+    conversion_status:
       label: 'En cours de traitement ?'
-      in_progress: 'En cours'
+      pending: 'En attente'
+      processing: 'En cours de traitement'
       completed: 'Terminé'
+      error: 'Erreur'
     processing_notice:
       processing_default: 'Les modèles IFC par défaut suivants sont toujours en cours de traitement et ne sont donc pas encore disponibles :'
     flash_messages:
@@ -129,4 +134,3 @@ fr:
   extraction:
     available:
       ifc_convert: "Canal de conversion IFC disponible"
-

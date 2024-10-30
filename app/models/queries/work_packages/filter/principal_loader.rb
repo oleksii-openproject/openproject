@@ -1,14 +1,12 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -25,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 class Queries::WorkPackages::Filter::PrincipalLoader
@@ -36,33 +34,36 @@ class Queries::WorkPackages::Filter::PrincipalLoader
   end
 
   def user_values
-    @user_values ||= if principals_by_class[User].present?
-                       principals_by_class[User].map { |s| [s.name, s.id.to_s] }.sort
+    @user_values ||= if principals_by_class["User"].present?
+                       principals_by_class["User"].map { |_, id| [nil, id.to_s] }
                      else
                        []
                      end
   end
 
   def group_values
-    @group_values ||= if principals_by_class[Group].present?
-                        principals_by_class[Group].map { |s| [s.name, s.id.to_s] }.sort
+    @group_values ||= if principals_by_class["Group"].present?
+                        principals_by_class["Group"].map { |_, id| [nil, id.to_s] }
                       else
                         []
                       end
   end
 
   def principal_values
-    if project
-      project.principals.sort
-    else
-      user_or_principal = Setting.work_package_group_assignment? ? Principal : User
-      user_or_principal.active_or_registered.in_visible_project.sort
-    end
+    @principal_values ||= principals.map { |_, id| [nil, id.to_s] }
   end
 
   private
 
+  def principals
+    if project
+      project.principals
+    else
+      Principal.visible.not_builtin
+    end.pluck(:type, :id)
+  end
+
   def principals_by_class
-    @principals_by_class ||= principal_values.group_by(&:class)
+    @principals_by_class ||= principals.group_by(&:first)
   end
 end

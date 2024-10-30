@@ -1,14 +1,12 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -25,39 +23,26 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 class AttributeHelpTextsController < ApplicationController
-  layout 'admin'
+  layout "admin"
   menu_item :attribute_help_texts
 
-  before_action :require_admin
+  before_action :authorize_global
   before_action :find_entry, only: %i(edit update destroy)
   before_action :find_type_scope
-  before_action :require_enterprise_token_grant
 
-  helper_method :gon
+  def index
+    @texts_by_type = AttributeHelpText.all_by_scope
+  end
 
   def new
     @attribute_help_text = AttributeHelpText.new type: @attribute_scope
   end
 
   def edit; end
-
-  def update
-    call = ::AttributeHelpTexts::UpdateService
-      .new(user: current_user, model: @attribute_help_text)
-      .call(permitted_params_with_attachments)
-
-    if call.success?
-      flash[:notice] = t(:notice_successful_update)
-      redirect_to attribute_help_texts_path(tab: @attribute_help_text.attribute_scope)
-    else
-      flash[:error] = call.message || I18n.t('notice_internal_server_error')
-      render action: 'edit'
-    end
-  end
 
   def create
     call = ::AttributeHelpTexts::CreateService
@@ -69,8 +54,22 @@ class AttributeHelpTextsController < ApplicationController
       redirect_to attribute_help_texts_path(tab: call.result.attribute_scope)
     else
       @attribute_help_text = call.result
-      flash[:error] = call.message || I18n.t('notice_internal_server_error')
-      render action: 'new'
+      flash[:error] = call.message || I18n.t("notice_internal_server_error")
+      render action: "new"
+    end
+  end
+
+  def update
+    call = ::AttributeHelpTexts::UpdateService
+      .new(user: current_user, model: @attribute_help_text)
+      .call(permitted_params_with_attachments)
+
+    if call.success?
+      flash[:notice] = t(:notice_successful_update)
+      redirect_to attribute_help_texts_path(tab: @attribute_help_text.attribute_scope)
+    else
+      flash[:error] = call.message || I18n.t("notice_internal_server_error")
+      render action: "edit"
     end
   end
 
@@ -84,22 +83,12 @@ class AttributeHelpTextsController < ApplicationController
     redirect_to attribute_help_texts_path(tab: @attribute_help_text.attribute_scope)
   end
 
-  def index
-    @texts_by_type = AttributeHelpText.all_by_scope
-  end
-
   protected
 
-  def default_breadcrumb
-    if action_name == 'index'
-      t('attribute_help_texts.label_plural')
-    else
-      ActionController::Base.helpers.link_to(t('attribute_help_texts.label_plural'), attribute_help_texts_path)
-    end
-  end
+  def default_breadcrumb; end
 
   def show_local_breadcrumb
-    true
+    false
   end
 
   private
@@ -125,7 +114,7 @@ class AttributeHelpTextsController < ApplicationController
   end
 
   def find_type_scope
-    name = params.fetch(:name, 'WorkPackage')
+    name = params.fetch(:name, "WorkPackage")
     submodule = AttributeHelpText.available_types.find { |mod| mod == name }
 
     if submodule.nil?
@@ -133,9 +122,5 @@ class AttributeHelpTextsController < ApplicationController
     end
 
     @attribute_scope = AttributeHelpText.const_get(submodule)
-  end
-
-  def require_enterprise_token_grant
-    render_404 unless EnterpriseToken.allows_to?(:attribute_help_texts)
   end
 end

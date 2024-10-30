@@ -1,10 +1,10 @@
 #-- copyright
 #OpenProject is an open source project management software.
-#Copyright (C) 2012-2020 the OpenProject GmbH
+#Copyright (C) the OpenProject GmbH
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License version 3.
 #OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-#Copyright (C) 2006-2017 Jean-Philippe Lang
+#Copyright (C) 2006-2013 Jean-Philippe Lang
 #Copyright (C) 2010-2013 the ChiliProject Team
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License
@@ -17,15 +17,16 @@
 #You should have received a copy of the GNU General Public License
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-#See docs/COPYRIGHT.rdoc for more details.
+#See COPYRIGHT and LICENSE files for more details.
 #++
 ja:
+  plugin_openproject_backlogs:
+    name: "OpenProject Backlogs"
+    description: "This module adds features enabling agile teams to work with OpenProject in Scrum projects."
   activerecord:
     attributes:
       work_package:
         position: "位置"
-        remaining_hours: "残り時間"
-        remaining_time: "残り時間"
         story_points: "ストーリーポイント"
         backlogs_work_package_type: "バックログの種類"
     errors:
@@ -35,9 +36,6 @@ ja:
             blocks_ids:
               can_only_contain_work_packages_of_current_sprint: "では現在のスプリント内の作業項目IDのみを含めることができます。"
               must_block_at_least_one_work_package: "は少なくとも 1つのチケットIDを含める必要があります。"
-            parent_id:
-              parent_child_relationship_across_projects: "は無効です。作業項目'%{work_package_name}'はバックログタスクで、現在のプロジェクト外の親を持つことはできません。"
-              type_must_be_one_of_the_following: "型は次のいずれかである必要があります: %{type_names}"
             version_id:
               task_version_must_be_the_same_as_story_version: "親ストーリーのバージョンと同じでなければなりません。"
         sprint:
@@ -49,12 +47,12 @@ ja:
     burndown_graph: "バーンダウングラフ"
     card_paper_size: "カード印刷用の用紙サイズ"
     chart_options: "チャートオプション"
-    close: "閉じる"
+    close: "終了する"
     column_width: "列の幅:"
     date: "日"
     definition_of_done: "「終了」の定義"
     generating_chart: "グラフを生成中..."
-    hours: " 時間"
+    hours: "時間"
     impediment: "障害事項"
     label_versions_default_fold_state: "バージョンを折り畳んで表示"
     work_package_is_closed: "作業パッケージが終了するには"
@@ -66,8 +64,8 @@ ja:
     properties: "プロパティ"
     rebuild: "再構築"
     rebuild_positions: "位置情報を再構築"
-    remaining_hours: "残り時間"
-    remaining_hours_ideal: "残り時間 (理想)"
+    remaining_hours: "残りの作業"
+    remaining_hours_ideal: "残りの作業（理想的）"
     show_burndown_chart: "バーンダウングラフ"
     story: "ストーリー"
     story_points: "ストーリーポイント"
@@ -78,7 +76,6 @@ ja:
     x_more: "残%{count}件..."
   backlogs_active: "アクティブ"
   backlogs_any: "全て"
-  backlogs_card_specification: "カード印刷用ラベルの種類"
   backlogs_inactive: "プロジェクトの活動がありません。"
   backlogs_points_burn_direction: "ポイントのバーンアップ/バーンダウン"
   backlogs_product_backlog: "プロダクトバックログ"
@@ -99,6 +96,7 @@ ja:
   backlogs_empty_title: "バックログで使用するバージョンは定義されていません"
   backlogs_empty_action_text: "バックログを開始するには、新しいバージョンを作成しそれをバックログ列に割り当てます。"
   button_edit_wiki: "Wikiページの編集"
+  error_backlogs_task_cannot_be_story: "設定が無効です。選択したタスクのタイプはストーリータイプにはできません。"
   error_intro_plural: "次のエラーが発生しました："
   error_intro_singular: "次のエラーが発生しました："
   error_outro: "送信する前に上記のエラーを修正してください。"
@@ -136,6 +134,7 @@ ja:
   label_wiki: "Wiki"
   permission_view_master_backlog: "マスター バックログの表示"
   permission_view_taskboards: "かんばんの表示"
+  permission_select_done_statuses: "完了ステータスを選択"
   permission_update_sprints: "スプリントの更新"
   points_accepted: "進行中のポイント"
   points_committed: "承認されたポイント"
@@ -148,7 +147,7 @@ ja:
   rb_label_copy_tasks_none: "なし"
   rb_label_copy_tasks_open: "開く"
   rb_label_link_to_original: "元のストーリーへのリンクを含める"
-  remaining_hours: "残り時間"
+  remaining_hours: "残りの作業"
   required_burn_rate_hours: "必要なバーンレート(時間)"
   required_burn_rate_points: "必要なバーンレート(ポイント)"
   todo_work_package_description: "%{summary}: %{url}\n%{description}"

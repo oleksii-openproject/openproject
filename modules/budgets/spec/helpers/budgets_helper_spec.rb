@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,18 +23,18 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require File.dirname(__FILE__) + '/../spec_helper'
+require File.dirname(__FILE__) + "/../spec_helper"
 
-describe BudgetsHelper, type: :helper do
-  let(:project) { FactoryBot.build(:project) }
-  let(:budget) { FactoryBot.build(:budget, project: project) }
+RSpec.describe BudgetsHelper do
+  let(:project) { build(:project) }
+  let(:budget) { build(:budget, project:) }
 
-  describe '#budgets_to_csv' do
-    describe 'WITH a list of one cost object' do
-      it 'should output the cost objects attributes' do
+  describe "#budgets_to_csv" do
+    describe "WITH a list of one cost object" do
+      it "outputs the cost objects attributes" do
         expected = [
           budget.id,
           budget.project.name,
@@ -52,9 +52,9 @@ describe BudgetsHelper, type: :helper do
         expect(budgets_to_csv([budget]).include?(expected)).to be_truthy
       end
 
-      it 'should start with a header explaining the fields' do
+      it "starts with a header explaining the fields" do
         expected = [
-          '#',
+          "#",
           Project.model_name.human,
           Budget.human_attribute_name(:subject),
           Budget.human_attribute_name(:author),

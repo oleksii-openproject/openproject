@@ -1,13 +1,12 @@
-#-- encoding: UTF-8
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -24,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 class UserPassword < ApplicationRecord
@@ -70,7 +69,7 @@ class UserPassword < ApplicationRecord
 
       active
     end
-  rescue => e
+  rescue StandardError => e
     Rails.logger.error("Unable to re-hash UserPassword for #{user.login}: #{e.message}")
   end
 
@@ -86,24 +85,26 @@ class UserPassword < ApplicationRecord
   def expired?
     days_valid = Setting.password_days_valid.to_i.days
     return false if days_valid == 0
+
     created_at < (Time.now - days_valid)
   end
 
   protected
 
   # Save hashed_password from the initially passed plain password
-  # if it is is set.
+  # if it's set.
   def salt_and_hash_password!
     return if plain_password.nil?
+
     self.hashed_password = derive_password!(plain_password)
   end
 
-  # Require the implementation to provide a secure comparisation
+  # Require the implementation to provide a secure comparison
   def hash_matches?(_plain)
-    raise NotImplementedError, 'Must be overridden by subclass'
+    raise NotImplementedError, "Must be overridden by subclass"
   end
 
   def derive_password!(_input)
-    raise NotImplementedError, 'Must be overridden by subclass'
+    raise NotImplementedError, "Must be overridden by subclass"
   end
 end

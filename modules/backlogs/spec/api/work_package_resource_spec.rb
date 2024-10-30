@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,32 +23,33 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'spec_helper'
-require 'rack/test'
+require "spec_helper"
+require "rack/test"
 
-describe 'API v3 Work package resource' do
+RSpec.describe "API v3 Work package resource" do
   include Rack::Test::Methods
   include Capybara::RSpecMatchers
 
-  let(:current_user) { FactoryBot.create(:admin) }
-  let(:project) { FactoryBot.create(:project) }
-  let(:work_package) {
-    FactoryBot.create(:work_package,
-                       project: project,
-                       story_points: 8,
-                       remaining_hours: 5)
-  }
+  let(:current_user) { create(:admin) }
+  let(:project) { create(:project) }
+  let(:work_package) do
+    create(:work_package,
+           project:,
+           story_points: 8,
+           estimated_hours: 5,
+           remaining_hours: 5)
+  end
   let(:wp_path) { "/api/v3/work_packages/#{work_package.id}" }
 
   before do
     allow(Story).to receive(:types).and_return([work_package.type_id])
   end
 
-  describe '#get' do
-    shared_context 'query work package' do
+  describe "#get" do
+    shared_context "query work package" do
       before do
         allow(User).to receive(:current).and_return(current_user)
         get wp_path
@@ -57,33 +58,29 @@ describe 'API v3 Work package resource' do
       subject { last_response.body }
     end
 
-    context 'backlogs activated' do
-      include_context 'query work package'
+    context "backlogs activated" do
+      include_context "query work package"
 
-      it { is_expected.to be_json_eql(work_package.story_points.to_json).at_path('storyPoints') }
-
-      it { is_expected.to be_json_eql('PT5H'.to_json).at_path('remainingTime') }
+      it { is_expected.to be_json_eql(work_package.story_points.to_json).at_path("storyPoints") }
     end
 
-    context 'backlogs deactivated' do
-      let(:project) {
-        FactoryBot.create(:project, disable_modules: 'backlogs')
-      }
+    context "backlogs deactivated" do
+      let(:project) do
+        create(:project, disable_modules: "backlogs")
+      end
 
-      include_context 'query work package'
+      include_context "query work package"
 
-      it { expect(last_response.status).to eql 200 }
+      it { expect(last_response).to have_http_status :ok }
 
-      it { is_expected.not_to have_json_path('storyPoints') }
-
-      it { is_expected.not_to have_json_path('remainingTime') }
+      it { is_expected.not_to have_json_path("storyPoints") }
     end
   end
 
-  describe '#patch' do
+  describe "#patch" do
     let(:valid_params) do
       {
-        _type: 'WorkPackage',
+        _type: "WorkPackage",
         lockVersion: work_package.lock_version
       }
     end
@@ -92,21 +89,14 @@ describe 'API v3 Work package resource' do
 
     before do
       allow(User).to receive(:current).and_return current_user
-      patch wp_path, params.to_json, 'CONTENT_TYPE' => 'application/json'
+      patch wp_path, params.to_json, "CONTENT_TYPE" => "application/json"
     end
 
-    describe 'storyPoints' do
+    describe "storyPoints" do
       let(:params) { valid_params.merge(storyPoints: 12) }
 
       it { expect(subject.status).to eq(200) }
-      it { expect(subject.body).to be_json_eql(12.to_json).at_path('storyPoints') }
-    end
-
-    describe 'remainingTime' do
-      let(:params) { valid_params.merge(remainingTime: 'PT12H30M') }
-
-      it { expect(subject.status).to eq(200) }
-      it { expect(subject.body).to be_json_eql('PT12H30M'.to_json).at_path('remainingTime') }
+      it { expect(subject.body).to be_json_eql(12.to_json).at_path("storyPoints") }
     end
   end
 end

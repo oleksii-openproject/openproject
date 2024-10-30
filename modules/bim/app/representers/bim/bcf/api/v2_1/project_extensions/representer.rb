@@ -1,14 +1,12 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -25,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module Bim::Bcf::API::V2_1
@@ -59,8 +57,7 @@ module Bim::Bcf::API::V2_1
     property :user_id_type,
              getter: ->(decorator:, **) {
                decorator.with_check(%i[manage_bcf view_members]) do
-                 # TODO: Move possible_assignees handling into wp base contract
-                 model.project.possible_assignees.pluck(:mail)
+                 assignable_assignees.pluck(:mail)
                end
              }
 
@@ -73,12 +70,12 @@ module Bim::Bcf::API::V2_1
     property :project_actions,
              getter: ->(decorator:, **) {
                [].tap do |actions|
-                 actions << 'update' if decorator.allowed?(:edit_project)
+                 actions << "update" if decorator.allowed?(:edit_project)
 
                  if decorator.allowed?(:manage_bcf)
-                   actions << 'viewTopic' << 'createTopic'
+                   actions << "viewTopic" << "createTopic"
                  elsif decorator.allowed?(:view_linked_issues)
-                   actions << 'viewTopic'
+                   actions << "viewTopic"
                  end
                end
              }
@@ -104,7 +101,7 @@ module Bim::Bcf::API::V2_1
     end
 
     def allowed?(permission)
-      represented.user.allowed_to?(permission, represented.model.project)
+      represented.user.allowed_in_project?(permission, represented.model.project)
     end
   end
 end

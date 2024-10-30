@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,35 +23,38 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module API
   module Utilities
     module Endpoints
       class Delete
+        include NamespacedLookup
+
         def default_instance_generator(model)
           ->(_params) do
-            instance_variable_get("@#{model.name.demodulize.underscore}")
+            instance_variable_get(:"@#{model.name.demodulize.underscore}")
           end
         end
 
         def initialize(model:,
-                       instance_generator: default_instance_generator(model),
+                       instance_generator: nil,
                        process_service: nil,
-                       api_name: model.name.demodulize)
+                       success_status: 204,
+                       api_name: nil)
           self.model = model
-          self.instance_generator = instance_generator
+          self.instance_generator = instance_generator || default_instance_generator(model)
           self.process_service = process_service || deduce_process_service
-          self.api_name = api_name
+          self.api_name = api_name || model.name.demodulize
+          self.success_status = success_status
         end
 
         def mount
           delete = self
 
           -> do
-            call = delete.process(current_user,
-                                  instance_exec(params, &delete.instance_generator))
+            call = delete.process(self)
 
             delete.render(call) do
               status delete.success_status
@@ -59,10 +62,10 @@ module API
           end
         end
 
-        def process(current_user, instance)
+        def process(request)
           process_service
-            .new(user: current_user,
-                 model: instance)
+            .new(user: request.current_user,
+                 model: request.instance_exec(request.params, &instance_generator))
             .call
         end
 
@@ -75,14 +78,11 @@ module API
           end
         end
 
-        def success_status
-          204
-        end
-
         attr_accessor :model,
                       :instance_generator,
                       :process_service,
-                      :api_name
+                      :api_name,
+                      :success_status
 
         private
 
@@ -99,15 +99,7 @@ module API
         end
 
         def deduce_process_service
-          "::#{deduce_backend_namespace}::DeleteService".constantize
-        end
-
-        def deduce_backend_namespace
-          demodulized_name.pluralize
-        end
-
-        def demodulized_name
-          model.name.demodulize
+          lookup_namespaced_class("DeleteService")
         end
 
         def deduce_api_namespace

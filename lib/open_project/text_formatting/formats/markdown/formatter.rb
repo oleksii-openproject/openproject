@@ -1,14 +1,12 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -25,9 +23,9 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
-require 'task_list/filter'
+require "task_list/filter"
 
 module OpenProject::TextFormatting::Formats::Markdown
   class Formatter < OpenProject::TextFormatting::Formats::BaseFormatter
@@ -44,16 +42,21 @@ module OpenProject::TextFormatting::Formats::Markdown
 
     def filters
       [
-        :markdown,
-        :sanitization,
-        ::TaskList::Filter,
-        :table_of_contents,
-        :macro,
-        :pattern_matcher,
-        :syntax_highlight,
-        :attachment,
-        :relative_link,
-        :autolink
+        OpenProject::TextFormatting::Filters::SettingMacrosFilter,
+        OpenProject::TextFormatting::Filters::MarkdownFilter,
+        OpenProject::TextFormatting::Filters::SanitizationFilter,
+        OpenProject::TextFormatting::Filters::TaskListFilter,
+        OpenProject::TextFormatting::Filters::TableOfContentsFilter,
+        OpenProject::TextFormatting::Filters::MacroFilter,
+        OpenProject::TextFormatting::Filters::MentionFilter,
+        OpenProject::TextFormatting::Filters::PatternMatcherFilter,
+        OpenProject::TextFormatting::Filters::SyntaxHighlightFilter,
+        OpenProject::TextFormatting::Filters::AttachmentFilter,
+        OpenProject::TextFormatting::Filters::AutolinkFilter,
+        OpenProject::TextFormatting::Filters::RelativeLinkFilter,
+        OpenProject::TextFormatting::Filters::LinkAttributeFilter,
+        OpenProject::TextFormatting::Filters::FigureWrappedFilter,
+        OpenProject::TextFormatting::Filters::BemCssFilter
       ]
     end
 

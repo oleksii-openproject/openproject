@@ -9,7 +9,6 @@ $grid--widget-padding: 20px 20px 20px 20px
   display: grid
 
 body.widget-grid-layout
-  #content-wrapper,
   #content
     background-color: var(--grid-background-color)
 
@@ -70,7 +69,7 @@ body.widget-grid-layout
     &.-column
       width: $grid--gap-width
 
-  .widget-box--header
+  .op-widget-box--header
     display: flex
 
   icon-triggered-context-menu
@@ -93,7 +92,7 @@ body.widget-grid-layout
 .grid--resizer
   position: absolute
   height: 20px
-  color: #888
+  color: var(--fgColor-muted)
   cursor: nwse-resize
   opacity: 0
   right: 0
@@ -116,7 +115,7 @@ body.widget-grid-layout
 
   &:before
     padding: 0
-    color: #888
+    color: var(--fgColor-muted)
 
   .grid--area.-widgeted:hover &
     opacity: 1
@@ -201,7 +200,7 @@ body.widget-grid-layout
 
 .grid--widget-add
   padding: 15px
-  background-color: var(--gray)
+  background-color: var(--bgColor-neutral-emphasis)
   border-radius: 50%
   opacity: 0
 
@@ -217,7 +216,7 @@ body.widget-grid-layout
     align-items: center
     padding: 0
     border-radius: initial
-    
+
     &:before
       font-size: 0.75rem
 
@@ -242,13 +241,12 @@ body.widget-grid-layout
 .grid--addable-widget
   min-width: 400px
   padding: 20px 5px
-  border-bottom: 1px solid var(--gray)
   cursor: pointer
   background: none
   transition: background 4s ease
 
   &:hover
-    background: $gray-light
+    background: var(--gray-light)
     transition: background 1s ease
 
   &:last-of-type
@@ -262,7 +260,7 @@ body.widget-grid-layout
   margin-top: -$grid--widget-padding
 
 .grid--add-widget-ee
-  .notification-box
+  .op-toast
     position: sticky
     bottom: 0
     margin-bottom: 0

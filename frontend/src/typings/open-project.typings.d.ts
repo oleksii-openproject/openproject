@@ -1,6 +1,6 @@
 //-- copyright
 // OpenProject is an open source project management software.
-// Copyright (C) 2012-2020 the OpenProject GmbH
+// Copyright (C) the OpenProject GmbH
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License version 3.
@@ -23,7 +23,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 //
-// See docs/COPYRIGHT.rdoc for more details.
+// See COPYRIGHT and LICENSE files for more details.
 //++
 
 /**
@@ -57,9 +57,9 @@ declare namespace api {
     }
 
     interface Formattable {
-      format:string;
+      format?:string;
       raw:string;
-      html:string;
+      html?:string;
     }
   }
 }
@@ -79,7 +79,7 @@ interface JQuery {
   mark:any;
 }
 
-declare var Factory:any;
+declare let Factory:any;
 
 declare namespace op {
   interface QueryParams {

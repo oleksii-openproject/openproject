@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,115 +23,105 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'spec_helper'
+require "spec_helper"
 
-describe CustomActionsController, type: :controller do
-  let(:admin) { FactoryBot.build(:admin) }
-  let(:non_admin) { FactoryBot.build(:user) }
-  let(:action) { FactoryBot.build_stubbed(:custom_action) }
+RSpec.describe CustomActionsController, with_ee: %i[custom_actions] do
+  let(:admin) { build(:admin) }
+  let(:non_admin) { build(:user) }
+  let(:action) { build_stubbed(:custom_action) }
   let(:params) do
-    { custom_action: { name: 'blubs',
+    { custom_action: { name: "blubs",
                        actions: { assigned_to: 1 } } }
   end
-  let(:enterprise_token) { true }
 
-  before do
-    if enterprise_token
-      with_enterprise_token :custom_actions
-    end
-  end
-
-  shared_examples_for 'read requires enterprise token' do
-    context 'without an enterprise token' do
-      let(:enterprise_token) { false }
-
+  shared_examples_for "read requires enterprise token" do
+    context "without an enterprise token", with_ee: false do
       before do
         login_as(admin)
 
         call
       end
 
-      it 'renders enterprise_token' do
+      it "renders enterprise_token" do
         expect(response)
-          .to render_template 'common/upsale'
+          .to render_template "common/upsale"
       end
     end
   end
 
-  shared_examples_for 'write requires enterprise token' do
-    context 'without an enterprise token' do
-      let(:enterprise_token) { false }
-
+  shared_examples_for "write requires enterprise token" do
+    context "without an enterprise token", with_ee: false do
       before do
         login_as(admin)
 
         call
       end
 
-      it 'renders enterprise_token' do
+      it "renders enterprise_token" do
         expect(response.response_code)
-          .to eql 403
+          .to be 403
       end
     end
   end
 
-  shared_examples_for '403 for non admins' do
-    context 'for non admins' do
+  shared_examples_for "403 for non admins" do
+    context "for non admins" do
       before do
         login_as(non_admin)
 
         call
       end
 
-      it 'returns 403' do
+      it "returns 403" do
         expect(response.response_code)
-          .to eql 403
+          .to be 403
       end
     end
   end
 
-  describe '#index' do
+  describe "#index" do
     let(:call) { get :index }
+
     before do
       allow(CustomAction)
         .to receive(:order_by_position)
         .and_return([action])
     end
 
-    context 'for admins' do
+    context "for admins" do
       before do
         login_as(admin)
 
         call
       end
 
-      it 'returns 200' do
+      it "returns 200" do
         expect(response.response_code)
-          .to eql 200
+          .to be 200
       end
 
-      it 'renders index template' do
+      it "renders index template" do
         expect(response)
-          .to render_template('index')
+          .to render_template("index")
       end
 
-      it 'assigns the custom actions' do
+      it "assigns the custom actions" do
         expect(assigns(:custom_actions))
-          .to match_array [action]
+          .to contain_exactly(action)
       end
     end
 
-    it_behaves_like '403 for non admins'
-    it_behaves_like 'read requires enterprise token'
+    it_behaves_like "403 for non admins"
+    it_behaves_like "read requires enterprise token"
   end
 
-  describe '#new' do
+  describe "#new" do
     let(:call) { get(:new) }
 
-    context 'for admins' do
+    context "for admins" do
       before do
         login_as(admin)
 
@@ -142,28 +132,28 @@ describe CustomActionsController, type: :controller do
         call
       end
 
-      it 'returns 200' do
+      it "returns 200" do
         expect(response.response_code)
-          .to eql 200
+          .to be 200
       end
 
-      it 'renders new template' do
+      it "renders new template" do
         expect(response)
-          .to render_template('new')
+          .to render_template("new")
       end
 
-      it 'assigns custom_action' do
+      it "assigns custom_action" do
         expect(assigns(:custom_action))
           .to eql action
       end
     end
 
-    it_behaves_like '403 for non admins'
-    it_behaves_like 'read requires enterprise token'
+    it_behaves_like "403 for non admins"
+    it_behaves_like "read requires enterprise token"
   end
 
-  describe '#create' do
-    let(:call) { post :create, params: params }
+  describe "#create" do
+    let(:call) { post :create, params: }
     let(:current_user) { admin }
     let(:service_success) { true }
     let(:permitted_params) do
@@ -174,7 +164,7 @@ describe CustomActionsController, type: :controller do
         .merge(ActionController::Parameters.new(actions: { assigned_to: "1" }).permit!)
     end
     let!(:service) do
-      service = double('create service')
+      service = double("create service")
 
       allow(CustomActions::CreateService)
         .to receive(:new)
@@ -193,50 +183,45 @@ describe CustomActionsController, type: :controller do
                         result: action)
     end
 
-    context 'for admins' do
+    context "for admins" do
       before do
         login_as(current_user)
 
         call
       end
 
-      context 'on success' do
-        it 'redirects to index' do
+      context "on success" do
+        it "redirects to index" do
           expect(response)
             .to redirect_to(custom_actions_path)
         end
       end
 
-      context 'on failure' do
+      context "on failure" do
         let(:service_success) { false }
 
-        it 'renders new' do
+        it "renders new" do
           expect(response)
             .to render_template(:new)
         end
 
-        it 'assigns custom action' do
+        it "assigns custom action" do
           expect(assigns[:custom_action])
             .to eql action
-        end
-
-        it 'assigns errors' do
-          expect(assigns[:errors])
-            .to eql service_result.errors
         end
       end
     end
 
-    it_behaves_like '403 for non admins'
-    it_behaves_like 'write requires enterprise token'
+    it_behaves_like "403 for non admins"
+    it_behaves_like "write requires enterprise token"
   end
 
-  describe '#edit' do
+  describe "#edit" do
     let(:params) do
       { id: "42" }
     end
     let(:call) do
-      get :edit, params: params
+      get :edit, params:
     end
 
     before do
@@ -246,30 +231,30 @@ describe CustomActionsController, type: :controller do
         .and_return(action)
     end
 
-    context 'for admins' do
+    context "for admins" do
       before do
         login_as(admin)
 
         call
       end
 
-      it 'returns 200' do
+      it "returns 200" do
         expect(response.response_code)
-          .to eql 200
+          .to be 200
       end
 
-      it 'renders edit template' do
+      it "renders edit template" do
         expect(response)
-          .to render_template('edit')
+          .to render_template("edit")
       end
 
-      it 'assigns custom_action' do
+      it "assigns custom_action" do
         expect(assigns(:custom_action))
           .to eql action
       end
     end
 
-    context 'for admins on invalid id' do
+    context "for admins on invalid id" do
       before do
         allow(CustomAction)
           .to receive(:find)
@@ -281,18 +266,18 @@ describe CustomActionsController, type: :controller do
         call
       end
 
-      it 'returns 404 NOT FOUND' do
+      it "returns 404 NOT FOUND" do
         expect(response.response_code)
-          .to eql 404
+          .to be 404
       end
     end
 
-    it_behaves_like '403 for non admins'
-    it_behaves_like 'read requires enterprise token'
+    it_behaves_like "403 for non admins"
+    it_behaves_like "read requires enterprise token"
   end
 
-  describe '#update' do
-    let(:call) { patch :update, params: params }
+  describe "#update" do
+    let(:call) { patch :update, params: }
     let(:current_user) { admin }
     let(:service_success) { true }
     let(:permitted_params) do
@@ -303,16 +288,16 @@ describe CustomActionsController, type: :controller do
         .merge(ActionController::Parameters.new(actions: { assigned_to: "1" }).permit!)
     end
     let(:params) do
-      { custom_action: { name: 'blubs',
+      { custom_action: { name: "blubs",
                          actions: { assigned_to: 1 } },
         id: "42" }
     end
     let!(:service) do
-      service = double('update service')
+      service = double("update service")
 
       allow(CustomActions::UpdateService)
         .to receive(:new)
-        .with(user: admin, action: action)
+        .with(user: admin, action:)
         .and_return(service)
 
       allow(service)
@@ -334,41 +319,36 @@ describe CustomActionsController, type: :controller do
         .and_return(action)
     end
 
-    context 'for admins' do
+    context "for admins" do
       before do
         login_as(current_user)
 
         call
       end
 
-      context 'on success' do
-        it 'redirects to index' do
+      context "on success" do
+        it "redirects to index" do
           expect(response)
             .to redirect_to(custom_actions_path)
         end
       end
 
-      context 'on failure' do
+      context "on failure" do
         let(:service_success) { false }
 
-        it 'rerenders edit action' do
+        it "rerenders edit action" do
           expect(response)
             .to render_template(:edit)
         end
 
-        it 'assigns the action' do
+        it "assigns the action" do
           expect(assigns[:custom_action])
             .to eql(action)
-        end
-
-        it 'assigns errors' do
-          expect(assigns[:errors])
-            .to eql service_result.errors
         end
       end
     end
 
-    context 'for admins on invalid id' do
+    context "for admins on invalid id" do
       before do
         allow(CustomAction)
           .to receive(:find)
@@ -380,18 +360,18 @@ describe CustomActionsController, type: :controller do
         call
       end
 
-      it 'returns 404 NOT FOUND' do
+      it "returns 404 NOT FOUND" do
         expect(response.response_code)
-          .to eql 404
+          .to be 404
       end
     end
 
-    it_behaves_like '403 for non admins'
-    it_behaves_like 'write requires enterprise token'
+    it_behaves_like "403 for non admins"
+    it_behaves_like "write requires enterprise token"
   end
 
-  describe '#destroy' do
-    let(:call) { delete :destroy, params: params }
+  describe "#destroy" do
+    let(:call) { delete :destroy, params: }
     let(:current_user) { admin }
     let(:params) do
       { id: "42" }
@@ -404,7 +384,7 @@ describe CustomActionsController, type: :controller do
         .and_return(action)
     end
 
-    context 'for admins' do
+    context "for admins" do
       before do
         expect(action)
           .to receive(:destroy)
@@ -415,13 +395,13 @@ describe CustomActionsController, type: :controller do
         call
       end
 
-      it 'redirects to index' do
+      it "redirects to index" do
         expect(response)
           .to redirect_to(custom_actions_path)
       end
     end
 
-    context 'for admins on invalid id' do
+    context "for admins on invalid id" do
       before do
         allow(CustomAction)
           .to receive(:find)
@@ -433,13 +413,13 @@ describe CustomActionsController, type: :controller do
         call
       end
 
-      it 'returns 404 NOT FOUND' do
+      it "returns 404 NOT FOUND" do
         expect(response.response_code)
-          .to eql 404
+          .to be 404
       end
     end
 
-    it_behaves_like '403 for non admins'
-    it_behaves_like 'write requires enterprise token'
+    it_behaves_like "403 for non admins"
+    it_behaves_like "write requires enterprise token"
   end
 end

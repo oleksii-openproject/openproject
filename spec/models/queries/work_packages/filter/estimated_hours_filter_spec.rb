@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,44 +23,44 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'spec_helper'
+require "spec_helper"
 
-describe Queries::WorkPackages::Filter::EstimatedHoursFilter, type: :model do
-  it_behaves_like 'basic query filter' do
+RSpec.describe Queries::WorkPackages::Filter::EstimatedHoursFilter do
+  it_behaves_like "basic query filter" do
     let(:type) { :integer }
     let(:class_key) { :estimated_hours }
 
-    describe '#available?' do
-      it 'is true' do
+    describe "#available?" do
+      it "is true" do
         expect(instance).to be_available
       end
     end
 
-    describe '#allowed_values' do
-      it 'is nil' do
+    describe "#allowed_values" do
+      it "is nil" do
         expect(instance.allowed_values).to be_nil
       end
     end
 
-    it_behaves_like 'non ar filter'
+    it_behaves_like "non ar filter"
 
-    describe '#where' do
-      let!(:work_package_zero_hour) {FactoryBot.create(:work_package, estimated_hours: 0)}
-      let!(:work_package_no_hours) {FactoryBot.create(:work_package, estimated_hours: nil)}
-      let!(:work_package_with_hours) {FactoryBot.create(:work_package, estimated_hours: 1)}
+    describe "#where" do
+      let!(:work_package_zero_hour) { create(:work_package, estimated_hours: 0) }
+      let!(:work_package_no_hours) { create(:work_package, estimated_hours: nil) }
+      let!(:work_package_with_hours) { create(:work_package, estimated_hours: 1) }
 
       context 'with the operator being "none"' do
         before do
           instance.operator = Queries::Operators::None.to_sym.to_s
         end
-        it 'finds zero and none values' do
-          expect(WorkPackage.where(instance.where)).to match_array [work_package_zero_hour, work_package_no_hours]
+
+        it "finds zero and none values" do
+          expect(WorkPackage.where(instance.where)).to contain_exactly(work_package_zero_hour, work_package_no_hours)
         end
       end
     end
   end
-  
 end

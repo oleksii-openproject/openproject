@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,21 +23,21 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'spec_helper'
-require File.join(File.dirname(__FILE__), '..', 'support', 'custom_field_filter')
-require File.join(File.dirname(__FILE__), '..', 'support', 'configuration_helper')
+require "spec_helper"
+require File.join(File.dirname(__FILE__), "..", "support", "custom_field_filter")
+require File.join(File.dirname(__FILE__), "..", "support", "configuration_helper")
 
-describe 'Custom field filter and group by caching', type: :request do
+RSpec.describe "Custom field filter and group by caching" do
   include OpenProject::Reporting::SpecHelper::CustomFieldFilterHelper
   include OpenProject::Reporting::SpecHelper::ConfigurationHelper
 
-  let(:project) { FactoryBot.create(:valid_project) }
-  let(:user) { FactoryBot.create(:admin) }
-  let(:custom_field) { FactoryBot.build(:work_package_custom_field) }
-  let(:custom_field2) { FactoryBot.build(:work_package_custom_field) }
+  let(:project) { create(:valid_project) }
+  let(:user) { create(:admin) }
+  let(:custom_field) { build(:work_package_custom_field) }
+  let(:custom_field2) { build(:work_package_custom_field) }
 
   before do
     allow(User).to receive(:current).and_return(user)
@@ -69,11 +69,11 @@ describe 'Custom field filter and group by caching', type: :request do
 
   def visit_cost_reports_index
     header "Content-Type", "text/html"
-    header 'X-Requested-With', 'XMLHttpRequest'
+    header "X-Requested-With", "XMLHttpRequest"
     get "/projects/#{project.id}/cost_reports"
   end
 
-  it 'removes the filter/group_by if the custom field is removed' do
+  it "removes the filter/group_by if the custom field is removed" do
     custom_field2.save!
 
     visit_cost_reports_index
@@ -95,7 +95,7 @@ describe 'Custom field filter and group by caching', type: :request do
     expect_filter_all_to_not_exist(custom_field2)
   end
 
-  it 'removes the filter/group_by if the last custom field is removed' do
+  it "removes the filter/group_by if the last custom field is removed" do
     visit_cost_reports_index
 
     expect_group_by_all_to_include(custom_field)
@@ -109,8 +109,8 @@ describe 'Custom field filter and group by caching', type: :request do
     expect_filter_all_to_not_exist(custom_field)
   end
 
-  it 'allows for changing the db entries directly via SQL between requests \
-      if no caching is done (this could also mean switching dbs)' do
+  it "allows for changing the db entries directly via SQL between requests " \
+     "if no caching is done (this could also mean switching dbs)" do
     new_label = "our new label"
     mock_cache_classes_setting_with(false)
 

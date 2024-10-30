@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,20 +23,20 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'spec_helper'
+require "spec_helper"
 
-describe ::API::V3::Utilities::PathHelper do
-  let(:helper) { Class.new.tap { |c| c.extend(::API::V3::Utilities::PathHelper) }.api_v3_paths }
+RSpec.describe API::V3::Utilities::PathHelper do
+  let(:helper) { Class.new.tap { |c| c.extend(API::V3::Utilities::PathHelper) }.api_v3_paths }
 
-  context 'attachments paths' do
-    describe '#attachments_by_grid' do
+  context "attachments paths" do
+    describe "#attachments_by_grid" do
       subject { helper.attachments_by_grid 1 }
 
-      it 'provides the path' do
-        is_expected.to match('/grids/1/attachments')
+      it "provides the path" do
+        expect(subject).to match("/grids/1/attachments")
       end
     end
   end

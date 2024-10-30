@@ -1,13 +1,12 @@
-#-- encoding: UTF-8
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -24,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module AccessibilityHelper
@@ -34,12 +33,12 @@ module AccessibilityHelper
     elsif condition && disabled
       "<span style = 'display: none' class = 'position-label hidden-for-sighted'>#{I18n.t(:description_current_position)}</span>".html_safe
     else
-      ''
+      ""
     end
   end
 
   def empty_element_tag
-    @empty_element_tag ||= ApplicationController.new.render_to_string(partial: 'accessibility/empty_element_tag').html_safe
+    @empty_element_tag ||= ApplicationController.new.render_to_string(partial: "accessibility/empty_element_tag").html_safe
   end
 
   # Returns the locale :en for the given menu item if the user locale is
@@ -52,15 +51,17 @@ module AccessibilityHelper
     return nil if english_locale_set?
 
     caption_content = menu_item.instance_variable_get(:@caption)
-    locale_label = caption_content.is_a?(Symbol) ? caption_content : :"label_#{menu_item.name.to_s}"
+    locale_label = caption_content.is_a?(Symbol) ? caption_content : :"label_#{menu_item.name}"
 
-    (!locale_exists?(locale_label) || equals_english_locale(locale_label)) ? :en : nil
+    !locale_exists?(locale_label) || equals_english_locale(locale_label) ? :en : nil
   end
 
   private
 
   def locale_exists?(key, locale = I18n.locale)
-    I18n.t(key, locale: locale, raise: true) rescue false
+    I18n.t(key, locale:, raise: true)
+  rescue StandardError
+    false
   end
 
   def english_locale_set?

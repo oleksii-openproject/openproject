@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,14 +23,13 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 class CostlogController < ApplicationController
   menu_item :work_packages
   before_action :find_project, :authorize, only: %i[edit new create update destroy]
   before_action :find_associated_objects, only: %i[create update]
-  before_action :find_optional_project, only: %i[report]
 
   helper :work_packages
   include CostlogHelper
@@ -38,7 +37,7 @@ class CostlogController < ApplicationController
   def new
     new_default_cost_entry
 
-    render action: 'edit'
+    render action: "edit"
   end
 
   def edit
@@ -58,7 +57,7 @@ class CostlogController < ApplicationController
       flash[:notice] = t(:notice_cost_logged_successfully)
       redirect_back_or_default work_package_path(@cost_entry.work_package)
     else
-      render action: 'edit'
+      render action: "edit"
     end
   end
 
@@ -75,18 +74,19 @@ class CostlogController < ApplicationController
       redirect_back fallback_location: work_package_path(@cost_entry.work_package)
 
     else
-      render action: 'edit'
+      render action: "edit"
     end
   end
 
   def destroy
     render_404 and return unless @cost_entry
     render_403 and return unless @cost_entry.editable_by?(User.current)
+
     @cost_entry.destroy
     flash[:notice] = t(:notice_successful_delete)
 
-    if request.referer =~ /cost_reports/
-      redirect_to controller: '/cost_reports', action: :index
+    if request.referer.include?("cost_reports")
+      redirect_to controller: "/cost_reports", action: :index
     else
       redirect_back fallback_location: work_package_path(@cost_entry.work_package)
     end
@@ -109,43 +109,33 @@ class CostlogController < ApplicationController
       @project = Project.find(params[:project_id])
     else
       render_404
-      return false
+      false
     end
   rescue ActiveRecord::RecordNotFound
     render_404
   end
 
-  def find_optional_project
-    if !params[:work_package_id].blank?
-      @work_package = WorkPackage.find(params[:work_package_id])
-      @project = @work_package.project
-    elsif !params[:work_package_id].blank?
-      @work_package = WorkPackage.find(params[:work_package_id])
-      @project = @work_package.project
-    elsif !params[:project_id].blank?
-      @project = Project.find(params[:project_id])
-    end
-
-    if !params[:cost_type_id].blank?
-      @cost_type = CostType.find(params[:cost_type_id])
-    end
-  end
-
   def find_associated_objects
     user_id = cost_entry_params.delete(:user_id)
-    @user = @cost_entry.present? && @cost_entry.user_id == user_id ?
-              @cost_entry.user :
+    @user = if @cost_entry.present? && @cost_entry.user_id == user_id
+              @cost_entry.user
+            else
               User.find_by_id(user_id)
+            end
 
     work_package_id = cost_entry_params.delete(:work_package_id)
-    @work_package = @cost_entry.present? && @cost_entry.work_package_id == work_package_id ?
-               @cost_entry.work_package :
-               WorkPackage.find_by_id(work_package_id)
+    @work_package = if @cost_entry.present? && @cost_entry.work_package_id == work_package_id
+                      @cost_entry.work_package
+                    else
+                      WorkPackage.find_by_id(work_package_id)
+                    end
 
     cost_type_id = cost_entry_params.delete(:cost_type_id)
-    @cost_type = @cost_entry.present? && @cost_entry.cost_type_id == cost_type_id ?
-                   @cost_entry.cost_type :
+    @cost_type = if @cost_entry.present? && @cost_entry.cost_type_id == cost_type_id
+                   @cost_entry.cost_type
+                 else
                    CostType.find_by_id(cost_type_id)
+                 end
   end
 
   def new_default_cost_entry
@@ -166,14 +156,12 @@ class CostlogController < ApplicationController
     attributes = permitted_params.cost_entry
     attributes[:units] = Rate.parse_number_string_to_number(attributes[:units])
 
-    if attributes.key?(:overridden_costs)
+    if attributes[:overridden_costs].present?
       attributes[:overridden_costs] = Rate.parse_number_string_to_number(attributes[:overridden_costs])
     end
 
     @cost_entry.attributes = attributes
   end
-
-  private
 
   def cost_entry_params
     params.require(:cost_entry).permit(:work_package_id, :spent_on, :user_id,

@@ -1,14 +1,12 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -25,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module API
@@ -33,18 +31,36 @@ module API
     module CustomOptions
       class CustomOptionsAPI < ::API::OpenProjectAPI
         resources :custom_options do
-          namespace ':id' do
+          namespace ":id" do
             params do
               requires :id, type: Integer
             end
 
             helpers do
-              def authorize_view_in_activated_project(custom_option)
+              def authorize_custom_option_visibility(custom_option)
+                case custom_option.custom_field
+                when WorkPackageCustomField
+                  authorized_work_package_option(custom_option)
+                when ProjectCustomField
+                  authorize_in_any_project(%i[view_project]) { raise API::Errors::NotFound }
+                when TimeEntryCustomField
+                  authorize_in_any_work_package(:log_own_time) do
+                    authorize_in_any_project(:log_time) do
+                      raise API::Errors::NotFound
+                    end
+                  end
+                when UserCustomField, GroupCustomField
+                  true
+                else
+                  raise API::Errors::NotFound
+                end
+              end
+
+              def authorized_work_package_option(custom_option)
                 allowed = Project
-                          .allowed_to(current_user, :view_work_packages)
-                          .joins(:work_package_custom_fields)
-                          .where(custom_fields: { id: custom_option.custom_field_id })
-                          .exists?
+                  .with_visible_work_packages(current_user)
+                  .joins(:work_package_custom_fields)
+                  .exists?(custom_fields: { id: custom_option.custom_field_id })
 
                 unless allowed
                   raise API::Errors::NotFound
@@ -55,9 +71,9 @@ module API
             get do
               co = CustomOption.find(params[:id])
 
-              authorize_view_in_activated_project(co)
+              authorize_custom_option_visibility(co)
 
-              CustomOptionRepresenter.new(co, current_user: current_user)
+              CustomOptionRepresenter.new(co, current_user:)
             end
           end
         end

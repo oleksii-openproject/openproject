@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 ##
@@ -33,8 +33,8 @@ module Accounts::UserConsent
   include ::UserConsentHelper
 
   def consent
-    if consent_required?
-      render 'account/consent', locals: { consenting_user: consenting_user }
+    if user_consent_required? && consenting_user&.consent_expired?
+      render "account/consent"
     else
       consent_finished
     end
@@ -50,38 +50,17 @@ module Accounts::UserConsent
     end
   end
 
-  def consent_required?
-    # Ensure consent is enabled and a text is provided
-    return false unless user_consent_required?
-
-    # Require the user to consent if he hasn't already
-    consent_expired?
-  end
-
   def decline_consent
-    message = I18n.t('consent.decline_warning_message') + "\n"
+    message = I18n.t("consent.decline_warning_message") + "\n"
     message <<
-      if Setting.consent_decline_mail
-        I18n.t('consent.contact_this_mail_address', mail_address: Setting.consent_decline_mail)
+      if Setting.consent_decline_mail.present?
+        I18n.t("consent.contact_this_mail_address", mail_address: Setting.consent_decline_mail)
       else
-        I18n.t('consent.contact_your_administrator')
+        I18n.t("consent.contact_your_administrator")
       end
 
     flash[:error] = message
     redirect_to authentication_stage_failure_path :consent
-  end
-
-  def consent_expired?
-    consented_at = consenting_user.try(:consented_at)
-
-    # Always if the user has not consented
-    return true if consented_at.blank?
-
-    # Did not expire if no consent_time set, but user has consented at some point
-    return false if Setting.consent_time.blank?
-
-    # Otherwise, expires when consent_time is newer than last consented_at
-    consented_at < Setting.consent_time
   end
 
   def consenting_user
@@ -98,7 +77,7 @@ module Accounts::UserConsent
   end
 
   def reject_consent!
-    flash[:error] = I18n.t('consent.failure_message')
+    flash[:error] = I18n.t("consent.failure_message")
     redirect_to authentication_stage_failure_path :consent
   end
 end

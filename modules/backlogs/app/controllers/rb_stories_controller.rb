@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,18 +23,16 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 class RbStoriesController < RbApplicationController
-  include OpenProject::PDFExport::ExportCard
-
   # This is a constant here because we will recruit it elsewhere to whitelist
   # attributes. This is necessary for now as we still directly use `attributes=`
   # in non-controller code.
-  PERMITTED_PARAMS = [:id, :status_id, :version_id,
-                      :story_points, :type_id, :subject, :author_id,
-                      :sprint_id]
+  PERMITTED_PARAMS = %i[id status_id version_id
+                        story_points type_id subject author_id
+                        sprint_id]
 
   def create
     call = Stories::CreateService
@@ -49,7 +47,7 @@ class RbStoriesController < RbApplicationController
     story = Story.find(params[:id])
 
     call = Stories::UpdateService
-           .new(user: current_user, story: story)
+           .new(user: current_user, story:)
            .call(attributes: story_params,
                  prev: params[:prev])
 
@@ -68,7 +66,7 @@ class RbStoriesController < RbApplicationController
     story = call.result
 
     respond_to do |format|
-      format.html { render partial: 'story', object: story, status: status, locals: { errors: call.errors } }
+      format.html { render partial: "story", object: story, status:, locals: { errors: call.errors } }
     end
   end
 

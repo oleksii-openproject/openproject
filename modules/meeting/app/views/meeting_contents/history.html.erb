@@ -1,12 +1,12 @@
 <%#-- copyright
 OpenProject is an open source project management software.
-Copyright (C) 2012-2020 the OpenProject GmbH
+Copyright (C) the OpenProject GmbH
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License version 3.
 
 OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-Copyright (C) 2006-2017 Jean-Philippe Lang
+Copyright (C) 2006-2013 Jean-Philippe Lang
 Copyright (C) 2010-2013 the ChiliProject Team
 
 This program is free software; you can redistribute it and/or
@@ -23,7 +23,7 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-See docs/COPYRIGHT.rdoc for more details.
+See COPYRIGHT and LICENSE files for more details.
 
 ++#%>
 
@@ -34,21 +34,19 @@ See docs/COPYRIGHT.rdoc for more details.
 
 <h3><%= t(:label_history) %></h3>
 
-<% content_for :header_tags do %>
-  <meta name="required_script" content="meeting" />
-<% end %>
-
 <%= form_tag({:action => "diff"}, :method => :get) do %>
-<div class="generic-table--container">
+<div class="generic-table--container"
+     data-application-target="dynamic"
+     data-controller="journal-history">
   <div class="generic-table--results-container">
-    <table class="generic-table">
+    <table class="generic-table" data-controller="table-highlighting">
       <colgroup>
-        <col highlight-col>
         <col>
         <col>
-        <col highlight-col>
-        <col highlight-col>
-        <col highlight-col>
+        <col>
+        <col>
+        <col>
+        <col>
       </colgroup>
       <thead>
         <tr>
@@ -70,7 +68,7 @@ See docs/COPYRIGHT.rdoc for more details.
             <div class="generic-table--sort-header-outer">
               <div class="generic-table--sort-header">
                 <span>
-                  <%= Meeting.human_attribute_name(:updated_on) %>
+                  <%= Meeting.human_attribute_name(:updated_at) %>
                 </span>
               </div>
             </div>
@@ -106,18 +104,26 @@ See docs/COPYRIGHT.rdoc for more details.
             </td>
               <td class="checkbox -short">
                 <% if show_diff && (index < @content_versions.size-1) %>
-                  <%= radio_button_tag('version_to',
+                  <%= radio_button_tag('version_from',
                                        content_version.version,
                                        (index==0),
-                                       id: "checkbox-from-#{index}",
                                        class: 'meetings--checkbox-version-to',
-                                       data: { target: ".checkbox-to-#{index+1}" }) %>
+                                       data: {
+                                         'journal-history-target': 'fromVersion',
+                                         action: 'journal-history#selectToVersion'
+                                       }) %>
                   <label class="hidden-for-sighted" for="checkbox-from-<%= index %>"><%= t(:description_compare_from) %> <%= index %></label>
                 <% end %>
               </td>
               <td class="checkbox -short">
                 <% if show_diff && (index > 0) %>
-                  <%= radio_button_tag('version_from', content_version.version, (index==1), :id => "checkbox-to-#{index}") %>
+                  <%= radio_button_tag('version_to',
+                                       content_version.version,
+                                       (index==1),
+                                       data: {
+                                         'journal-history-target': 'toVersion',
+                                         action: 'journal-history#selectFromVersion'
+                                       }) %>
                   <label class="hidden-for-sighted" for="checkbox-to-<%= index %>"><%= t(:description_compare_to) %> <%= index %></label>
                 <% end %>
               </td>
@@ -131,6 +137,6 @@ See docs/COPYRIGHT.rdoc for more details.
 
   </div>
 </div>
-<%= styled_button_tag t(:label_view_diff), class: '-small -highlight' if show_diff %>
+<%= styled_button_tag t(:label_view_diff), class: '-small -primary' if show_diff %>
 <%= pagination_links_full @content_versions %>
 <% end %>

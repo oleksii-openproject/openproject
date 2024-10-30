@@ -1,13 +1,12 @@
-#-- encoding: UTF-8
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -24,15 +23,17 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module Redmine::MenuManager::WikiMenuHelper
   def build_wiki_menus(project)
-    return unless project.enabled_module_names.include? 'wiki'
-    project_wiki = project.wiki
+    return unless project.enabled_module_names.include? "wiki"
 
-    MenuItems::WikiMenuItem.main_items(project_wiki).each do |main_item|
+    project_wiki = project.wiki
+    return if project_wiki.nil?
+
+    wiki_main_items(project_wiki).reverse_each do |main_item|
       Redmine::MenuManager.loose :project_menu do |menu|
         push_wiki_main_menu(menu, main_item, project)
 
@@ -45,12 +46,11 @@ module Redmine::MenuManager::WikiMenuHelper
 
   def push_wiki_main_menu(menu, main_item, project)
     menu.push main_item.menu_identifier,
-              { controller: '/wiki', action: 'show', id: main_item.slug },
-              param: :project_id,
+              { controller: "/wiki", action: "show", id: main_item.slug },
               caption: main_item.title,
-              after: :repository,
-              icon: 'icon2 icon-wiki',
-              html:    { class: 'wiki-menu--main-item' }
+              after: :meetings,
+              icon: "book",
+              html: { class: "wiki-menu--main-item" }
 
     if project.wiki.pages.any?
       push_wiki_menu_partial(main_item, menu)
@@ -62,10 +62,9 @@ module Redmine::MenuManager::WikiMenuHelper
 
   def push_wiki_menu_subitem(menu, main_item, child)
     menu.push child.menu_identifier,
-              { controller: '/wiki', action: 'show', id: child.slug },
-              param: :project_id,
+              { controller: "/wiki", action: "show", id: child.slug },
               caption: child.title,
-              html:    { class: 'wiki-menu--sub-item' },
+              html: { class: "wiki-menu--sub-item" },
               parent: main_item.menu_identifier
   rescue ArgumentError => e
     Rails.logger.error "Failed to add wiki item #{child.slug} to wiki menu: #{e}. Deleting it."
@@ -82,12 +81,21 @@ module Redmine::MenuManager::WikiMenuHelper
 
   private
 
+  def wiki_main_items(wiki)
+    ##
+    # Ensure a main item exists if it got deleted somewhere
+    MenuItems::WikiMenuItem
+      .main_items(wiki)
+      .tap do |items|
+      wiki.create_menu_item_for_start_page if items.empty?
+    end
+  end
+
   def push_wiki_menu_partial(main_item, menu)
     menu.push :wiki_menu_partial,
-              { controller: '/wiki', action: 'show' },
-              param: :project_id,
+              { controller: "/wiki", action: "show" },
               parent: main_item.menu_identifier,
-              partial: 'wiki/menu_pages_tree',
+              partial: "wiki/menu_pages_tree",
               last: true
   end
 end

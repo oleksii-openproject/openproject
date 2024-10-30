@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module API
@@ -32,25 +32,32 @@ module API
       class CreateFormAPI < ::API::OpenProjectAPI
         resource :form do
           after_validation do
-            authorize :manage_members, global: true
+            authorize_in_any_project(:manage_members)
           end
 
-          post &::API::V3::Utilities::Endpoints::CreateForm.new(model: Member,
-                                                                instance_generator: ->(params) {
-                                                                  # This here is a hack to circumvent the strange
-                                                                  # way roles are assigned to a member within 3 models.
-                                                                  # As this is never saved, we do not have to care for
-                                                                  # that elaborate process.
-                                                                  # Doing this leads to the roles being displayed
-                                                                  # in the payload.
-                                                                  roles = if params[:role_ids]
-                                                                            Array(Role.find_by(id: params.delete(:role_ids)))
-                                                                          end || []
+          post &::API::V3::Utilities::Endpoints::CreateForm
+                  .new(model: Member,
+                       instance_generator: ->(params) {
+                         # This here is a hack to circumvent the strange
+                         # way roles are assigned to a member within 3 models.
+                         # As this is never saved, we do not have to care for
+                         # that elaborate process.
+                         # Doing this leads to the roles being displayed
+                         # in the payload.
+                         roles = if params[:role_ids]
+                                   Array(Role.find_by(id: params.delete(:role_ids)))
+                                 end || []
 
-                                                                  Member.new(roles: roles)
-                                                                },
-                                                                api_name: 'Membership')
-                                                           .mount
+                         Member.new(roles:)
+                       },
+                       api_name: "Membership",
+                       params_modifier: ->(params) do
+                         params.except(:meta)
+                       end,
+                       process_state: ->(params:, **) do
+                         params[:meta].deep_dup
+                       end)
+                  .mount
         end
       end
     end

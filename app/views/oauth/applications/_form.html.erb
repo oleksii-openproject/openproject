@@ -1,12 +1,12 @@
 <%#-- copyright
 OpenProject is an open source project management software.
-Copyright (C) 2012-2020 the OpenProject GmbH
+Copyright (C) the OpenProject GmbH
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License version 3.
 
 OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-Copyright (C) 2006-2017 Jean-Philippe Lang
+Copyright (C) 2006-2013 Jean-Philippe Lang
 Copyright (C) 2010-2013 the ChiliProject Team
 
 This program is free software; you can redistribute it and/or
@@ -23,13 +23,20 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-See docs/COPYRIGHT.rdoc for more details.
+See COPYRIGHT and LICENSE files for more details.
 
 ++#%>
 
-<%= error_messages_for_contract @application, @errors %>
+<%= error_messages_for @application %>
 
 <section class="form--section">
+  <div class="form--field">
+    <%= f.check_box :enabled, container_class: '-middle' %>
+    <span class="form--field-instructions">
+      <%= t('oauth.application.instructions.enabled') %>
+    </span>
+  </div>
+
   <div class="form--field -required">
     <%= f.text_field :name, required: true, size: 25, container_class: '-middle' %>
     <span class="form--field-instructions">
@@ -79,13 +86,19 @@ See docs/COPYRIGHT.rdoc for more details.
     </p>
 
     <div class="form--field -visible-overflow">
-      <label class="form--label"> <%= t('doorkeeper.application.client_credentials_user_id') %>
+      <label class="form--label"> <%= t('activerecord.attributes.doorkeeper/application.client_credentials_user_id') %>
       </label>
       <div class="form--field-container">
         <div class="form--text-field-container -middle">
           <%= f.hidden_field :client_credentials_user_id,  value: @application.client_credentials_user_id %>
-          <user-autocompleter data-allow-empty="true"
-                              data-update-input="application[client_credentials_user_id]"></user-autocompleter>
+          <%=
+            angular_component_tag 'opce-user-autocompleter',
+                                  inputs: {
+                                    allowEmpty: true,
+                                    inputName: 'application[client_credentials_user_id]'
+                                  },
+                                  class: "new-group-members--autocomplete"
+          %>
         </div>
       </div>
       <p class="form--field-instructions">
@@ -103,4 +116,3 @@ See docs/COPYRIGHT.rdoc for more details.
     </div>
   </fieldset>
 </section>
-

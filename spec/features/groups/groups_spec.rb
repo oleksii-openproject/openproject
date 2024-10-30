@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,27 +23,34 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'spec_helper'
+require "spec_helper"
 
-feature 'group memberships through groups page', type: :feature do
-  using_shared_fixtures :admin
-  let!(:group) { FactoryBot.create :group, lastname: "Bob's Team" }
+RSpec.describe "group memberships through groups page", :js, :with_cuprite do
+  shared_let(:admin) { create(:admin) }
+  let!(:group) { create(:group, lastname: "Bob's Team") }
 
   let(:groups_page) { Pages::Groups.new }
 
-  context 'as an admin' do
+  context "as an admin" do
     before do
       allow(User).to receive(:current).and_return admin
     end
 
-    scenario 'I can delete a group' do
+    it "I can delete a group" do
       groups_page.visit!
       expect(groups_page).to have_group "Bob's Team"
 
       groups_page.delete_group! "Bob's Team"
+
+      expect_flash(type: :info, message: I18n.t(:notice_deletion_scheduled))
+      expect(groups_page).to have_group "Bob's Team"
+
+      perform_enqueued_jobs
+
+      groups_page.visit!
       expect(groups_page).not_to have_group "Bob's Team"
     end
   end

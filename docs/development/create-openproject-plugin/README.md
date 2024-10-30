@@ -6,7 +6,7 @@ OpenProject plugins are special ruby gems. You may include them in your `Gemfile
 
 You can generate a new plugin directly from OpenProject. Think of a good name and a place (in your filesystem) where the plugin should go. In this example, we have a `plugins` directory right next to the `openproject` directory. Then do
 
-```bash
+```shell
 bundle exec rails generate open_project:plugin my_plugin ../plugins/
 ```
 
@@ -24,7 +24,7 @@ Instead of generating a new plugin you can also just clone the example plugin an
 
 To include the new plugin into OpenProject, we have to add it into `Gemfile.plugins` like any other OpenProject plugin. Add the following lines to `Gemfile.plugins`:
 
-```
+```ruby
 group :opf_plugins do
   gem "openproject-my_plugin", :path => '../plugins/openproject-my_plugin'
 end
@@ -34,21 +34,26 @@ If there already is an `opf_plugins` group, just add the `gem` line to it.
 
 Once you've done that install it via
 
-```bash
+```shell
 bundle install
 ```
+
+### Production
+
+To use your plugin in production you have to add it to your [docker](../../installation-and-operations/installation/docker/#openproject-plugins) container or install it in the [packaged installation](../../installation-and-operations/configuration/plugins/#adding-plugins-debrpm-packages).
 
 ## Start coding
 
 You may have a look at some existing OpenProject plugins to get inspiration. It is possible to add new routes, views, models, … and/or overwrite existing ones.
 
-Feel free to ask for help in our [Development Forum](https://community.openproject.org/projects/openproject/boards/7).
+Feel free to ask for help in our [Development Forum](https://community.openproject.org/projects/openproject/forums/7).
 
 ## Steps to release a plugin
 
 The following steps are necessary to release a new plugin:
 
 ### Code Review
+
 A code review should check the whole code and remove glitches like:
 
 - Inappropriate comments
@@ -60,14 +65,15 @@ A code review should check the whole code and remove glitches like:
 1. Check the license and the copyright of the plugin to be released
 
  Usually, this should be GPLv3 and we are the copyright owner. However, some plugins might have additional authors or might originate from code with a different license. These issues have to be resolved first. Also check the years in the copyright. If you need to find all contributors of a repository including their contribution period use the following rake task:
- ```bash
+
+ ```shell
 rake copyright:authors:show['../Path/to/repository/']
-```
+ ```
 
 2. Add a copyright notice to all the source files
 
- There is a rake task in the core to perform this job. Use `rake copyright:update['path_to_plugin']` (e.g. `rake copyright:update['../plugins/openproject-global_roles']`) to add the copyright header in `doc/COPYRIGHT_short.md` to all relevant plugin files.
- If no such file exists, `doc/COPYRIGHT_short.md` from the core is used.
+ There is a rake task in the core to perform this job. Use `rake copyright:update['path_to_plugin']` (e.g. `rake copyright:update['../plugins/openproject-global_roles']`) to add the copyright header in `COPYRIGHT_short` to all relevant plugin files.
+ If no such file exists, `COPYRIGHT_short` from the core is used.
 
 3. Check for existence of `doc/COPYRIGHT.md` and `doc/GPL.txt` if referenced by the copyright notice.
 
@@ -84,13 +90,13 @@ There should be a file README.md containing:
 
 If you’re unsure about if/who to give credit, you should take a look into the changelog:
 
-```bash
+```shell
 git log --pretty=format:%aN | sort | uniq -c | sort -rn
 ```
 
 For your convenience you may use the following rake task, that extracts all authors from a repository
 
-```bash
+```shell
 rake copyright:authors:show['../Path/to/repository/']
 ```
 
@@ -109,7 +115,7 @@ It is probably best to use READMEs of already released plugins as a template.
 8. Push the version of the plugin, mostly by just removing any .preX specials at the end.
 9. Don’t forget to add a changelog entry.
 10. Commit everything.
-11. Also create a release tag (named ‘release/<version>’ for example ‘release/1.0.2′) to name the new version.
+11. Also create a release tag (named ‘release/&lt;version&gt;’ for example ‘release/1.0.2′) to name the new version.
 12. Push the tag with `git push --tags`.
 
 ### Publish the gem at Rubygems
@@ -118,23 +124,22 @@ It is probably best to use READMEs of already released plugins as a template.
 - Ensure gemspec fields are complete and version number is correct
 - `gem build <name>.gemspec`
 - `gem push <name>-<version>.gem`. This asks for your user/password
-- Go to https://rubygems.org, log in, go to the dashboard, click on the uploaded gem, click edit.  Set URLs, at least source code URL and Bug Tracker URL
+- Go to [rubygems.org](https://rubygems.org), log in, go to the dashboard, click on the uploaded gem, click edit.  Set URLs, at least source code URL and Bug Tracker URL
 - You are done .
-- *Be careful when publishing a gem.Once it is published, it cannot be replaced in the same version*. It is only possible to take a version out of the index and publish a new version.
+- *Be careful when publishing a gem. Once it is published, it cannot be replaced in the same version*. It is only possible to take a version out of the index and publish a new version.
 
 ### Create public visibility
 
 1. Make the github repository public.
 2. Make the plugin project public.
-  Do a little cleanup work first by removing modules not needed. Currently,
-  Activity, Issue Tracking, Time Tracking, Forums, and Backlogs are default.
-  Also, the My Project Page should only show Project Description and Tickets blocks.
+    Do a little cleanup work first by removing modules not needed. Currently,
+    Activity, Issue Tracking, Time Tracking, Forums, and Backlogs are default.
+    Also, the My Project Page should only show Project Description and Tickets blocks.
 3. Create a news article about the newly released plugin and its features.
-4. Twitter with a link to the news article.
+4. Share a link to the news article on social media.
 5. If the plugin is referenced in our feature tour, add a download link to the plugin in the feature tour
 
-
-# Frontend plugins [WIP]
+## Frontend plugins [WIP]
 
 Plugins that extend the frontend application may be packaged as **npm modules**.
 These plugins must contain a `package.json` in the root directory of the plugin.

@@ -1,13 +1,12 @@
-#-- encoding: UTF-8
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -24,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 ##
@@ -35,12 +34,11 @@
 # creation and deletion of repositories BOTH on the database and filesystem.
 # Until then, a synchronous process is more failsafe.
 class SCM::CreateLocalRepositoryJob < ApplicationJob
-
   def self.ensure_not_existing!(repository)
     # Cowardly refusing to override existing local repository
     if File.directory?(repository.root_url)
       raise OpenProject::SCM::Exceptions::SCMError.new(
-        I18n.t('repositories.errors.exists_on_filesystem')
+        I18n.t("repositories.errors.exists_on_filesystem")
       )
     end
   end
@@ -51,7 +49,7 @@ class SCM::CreateLocalRepositoryJob < ApplicationJob
     self.class.ensure_not_existing!(repository)
 
     # Create the repository locally.
-    mode = (config[:mode] || default_mode)
+    mode = config[:mode] || default_mode
 
     # Ensure that chmod receives an octal number
     unless mode.is_a? Integer
@@ -76,10 +74,10 @@ class SCM::CreateLocalRepositoryJob < ApplicationJob
 
   ##
   # Creates the repository at the +root_url+.
-  # Accepts an overriden permission mode mask from the scm config,
+  # Accepts an overridden permission mode mask from the scm config,
   # or sets a sensible default of 0700.
   def create(mode)
-    FileUtils.mkdir_p(repository.root_url, mode: mode)
+    FileUtils.mkdir_p(repository.root_url, mode:)
   end
 
   ##
@@ -102,6 +100,6 @@ class SCM::CreateLocalRepositoryJob < ApplicationJob
   end
 
   def default_mode
-    0700
+    0o700
   end
 end

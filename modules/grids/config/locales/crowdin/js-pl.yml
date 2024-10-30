@@ -5,9 +5,10 @@ pl:
       remove: 'Usuń widżet'
       configure: 'Konfiguruj widżet'
       upsale:
-        text: "Niektóre widżety, takie jak widżet wykresu pakietu roboczego, są dostępne jedynie w wersji"
-        link: 'Enterprise Edition.'
+        text: "Niektóre widżety, takie jak widżet wykresu pakietu roboczego, są dostępne jedynie w wersji Enterprise."
+        link: 'Wersja Enterprise.'
       widgets:
+        missing_permission: "Nie masz uprawnień niezbędnych do wyświetlenia tego widżetu."
         custom_text:
           title: 'Tekst niestandardowy/użytkownika'
         documents:
@@ -26,18 +27,21 @@ pl:
         project_description:
           title: 'Opis projektu'
           no_results: "Nie napisano jeszcze opisu. Można go podać w sekcji Ustawienia projektu."
-        project_details:
-          title: 'Szczegóły Projektu'
-          no_results: 'Nie zdefiniowano żadnych pól niestandardowych dla projektów.'
         project_status:
           title: 'Stan projektu'
+          not_started: 'Nierozpoczęte'
           on_track: 'Na ścieżce'
           off_track: 'Poza ścieżką'
           at_risk: 'Zagrożony'
           not_set: 'Nie ustawione'
+          finished: 'Zakończone'
+          discontinued: 'Przerwane'
         subprojects:
           title: 'Podprojekty'
           no_results: 'Brak podprojektów.'
+        project_favorites:
+          title: 'Ulubione projekty'
+          no_results: 'Obecnie nie masz żadnych ulubionych projektów. Kliknij ikonę gwiazdki na pulpicie nawigacyjnym projektu, aby dodać go do ulubionych.'
         time_entries_current_user:
           title: 'Mój spędzony czas'
           displayed_days: 'Dni wyświetlane w widżecie:'

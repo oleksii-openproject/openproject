@@ -1,10 +1,10 @@
 #-- copyright
 #OpenProject is an open source project management software.
-#Copyright (C) 2012-2020 the OpenProject GmbH
+#Copyright (C) the OpenProject GmbH
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License version 3.
 #OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-#Copyright (C) 2006-2017 Jean-Philippe Lang
+#Copyright (C) 2006-2013 Jean-Philippe Lang
 #Copyright (C) 2010-2013 the ChiliProject Team
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License
@@ -17,15 +17,16 @@
 #You should have received a copy of the GNU General Public License
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-#See docs/COPYRIGHT.rdoc for more details.
+#See COPYRIGHT and LICENSE files for more details.
 #++
 nl:
+  plugin_openproject_backlogs:
+    name: "OpenProject Backlogs"
+    description: "This module adds features enabling agile teams to work with OpenProject in Scrum projects."
   activerecord:
     attributes:
       work_package:
         position: "Positie"
-        remaining_hours: "Resterende uren"
-        remaining_time: "Resterende uren"
         story_points: "Verhaal punten"
         backlogs_work_package_type: "Backlog type"
     errors:
@@ -35,9 +36,6 @@ nl:
             blocks_ids:
               can_only_contain_work_packages_of_current_sprint: "kan alleen ID's bevatten van werkpakketten in de huidige sprint."
               must_block_at_least_one_work_package: "het moet de ID bevatten van ten minste één ticket."
-            parent_id:
-              parent_child_relationship_across_projects: "is ongeldig omdat het werkpakket '%{work_package_name}' een backlogtaak is en vandaar kan geen ouder buiten het huidige project hebben."
-              type_must_be_one_of_the_following: "Het type moet een van de volgende zijn: %{type_names}."
             version_id:
               task_version_must_be_the_same_as_story_version: "moet hetzelfde zijn als de ouder verhaalversie."
         sprint:
@@ -45,7 +43,7 @@ nl:
   backlogs:
     add_new_story: "Nieuwe Story"
     any: "elke"
-    backlog_settings: "Backlogs settings"
+    backlog_settings: "Instellingen backlogs"
     burndown_graph: "Burndown grafiek"
     card_paper_size: "Papierformaat voor het afdrukken van de kaart"
     chart_options: "Grafiekopties"
@@ -66,8 +64,8 @@ nl:
     properties: "Eigenschappen"
     rebuild: "Opnieuw opbouwen"
     rebuild_positions: "Posities van opnieuw opbouwen"
-    remaining_hours: "Resterende uren"
-    remaining_hours_ideal: "Resterende uren (ideaal)"
+    remaining_hours: "Resterend werk"
+    remaining_hours_ideal: "Resterend werk (ideaal)"
     show_burndown_chart: "Verbrandingstabel"
     story: "Verhaal"
     story_points: "Verhaal punten"
@@ -78,7 +76,6 @@ nl:
     x_more: "%{count} meer..."
   backlogs_active: "actief"
   backlogs_any: "elke"
-  backlogs_card_specification: "Typen labels voor het afdrukken van kaarten"
   backlogs_inactive: "Het project toont geen activiteit"
   backlogs_points_burn_direction: "Punten gaan omhoog / omlaag"
   backlogs_product_backlog: "Product backlog"
@@ -99,6 +96,7 @@ nl:
   backlogs_empty_title: "Er zijn geen versies gedefinieerd om te worden gebruikt in de backlogs"
   backlogs_empty_action_text: "Om te beginnen met backlogs, maak een nieuwe versie en ken deze toe aan een backlog kolom."
   button_edit_wiki: "Wikipagina bewerken"
+  error_backlogs_task_cannot_be_story: "De instellingen zijn ongeldig. Het geselecteerde taaktype kan niet ook een verhaaltype zijn."
   error_intro_plural: "De volgende fouten zijn opgetreden:"
   error_intro_singular: "De volgende fout is opgetreden:"
   error_outro: "Los de bovenstaande fouten op voordat u opnieuw verzendt."
@@ -110,7 +108,7 @@ nl:
   label_backlog: "Backlog"
   label_backlogs: "Backlogs"
   label_backlogs_unconfigured: "Je hebt Backlogs nog niet geconfigureerd. Ga naar %{administration} >%{plugins}, en klik op de %{configure} voor deze plug-in. Kom hier terug nadat u de velden hebt geconfigureerd."
-  label_blocks_ids: "It's van geblokkeerde werkpakketten"
+  label_blocks_ids: "ID's van geblokkeerde werkpakketten"
   label_burndown: "Burndown"
   label_column_in_backlog: "Kolom in achterstand"
   label_hours: "uren"
@@ -136,6 +134,7 @@ nl:
   label_wiki: "Wiki"
   permission_view_master_backlog: "Toon Máster Backlog"
   permission_view_taskboards: "Bekijk taakborden"
+  permission_select_done_statuses: "Selecteer voltooide statussen"
   permission_update_sprints: "Sprints bijwerken"
   points_accepted: "punten aanvaard"
   points_committed: "punten begaan"
@@ -148,7 +147,7 @@ nl:
   rb_label_copy_tasks_none: "Geen"
   rb_label_copy_tasks_open: "Open"
   rb_label_link_to_original: "Link toevoegen aan het originele verhaal"
-  remaining_hours: "resterende uren"
+  remaining_hours: "resterend werk"
   required_burn_rate_hours: "vereiste burn rate (uren)"
   required_burn_rate_points: "vereiste burn rate (punten)"
   todo_work_package_description: "%{summary}: %{url}\n%{description}"

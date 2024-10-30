@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,17 +23,17 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'spec_helper'
+require "spec_helper"
 
-describe Authorization::QueryTransformation do
-  let(:on) { 'on' }
-  let(:name) { 'name' }
-  let(:after) { 'after' }
-  let(:before) { 'before' }
-  let(:block) { -> (*args) { args } }
+RSpec.describe Authorization::QueryTransformation do
+  let(:on) { "on" }
+  let(:name) { "name" }
+  let(:after) { "after" }
+  let(:before) { "before" }
+  let(:block) { ->(*args) { args } }
 
   let(:instance) do
     described_class.new on,
@@ -43,31 +43,31 @@ describe Authorization::QueryTransformation do
                         block
   end
 
-  context 'initialSetup' do
-    it 'sets on' do
+  context "initialSetup" do
+    it "sets on" do
       expect(instance.on).to eql on
     end
 
-    it 'sets name' do
+    it "sets name" do
       expect(instance.name).to eql name
     end
 
-    it 'sets after' do
+    it "sets after" do
       expect(instance.after).to eql after
     end
 
-    it 'sets before' do
+    it "sets before" do
       expect(instance.before).to eql before
     end
 
-    it 'sets block' do
+    it "sets block" do
       expect(instance.block).to eql block
     end
   end
 
-  context 'apply' do
-    it 'calls the block' do
-      expect(instance.apply(1, 2, 3)).to match_array [1, 2, 3]
+  context "apply" do
+    it "calls the block" do
+      expect(instance.apply(1, 2, 3)).to contain_exactly(1, 2, 3)
     end
   end
 end

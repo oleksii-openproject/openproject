@@ -1,14 +1,12 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -25,30 +23,37 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-class WorkPackages::Scopes::IncludeDerivedDates
-  attr_accessor :user,
-                :work_package
+module WorkPackages::Scopes::IncludeDerivedDates
+  extend ActiveSupport::Concern
 
-  class << self
-    def fetch
-      WorkPackage
-        .left_joins(:descendants)
-        .select(*select_statement)
+  class_methods do
+    def include_derived_dates
+      joins(derived_dates_join_statement)
+        .select(*derived_dates_select_statement)
         .group(:id)
     end
 
     private
 
-    def select_statement
+    def derived_dates_select_statement
       ["LEAST(MIN(#{descendants_alias}.start_date), MIN(#{descendants_alias}.due_date)) AS derived_start_date",
        "GREATEST(MAX(#{descendants_alias}.start_date), MAX(#{descendants_alias}.due_date)) AS derived_due_date"]
     end
 
+    def derived_dates_join_statement
+      <<~SQL.squish
+        LEFT JOIN work_package_hierarchies wp_hierarchies
+        ON wp_hierarchies.ancestor_id = work_packages.id AND wp_hierarchies.generations > 0
+        LEFT JOIN work_packages #{descendants_alias}
+        ON wp_hierarchies.descendant_id = #{descendants_alias}.id
+      SQL
+    end
+
     def descendants_alias
-      'descendants_work_packages'
+      "descendants_work_packages"
     end
   end
 end

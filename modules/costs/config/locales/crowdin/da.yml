@@ -1,10 +1,10 @@
 #-- copyright
 #OpenProject is an open source project management software.
-#Copyright (C) 2012-2020 the OpenProject GmbH
+#Copyright (C) the OpenProject GmbH
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License version 3.
 #OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-#Copyright (C) 2006-2017 Jean-Philippe Lang
+#Copyright (C) 2006-2013 Jean-Philippe Lang
 #Copyright (C) 2010-2013 the ChiliProject Team
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License
@@ -17,9 +17,12 @@
 #You should have received a copy of the GNU General Public License
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-#See docs/COPYRIGHT.rdoc for more details.
+#See COPYRIGHT and LICENSE files for more details.
 #++
 da:
+  plugin_costs:
+    name: "Time and costs"
+    description: "This module adds features for planning and tracking costs of projects."
   activerecord:
     attributes:
       cost_entry:
@@ -85,13 +88,13 @@ da:
   label_currency: "Valuta"
   label_currency_format: "Valutaformat"
   label_current_default_rate: "Nuværende standardsats"
-  label_date_on: "på"
+  label_date_on: "d."
   label_deleted_cost_types: "Slettede omkostningstyper"
   label_locked_cost_types: "Locked cost types"
   label_display_cost_entries: "Vis enhedsomkostninger"
   label_display_time_entries: "Vis indberettede timer"
   label_display_types: "Vis typer"
-  label_edit: "Rediger"
+  label_edit: "Redigér"
   label_generic_user: "Generisk bruger"
   label_greater_or_equal: ">="
   label_group_by: "Gruppér efter"
@@ -103,11 +106,12 @@ da:
   label_less_or_equal: "<="
   label_log_costs: "Registrér enhedsomkostninger"
   label_no: "Nej"
-  label_option_plural: "Muligheder"
+  label_option_plural: "Valgmuligheder"
   label_overall_costs: "Samlede omkostninger"
   label_rate: "Sats"
   label_rate_plural: "Satser"
   label_status_finished: "Afsluttet"
+  label_show: "Show"
   label_units: "Omkostningsenheder"
   label_user: "Bruger"
   label_until: "indtil"
@@ -139,4 +143,4 @@ da:
   text_warning_hidden_elements: "Visse angivelser kan været blevet ekskluderet fra sammenlægning."
   week: "uge"
   js:
-    text_are_you_sure: "Er du sikker?"
+    text_are_you_sure: "Sikker?"

@@ -1,12 +1,12 @@
 <%#-- copyright
 OpenProject is an open source project management software.
-Copyright (C) 2012-2020 the OpenProject GmbH
+Copyright (C) the OpenProject GmbH
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License version 3.
 
 OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-Copyright (C) 2006-2017 Jean-Philippe Lang
+Copyright (C) 2006-2013 Jean-Philippe Lang
 Copyright (C) 2010-2013 the ChiliProject Team
 
 This program is free software; you can redistribute it and/or
@@ -23,17 +23,17 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-See docs/COPYRIGHT.rdoc for more details.
+See COPYRIGHT and LICENSE files for more details.
 
 ++#%>
 <% html_title t(:label_forum_plural) %>
 <%= toolbar title: t(:label_forum_plural) do %>
-  <% if User.current.allowed_to?(:manage_forums, @project) %>
+  <% if User.current.allowed_in_project?(:manage_forums, @project) %>
     <li class="toolbar-item">
       <%= link_to(new_project_forum_path(@project),
                   { aria: { label: t(:label_forum_new) },
                     title: t(:label_forum_new),
-                    class: 'button -alt-highlight' }) do %>
+                    class: 'button -primary' }) do %>
         <%= op_icon('button--icon icon-add') %>
         <span class="button--text"><%= t('activerecord.models.forum') %></span>
       <% end %>
@@ -46,15 +46,15 @@ See docs/COPYRIGHT.rdoc for more details.
 <% else %>
   <div class="generic-table--container">
     <div class="generic-table--results-container">
-      <table class="generic-table boards">
+      <table class="generic-table boards" data-controller="table-highlighting">
         <colgroup>
-          <col highlight-col>
-          <col highlight-col>
-          <col highlight-col>
-          <col highlight-col>
-          <% if User.current.allowed_to?(:manage_forums, @project) %>
-            <col highlight-col>
+          <col>
+          <col>
+          <col>
+          <col>
+          <% if User.current.allowed_in_project?(:manage_forums, @project) %>
             <col>
+            <col data-highlight="false">
           <% end %>
         </colgroup>
         <thead>
@@ -63,7 +63,7 @@ See docs/COPYRIGHT.rdoc for more details.
               <div class="generic-table--sort-header-outer">
                 <div class="generic-table--sort-header">
                   <span>
-                    <%= Forum.name.humanize %>
+                    <%= Forum.model_name.human %>
                   </span>
                 </div>
               </div>
@@ -95,7 +95,7 @@ See docs/COPYRIGHT.rdoc for more details.
                 </div>
               </div>
             </th>
-            <% if User.current.allowed_to?(:manage_forums, @project) %>
+            <% if User.current.allowed_in_project?(:manage_forums, @project) %>
               <th>
                 <div class="generic-table--sort-header-outer">
                   <div class="generic-table--sort-header">
@@ -121,11 +121,11 @@ See docs/COPYRIGHT.rdoc for more details.
               <td>
                 <% if forum.last_message %>
                   <% forum.last_message %>
-                  <%= authoring forum.last_message.created_on, forum.last_message.author %><br />
+                  <%= authoring forum.last_message.created_at, forum.last_message.author %><br />
                   <%= link_to_message forum.last_message, no_root: true %>
                 <% end %>
               </td>
-              <% if User.current.allowed_to?(:manage_forums, @project) %>
+              <% if User.current.allowed_in_project?(:manage_forums, @project) %>
                 <td class="small-icons">
                   <% if authorize_for 'forums', 'edit' %>
                     <%= reorder_links 'forum', controller: '/forums',

@@ -20,15 +20,34 @@ class PermittedParams
     module_function
 
     def all
-      keys = Setting.available_settings.keys
+      keys = Settings::Definition.all.keys
 
       restrictions.select(&:applicable?).each do |restriction|
-        restricted_keys = restriction.restricted_keys
-
-        keys.delete_if { |key| restricted_keys.include? key }
+        keys -= restriction.restricted_keys
       end
 
       keys
+    end
+
+    def filters
+      restricted_keys = Set.new(self.restricted_keys)
+      Settings::Definition.all.flat_map do |key, definition|
+        next if restricted_keys.include?(key)
+
+        case definition.format
+        when :hash
+          { key => {} }
+        when :array
+          { key => [] }
+        else
+          key
+        end
+      end
+    end
+
+    def restricted_keys
+      restrictions.select(&:applicable?)
+                  .flat_map(&:restricted_keys)
     end
 
     def add_restriction!(keys:, condition:)
@@ -40,7 +59,7 @@ class PermittedParams
     end
 
     def init!
-      password_keys = %w(
+      password_keys = %i(
         password_min_length
         password_active_rules
         password_min_adhered_rules
@@ -55,8 +74,8 @@ class PermittedParams
       )
 
       add_restriction!(
-        keys: %w(registration_footer),
-        condition: -> { OpenProject::Configuration.registration_footer.present? }
+        keys: %i(registration_footer),
+        condition: -> { !Setting.registration_footer_writable? }
       )
     end
 

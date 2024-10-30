@@ -1,14 +1,12 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -25,29 +23,29 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'spec_helper'
+require "spec_helper"
 
-describe Queries::Members::Filters::NameFilter, type: :model do
-  include_context 'filter tests'
-  let(:values) { ['A name'] }
+RSpec.describe Queries::Members::Filters::NameFilter do
+  include_context "filter tests"
+  let(:values) { ["A name"] }
   let(:model) { Member.joins(:principal) }
 
-  it_behaves_like 'basic query filter' do
+  it_behaves_like "basic query filter" do
     let(:class_key) { :name }
     let(:type) { :string }
     let(:model) { Member.joins(:principal) }
 
-    describe '#allowed_values' do
-      it 'is nil' do
+    describe "#allowed_values" do
+      it "is nil" do
         expect(instance.allowed_values).to be_nil
       end
     end
   end
 
-  describe '#scope' do
+  describe "#apply_to" do
     before do
       allow(Setting)
         .to receive(:user_format)
@@ -55,42 +53,42 @@ describe Queries::Members::Filters::NameFilter, type: :model do
     end
 
     context 'for "="' do
-      let(:operator) { '=' }
+      let(:operator) { "=" }
 
-      it 'is the same as handwriting the query' do
-        expected = model.where("LOWER(users.firstname) IN ('#{values.first.downcase}')")
+      it "is the same as handwriting the query" do
+        expected = model.where("LOWER(users.firstname) IN ('#{values.first.downcase}') OR unaccent(LOWER(users.firstname)) IN ('#{values.first.downcase}')")
 
-        expect(instance.scope.to_sql).to eql expected.to_sql
+        expect(instance.apply_to(model).to_sql).to eql expected.to_sql
       end
     end
 
     context 'for "!"' do
-      let(:operator) { '!' }
+      let(:operator) { "!" }
 
-      it 'is the same as handwriting the query' do
-        expected = model.where("LOWER(users.firstname) NOT IN ('#{values.first.downcase}')")
+      it "is the same as handwriting the query" do
+        expected = model.where("LOWER(users.firstname) NOT IN ('a name') AND unaccent(LOWER(users.firstname)) NOT IN ('a name')")
 
-        expect(instance.scope.to_sql).to eql expected.to_sql
+        expect(instance.apply_to(model).to_sql).to eql expected.to_sql
       end
     end
 
     context 'for "~"' do
-      let(:operator) { '~' }
+      let(:operator) { "~" }
 
-      it 'is the same as handwriting the query' do
-        expected = model.where("LOWER(users.firstname) LIKE '%#{values.first.downcase}%'")
+      it "is the same as handwriting the query" do
+        expected = model.where("unaccent(LOWER(users.firstname)) LIKE unaccent('%#{values.first.downcase}%')")
 
-        expect(instance.scope.to_sql).to eql expected.to_sql
+        expect(instance.apply_to(model).to_sql).to eql expected.to_sql
       end
     end
 
     context 'for "!~"' do
-      let(:operator) { '!~' }
+      let(:operator) { "!~" }
 
-      it 'is the same as handwriting the query' do
-        expected = model.where("LOWER(users.firstname) NOT LIKE '%#{values.first.downcase}%'")
+      it "is the same as handwriting the query" do
+        expected = model.where("unaccent(LOWER(users.firstname)) NOT LIKE unaccent('%#{values.first.downcase}%')")
 
-        expect(instance.scope.to_sql).to eql expected.to_sql
+        expect(instance.apply_to(model).to_sql).to eql expected.to_sql
       end
     end
   end

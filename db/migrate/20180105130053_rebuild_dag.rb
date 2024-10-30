@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,14 +23,17 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
-require_relative './migration_utils/utils'
+require_relative "migration_utils/utils"
+require_relative "migration_utils/typed_dag"
 
 class RebuildDag < ActiveRecord::Migration[5.0]
   include ::Migration::Utils
 
   def up
+    Migration::MigrationUtils::TypedDag.configure
+
     truncate_closure_entries
     remove_duplicate_relations
 
@@ -44,11 +47,11 @@ class RebuildDag < ActiveRecord::Migration[5.0]
 
     add_index :relations,
               %i(from_id to_id hierarchy relates duplicates blocks follows includes requires),
-              name: 'index_relations_on_type_columns',
+              name: "index_relations_on_type_columns",
               unique: true
 
-    say_with_time 'Building the directed acyclic graph of all relations. This might take a while.' do
-      WorkPackage.rebuild_dag! 1000
+    say_with_time "Building the directed acyclic graph of all relations. This might take a while." do
+      Migration::MigrationUtils::TypedDag::WorkPackage.rebuild_dag! 1000
     end
 
     add_count_index
@@ -63,11 +66,11 @@ class RebuildDag < ActiveRecord::Migration[5.0]
       remove_column :relations, :count
     end
 
-    remove_index_if_exists :relations, 'index_relations_hierarchy_follows_scheduling'
-    remove_index_if_exists :relations, 'index_relations_only_hierarchy'
-    remove_index_if_exists :relations, 'index_relations_to_from_only_follows'
-    remove_index_if_exists :relations, 'index_relations_direct_non_hierarchy'
-    remove_index_if_exists :relations, 'index_relations_on_type_columns'
+    remove_index_if_exists :relations, "index_relations_hierarchy_follows_scheduling"
+    remove_index_if_exists :relations, "index_relations_only_hierarchy"
+    remove_index_if_exists :relations, "index_relations_to_from_only_follows"
+    remove_index_if_exists :relations, "index_relations_direct_non_hierarchy"
+    remove_index_if_exists :relations, "index_relations_on_type_columns"
 
     truncate_closure_entries
   end
@@ -76,7 +79,7 @@ class RebuildDag < ActiveRecord::Migration[5.0]
 
   def add_count_index
     # supports finding relations that are to be deleted
-    add_index :relations, :count, where: 'count = 0'
+    add_index :relations, :count, where: "count = 0"
   end
 
   def add_scheduling_indices
@@ -84,7 +87,7 @@ class RebuildDag < ActiveRecord::Migration[5.0]
     # has been moved
     add_index :relations,
               %i(to_id hierarchy follows from_id),
-              name: 'index_relations_hierarchy_follows_scheduling',
+              name: "index_relations_hierarchy_follows_scheduling",
               where: <<-SQL
                 relations.relates = 0
                 AND relations.duplicates = 0
@@ -92,11 +95,11 @@ class RebuildDag < ActiveRecord::Migration[5.0]
                 AND relations.includes = 0
                 AND relations.requires = 0
                 AND (hierarchy + relates + duplicates + follows + blocks + includes + requires > 0)
-    SQL
+              SQL
 
     add_index :relations,
               %i(from_id to_id hierarchy),
-              name: 'index_relations_only_hierarchy',
+              name: "index_relations_only_hierarchy",
               where: <<-SQL
                 relations.relates = 0
                 AND relations.duplicates = 0
@@ -104,11 +107,11 @@ class RebuildDag < ActiveRecord::Migration[5.0]
                 AND relations.blocks = 0
                 AND relations.includes = 0
                 AND relations.requires = 0
-    SQL
+              SQL
 
     add_index :relations,
               %i(to_id follows from_id),
-              name: 'index_relations_to_from_only_follows',
+              name: "index_relations_to_from_only_follows",
               where: <<-SQL
                 hierarchy = 0
                 AND relates = 0
@@ -116,15 +119,15 @@ class RebuildDag < ActiveRecord::Migration[5.0]
                 AND blocks = 0
                 AND includes = 0
                 AND requires = 0
-    SQL
+              SQL
   end
 
   def add_non_hierarchy_index
     # supports finding relations via the api as only non hierarchy relations are returned
     add_index :relations,
               :from_id,
-              name: 'index_relations_direct_non_hierarchy',
-              where: '(hierarchy + relates + duplicates + follows + blocks + includes + requires = 1) AND relations.hierarchy = 0'
+              name: "index_relations_direct_non_hierarchy",
+              where: "(hierarchy + relates + duplicates + follows + blocks + includes + requires = 1) AND relations.hierarchy = 0"
   end
 
   def set_count_to_1
@@ -147,7 +150,7 @@ class RebuildDag < ActiveRecord::Migration[5.0]
   def remove_duplicate_relations
     equal_conditions = relation_types.map do |type|
       "r1.#{type} = r2.#{type}"
-    end.join(' AND ')
+    end.join(" AND ")
 
     ActiveRecord::Base.connection.execute <<-SQL
       DELETE

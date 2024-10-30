@@ -1,14 +1,12 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -25,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module Queries::Filters::Shared::UserNameFilter
@@ -45,14 +43,14 @@ module Queries::Filters::Shared::UserNameFilter
 
     def where
       case operator
-      when '='
-        ["#{sql_concat_name} IN (?)", sql_value]
-      when '!'
-        ["#{sql_concat_name} NOT IN (?)", sql_value]
-      when '~'
-        ["#{sql_concat_name} LIKE ?", "%#{sql_value}%"]
-      when '!~'
-        ["#{sql_concat_name} NOT LIKE ?", "%#{sql_value}%"]
+      when "="
+        ["#{sql_concat_name} IN (:s) OR unaccent(#{sql_concat_name}) IN (:s)", { s: sql_value }]
+      when "!"
+        ["#{sql_concat_name} NOT IN (:s) AND unaccent(#{sql_concat_name}) NOT IN (:s)", { s: sql_value }]
+      when "~", "**"
+        ["unaccent(#{sql_concat_name}) LIKE unaccent(:s)", { s: "%#{sql_value}%" }]
+      when "!~"
+        ["unaccent(#{sql_concat_name}) NOT LIKE unaccent(:s)", { s: "%#{sql_value}%" }]
       end
     end
 
@@ -60,21 +58,23 @@ module Queries::Filters::Shared::UserNameFilter
 
     def sql_value
       case operator
-      when '=', '!'
-        values.map { |val| self.class.connection.quote_string(val.downcase) }.join(',')
-      when '~', '!~'
+      when "=", "!"
+        values.map { |val| self.class.connection.quote_string(val.downcase) }.join(",")
+      when "**", "~", "!~"
         values.first.downcase
       end
     end
 
     def sql_concat_name
       case Setting.user_format
-      when :firstname_lastname, :lastname_coma_firstname
-        "LOWER(CONCAT(users.firstname, CONCAT(' ', users.lastname)))"
+      when :firstname_lastname
+        "LOWER(CONCAT(users.firstname, ' ', users.lastname))"
       when :firstname
-        'LOWER(users.firstname)'
-      when :lastname_firstname
+        "LOWER(users.firstname)"
+      when :lastname_firstname, :lastname_coma_firstname
         "LOWER(CONCAT(users.lastname, CONCAT(' ', users.firstname)))"
+      when :lastname_n_firstname
+        "LOWER(CONCAT(users.lastname, users.firstname))"
       when :username
         "LOWER(users.login)"
       end

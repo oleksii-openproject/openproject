@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,91 +23,81 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'spec_helper'
-require 'rack/test'
+require "spec_helper"
+require "rack/test"
 
-describe 'API v3 Status resource' do
+RSpec.describe "API v3 Status resource" do
   include Rack::Test::Methods
   include API::V3::Utilities::PathHelper
 
-  let(:role) { FactoryBot.create(:role, permissions: [:view_work_packages]) }
-  let(:project) { FactoryBot.create(:project, public: false) }
+  let(:role) { create(:project_role, permissions: [:view_work_packages]) }
+  let(:project) { create(:project, public: false) }
   let(:current_user) do
-    FactoryBot.create(:user,
-                       member_in_project: project,
-                       member_through_role: role)
+    create(:user, member_with_roles: { project => role })
   end
 
-  let!(:statuses) { FactoryBot.create_list(:status, 4) }
+  let!(:statuses) { create_list(:status, 4) }
 
-  describe 'statuses' do
-    describe '#get' do
+  describe "statuses" do
+    describe "#get" do
       let(:get_path) { api_v3_paths.statuses }
+
       subject(:response) { last_response }
 
-      context 'logged in user' do
+      context "logged in user" do
         before do
           allow(User).to receive(:current).and_return current_user
 
           get get_path
         end
 
-        it_behaves_like 'API V3 collection response', 4, 4, 'Status'
+        it_behaves_like "API V3 collection response", 4, 4, "Status"
       end
 
-      context 'not logged in user' do
+      context "not logged in user" do
         before do
           get get_path
         end
 
-        it_behaves_like 'error response',
-                        403,
-                        'MissingPermission',
-                        I18n.t('api_v3.errors.code_403')
+        it_behaves_like "forbidden response based on login_required"
       end
     end
   end
 
-  describe 'statuses/:id' do
-    describe '#get' do
+  describe "statuses/:id" do
+    describe "#get" do
       let(:status) { statuses.first }
       let(:get_path) { api_v3_paths.status status.id }
 
       subject(:response) { last_response }
 
-      context 'logged in user' do
+      context "logged in user" do
         before do
           allow(User).to receive(:current).and_return(current_user)
 
           get get_path
         end
 
-        context 'valid status id' do
-          it { expect(response.status).to eq(200) }
+        context "valid status id" do
+          it { expect(response).to have_http_status(:ok) }
         end
 
-        context 'invalid status id' do
-          let(:get_path) { api_v3_paths.status 'bogus' }
+        context "invalid status id" do
+          let(:get_path) { api_v3_paths.status "bogus" }
 
-          it_behaves_like 'param validation error' do
-            let(:id) { 'bogus' }
-            let(:type) { 'Status' }
-          end
+          it_behaves_like "not found"
         end
       end
 
-      context 'not logged in user' do
+      context "not logged in user" do
         before do
           get get_path
         end
 
-        it_behaves_like 'error response',
-                        403,
-                        'MissingPermission',
-                        I18n.t('api_v3.errors.code_403')
+        it_behaves_like "forbidden response based on login_required"
       end
     end
   end

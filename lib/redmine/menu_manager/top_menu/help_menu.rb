@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,20 +23,21 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module Redmine::MenuManager::TopMenu::HelpMenu
   def render_help_top_menu_node(item = help_menu_item)
-    cache_key = ['help_top_menu_node',
+    cache_key = ["help_top_menu_node",
                  OpenProject::Static::Links.links,
                  I18n.locale,
-                 OpenProject::Static::Links.help_link]
-
+                 OpenProject::Static::Links.help_link,
+                 EnterpriseToken.active?]
     OpenProject::Cache.fetch(cache_key) do
       if OpenProject::Static::Links.help_link_overridden?
-        render_menu_node(item)
-        content_tag('li', render_single_menu_node(item), class: 'help-menu--overridden-link')
+        content_tag("li",
+                    render_single_menu_node(item, nil, "op-app-menu"),
+                    class: "op-app-menu--item op-app-help op-app-help_overridden")
       else
         render_help_dropdown
       end
@@ -44,19 +45,19 @@ module Redmine::MenuManager::TopMenu::HelpMenu
   end
 
   def render_help_dropdown
-    link_to_help_pop_up = link_to '',
+    link_to_help_pop_up = link_to "#",
                                   title: I18n.t(:label_help),
-                                  class: 'menu-item--help',
-                                  aria: { haspopup: 'true' } do
-      op_icon('icon-help')
+                                  class: "op-app-menu--item-action",
+                                  aria: { haspopup: "true" } do
+      render(Primer::Beta::Octicon.new(icon: "question", size: :medium))
     end
 
     render_menu_dropdown(
       link_to_help_pop_up,
-      menu_item_class: 'hidden-for-mobile',
-      drop_down_class: 'drop-down--help'
+      menu_item_class: "op-app-help hidden-for-mobile",
+      drop_down_class: "op-menu"
     ) do
-      result = ''.html_safe
+      result = "".html_safe
       render_onboarding result
       render_help_and_support result
       render_additional_resources result
@@ -68,47 +69,54 @@ module Redmine::MenuManager::TopMenu::HelpMenu
   private
 
   def render_onboarding(result)
-    result << content_tag(:li) do
-      content_tag(:span, I18n.t('top_menu.getting_started'),
-                  class: 'drop-down--help-headline',
-                  title: I18n.t('top_menu.getting_started'))
+    result << content_tag(:li, class: "op-menu--item") do
+      content_tag(:span, I18n.t("top_menu.getting_started"),
+                  class: "op-menu--headline",
+                  title: I18n.t("top_menu.getting_started"))
     end
     result << render_onboarding_menu_item
-    result << content_tag(:hr, '', class: 'form--separator')
+    result << content_tag(:hr, "", class: "op-menu--separator")
   end
 
   def render_onboarding_menu_item
-    controller.render_to_string(partial: 'onboarding/menu_item')
+    controller.render_to_string(partial: "onboarding/menu_item")
   end
 
   def render_help_and_support(result)
-    result << content_tag(:li) do
-      content_tag :span, I18n.t('top_menu.help_and_support'),
-                  class: 'drop-down--help-headline',
-                  title: I18n.t('top_menu.help_and_support')
+    result << content_tag(:li, class: "op-menu--item") do
+      content_tag :span, I18n.t("top_menu.help_and_support"),
+                  class: "op-menu--headline",
+                  title: I18n.t("top_menu.help_and_support")
     end
     if EnterpriseToken.show_banners?
-      result << static_link_item(:upsale, href_suffix: "/?utm_source=unknown&utm_medium=op-instance&utm_campaign=ee-upsale-help-menu")
+      result << static_link_item(:upsale,
+                                 href_suffix: "/?utm_source=unknown&utm_medium=op-instance&utm_campaign=ee-upsale-help-menu")
     end
     result << static_link_item(:user_guides)
-    result << content_tag(:li) {
-      link_to I18n.t('label_videos'),
+    result << content_tag(:li, class: "op-menu--item") do
+      link_to I18n.t("label_videos"),
               OpenProject::Configuration.youtube_channel,
-              title: I18n.t('label_videos'),
-              target: '_blank'
-    }
+              title: I18n.t("label_videos"),
+              class: "op-menu--item-action",
+              target: "_blank", rel: "noopener"
+    end
     result << static_link_item(:shortcuts)
     result << static_link_item(:forums)
-    result << static_link_item(:professional_support)
-    result << content_tag(:hr, '', class: 'form--separator')
+    enterprise_support_link_key = if EnterpriseToken.active?
+                                    :enterprise_support
+                                  else
+                                    :enterprise_support_as_community
+                                  end
+    result << static_link_item(enterprise_support_link_key)
+    result << content_tag(:hr, "", class: "op-menu--separator")
   end
 
   def render_additional_resources(result)
-    result << content_tag(:li) do
+    result << content_tag(:li, class: "op-menu--item") do
       content_tag :span,
-                  I18n.t('top_menu.additional_resources'),
-                  class: 'drop-down--help-headline',
-                  title: I18n.t('top_menu.additional_resources')
+                  I18n.t("top_menu.additional_resources"),
+                  class: "op-menu--headline",
+                  title: I18n.t("top_menu.additional_resources")
     end
 
     if OpenProject::Static::Links.has? :impressum
@@ -116,6 +124,7 @@ module Redmine::MenuManager::TopMenu::HelpMenu
     end
 
     result << static_link_item(:data_privacy)
+    result << static_link_item(:digital_accessibility)
     result << static_link_item(
       :website,
       href_suffix: "/?utm_source=unknown&utm_medium=op-instance&utm_campaign=website-help-menu"
@@ -135,8 +144,12 @@ module Redmine::MenuManager::TopMenu::HelpMenu
   def static_link_item(key, options = {})
     link = OpenProject::Static::Links.links[key]
     label = I18n.t(link[:label])
-    content_tag(:li) do
-      link_to label, "#{link[:href]}#{options[:href_suffix]}", title: label, target: '_blank'
+    content_tag(:li, class: "op-menu--item") do
+      link_to label,
+              "#{link[:href]}#{options[:href_suffix]}",
+              title: label,
+              target: "_blank",
+              class: "op-menu--item-action", rel: "noopener"
     end
   end
 end

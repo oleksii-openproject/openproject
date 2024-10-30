@@ -1,10 +1,10 @@
 #-- copyright
 #OpenProject is an open source project management software.
-#Copyright (C) 2012-2020 the OpenProject GmbH
+#Copyright (C) the OpenProject GmbH
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License version 3.
 #OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-#Copyright (C) 2006-2017 Jean-Philippe Lang
+#Copyright (C) 2006-2013 Jean-Philippe Lang
 #Copyright (C) 2010-2013 the ChiliProject Team
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License
@@ -17,9 +17,11 @@
 #You should have received a copy of the GNU General Public License
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-#See docs/COPYRIGHT.rdoc for more details.
+#See COPYRIGHT and LICENSE files for more details.
 #++
 fr:
+  plugin_budgets_engine:
+    name: 'Budgets'
   activerecord:
     attributes:
       budget:
@@ -27,13 +29,11 @@ fr:
         available: "Disponible"
         budget: "Planifié"
         budget_ratio: "Consommé (ratio)"
-        created_on: "Créé le"
         description: "Description"
         spent: "Consommé"
         status: "Statut"
         subject: "Sujet"
         type: "Types de coût"
-        updated_on: "Mis à jour le"
         labor_budget: "Coûts de main d'œuvre planifiés"
         material_budget: "Coûts unitaires estimés"
       work_package:
@@ -41,6 +41,9 @@ fr:
     models:
       budget: "Budget"
       material_budget_item: "Unité"
+  activity:
+    filter:
+      budget: "Budgets"
   attributes:
     budget: "Budget"
   button_add_budget_item: "Ajouter des coûts planifiés"
@@ -70,3 +73,6 @@ fr:
   permission_edit_budgets: "Éditer les budgets"
   permission_view_budgets: "Voir les budgets"
   project_module_budgets: "Budgets"
+  text_budget_reassign_to: "Les réassigner à ce budget :"
+  text_budget_delete: "Supprimer le budget de tous les lots de travaux"
+  text_budget_destroy_assigned_wp: "Il y a %{count} lots de travaux assignés à ce budget. Que voulez-vous faire ?"

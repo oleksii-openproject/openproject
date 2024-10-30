@@ -1,4 +1,4 @@
-require 'spreadsheet'
+require "spreadsheet"
 
 # A simple convenience class that wraps some of the spreadsheet
 # gem's functionality. It's designed to build spreadsheets incrementally
@@ -17,7 +17,7 @@ module OpenProject::XlsExport
     Worksheet = Struct.new(:sheet, :column_widths) unless defined? Worksheet
 
     def initialize(name = nil)
-      Spreadsheet.client_encoding = 'UTF-8'
+      Spreadsheet.client_encoding = "UTF-8"
       @xls = Spreadsheet::Workbook.new
       @worksheets = []
       worksheet(0, name)
@@ -40,7 +40,7 @@ module OpenProject::XlsExport
       end
     end
 
-    # Update column widths and wrap text if neccessary
+    # Update column widths and wrap text if necessary
     def update_sheet_widths
       @column_widths.count.times do |idx|
         if @column_widths[idx] > 60
@@ -53,19 +53,19 @@ module OpenProject::XlsExport
 
     # Get the approximate width of a value as seen in the excel sheet
     def get_value_width(value)
-      if ['Time', 'Date'].include?(value.class.name)
-        return 18 unless value.to_s.length < 18
+      if ["Time", "Date"].include?(value.class.name) && !(value.to_s.length < 18)
+        return 18
       end
 
       tot_w = [Float(0)]
       idx = 0
       value.to_s.each_char do |c|
         case c
-        when '0'..'9'
+        when "0".."9"
           tot_w[idx] += 1.2
-        when '.', ';', ':', ',', ' ', 'i', 'I', 'j', 'J', '(', ')', '[', ']', '!', '-', 't', 'l'
+        when ".", ";", ":", ",", " ", "i", "I", "j", "J", "(", ")", "[", "]", "!", "-", "t", "l"
           tot_w[idx] += 0.7
-        when 'W', 'M', 'D'
+        when "W", "M", "D"
           tot_w[idx] += 1.2
         when "\n"
           idx = idx + 1
@@ -93,7 +93,7 @@ module OpenProject::XlsExport
         value_width = get_value_width(arr_or_str[0] * 2)
         @column_widths[0] = value_width if (@column_widths[0] || 0) < value_width
       end
-      title_format = Spreadsheet::Format.new(:weight => :bold, :size => 18)
+      title_format = Spreadsheet::Format.new(weight: :bold, size: 18)
       @sheet.row(0).set_format(0, title_format)
     end
 
@@ -131,18 +131,18 @@ module OpenProject::XlsExport
     end
 
     # Add a simple row. This will default to the next row in the sequence.
-    # Fixnums, Dates and Times are preserved, all other types are converted
-    # to String as the spreadsheet gem cannot do more formats
+    # Integer, Float, Date, and Time instances are preserved, all other types
+    # are converted to String as the spreadsheet gem cannot do more formats
     def add_row(arr, idx = nil)
       idx ||= [@sheet.last_row_index + 1, 1].max
       column_array = []
       arr.each_with_index do |c, i|
-        value = if %w(Time Date Fixnum Float Integer).include?(c.class.name)
+        value = if %w(Time Date Float Integer).include?(c.class.name)
                   c
-                elsif c.class == BigDecimal
+                elsif c.instance_of?(BigDecimal)
                   c.to_f
                 else
-                  c.to_s.gsub("\r\n", "\n").gsub("\r", "\n")
+                  c.to_s.gsub("\r\n", "\n").tr("\r", "\n")
                 end
         column_array << value
         @column_widths[i] = 0 if @column_widths[i].nil?
@@ -215,11 +215,11 @@ module OpenProject::XlsExport
     end
 
     def currency_sign
-      Setting.plugin_costs['costs_currency']
+      Setting.plugin_costs["costs_currency"]
     end
 
     def escaped_worksheet_name(name)
-      name.gsub!(/[\/\\*\[\]:?]/, '#')
+      name.gsub!(/[\/\\*\[\]:?]/, "#")
       name = name[0, [name.length, 27].min] + "..." if name.length > 31
 
       name

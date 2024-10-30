@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,28 +23,27 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'spec_helper'
-require 'rack/test'
+require "spec_helper"
+require "rack/test"
 
-describe 'API v3 User avatar resource', type: :request, content_type: :json do
+RSpec.describe "API v3 User avatar resource", content_type: :json do
   include Rack::Test::Methods
   include API::V3::Utilities::PathHelper
 
-  let(:current_user) { FactoryBot.create(:admin) }
-  let(:other_user) { FactoryBot.create(:user) }
+  let(:current_user) { create(:admin) }
+  let(:setup) { nil }
+  let(:other_user) { create(:user) }
 
   subject(:response) { last_response }
-
-  let(:setup) { nil }
 
   before do
     login_as current_user
   end
 
-  describe '/avatar', with_settings: { protocol: 'http' } do
+  describe "/avatar", with_settings: { protocol: "http" } do
     before do
       allow(Setting)
         .to receive(:plugin_openproject_avatars)
@@ -55,17 +54,17 @@ describe 'API v3 User avatar resource', type: :request, content_type: :json do
       get api_v3_paths.user(other_user.id) + "/avatar"
     end
 
-    context 'with neither enabled' do
+    context "with neither enabled" do
       let(:gravatars) { false }
       let(:local_avatars) { false }
 
-      it 'renders a 404' do
-        expect(response.status).to eq 404
+      it "renders a 404" do
+        expect(response).to have_http_status :not_found
       end
     end
 
-    shared_examples_for 'cache headers set to 24 hours' do
-      it 'has the cache headers set to 24 hours' do
+    shared_examples_for "cache headers set to 24 hours" do
+      it "has the cache headers set to 24 hours" do
         expect(response.headers["Cache-Control"]).to eq "public, max-age=86400"
         expect(response.headers["Expires"]).to be_present
 
@@ -76,35 +75,35 @@ describe 'API v3 User avatar resource', type: :request, content_type: :json do
       end
     end
 
-    context 'when gravatar enabled' do
+    context "when gravatar enabled" do
       let(:gravatars) { true }
       let(:local_avatars) { false }
 
-      it 'redirects to gravatar' do
-        expect(response.status).to eq 302
+      it "redirects to gravatar" do
+        expect(response).to have_http_status :found
         expect(response.location).to match /gravatar\.com/
       end
 
-      it_behaves_like 'cache headers set to 24 hours'
+      it_behaves_like "cache headers set to 24 hours"
     end
 
-    context 'with local avatar' do
+    context "with local avatar" do
       let(:gravatars) { true }
       let(:local_avatars) { true }
 
       let(:other_user) do
-        u = FactoryBot.create :user
-        u.attachments = [FactoryBot.build(:avatar_attachment, author: u)]
+        u = create(:user)
+        u.attachments = [build(:avatar_attachment, author: u)]
         u
       end
 
-      it 'serves the attachment file' do
-        expect(response.status).to eq 200
+      it "serves the attachment file" do
+        expect(response).to have_http_status :ok
       end
 
-      it_behaves_like 'cache headers set to 24 hours'
+      it_behaves_like "cache headers set to 24 hours"
 
-      context 'with external file storage (S3)' do
+      context "with external file storage (S3)" do
         let(:setup) do
           allow_any_instance_of(Attachment).to receive(:external_storage?).and_return true
 
@@ -117,8 +116,8 @@ describe 'API v3 User avatar resource', type: :request, content_type: :json do
         # we test that Attachment#external_url works in `attachments_spec.rb`
         # so here we just make sue it's called accordingly when the external
         # storage is configured
-        it 'redirects to temporary external URL' do
-          expect(response.status).to eq 302
+        it "redirects to temporary external URL" do
+          expect(response).to have_http_status :found
           expect(response.location).to eq "external URL"
         end
       end

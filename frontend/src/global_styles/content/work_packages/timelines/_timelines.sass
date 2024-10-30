@@ -53,7 +53,7 @@
 
 // Add bottom border to timeline
 .wp-table-timeline--body
-  outline: 1px solid var(--table-row-border-color)
+  outline: 1px solid var(--borderColor-default)
 
 .wp-timeline-cell
   // Ensure the height of table and timeline rows
@@ -76,9 +76,20 @@
   &.-collapsed
     display: none
 
-// Add margin to timeline when inline-create link is showing in table
-.wp-table-timeline--body.-inline-create-mirror
-  margin-bottom: var(--table-timeline--row-height)
+// Add margin (row's height) to the timeline on split view
+// to compensate either of 'wpTableSumsRow' or 'wpInlineCreate' row that the work
+// packages table has. If not, when scrolling down the last
+// rows are misaligned.
+.work-packages-tabletimeline--timeline-side
+  // Only one of the rows visible
+  &.-single-margin
+    .wp-table-timeline--body
+      margin-bottom: var(--table-timeline--row-height)
+
+  // Both rows visible
+  &.-double-margin
+    .wp-table-timeline--body
+      margin-bottom: calc(var(--table-timeline--row-height) * 2)
 
 .children-duration-bar
   position: absolute
@@ -102,5 +113,12 @@
 
 .wp-timeline-cell.__hierarchy-root-collapsed .children-duration-hover-container
   display: none
+
+.-group-row
+  .timeline-element
+    position: absolute
+
+  .labelRight:not(.not-empty), .labelFarRight, .labelLeft
+    display: none !important
 
 

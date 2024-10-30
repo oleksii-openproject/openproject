@@ -1,10 +1,10 @@
 #-- copyright
 #OpenProject is an open source project management software.
-#Copyright (C) 2012-2020 the OpenProject GmbH
+#Copyright (C) the OpenProject GmbH
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License version 3.
 #OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-#Copyright (C) 2006-2017 Jean-Philippe Lang
+#Copyright (C) 2006-2013 Jean-Philippe Lang
 #Copyright (C) 2010-2013 the ChiliProject Team
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License
@@ -17,9 +17,12 @@
 #You should have received a copy of the GNU General Public License
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-#See docs/COPYRIGHT.rdoc for more details.
+#See COPYRIGHT and LICENSE files for more details.
 #++
 es:
+  plugin_costs:
+    name: "Tiempo y costos"
+    description: "Este módulo añade funciones para la planificación y el seguimiento de los costes de los proyectos."
   activerecord:
     attributes:
       cost_entry:
@@ -45,7 +48,7 @@ es:
       cost_type:
         one: "Tipo de costo"
         other: "Tipos de costos"
-      rate: "Tasa"
+      rate: "Proporción"
     errors:
       models:
         work_package:
@@ -105,13 +108,14 @@ es:
   label_no: "No"
   label_option_plural: "Opciones"
   label_overall_costs: "Costos totales"
-  label_rate: "Tasa"
+  label_rate: "Proporción"
   label_rate_plural: "Tasas"
   label_status_finished: "Acabado"
+  label_show: "Mostrar"
   label_units: "Unidades de costo"
   label_user: "Usuario"
   label_until: "hasta"
-  label_valid_from: "Válida desde"
+  label_valid_from: "Válido desde"
   label_yes: "Sí"
   notice_something_wrong: "Algo salió mal. Por favor intentelo nuevamente."
   notice_successful_restore: "Restauración exitosa."
@@ -129,7 +133,7 @@ es:
   permission_view_hourly_rates: "Ver todas las tarifas por hora"
   permission_view_own_cost_entries: "Ver los gastos reservados propios"
   permission_view_own_hourly_rate: "Ver tarifa por hora propia"
-  permission_view_own_time_entries: "Ver tiempo propio utilizado"
+  permission_view_own_time_entries: "Ver tiempo propio invertido"
   project_module_costs: "Tiempo y costos"
   text_assign_time_and_cost_entries_to_project: "Asignar horas reportadas y los costos al proyecto"
   text_destroy_cost_entries_question: "%{cost_entries} fueron reportados en los paquetes de trabajo que van a eliminar. ¿Qué quieres hacer?"

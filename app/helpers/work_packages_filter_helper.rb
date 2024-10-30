@@ -1,14 +1,12 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -25,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module WorkPackagesFilterHelper
@@ -33,8 +31,8 @@ module WorkPackagesFilterHelper
   def project_work_packages_closed_version_path(version, options = {})
     query = {
       f: [
-        filter_object('status_id', 'c'),
-        filter_object('version_id', '=', version.id)
+        filter_object("status_id", "c"),
+        filter_object("version_id", "=", version.id)
       ]
     }
     project_work_packages_with_query_path(version.project, query, options)
@@ -43,11 +41,41 @@ module WorkPackagesFilterHelper
   def project_work_packages_open_version_path(version, options = {})
     query = {
       f: [
-        filter_object('status_id', 'o'),
-        filter_object('version_id', '=', version.id)
+        filter_object("status_id", "o"),
+        filter_object("version_id", "=", version.id)
       ]
     }
     project_work_packages_with_query_path(version.project, query, options)
+  end
+
+  def project_work_packages_shared_with_path(principal, project, options = {})
+    query = {
+      f: [
+        filter_object("status_id", "*"),
+        filter_object("shared_with_user", "=", principal.id)
+      ]
+    }
+    project_work_packages_with_query_path(project, query, options)
+  end
+
+  def project_work_packages_shared_with_me_path(project, options = {})
+    query = {
+      f: [
+        filter_object("status_id", "*"),
+        filter_object("shared_with_me", "=", "t")
+      ]
+    }
+    project_work_packages_with_query_path(project, query, options)
+  end
+
+  def project_work_packages_with_ids_path(ids, project, options = {})
+    query = {
+      f: [
+        filter_object("status_id", "*"),
+        filter_object("id", "=", ids)
+      ]
+    }
+    project_work_packages_with_query_path(project, query, options)
   end
 
   # Links for reports
@@ -55,9 +83,9 @@ module WorkPackagesFilterHelper
   def project_report_property_path(project, property_name, property_id, options = {})
     query = {
       f: [
-        filter_object('status_id', '*'),
-        filter_object('subproject_id', '!*'),
-        filter_object(property_name, '=', property_id)
+        filter_object("status_id", "*"),
+        filter_object("subproject_id", "!*"),
+        filter_object(property_name, "=", property_id)
       ],
       t: default_sort
     }
@@ -67,9 +95,9 @@ module WorkPackagesFilterHelper
   def project_report_property_status_path(project, status_id, property, property_id, options = {})
     query = {
       f: [
-        filter_object('status_id', '=', status_id),
-        filter_object('subproject_id', '!*'),
-        filter_object(property, '=', property_id)
+        filter_object("status_id", "=", status_id),
+        filter_object("subproject_id", "!*"),
+        filter_object(property, "=", property_id)
       ],
       t: default_sort
     }
@@ -79,9 +107,9 @@ module WorkPackagesFilterHelper
   def project_report_property_open_path(project, property, property_id, options = {})
     query = {
       f: [
-        filter_object('status_id', 'o'),
-        filter_object('subproject_id', '!*'),
-        filter_object(property, '=', property_id)
+        filter_object("status_id", "o"),
+        filter_object("subproject_id", "!*"),
+        filter_object(property, "=", property_id)
       ],
       t: default_sort
     }
@@ -91,9 +119,9 @@ module WorkPackagesFilterHelper
   def project_report_property_closed_path(project, property, property_id, options = {})
     query = {
       f: [
-        filter_object('status_id', 'c'),
-        filter_object('subproject_id', '!*'),
-        filter_object(property, '=', property_id)
+        filter_object("status_id", "c"),
+        filter_object("subproject_id", "!*"),
+        filter_object(property, "=", property_id)
       ],
       t: default_sort
     }
@@ -103,9 +131,9 @@ module WorkPackagesFilterHelper
   def project_version_property_path(version, property_name, property_id, options = {})
     query = {
       f: [
-        filter_object('status_id', '*'),
-        filter_object('version_id', '=', version.id),
-        filter_object(property_name, '=', property_id)
+        filter_object("status_id", "*"),
+        filter_object("version_id", "=", version.id),
+        filter_object(property_name, "=", property_id)
       ],
       t: default_sort
     }
@@ -115,7 +143,7 @@ module WorkPackagesFilterHelper
   private
 
   def default_sort
-    'updated_at:desc'
+    "updated_at:desc"
   end
 
   def project_work_packages_with_query_path(project, query, options = {})

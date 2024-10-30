@@ -1,5 +1,5 @@
 module Bim::Bcf
-  class Issue < ActiveRecord::Base
+  class Issue < ApplicationRecord
     self.table_name = :bcf_issues
 
     include InitializeWithUuid
@@ -14,7 +14,7 @@ module Bim::Bcf
              foreign_key: :issue_id,
              class_name: "Bim::Bcf::Viewpoint",
              dependent: :destroy
-    has_many :comments, foreign_key: :issue_id, class_name: "Bim::Bcf::Comment", dependent: :destroy
+    has_many :comments, class_name: "Bim::Bcf::Comment", dependent: :destroy
 
     after_update :invalidate_markup_cache
 
@@ -41,11 +41,11 @@ module Bim::Bcf
     end
 
     def imported_title
-      markup_doc.xpath('//Topic/Title').text
+      markup_doc.xpath("//Topic/Title").text
     end
 
     def markup_doc
-      @markup_doc ||= Nokogiri::XML markup, nil, 'UTF-8'
+      @markup_doc ||= Nokogiri::XML markup, nil, "UTF-8"
     end
 
     def invalidate_markup_cache

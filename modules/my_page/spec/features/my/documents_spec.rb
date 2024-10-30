@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,35 +23,38 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'spec_helper'
+require "spec_helper"
 
-require_relative '../../support/pages/my/page'
+require_relative "../../support/pages/my/page"
 
-describe 'My page documents widget', type: :feature, js: true do
-  let!(:project) { FactoryBot.create :project }
-  let!(:other_project) { FactoryBot.create :project }
+RSpec.describe "My page documents widget", :js do
+  let!(:project) { create(:project) }
+  let!(:other_project) { create(:project) }
   let!(:visible_document) do
-    FactoryBot.create :document,
-                      project: project,
-                      description: 'blubs'
+    create(:document,
+           project:,
+           description: "blubs")
   end
   let!(:invisible_document) do
-    FactoryBot.create :document,
-                      project: other_project
+    create(:document,
+           project: other_project)
   end
   let(:other_user) do
-    FactoryBot.create(:user)
+    create(:user)
   end
   let(:user) do
-    FactoryBot.create(:user,
-                      member_in_project: project,
-                      member_with_permissions: %i[view_documents])
+    create(:user,
+           member_with_permissions: { project => %i[view_documents] })
   end
   let(:my_page) do
     Pages::My::Page.new
+  end
+
+  let!(:my_page_grid) do
+    create(:my_page, :empty, user:)
   end
 
   before do
@@ -60,11 +63,11 @@ describe 'My page documents widget', type: :feature, js: true do
     my_page.visit!
   end
 
-  it 'can add the widget and see the visible documents' do
+  it "can add the widget and see the visible documents" do
     # within top-right area, add an additional widget
-    my_page.add_widget(1, 1, :within, 'Documents')
+    my_page.add_widget(1, 1, :within, "Documents")
 
-    document_area = Components::Grids::GridArea.new('.grid--area.-widgeted:nth-of-type(1)')
+    document_area = Components::Grids::GridArea.new(".grid--area.-widgeted:nth-of-type(1)")
     document_area.expect_to_span(1, 1, 2, 2)
 
     expect(page)
@@ -72,7 +75,7 @@ describe 'My page documents widget', type: :feature, js: true do
     expect(page)
       .to have_content visible_document.description
     expect(page)
-      .to have_content visible_document.created_at.strftime('%m/%d/%Y')
+      .to have_content visible_document.created_at.strftime("%m/%d/%Y")
 
     expect(page)
       .to have_no_content invisible_document.title

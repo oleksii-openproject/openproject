@@ -1,14 +1,12 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -25,162 +23,92 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 class ProjectsController < ApplicationController
+  include OpTurbo::ComponentStream
+
   menu_item :overview
   menu_item :roadmap, only: :roadmap
 
-  before_action :find_project, except: %i[index level_list new create]
-  before_action :authorize, only: %i[update modules types custom_fields]
-  before_action :authorize_global, only: %i[new create]
-  before_action :require_admin, only: %i[archive unarchive destroy destroy_info]
+  before_action :find_project, except: %i[index new export_list_modal]
+  before_action :load_query_or_deny_access, only: %i[index export_list_modal]
+  before_action :authorize, only: %i[copy deactivate_work_package_attachments]
+  before_action :authorize_global, only: %i[new]
+  before_action :require_admin, only: %i[destroy destroy_info]
 
-  before_action :assign_default_create_variables, only: %i[new]
-  before_action :new_project, only: %i[new]
+  no_authorization_required! :index, :export_list_modal
 
   include SortHelper
   include PaginationHelper
-  include CustomFieldsHelper
   include QueriesHelper
-  include RepositoriesHelper
   include ProjectsHelper
+  include Queries::Loading
+  include OpTurbo::DialogStreamHelper
 
-  # Lists visible projects
-  def index
-    query = load_query
-
-    unless query.valid?
-      flash[:error] = query.errors.full_messages
-    end
-
-    @projects = load_projects query
-    @orders = set_sorting query
-
-    render layout: 'no_menu'
-  end
+  helper_method :has_managed_project_folders?
 
   current_menu_item :index do
-    :list_projects
+    :projects
+  end
+
+  def index # rubocop:disable Format/AbcSize
+    respond_to do |format|
+      format.html do
+        flash.now[:error] = @query.errors.full_messages if @query.errors.any?
+
+        render layout: "global", locals: { query: @query, state: :show }
+      end
+
+      format.any(*supported_export_formats) do
+        export_list(@query, request.format.symbol)
+      end
+
+      format.turbo_stream do
+        replace_via_turbo_stream(
+          component: Projects::IndexPageHeaderComponent.new(query: @query, current_user:, state: :show, params:)
+        )
+        update_via_turbo_stream(
+          component: Filter::FilterButtonComponent.new(query: @query, disable_buttons: false)
+        )
+        replace_via_turbo_stream(component: Projects::TableComponent.new(query: @query, current_user:, params:))
+
+        current_url = url_for(params.permit(:controller, :action, :query_id, :filters, :columns, :sortBy, :page, :per_page))
+        turbo_streams << turbo_stream.push_state(current_url)
+        turbo_streams << turbo_stream.turbo_frame_set_src(
+          "projects_sidemenu",
+          projects_menu_url(query_id: @query.id, controller_path: "projects")
+        )
+
+        turbo_streams << turbo_stream.replace("flash-messages", helpers.render_flash_messages)
+
+        render turbo_stream: turbo_streams
+      end
+    end
   end
 
   def new
-    Projects::SetAttributesService
-      .new(user: current_user, model: @project, contract_class: EmptyContract)
-      .call(params.permit(:parent_id))
-
-    render layout: 'no_menu'
+    render layout: "no_menu"
   end
 
-  current_menu_item :new do
-    :new_project
-  end
-
-  def create
-    call_result =
-      if params[:from_template].present?
-        create_from_template
-      else
-        create_from_params
-      end
-
-    # In success case, nothing to do
-    call_result.on_failure do
-      @project = call_result.result
-      @errors = call_result.errors
-      assign_default_create_variables
-
-      render action: 'new', layout: 'no_menu'
-    end
-  end
-
-  def update
-    @altered_project = Project.find(@project.id)
-
-    service_call = Projects::UpdateService
-      .new(user: current_user,
-           model: @altered_project)
-      .call(permitted_params.project)
-
-
-    if service_call.success?
-      flash[:notice] = t(:notice_successful_update)
-      redirect_to settings_generic_project_path(@altered_project)
-    else
-      @errors = service_call.errors
-      render template: 'project_settings/generic'
-    end
-  end
-
-  def update_identifier
-    service_call = Projects::UpdateService
-      .new(user: current_user,
-           model: @project)
-      .call(permitted_params.project)
-
-    if service_call.success?
-      flash[:notice] = I18n.t(:notice_successful_update)
-      redirect_to settings_generic_project_path(@project)
-    else
-      render action: 'identifier'
-    end
-  end
-
-  def types
-    if UpdateProjectsTypesService.new(@project).call(permitted_params.projects_type_ids)
-      flash[:notice] = I18n.t('notice_successful_update')
-    else
-      flash[:error] = @project.errors.full_messages
-    end
-
-    redirect_to settings_types_project_path(@project.identifier)
-  end
-
-  def modules
-    @project.enabled_module_names = permitted_params.project[:enabled_module_names]
-    # Ensure the project is touched to update its cache key
-    @project.touch
-    flash[:notice] = I18n.t(:notice_successful_update)
-    redirect_to settings_modules_project_path(@project)
-  end
-
-  def custom_fields
-    Project.transaction do
-      @project.work_package_custom_field_ids = permitted_params.project[:work_package_custom_field_ids]
-      if @project.save
-        flash[:notice] = t(:notice_successful_update)
-      else
-        flash[:error] = t(:notice_project_cannot_update_custom_fields,
-                          errors: @project.errors.full_messages.join(', '))
-        raise ActiveRecord::Rollback
-      end
-    end
-    redirect_to settings_custom_fields_project_path(@project)
-  end
-
-  def archive
-    change_status_action(:archive)
-  end
-
-  def unarchive
-    change_status_action(:unarchive)
+  def copy
+    render
   end
 
   # Delete @project
   def destroy
     service_call = ::Projects::ScheduleDeletionService
-      .new(user: current_user, model: @project)
-      .call
+                     .new(user: current_user, model: @project)
+                     .call
 
     if service_call.success?
-      flash[:notice] = I18n.t('projects.delete.scheduled')
+      flash[:notice] = I18n.t("projects.delete.scheduled")
     else
-      flash[:error] = I18n.t('projects.delete.schedule_failed', errors: service_call.errors.full_messages.join("\n"))
+      flash[:error] = I18n.t("projects.delete.schedule_failed", errors: service_call.errors.full_messages.join("\n"))
     end
 
-    redirect_to project_path_with_status
-    update_demo_project_settings @project, false
+    redirect_to projects_path
   end
 
   def destroy_info
@@ -189,151 +117,50 @@ class ProjectsController < ApplicationController
     hide_project_in_layout
   end
 
-  def level_list
-    projects = Project.project_level_list(Project.visible)
+  def deactivate_work_package_attachments
+    call = Projects::UpdateService
+             .new(user: current_user, model: @project, contract_class: Projects::SettingsContract)
+             .call(deactivate_work_package_attachments: params[:value] != "1")
 
-    respond_to do |format|
-      format.json { render json: projects_level_list_json(projects) }
+    if call.failure?
+      render json: call.errors.full_messages.join(" "), status: :unprocessable_entity
+    else
+      head :no_content
     end
+  end
+
+  def export_list_modal
+    respond_with_dialog Projects::ExportListModalComponent.new(query: @query)
   end
 
   private
 
-  def find_optional_project
-    return true unless params[:id]
-
-    @project = Project.find(params[:id])
-    authorize
-  rescue ActiveRecord::RecordNotFound
-    render_404
-  end
-
-  def change_status_action(status)
-    service_call = change_status(status)
-
-    if service_call.success?
-      update_demo_project_settings @project, status == :archive
-      redirect_to(project_path_with_status)
-    else
-      flash[:error] = t(:"error_can_not_#{status}_project",
-                        errors: service_call.errors.full_messages.join(', '))
-      redirect_back fallback_location: project_path_with_status
-    end
-  end
-
-  def change_status(status)
-    "Projects::#{status.to_s.camelcase}Service"
-      .constantize
-      .new(user: current_user, model: @project)
-      .call
-  end
-
-  def redirect_work_packages_or_overview
-    return if redirect_to_project_menu_item(@project, :work_packages)
-
-    redirect_to project_overview_path(@project)
+  def has_managed_project_folders?(project)
+    project.project_storages.any?(&:project_folder_automatic?)
   end
 
   def hide_project_in_layout
     @project = nil
   end
 
-  def project_path_with_status
-    acceptable_params = params.permit(:status).to_h.compact.select { |_, v| v.present? }
+  def export_list(query, mime_type)
+    job = Projects::ExportJob.perform_later(
+      export: Projects::Export.create,
+      user: current_user,
+      mime_type:,
+      query: query.to_hash
+    )
 
-    projects_path(acceptable_params)
-  end
-
-  def load_query
-    @query = ParamsToQueryService.new(Project, current_user).call(params)
-
-    # Set default filter on status no filter is provided.
-    @query.where('active', '=', OpenProject::Database::DB_VALUE_TRUE) unless params[:filters]
-
-    # Order lft if no order is provided.
-    @query.order(lft: :asc) unless params[:sortBy]
-
-    @query
-  end
-
-  protected
-
-  def create_from_params
-    call_result = Projects::CreateService
-      .new(user: current_user)
-      .call(permitted_params.project)
-    @project = call_result.result
-
-    call_result.on_success do
-      flash[:notice] = t(:notice_successful_create)
-      redirect_work_packages_or_overview
-    end
-
-    call_result
-  end
-
-  def create_from_template
-    call_result = Projects::InstantiateTemplateService
-      .new(user: current_user, template_id: params[:from_template])
-      .call(permitted_params.project)
-
-    call_result.on_success do
-      flash[:notice] = t('project.template.copying')
-      redirect_to job_status_path(call_result.result.job_id)
-    end
-
-    call_result
-  end
-
-  def load_projects(query)
-    query
-      .results
-      .with_required_storage
-      .with_latest_activity
-      .includes(:custom_values, :enabled_modules)
-      .paginate(page: page_param, per_page: per_page_param)
-  end
-
-  def set_sorting(query)
-    query.orders.select(&:valid?).map { |o| [o.attribute.to_s, o.direction.to_s] }
-  end
-
-  def update_demo_project_settings(project, value)
-    # e.g. when one of the demo projects gets deleted or a archived
-    if project.identifier == 'your-scrum-project' || project.identifier == 'demo-project'
-      Setting.demo_projects_available = value
+    if request.headers["Accept"]&.include?("application/json")
+      render json: { job_id: job.job_id }
+    else
+      redirect_to job_status_path(job.job_id)
     end
   end
 
-  def assign_default_create_variables
-    @wp_custom_fields = WorkPackageCustomField.order("#{CustomField.table_name}.position")
-    @types = ::Type.all
+  def supported_export_formats
+    ::Exports::Register.list_formats(Project).map(&:to_s)
   end
 
-  def new_project
-    # If a template is passed, assign that as default
-    @template_project = template_project_from_param
-    @project =
-      if @template_project.nil?
-        Project.new
-      else
-        Projects::CopyService
-          .new(user: current_user, source: @template_project)
-          .call(target_project_params: {}, attributes_only: true)
-          .result
-      end
-
-    # Allow setting the name when selecting template
-    if params[:name]
-      @project.name = params[:name]
-    end
-  end
-
-  def template_project_from_param
-    if params[:template_project]
-      ::Projects::InstantiateTemplateContract
-        .visible_templates(current_user)
-        .find_by(id: params[:template_project])
-    end
-  end
+  helper_method :supported_export_formats
 end

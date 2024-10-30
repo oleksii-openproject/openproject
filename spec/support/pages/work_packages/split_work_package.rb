@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,23 +23,23 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'support/pages/work_packages/abstract_work_package'
-require 'support/pages/work_packages/split_work_package_create'
+require "support/pages/work_packages/abstract_work_package"
+require "support/pages/work_packages/split_work_package_create"
 
 module Pages
   class SplitWorkPackage < Pages::AbstractWorkPackage
     attr_reader :selector
 
     def initialize(work_package, project = nil)
-      super work_package, project
-      @selector = '.work-packages--details'
+      super
+      @selector = ".work-packages--details"
     end
 
     def switch_to_fullscreen
-      find('.work-packages--details-fullscreen-icon').click
+      find(".work-packages--details-fullscreen-icon").click
       FullWorkPackage.new(work_package, project)
     end
 
@@ -47,8 +47,14 @@ module Pages
       expect(page).to have_no_selector(@selector)
     end
 
+    def expect_open
+      wait_for_reload
+      expect(page).to have_selector(@selector)
+      expect_subject
+    end
+
     def close
-      find('.work-packages--details-close-icon').click
+      find(".work-packages--details-close-icon").click
     end
 
     def container
@@ -57,7 +63,7 @@ module Pages
 
     protected
 
-    def path(tab = 'overview')
+    def path(tab = "overview")
       state = "#{work_package.id}/#{tab}"
 
       if project
@@ -68,8 +74,8 @@ module Pages
     end
 
     def create_page(args)
-      args.merge!(project: project || work_package.project)
-      SplitWorkPackageCreate.new(args)
+      args[:project] = project || work_package.project
+      SplitWorkPackageCreate.new(**args)
     end
   end
 end

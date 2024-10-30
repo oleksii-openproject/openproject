@@ -1,5 +1,8 @@
 #English strings go here for Rails i18n
 ja:
+  plugin_openproject_bim:
+    name: "OpenProject BIM and BCF functionality"
+    description: "This OpenProject plugin introduces BIM and BCF functionality."
   bim:
     label_bim: 'BIM'
   bcf:
@@ -15,14 +18,15 @@ ja:
       file_invalid: "BCFファイルが無効"
     x_bcf_issues:
       zero: 'BCF チケットがありません'
-      other: '%{count} BCFチケット'
+      one: '1 件の BCF チケット'
+      other: '%{count} 件 BCF チケット'
     bcf_xml:
       xml_file: 'BCF XML ファイル'
       import_title: 'インポート'
       export: '外部出力'
       import_update_comment: '(BCF インポートで更新済)'
       import_failed: 'BCF ファイルをインポートできません: %{error}'
-      import_failed_unsupported_bcf_version: 'Failed to read the BCF file: The BCF version is not supported. Please ensure the version is at least %{minimal_version} or higher.'
+      import_failed_unsupported_bcf_version: 'BCF ファイルの読み取りに失敗しました: BCF バージョンはサポートされていません。少なくとも %{minimal_version} 以上のバージョンであることを確認してください。'
       import_successful: '%{count} BCF チケットをインポートしました'
       import_canceled: 'BCF-XML インポートをキャンセルしました。'
       type_not_active: "チケットの形式がこのプロジェクトで有効になっていません。"
@@ -30,7 +34,7 @@ ja:
         num_issues_found: '%{x_bcf_issues} は BCF-XML ファイルに含まれています。詳細は下に一覧表示されます。'
         button_prepare: 'インポートの準備'
         button_perform_import: 'インポートの確認'
-        button_proceed: 'Proceed with import'
+        button_proceed: 'インポートを続ける'
         button_back_to_list: 'リストに戻る'
         no_permission_to_add_members: 'プロジェクトにメンバーとして追加するための十分な権限がありません。'
         contact_project_admin: 'プロジェクト管理者に連絡してメンバーとして追加し、このインポートをもう一度開始してください。'
@@ -56,7 +60,7 @@ ja:
         import_as_system_user: 'それらを "システム" ユーザーとしてインポート'
         what_to_do: "どれかを選択して下さい。"
         work_package_has_newer_changes: "期限切れです! サーバー上の前回の変更がインポートされたトピックの「更新日付」よりも新しいため、このトピックは更新されませんでした。 ただし、トピックへのコメントはインポートされました。"
-        bcf_file_not_found: "Failed to locate BCF file. Please start the upload process again."
+        bcf_file_not_found: "BCFファイルが見つかりませんでした。再度アップロードを開始してください。"
   export:
     format:
       bcf: "BCF-XML"
@@ -66,7 +70,7 @@ ja:
   project_module_bim: "BCF"
   permission_view_linked_issues: "BCF チケットを表示"
   permission_manage_bcf: "BCF チケットのインポートと管理"
-  permission_delete_bcf: "Delete BCF issues"
+  permission_delete_bcf: "BCFチケットの削除"
   oauth:
     scopes:
       bcf_v2_1: "BCF v2.1 API へのフルアクセス"
@@ -100,7 +104,7 @@ ja:
           snapshot_data_blank: "snapshot_data を提供する必要があります。"
           unsupported_key: "サポートされていない json プロパティが含まれています。"
         bim/bcf/issue:
-          uuid_already_taken: "Can't import this BCF issue as there already is another with the same GUID. Could it be that this BCF issue had already been imported into a different project?"
+          uuid_already_taken: "同じGUIDを持つ別のチケットが存在するため、BCFチケットをインポートできません。このBCFチケットは既に他のプロジェクトにインポートされていませんか？"
   ifc_models:
     label_ifc_models: 'IFCモデル'
     label_new_ifc_model: '新しいIFCモデル'
@@ -108,24 +112,25 @@ ja:
     label_default_ifc_models: 'デフォルトのIFCモデル'
     label_edit_defaults: 'デフォルトを編集'
     no_defaults_warning:
-      title: 'No IFC model was set as default for this project.'
-      check_1: 'Check that you have uploaded at least one IFC model.'
-      check_2: 'Check that at least one IFC model is set to "Default".'
-    no_results: "No IFC models have been uploaded in this project."
-    processing_state:
-      label: 'Processing?'
-      in_progress: '進行中'
-      completed: 'Completed'
+      title: 'このプロジェクトでは、IFCモデルがデフォルトとして設定されていません'
+      check_1: 'IFCモデルが1つ以上アップロードされていることを確認してください。'
+      check_2: '1つ以上のIFCモデルが"デフォルト"に設定されていることを確認してください。'
+    no_results: "このプロジェクトにはIFCモデルがアップロードされていません。"
+    conversion_status:
+      label: '処理中ですか？'
+      pending: '保留中'
+      processing: '処理中'
+      completed: '完了しました'
+      error: 'エラー！'
     processing_notice:
-      processing_default: 'The following default IFC models are still being processed and are thus not available, yet:'
+      processing_default: '以下のデフォルトIFCモデルは処理中のため利用できません。'
     flash_messages:
-      upload_successful: 'Upload succeeded. It will now get processed and will be ready to use in a couple of minutes.'
+      upload_successful: 'アップロードに成功しました。数分で使用できるようになります。'
     conversion:
-      missing_commands: "The following IFC converter commands are missing on this system: %{names}"
+      missing_commands: "以下のIFCコンバーターコマンドがこのシステムにありません:%{names}"
   project_module_ifc_models: "IFCモデル"
   permission_view_ifc_models: "IFCモデルを見る"
   permission_manage_ifc_models: "IFCモデルのインポートと管理"
   extraction:
     available:
-      ifc_convert: "IFC conversion pipeline available"
-
+      ifc_convert: "IFC変換パイプランは利用可能です"

@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module API
@@ -45,14 +45,14 @@ module API
 
                         {
                           href: path,
-                          type: 'text/html'
+                          type: "text/html"
                         }
                       },
                       setter: ->(fragment:, **) {
-                        represented.scope = fragment['href']
+                        represented.scope = fragment["href"]
                       }
 
-        self_link title_getter: ->(*) { nil }
+        self_link title_getter: ->(*) {}
 
         link :updateImmediately,
              cache_if: -> { write_allowed? } do
@@ -92,27 +92,27 @@ module API
                  exec_context: :decorator,
                  getter: ->(*) do
                    represented.widgets.sort_by { |w| w.id.to_i }.map do |widget|
-                     Widgets::WidgetRepresenter.new(widget, current_user: current_user)
+                     Widgets::WidgetRepresenter.new(widget, current_user:)
                    end
                  end,
                  setter: ->(fragment:, **) do
                    represented.widgets = fragment.map do |widget_fragment|
                      Widgets::WidgetRepresenter
-                       .new(::Grids::Widget.new, current_user: current_user)
+                       .new(::Grids::Widget.new, current_user:)
                        .from_hash(widget_fragment.with_indifferent_access)
                    end
                  end
 
         date_time_property :created_at,
-                           writeable: false,
+                           writable: false,
                            render_nil: false
 
         date_time_property :updated_at,
-                           writeable: false,
+                           writable: false,
                            render_nil: false
 
         def _type
-          'Grid'
+          "Grid"
         end
 
         private
@@ -133,7 +133,7 @@ module API
           # Remove all query params
           # Those are added when the path does not actually require
           # project or user
-          path&.gsub(/(\?.+)|(\.\d+)\z/, '')
+          path&.gsub(/(\?.+)|(\.\d+)\z/, "")
         end
 
         def scope_path_attributes

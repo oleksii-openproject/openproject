@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,28 +23,51 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'spec_helper'
+require "spec_helper"
 
-describe 'Statuses administration', type: :feature do
-  let(:admin) { FactoryBot.create :admin }
+RSpec.describe "Statuses administration" do
+  current_user { create(:admin) }
 
-  before do
-    login_as(admin)
-    visit new_status_path
-  end
+  describe "New status page" do
+    before do
+      visit new_status_path
+    end
 
-  describe 'with EE token', with_ee: %i[readonly_work_packages] do
-    it 'allows to set readonly status' do
-      expect(page).to have_field 'status[is_readonly]', disabled: false
+    describe "with EE token", with_ee: %i[readonly_work_packages] do
+      it "allows to set readonly status" do
+        expect(page).to have_field "status[is_readonly]", disabled: false
+      end
+    end
+
+    describe "without EE token" do
+      it "does not allow to set readonly status" do
+        expect(page).to have_field "status[is_readonly]", disabled: true
+      end
     end
   end
 
-  describe 'without EE token' do
-    it 'does not allow to set readonly status' do
-      expect(page).to have_field 'status[is_readonly]', disabled: true
+  describe "Work Package statuses page" do
+    context "without any statuses" do
+      it 'displays the "no results" text' do
+        visit statuses_path
+        expect(page).to have_content(I18n.t("no_results_title_text"))
+      end
+    end
+
+    context "with some statuses" do
+      let!(:new_status) { create(:default_status, name: "I am new") }
+      let!(:in_progress_status) { create(:status, name: "Working on it") }
+      let!(:closed_status) { create(:closed_status, name: "Job finished") }
+
+      it "list statuses" do
+        visit statuses_path
+        expect(page).to have_content("I am new")
+        expect(page).to have_content("Working on it")
+        expect(page).to have_content("Job finished")
+      end
     end
   end
 end

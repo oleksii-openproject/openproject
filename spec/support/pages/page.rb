@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,25 +23,41 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
+
+require_relative "../toasts/expectations"
+require_relative "../flash/expectations"
 
 module Pages
   class Page
     include Capybara::DSL
+    include Capybara::RSpecMatchers
+    include TestSelectorFinders
     include RSpec::Matchers
     include OpenProject::StaticRouting::UrlHelpers
+    include Toasts::Expectations
+    include Flash::Expectations
 
     def current_page?
       URI.parse(current_url).path == path
     end
 
     def visit!
-      raise 'No path defined' unless path
+      raise "No path defined" unless path
 
       visit path
 
       self
+    end
+
+    def reload!
+      if using_cuprite?
+        page.driver.browser.refresh
+        wait_for_reload
+      else
+        page.driver.browser.navigate.refresh
+      end
     end
 
     def accept_alert_dialog!
@@ -67,60 +83,85 @@ module Pages
     end
 
     def selenium_driver?
-      Capybara.current_driver.to_s.include?('headless')
+      Capybara.current_session.driver.is_a?(Capybara::Selenium::Driver)
     end
 
-    def set_items_per_page!(n)
-      Setting.per_page_options = "#{n}, 50, 100"
+    def set_items_per_page!(number)
+      Setting.per_page_options = "#{number}, 50, 100"
     end
 
     def expect_current_path(query_params = nil)
-      uri = URI.parse(current_url)
-      current_path = uri.path
-      current_path += '?' + uri.query if uri.query
-
       expected_path = path
       expected_path += "?#{query_params}" if query_params
 
-      expect(current_path).to eql expected_path
+      expect(page).to have_current_path expected_path, wait: 10
     end
 
-    def expect_notification(type: :success, message:)
-      if notification_type == :angular
-        expect(page).to have_selector(".notification-box.-#{type}", text: message, wait: 20)
-      elsif type == :error
-        expect(page).to have_selector(".errorExplanation", text: message)
-      elsif type == :success
-        expect(page).to have_selector(".flash.notice", text: message)
-      else
-        raise NotImplementedError
+    def click_to_sort_by(header_name)
+      within ".generic-table thead" do
+        click_link header_name
       end
     end
 
-    def expect_and_dismiss_notification(type: :success, message:)
-      expect_notification(type: type, message: message)
-      dismiss_notification!
-      expect_no_notification(type: type, message: message)
-    end
+    def drag_and_drop_list(from:, to:, elements:, handler:)
+      # Wait a bit because drag & drop in selenium is easily offended
+      sleep 1
 
-    def dismiss_notification!
-      page.find('.notification-box--close').click
-    end
+      list = page.all(elements)
+      source = list[from]
+      target = list[to]
 
-    def expect_no_notification(type: :success, message: nil)
-      if type.nil?
-        expect(page).to have_no_selector(".notification-box")
-      else
-        expect(page).to have_no_selector(".notification-box.-#{type}", text: message)
+      scroll_to_element(source)
+      source.hover
+
+      page
+        .driver
+        .browser
+        .action
+        .move_to(source.native)
+        .click_and_hold(source.find(handler).native)
+        .perform
+
+      ## Hover over each item to be sure,
+      # that the dragged element is reduced to the minimum height.
+      # Thus we can afterwards drag to the correct position.
+      list.each do |item|
+        next if item == source
+
+        page
+          .driver
+          .browser
+          .action
+          .move_to(item.native)
+          .perform
       end
+
+      sleep 2
+
+      scroll_to_element(target)
+
+      page
+        .driver
+        .browser
+        .action
+        .move_to(target.native)
+        .release
+        .perform
+
+      # Wait a bit because drag & drop in selenium is easily offended
+      sleep 1
     end
 
     def path
       nil
     end
 
-    def notification_type
-      :angular
+    def navigate_to_modules_menu_item(link_title)
+      visit root_path
+
+      within "#op-app-header--modules-menu-list", visible: false do
+        click_on link_title, visible: false
+      end
     end
   end
 end

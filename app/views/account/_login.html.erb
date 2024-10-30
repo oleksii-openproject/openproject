@@ -1,12 +1,12 @@
 <%#-- copyright
 OpenProject is an open source project management software.
-Copyright (C) 2012-2020 the OpenProject GmbH
+Copyright (C) the OpenProject GmbH
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License version 3.
 
 OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-Copyright (C) 2006-2017 Jean-Philippe Lang
+Copyright (C) 2006-2013 Jean-Philippe Lang
 Copyright (C) 2010-2013 the ChiliProject Team
 
 This program is free software; you can redistribute it and/or
@@ -23,7 +23,7 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-See docs/COPYRIGHT.rdoc for more details.
+See COPYRIGHT and LICENSE files for more details.
 
 ++#%>
 
@@ -39,10 +39,12 @@ See docs/COPYRIGHT.rdoc for more details.
           <%= styled_text_field_tag 'username', nil, id: 'username-pulldown', tabindex: 1, autocapitalize: 'none' %>
         </div>
         <div class="form--field-extra-actions">
-          <% if Setting.autologin? %>
-            <label class="form--label-with-check-box">
-              <%= styled_check_box_tag 'autologin', 1, false, id: 'autologin-pulldown' %> <%= t(:label_stay_logged_in) %></label>
-          <% elsif Setting.self_registration? %>
+          <% if Setting::Autologin.enabled? %>
+            <label class="form--label-with-check-box -no-ellipsis">
+              <%= styled_check_box_tag 'autologin', 1, false, id: 'autologin-pulldown' %>
+              <%= t('users.autologins.prompt', num_days: I18n.t('datetime.distance_in_words.x_days', count: Setting.autologin)) %>
+            </label>
+          <% elsif Setting::SelfRegistration.enabled? %>
             <%# show here if autologin is disabled, otherwise below lost_password link %>
               <%= link_to t(:label_register),
                 account_register_path,
@@ -60,7 +62,7 @@ See docs/COPYRIGHT.rdoc for more details.
           <% if Setting.lost_password? %>
             <%= link_to t(:label_password_lost), {controller: '/account', action: 'lost_password'} %>
           <% end %>
-          <% if Setting.autologin? && Setting.self_registration? %>
+          <% if Setting::Autologin.enabled? && Setting::SelfRegistration.enabled? %>
             <%# show here if autologin is enabled, otherwise below login field %>
             <%= '<br>'.html_safe if Setting.lost_password? %>
             <%= link_to t(:label_register),
@@ -71,11 +73,11 @@ See docs/COPYRIGHT.rdoc for more details.
       </div>
 
       <div class="form--field">
-        <label class="form--label">
+        <label class="form--label" for="login-pulldown">
           &nbsp;
         </label>
         <input type="submit" name="login" id="login-pulldown"
-          value="<%=t(:button_login)%>" class="button -highlight" tabindex="1" />
+               value="<%=t(:button_login)%>" class="button -primary button_no-margin" tabindex="1" />
       </div>
     </div>
 

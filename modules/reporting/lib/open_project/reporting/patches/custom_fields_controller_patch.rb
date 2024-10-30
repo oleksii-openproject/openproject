@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,10 +23,8 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
-
-require_dependency 'costlog_controller'
 
 module OpenProject::Reporting::Patches
   module CustomFieldsControllerPatch
@@ -42,7 +40,7 @@ module OpenProject::Reporting::Patches
 
           remove_custom_field_from_cost_report(reports, id)
           remove_custom_field_from_session(id)
-        rescue => e
+        rescue StandardError => e
           Rails.logger.error "Failed to remove custom_field #{id} from custom queries. " \
                              "#{e.class}: #{e.message}"
         ensure
@@ -69,13 +67,13 @@ module OpenProject::Reporting::Patches
       end
 
       def build_query(report_engine, filters, groups = {})
-        query = report_engine.deserialize({ filters: filters, group_bys: groups })
+        query = report_engine.deserialize({ filters:, group_bys: groups })
         query.serialize
         query
       end
 
       def remove_custom_field_from_session(id)
-        custom_field_name = "custom_field#{id}".to_sym
+        custom_field_name = :"custom_field#{id}"
         report_engine_name = CostQuery.name.underscore.to_sym
         cookie = session[report_engine_name]
 

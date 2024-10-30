@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 # = OpenProject configuration file
@@ -139,11 +139,10 @@
 #       - settings
 #       - ldap_authentication
 #       - colors
-#       - export_card_configurations
 #       - plugins
 #       - info
 #
-# Also there is a posibility to specify which routes are forbidden,
+# Also there is a possibility to specify which routes are forbidden,
 # they should be listed as an array in yml format more information
 # regarding yml format you can find here:
 # http://symfony.com/doc/current/components/yaml/yaml_format.html
@@ -153,7 +152,6 @@
 #   blacklisted_routes:
 #     - 'admin/info'
 #     - 'admin/plugins'
-#     - 'export_card_configurations'
 #     - 'colors'
 #     - 'settings'
 #     - 'admin/enumerations'
@@ -161,11 +159,32 @@
 #     - 'statuses'
 #     - 'types'
 #     - 'admin/roles'
-
+#
+# Beta features
+#
+# Some features are hidden behind a feature flag during development.
+# To activate one or more features set the corresponding flag inside the section.
+#
+# Example:
+# production:
+#   feature_your_module_active: true
 
 # default configuration options for all environments
 default:
   log_level: info
+
+  # web server configuration
+  # web:
+  #   workers: 2
+  #   timeout: 60
+  #   wait_timeout: 10
+  #   min_threads: 4
+  #   max_threads: 16
+
+  # statsd configuration
+  # statsd:
+  #   host: 127.0.0.1
+  #   port: 8125
 
   # Outgoing emails configuration (see examples above)
   email_delivery_method: :smtp
@@ -177,7 +196,7 @@ default:
   smtp_password: "my_openproject_password"
 
   # Prefix to the url-path. This path is then prepended to all
-  # the routes and is used to correclty identify the path to the assets.
+  # the routes and is used to correctly identify the path to the assets.
   # Defaults to having no prefix.
   # Examples:
   # For OpenProject to be reachable as
@@ -186,9 +205,6 @@ default:
   # rails_relative_url_root: "/open_project"
   #
   # rails_relative_url_root: ""
-
-  # whether to force ssl in production
-  rails_force_ssl: false
 
   # Absolute path to the directory where attachments are stored.
   # The default is the 'files' directory in your OpenProject instance.
@@ -200,15 +216,13 @@ default:
 
   # Grace period until uploaded but unassigned (i.e. to a container like work packages,
   # wiki pages) attachments are deleted (in minutes)
-  # attachment_grace_period: 180
+  # attachments_grace_period: 180
 
   # Configuration of the autologin cookie.
   # autologin_cookie_name: the name of the cookie (default: autologin)
   # autologin_cookie_path: the cookie path (default: /)
-  # autologin_cookie_secure: true sets the cookie secure flag (default: false)
   # autologin_cookie_name:
   # autologin_cookie_path:
-  # autologin_cookie_secure:
 
   # Configuration of the session cookie
   # session_cookie_name: the name of the OpenProject cookie (default: _open_project_session)
@@ -220,16 +234,9 @@ default:
   # use memcache for performance, memcached must be installed
   # rails_cache_store: :memcache
 
-  # defines where session data is stored
-  # possible values are :cookie_store, :cache_store, :active_record_store
-  session_store: :cache_store
-
   # Default comment sorting for new users
   # Note, does not change saved preferences of existing users
   # default_comment_sort_order: 'asc'
-
-  # If the session store is :active_record_store, the following configuration settings
-  # are available
 
   # Delete old sessions for the same user when logging in
   # Disabled by default to allow multiple concurrent sessions.
@@ -309,11 +316,11 @@ default:
   #
   #   Available types for git:
   #     - :local (Local repositories, registered using a local path)
-  #     - :managed (Managed repositores, available IF :manages path is set below)
+  #     - :managed (Managed repositories, available IF :manages path is set below)
   #   Available types for subversion:
   #     - :existing (Existing subversion repositories by URL - local using file:/// or remote
   #                 using one of the supported URL schemes (e.g., https://, svn+ssh:// )
-  #     - :managed (Managed repositores, available IF :manages path is set below)
+  #     - :managed (Managed repositories, available IF :manages path is set below)
   #
   # Exemplary configuration
   #
@@ -376,16 +383,6 @@ default:
   #     user: admin
   #     password: admin
 
-  # Overriding LDAP TLS configuration
-  # You can set other TLS options for the LDAP auth source connection
-  # They are passed as the `tls_options` to the Net::LDAP gem
-  # see the following resources for more information
-  # https://github.com/ruby-ldap/ruby-net-ldap/blob/master/lib/net/ldap.rb
-  # https://ruby.github.io/openssl/OpenSSL/SSL/SSLContext.html
-  # For example, to specify a CA file
-  # ldap_tls_options:
-  #   ca_file: "/path/to/the/root-ca.crt"
-
   # By default, the APIv3 allows authentication through basic auth.
   # Uncomment the following line to restrict APIv3 access to session.
   # apiv3_enable_basic_auth: false
@@ -395,7 +392,7 @@ default:
   # after_first_login_redirect_url: '/projects/demo'
 
   # For filtering work packages based on their attachments (name, content) it's worth to specify the main language that
-  # is used in those documents. This improves the full text search features of PostgreSQL. Currently PostgreSQL shipps
+  # is used in those documents. This improves the full text search features of PostgreSQL. Currently PostgreSQL ships
   # with the following languages pre-installed:
   #
   # danish

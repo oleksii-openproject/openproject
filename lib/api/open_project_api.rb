@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,11 +23,13 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module API
   class OpenProjectAPI < ::Grape::API
+    include ::API::AppsignalAPI
+
     class << self
       def inherited(api, *)
         super
@@ -45,9 +47,9 @@ Grape::DSL::Routing::ClassMethods.module_eval do
     alias :orig_namespace :namespace
   end
 
-  def namespace(space = nil, options = {}, &block)
+  def namespace(space = nil, options = {}, &)
     orig_namespace(space, options) do
-      instance_eval(&block)
+      instance_eval(&)
       apply_patches(space)
     end
   end
@@ -59,6 +61,6 @@ Grape::DSL::Routing::ClassMethods.module_eval do
   end
 
   def patches
-    ::Constants::APIPatchRegistry.patches_for(base)
+    Constants::APIPatchRegistry.patches_for(base)
   end
 end

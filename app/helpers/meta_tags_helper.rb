@@ -1,14 +1,12 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -25,17 +23,33 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module MetaTagsHelper
   ##
   # Use meta-tags to output title and site name
   def output_title_and_meta_tags
-    display_meta_tags site: Setting.app_title,
-                      title: html_title_parts,
-                      separator: ' | ', # Update the TitleService when changing this!
-                      reverse: true
+    display_meta_tags title: page_title(*html_title_parts)
+  end
+
+  def page_title(*parts)
+    (parts.reverse + [Setting.app_title]).join(" | ")
+  end
+
+  def initializer_meta_tag
+    tag :meta,
+        name: :openproject_initializer,
+        data: {
+          locale: I18n.locale,
+          defaultLocale: I18n.default_locale,
+          instanceLocale: Setting.default_language,
+          firstWeekOfYear: locale_first_week_of_year,
+          firstDayOfWeek: locale_first_day_of_week,
+          environment: Rails.env,
+          edition: OpenProject::Configuration.edition,
+          "asset-host": OpenProject::Configuration.rails_asset_host.presence
+        }.compact
   end
 
   ##

@@ -22,18 +22,19 @@ module Token
 
     included do
       # Set the expiration time
-      before_create :set_expiration_time
+      after_initialize :set_expiration_time, if: :new_record?
 
       # Remove outdated token
       after_save :delete_expired_tokens
 
       def valid_plaintext?(input)
         return false if expired?
+
         super
       end
 
       def expired?
-        expires_on && Time.now > expires_on
+        expires_on.nil? || Time.now > expires_on
       end
 
       def validity_time
@@ -53,7 +54,6 @@ module Token
     end
 
     module ClassMethods
-
       ##
       # Return a scope of active tokens
       def not_expired

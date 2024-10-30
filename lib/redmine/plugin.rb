@@ -1,13 +1,12 @@
-#-- encoding: UTF-8
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -24,29 +23,33 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require Rails.root.join('config/constants/open_project/activity')
+require Rails.root.join("config/constants/open_project/activity")
 
-module Redmine #:nodoc:
+module Redmine # :nodoc:
   class PluginError < StandardError
     attr_reader :plugin_id
+
     def initialize(plug_id = nil)
       super
       @plugin_id = plug_id
     end
   end
+
   class PluginNotFound < PluginError
     def to_s
       "Missing the plugin #{@plugin_id}"
     end
   end
+
   class PluginCircularDependency < PluginError
     def to_s
       "Circular plugin dependency in #{@plugin_id}"
     end
   end
+
   class PluginRequirementError < PluginError; end
 
   # Base class for Redmine plugins.
@@ -76,7 +79,7 @@ module Redmine #:nodoc:
     @deferred_plugins   = {}
 
     cattr_accessor :public_directory
-    self.public_directory = File.join(Rails.root, 'public', 'plugin_assets')
+    self.public_directory = Rails.public_path.join("plugin_assets")
 
     class << self
       attr_reader :registered_plugins, :deferred_plugins
@@ -86,13 +89,14 @@ module Redmine #:nodoc:
         class_eval do
           names.each do |name|
             define_method(name) do |*args|
-              args.empty? ? instance_variable_get("@#{name}") : instance_variable_set("@#{name}", *args)
+              args.empty? ? instance_variable_get(:"@#{name}") : instance_variable_set(:"@#{name}", *args)
             end
           end
         end
       end
     end
-    def_field :description, :url, :author, :author_url, :version, :settings, :bundled
+    def_field :gem_name, :url, :author, :author_url, :version, :settings, :bundled
+    alias :bundled? :bundled
     attr_reader :id
 
     # Plugin constructor
@@ -104,8 +108,10 @@ module Redmine #:nodoc:
       registered_plugins[id] = p
 
       if p.settings
-        Setting.create_setting("plugin_#{id}", 'default' => p.settings[:default], 'serialized' => true)
-        Setting.create_setting_accessors("plugin_#{id}")
+        Settings::Definition.add("plugin_#{id}",
+                                 default: p.settings[:default],
+                                 format: :hash,
+                                 env_alias: p.settings[:env_alias])
       end
 
       # If there are plugins waiting for us to be loaded, we try loading those, again
@@ -122,39 +128,48 @@ module Redmine #:nodoc:
       # find circular dependencies
       raise PluginCircularDependency.new(id) if dependencies_for(e.plugin_id).include?(id)
 
-      if RedminePluginLocator.instance.has_plugin? e.plugin_id
-        # The required plugin is going to be loaded later, defer loading this plugin
-        (deferred_plugins[e.plugin_id] ||= []) << [id, block]
-        p
-      else
-        raise
-      end
+      raise
     end
 
     def name(*args)
-      name = args.empty? ? instance_variable_get("@name") : instance_variable_set("@name", *args)
+      name = args.empty? ? instance_variable_get(:@name) : instance_variable_set(:@name, *args)
 
-      case name
-      when Symbol
-        ::I18n.t(name)
-      when NilClass
-        # Default name if it was not provided during registration
-        id.to_s.humanize
-      else
-        name
-      end
+      return ::I18n.t(name) if name.is_a?(Symbol)
+      return name if name
+
+      translated_name = ::I18n.t("plugin_#{id}.name", default: nil)
+      translated_name || gemspec&.summary || id.to_s.humanize
+    end
+
+    def description(*args)
+      description = args.empty? ? instance_variable_get(:@description) : instance_variable_set(:@description, *args)
+
+      description || ::I18n.t("plugin_#{id}.description", default: gemspec&.description)
+    end
+
+    def gemspec
+      Gem.loaded_specs[gem_name]
     end
 
     # returns an array of all dependencies we know of for plugin id
     # (might not be complete at all times!)
     def self.dependencies_for(id)
       direct_deps = deferred_plugins.keys.find_all { |k| deferred_plugins[k].map(&:first).include?(id) }
-      direct_deps.inject([]) { |deps, v| deps << v; deps += dependencies_for(v) }
+      direct_deps.inject([]) do |deps, v|
+        deps << v
+        deps += dependencies_for(v)
+      end
     end
 
     # Returns an array of all registered plugins
     def self.all
       registered_plugins.values
+    end
+
+    def self.not_bundled
+      registered_plugins
+        .values
+        .reject(&:bundled)
     end
 
     # Finds a plugin by its id
@@ -180,8 +195,8 @@ module Redmine #:nodoc:
       @id = id.to_sym
     end
 
-    def <=>(plugin)
-      id.to_s <=> plugin.id.to_s
+    def <=>(other)
+      id.to_s <=> other.id.to_s
     end
 
     # Sets a requirement on the OpenProject version.
@@ -199,13 +214,14 @@ module Redmine #:nodoc:
     #   # Requires OpenProject between 1.1.0 and 1.1.5 or higher
     #   requires_openproject ">= 1.1.0", "<= 1.1.5"
 
-    def requires_openproject(*args)
-      required_version = Gem::Requirement.new(*args)
+    def requires_openproject(*)
+      required_version = Gem::Requirement.new(*)
       op_version = Gem::Version.new(OpenProject::VERSION.to_semver)
 
       unless required_version.satisfied_by? op_version
         raise PluginRequirementError.new("#{id} plugin requires OpenProject version #{required_version} but current version is #{op_version}.")
       end
+
       true
     end
 
@@ -224,11 +240,11 @@ module Redmine #:nodoc:
       arg.assert_valid_keys(:version, :version_or_higher)
 
       plugin = Plugin.find(plugin_name)
-      current = plugin.version.split('.').map(&:to_i)
+      current = plugin.version.split(".").map(&:to_i)
 
       arg.each do |k, v|
         v = [] << v unless v.is_a?(Array)
-        versions = v.map { |s| s.split('.').map(&:to_i) }
+        versions = v.map { |s| s.split(".").map(&:to_i) }
         case k
         when :version_or_higher
           raise ArgumentError.new("wrong number of versions (#{versions.size} for 1)") unless versions.size == 1
@@ -257,6 +273,10 @@ module Redmine #:nodoc:
     end
     alias :add_menu_item :menu
 
+    def configure_menu(menu_name, &)
+      Redmine::MenuManager.map(menu_name, &)
+    end
+
     # Removes +item+ from the given +menu+.
     def delete_menu_item(menu_name, item)
       hide_menu_item(menu_name, item)
@@ -266,9 +286,9 @@ module Redmine #:nodoc:
     #
     # +hide_if+ parameter can be a lambda accepting a project, the item will only be hidden if
     #   the condition evaluates to true.
-    def hide_menu_item(menu_name, item, hide_if: -> (*) { true })
+    def hide_menu_item(menu_name, item, hide_if: ->(*) { true })
       Redmine::MenuManager.map(menu_name) do |menu|
-        menu.add_condition(item, -> (project) { !hide_if.call(project) })
+        menu.add_condition(item, ->(project) { !hide_if.call(project) })
       end
     end
 
@@ -307,9 +327,13 @@ module Redmine #:nodoc:
     def permission(name, actions, options = {})
       if @project_scope
         mod, mod_options = @project_scope
-        OpenProject::AccessControl.map { |map| map.project_module(mod, mod_options) { |map| map.permission(name, actions, options) } }
+        OpenProject::AccessControl.map do |map|
+          map.project_module(mod, mod_options) do |map|
+            map.permission(name, actions, **options)
+          end
+        end
       else
-        OpenProject::AccessControl.map { |map| map.permission(name, actions, options) }
+        OpenProject::AccessControl.map { |map| map.permission(name, actions, **options) }
       end
     end
 
@@ -320,11 +344,14 @@ module Redmine #:nodoc:
     #     permission :view_contacts, { contacts: [:list, :show] }, public: true
     #     permission :destroy_contacts, { contacts: :destroy }
     #   end
-    def project_module(name, options = {}, &block)
-      @project_scope = [name, options]
-      instance_eval(&block)
+    def project_module(name, options = {}, &)
+      plugin = self
+      Rails.application.reloader.to_prepare do
+        plugin.instance_eval { @project_scope = [name, options] }
+        plugin.instance_eval(&)
+      end
     ensure
-      @project_scope = nil
+      plugin.instance_eval { @project_scope = nil }
     end
 
     # Registers an activity provider.
@@ -348,9 +375,9 @@ module Redmine #:nodoc:
     #   Meeting.find_events('scrums', User.current, 5.days.ago, Date.today, project: foo) # events for project foo only
     #
     # Note that :view_scrums permission is required to view these events in the activity view.
-    def activity_provider(*args)
-      ActiveSupport::Deprecation.warn('Use ActsAsOpEngine#activity_provider instead.')
-      OpenProject::Activity.register(*args)
+    def activity_provider(*)
+      ActiveSupport::Deprecation.warn("Use ActsAsOpEngine#activity_provider instead.")
+      OpenProject::Activity.register(*)
     end
 
     # Registers a wiki formatter.
@@ -365,7 +392,7 @@ module Redmine #:nodoc:
 
     # Returns +true+ if the plugin can be configured.
     def configurable?
-      settings && settings.is_a?(Hash) && !settings[:partial].blank?
+      settings.is_a?(Hash) && settings[:partial].present?
     end
 
     def mirror_assets
@@ -373,35 +400,33 @@ module Redmine #:nodoc:
       destination = public_directory
       return unless File.directory?(source)
 
-      source_files = Dir[source + '/**/*']
+      source_files = Dir["#{source}/**/*"]
       source_dirs = source_files.select { |d| File.directory?(d) }
       source_files -= source_dirs
 
       unless source_files.empty?
-        base_target_dir = File.join(destination, File.dirname(source_files.first).gsub(source, ''))
+        base_target_dir = File.join(destination, File.dirname(source_files.first).gsub(source, ""))
         FileUtils.mkdir_p(base_target_dir)
       end
 
       source_dirs.each do |dir|
         # strip down these paths so we have simple, relative paths we can
         # add to the destination
-        target_dir = File.join(destination, dir.gsub(source, ''))
+        target_dir = File.join(destination, dir.gsub(source, ""))
         begin
           FileUtils.mkdir_p(target_dir)
-        rescue => e
+        rescue StandardError => e
           raise "Could not create directory #{target_dir}: \n" + e
         end
       end
 
       source_files.each do |file|
-        begin
-          target = File.join(destination, file.gsub(source, ''))
-          unless File.exist?(target) && FileUtils.identical?(file, target)
-            FileUtils.cp(file, target)
-          end
-        rescue => e
-          raise "Could not copy #{file} to #{target}: \n" + e
+        target = File.join(destination, file.gsub(source, ""))
+        unless File.exist?(target) && FileUtils.identical?(file, target)
+          FileUtils.cp(file, target)
         end
+      rescue StandardError => e
+        raise "Could not copy #{file} to #{target}: \n" + e
       end
     end
 

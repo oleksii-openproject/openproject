@@ -20,6 +20,7 @@
                                   title:    t(:label_role_search),
                                   tabIndex: 0,
                                   container_class: '-slim',
+                                  class: 'option-label--select',
                                   id:       'unknown_mails_invite_role_ids' %>
             (<%= t('bcf.recommended') %>)
           </label>
@@ -34,8 +35,8 @@
         </div>
       </div>
     <% else %>
-      <div class="notification-box -warning">
-        <div class="notification-box--content">
+      <div class="op-toast -warning">
+        <div class="op-toast--content">
           <%= t('bcf.bcf_xml.import.no_permission_to_add_members') %>
           <%= t('bcf.bcf_xml.import.contact_project_admin') %>
         </div>
@@ -46,10 +47,10 @@
         <%= t('bcf.bcf_xml.import.replace_with_system_user') %>.
       </div>
     <% end %>
-    <%= styled_submit_tag t('bcf.bcf_xml.import.button_proceed'), class: '-highlight' %>
+    <%= styled_submit_tag t('bcf.bcf_xml.import.button_proceed'), class: '-primary' %>
   <% else %>
-    <div class="notification-box -error">
-      <div class="notification-box--content">
+    <div class="op-toast -error">
+      <div class="op-toast--content">
         <%= I18n.t('text_no_roles_defined') %>
       </div>
     </div>
@@ -59,4 +60,3 @@
               defaults_bcf_project_ifc_models_path(@project),
               class: 'button' %>
 <% end %>
-

@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,17 +23,17 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'spec_helper'
+require "spec_helper"
 
-describe RbMasterBacklogsController, type: :routing do
-  describe 'routing' do
+RSpec.describe RbMasterBacklogsController do
+  describe "routing" do
     it {
-      expect(get('/projects/project_42/backlogs')).to route_to(controller: 'rb_master_backlogs',
-                                                               action: 'index',
-                                                               project_id: 'project_42')
+      expect(get("/projects/project_42/backlogs")).to route_to(controller: "rb_master_backlogs",
+                                                               action: "index",
+                                                               project_id: "project_42")
     }
   end
 end

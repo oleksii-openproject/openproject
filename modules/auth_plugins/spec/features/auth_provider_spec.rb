@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,15 +23,15 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'spec_helper'
+require "spec_helper"
 
-describe 'rendering the login buttons', js: true do
+RSpec.describe "rendering the login buttons", :js do
   let(:providers) do
     [
-      { name: 'mock_auth' }
+      { name: "mock_auth" }
     ]
   end
 
@@ -39,15 +39,15 @@ describe 'rendering the login buttons', js: true do
     allow(OpenProject::Plugins::AuthPlugin).to receive(:providers).and_return(providers)
   end
 
-  describe 'in a public project', with_settings: { login_required: false } do
-    let(:public_project) { FactoryBot.build(:project, public: true) }
+  describe "in a public project", with_settings: { login_required: false } do
+    let(:public_project) { build(:project, public: true) }
 
-    it 'renders correctly' do
+    it "renders correctly" do
       visit project_path(public_project)
 
-      page.find('a.login').click
-      item = page.find('a.auth-provider', text: 'mock_auth')
-      expect(item[:href]).to end_with '/auth/mock_auth'
+      page.find("a", text: "Sign in").click
+      item = page.find("a.auth-provider", text: "mock_auth")
+      expect(item[:href]).to end_with "/auth/mock_auth"
     end
   end
 end

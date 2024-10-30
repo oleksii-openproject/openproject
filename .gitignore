@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 # See https://help.github.com/articles/ignoring-files for more about ignoring files.
@@ -36,13 +36,22 @@
 /.bundle
 
 # Ignore all logfiles and tempfiles.
-/log/*.log
+*.log
 npm-debug.log*
 /tmp
 *.swp
 
 # Ignore Visual Studio Code files
 /.vscode
+
+# Ignore Vim backup files
+*~
+
+# Ignore Ctags files
+/tags
+/tags.lock
+/tags.temp
+/tags.files
 
 # Ignore RubyMine files
 /.idea
@@ -51,9 +60,12 @@ npm-debug.log*
 /backup
 /.project
 /.loadpath
+
+# Generated files
 /app/assets/javascripts/editor/*
 /app/assets/javascripts/locales/*.*
-/frontend/src/locales/*.js
+/frontend/src/locales/*
+/modules/*/frontend/module/module
 /config/additional_environment.rb
 /config/configuration.yml
 /config/database.yml
@@ -83,19 +95,50 @@ npm-debug.log*
 /.rvmrc*
 /.ruby-gemset
 /.foreman
-/.env*
+/.overmind.env
 .DS_Store
+*.icloud
 .rspec
+.byebug_history
+
 # coverage in plugins
 /lib/plugins/*/coverage
+
 # asset cache
 /.sass-cache/
+
 # Frontend debug log
 /frontend/npm-debug.log*
 /frontend/dist/
 /frontend/tests/*.gif
 node_modules/
+
 # Ignore global package-lock.json that generates
 /package-lock.json
 plaintext.yml
 structure.sql
+
+# Local development
+# used by dotenv
+/.env.*.local
+
+# Local development docker
+/.env
+/docker-compose.override.yml
+
+# Local development direnv files
+/.envrc
+/.direnv
+
+# local user override
+lefthook-local.yml
+.rubocop-local.yml
+
+frontend/package-lock.json
+
+# Testing and nextcloud infrastructure
+acme.json
+.env.test
+
+# Generated seeders crowdin source file
+**/config/locales/en.seeders.yml

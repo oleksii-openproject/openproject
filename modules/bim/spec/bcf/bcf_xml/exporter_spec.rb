@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,15 +23,15 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'spec_helper'
+require "spec_helper"
 
-describe ::OpenProject::Bim::BcfXml::Exporter do
-  let(:query) { FactoryBot.build(:global_query) }
-  let(:work_package) { FactoryBot.create :work_package }
-  let(:admin) { FactoryBot.create(:admin) }
+RSpec.describe OpenProject::Bim::BcfXml::Exporter do
+  let(:query) { build(:global_query) }
+  let(:work_package) { create(:work_package) }
+  let(:admin) { create(:admin) }
   let(:current_user) { admin }
 
   before do
@@ -42,20 +42,20 @@ describe ::OpenProject::Bim::BcfXml::Exporter do
   subject { described_class.new(query) }
 
   context "one WP without BCF issue associated" do
-    it '#work_packages' do
-      expect(subject.work_packages.count).to eql(0)
+    it "#work_packages" do
+      expect(subject.work_packages.count).to be(0)
     end
   end
 
   context "one WP with BCF issue associated" do
-    let(:bcf_issue) { FactoryBot.create(:bcf_issue_with_comment, work_package: work_package) }
+    let(:bcf_issue) { create(:bcf_issue_with_comment, work_package:) }
 
     before do
       bcf_issue
     end
 
-    it '#work_packages' do
-      expect(subject.work_packages.count).to eql(1)
+    it "#work_packages" do
+      expect(subject.work_packages.count).to be(1)
     end
   end
 end

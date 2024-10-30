@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,19 +23,19 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
-require 'spec_helper'
-require_relative '../shared_expectations'
+require "spec_helper"
+require_relative "../shared_expectations"
 
-describe CustomActions::Conditions::Role, type: :model do
-  it_behaves_like 'associated custom condition' do
+RSpec.describe CustomActions::Conditions::Role do
+  it_behaves_like "associated custom condition" do
     let(:key) { :role }
 
-    describe '#allowed_values' do
-      it 'is the list of all roles' do
-        roles = [FactoryBot.build_stubbed(:role),
-                 FactoryBot.build_stubbed(:role)]
+    describe "#allowed_values" do
+      it "is the list of all roles" do
+        roles = [build_stubbed(:project_role),
+                 build_stubbed(:project_role)]
 
         allow(Role)
           .to receive_message_chain(:givable, :select)
@@ -47,22 +47,22 @@ describe CustomActions::Conditions::Role, type: :model do
       end
     end
 
-    describe '#fulfilled_by?' do
-      let(:project) { double('project', id: 1) }
-      let(:work_package) { double('work_package', project: project, project_id: 1) }
+    describe "#fulfilled_by?" do
+      let(:project) { double("project", id: 1) }
+      let(:work_package) { double("work_package", project:, project_id: 1) }
       let(:user) do
-        double('user', id: 3).tap do |user|
+        double("user", id: 3).tap do |user|
           allow(user)
             .to receive(:roles_for_project)
             .with(project)
             .and_return(roles)
         end
       end
-      let(:role1) { double('role', id: 1) }
-      let(:role2) { double('role', id: 2) }
+      let(:role1) { double("role", id: 1) }
+      let(:role2) { double("role", id: 2) }
       let(:roles) { [role1, role2] }
 
-      it 'is true if values are empty' do
+      it "is true if values are empty" do
         instance.values = []
 
         expect(instance.fulfilled_by?(work_package, user))

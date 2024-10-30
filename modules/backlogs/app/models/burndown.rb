@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,18 +23,18 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 class Burndown
-  def initialize(sprint, project, burn_direction = nil)
+  def initialize(sprint, project, _burn_direction = nil)
     @sprint_id = sprint.id
 
     make_date_series sprint
 
     series_data = OpenProject::Backlogs::Burndown::SeriesRawData.new(project,
                                                                      sprint,
-                                                                     points: ['story_points'])
+                                                                     points: ["story_points"])
 
     series_data.collect_data
 
@@ -43,12 +43,7 @@ class Burndown
     determine_max
   end
 
-  attr_reader :days
-  attr_reader :sprint_id
-  attr_reader :max
-
-  attr_reader :story_points
-  attr_reader :story_points_ideal
+  attr_reader :days, :sprint_id, :max, :story_points, :story_points_ideal
 
   def series(_select = :active)
     @available_series
@@ -70,7 +65,7 @@ class Burndown
   end
 
   def calculate_ideals(data)
-    (['story_points'] & data.collect_names).each do |ideal|
+    (["story_points"] & data.collect_names).each do |ideal|
       calculate_ideal(ideal, data.unit_for(ideal))
     end
   end
@@ -81,17 +76,17 @@ class Burndown
 
     ideal = []
     days.each_with_index do |_d, i|
-      ideal[i] = max - delta * i
+      ideal[i] = max - (delta * i)
     end
 
-    make_series name.to_s + '_ideal', unit, ideal
+    make_series name.to_s + "_ideal", unit, ideal
   end
 
   def make_series(name, units, data)
     @available_series ||= {}
     s = OpenProject::Backlogs::Burndown::Series.new(data, name, units)
     @available_series[name] = s
-    instance_variable_set("@#{name}", s)
+    instance_variable_set(:"@#{name}", s)
   end
 
   def determine_max

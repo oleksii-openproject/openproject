@@ -1,14 +1,12 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -25,92 +23,85 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'spec_helper'
+require "spec_helper"
 
-describe WorkPackages::DeleteService do
+RSpec.describe WorkPackages::DeleteService do
   let(:user) do
-    FactoryBot.build_stubbed(:user)
+    build_stubbed(:user)
   end
   let(:work_package) do
-    FactoryBot.build_stubbed(:work_package, type: FactoryBot.build_stubbed(:type))
+    build_stubbed(:work_package, type: build_stubbed(:type))
   end
   let(:instance) do
     described_class
-      .new(user: user,
+      .new(user:,
            model: work_package)
   end
   let(:destroyed_result) { true }
   let(:destroy_allowed) { true }
+
   subject { instance.call }
 
   before do
-    expect(work_package)
-      .to receive(:destroy)
-      .and_return(destroyed_result)
+    allow(work_package).to receive(:reload).and_return(work_package)
+    expect(work_package).to receive(:destroy).and_return(destroyed_result)
+    allow(work_package).to receive(:destroyed?).and_return(destroyed_result)
 
-    allow(work_package)
-      .to receive(:destroyed?)
-      .and_return(destroyed_result)
-
-    allow(user)
-      .to receive(:allowed_to?)
-      .with(:delete_work_packages, work_package.project)
-      .and_return(destroy_allowed)
+    mock_permissions_for(user) do |mock|
+      mock.allow_in_project :delete_work_packages, project: work_package.project
+    end
   end
 
-  it 'destroys the work package' do
+  it "destroys the work package" do
     subject
   end
 
-  it 'is successful' do
+  it "is successful" do
     expect(subject)
       .to be_success
   end
 
-  it 'returns the destroyed work package' do
+  it "returns the destroyed work package" do
     expect(subject.result)
       .to eql work_package
   end
 
-  it 'returns an empty errors array' do
+  it "returns an empty errors array" do
     expect(subject.errors)
       .to be_empty
   end
 
-  context 'when the work package could not be destroyed' do
+  context "when the work package could not be destroyed" do
     let(:destroyed_result) { false }
 
-    it 'it is no success' do
+    it "is no success" do
       expect(subject)
         .not_to be_success
     end
   end
 
-  context 'with ancestors' do
+  context "with ancestors" do
     let(:parent) do
-      FactoryBot.build_stubbed(:work_package)
+      build_stubbed(:work_package)
     end
     let(:grandparent) do
-      FactoryBot.build_stubbed(:work_package)
+      build_stubbed(:work_package)
     end
     let(:expect_inherited_attributes_service_calls) do
       inherited_service_instance = double(WorkPackages::UpdateAncestorsService)
 
-      service_result = ServiceResult.new(success: true,
-                                         result: work_package)
+      service_result = ServiceResult.success(result: work_package)
 
-      service_result.dependent_results += [ServiceResult.new(success: true,
-                                                             result: parent),
-                                           ServiceResult.new(success: true,
-                                                             result: grandparent)]
+      service_result.dependent_results += [ServiceResult.success(result: parent),
+                                           ServiceResult.success(result: grandparent)]
 
       expect(WorkPackages::UpdateAncestorsService)
         .to receive(:new)
-        .with(user: user,
-              work_package: work_package)
+        .with(user:,
+              work_package:)
         .and_return(inherited_service_instance)
 
       expect(inherited_service_instance)
@@ -123,16 +114,16 @@ describe WorkPackages::DeleteService do
         .not_to receive(:new)
     end
 
-    it 'calls the inherit attributes service for each ancestor' do
+    it "calls the inherit attributes service for each ancestor" do
       expect_inherited_attributes_service_calls
 
       subject
     end
 
-    context 'when the work package could not be destroyed' do
+    context "when the work package could not be destroyed" do
       let(:destroyed_result) { false }
 
-      it 'does not call inherited attributes service' do
+      it "does not call inherited attributes service" do
         expect_no_inherited_attributes_service_calls
 
         subject
@@ -140,12 +131,12 @@ describe WorkPackages::DeleteService do
     end
   end
 
-  context 'with descendants' do
+  context "with descendants" do
     let(:child) do
-      FactoryBot.build_stubbed(:work_package)
+      build_stubbed(:work_package)
     end
     let(:grandchild) do
-      FactoryBot.build_stubbed(:work_package)
+      build_stubbed(:work_package)
     end
     let(:descendants) do
       [child, grandchild]
@@ -162,7 +153,7 @@ describe WorkPackages::DeleteService do
       end
     end
 
-    it 'destroys the descendants' do
+    it "destroys the descendants" do
       descendants.each do |descendant|
         expect(descendant)
           .to receive(:destroy)
@@ -171,17 +162,17 @@ describe WorkPackages::DeleteService do
       subject
     end
 
-    it 'returns the descendants as part of the result' do
+    it "returns the descendants as part of the result" do
       subject
 
       expect(subject.all_results)
         .to match_array [work_package] + descendants
     end
 
-    context 'if the work package could not be destroyed' do
+    context "if the work package could not be destroyed" do
       let(:destroyed_result) { false }
 
-      it 'does not destroy the descendants' do
+      it "does not destroy the descendants" do
         descendants.each do |descendant|
           expect(descendant)
             .not_to receive(:destroy)

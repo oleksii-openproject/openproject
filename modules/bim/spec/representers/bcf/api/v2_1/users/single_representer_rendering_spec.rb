@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,32 +23,32 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'spec_helper'
+require "spec_helper"
 
-require_relative '../shared_examples'
+require_relative "../shared_examples"
 
-describe Bim::Bcf::API::V2_1::Users::SingleRepresenter, 'rendering' do
-  let(:user) { FactoryBot.build_stubbed(:user) }
+RSpec.describe Bim::Bcf::API::V2_1::Users::SingleRepresenter, "rendering" do
+  let(:user) { build_stubbed(:user) }
 
   let(:instance) { described_class.new(user) }
 
   subject { instance.to_json }
 
-  describe 'attributes' do
-    context 'id' do
-      it_behaves_like 'attribute' do
+  describe "attributes" do
+    context "id" do
+      it_behaves_like "attribute" do
         let(:value) { user.mail }
-        let(:path) { 'id' }
+        let(:path) { "id" }
       end
     end
 
-    context 'name' do
-      it_behaves_like 'attribute' do
+    context "name" do
+      it_behaves_like "attribute" do
         let(:value) { user.name }
-        let(:path) { 'name' }
+        let(:path) { "name" }
       end
     end
   end

@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,62 +23,90 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'spec_helper'
+require "spec_helper"
 
-feature 'members pagination', type: :feature, js: true do
-  using_shared_fixtures :admin
-  let!(:project) { FactoryBot.create :project, name: 'Project 1', identifier: 'project1' }
+RSpec.describe "members pagination", :js do
+  shared_let(:admin) { create(:admin) }
+  let(:project) do
+    create(:project,
+           name: "Project 1",
+           identifier: "project1",
+           members: project_members)
+  end
+  let(:project_members) do
+    {
+      bob => manager,
+      alice => developer
+    }
+  end
 
-  let!(:peter) { FactoryBot.create :user, firstname: 'Peter', lastname: 'Pan' }
-  let!(:bob)   { FactoryBot.create :user, firstname: 'Bob', lastname: 'Bobbit' }
-  let!(:alice) { FactoryBot.create :user, firstname: 'Alice', lastname: 'Alison' }
+  let!(:peter) { create(:user, firstname: "Peter", lastname: "Pan") }
+  let(:bob)   { create(:user, firstname: "Bob", lastname: "Bobbit") }
+  let(:alice) { create(:user, firstname: "Alice", lastname: "Alison") }
 
-  let!(:manager)   { FactoryBot.create :role, name: 'Manager' }
-  let!(:developer) { FactoryBot.create :role, name: 'Developer' }
+  let(:manager)   { create(:project_role, name: "Manager") }
+  let(:developer) { create(:project_role, name: "Developer") }
 
   let(:members_page) { Pages::Members.new project.identifier }
 
-  before do
-    allow(User).to receive(:current).and_return admin
+  current_user { admin }
 
-    project.add_member! bob, [manager]
-    project.add_member! alice, [developer]
+  context "when adding a member" do
+    it "paginates" do
+      members_page.set_items_per_page! 2
+
+      members_page.visit!
+      SeleniumHubWaiter.wait
+      expect(members_page).to have_user "Alice Alison" # members are sorted by last name desc
+      members_page.add_user! "Peter Pan", as: "Manager"
+
+      SeleniumHubWaiter.wait
+      members_page.go_to_page! 2
+      expect(members_page).to have_user "Peter Pan"
+    end
   end
 
-  scenario 'paginating after adding a member' do
-    members_page.set_items_per_page! 2
+  context "when removing a member" do
+    let(:project_members) do
+      {
+        bob => manager,
+        alice => developer,
+        peter => manager
+      }
+    end
 
-    members_page.visit!
-    members_page.add_user! 'Peter Pan', as: 'Manager'
+    it "paginates" do
+      members_page.set_items_per_page! 1
 
-    members_page.go_to_page! 2
-    expect(members_page).to have_user 'Alice Alison' # members are sorted by last name desc
+      members_page.visit!
+      SeleniumHubWaiter.wait
+      members_page.remove_user! "Alice Alison"
+      expect_and_dismiss_flash message: "Removed Alice Alison from project"
+      expect(members_page).to have_user "Bob Bobbit"
+
+      SeleniumHubWaiter.wait
+      members_page.go_to_page! 2
+      expect(members_page).to have_user "Peter Pan"
+    end
   end
 
-  scenario 'Paginating after removing a member' do
-    project.add_member! peter, [manager]
-    members_page.set_items_per_page! 1
+  context "when updating a member" do
+    it "paginates" do
+      members_page.set_items_per_page! 1
 
-    members_page.visit!
-    members_page.remove_user! 'Peter Pan'
-    expect(members_page).to have_user 'Bob Bobbit'
+      members_page.visit!
+      SeleniumHubWaiter.wait
+      members_page.go_to_page! 2
+      members_page.edit_user! "Bob Bobbit", add_roles: ["Developer"]
+      expect(page).to have_text "Successful update"
+      expect(members_page).to have_user "Bob Bobbit", roles: ["Developer", "Manager"]
 
-    members_page.go_to_page! 2
-    expect(members_page).to have_user 'Alice Alison'
-  end
-
-  scenario 'Paginating after updating a member' do
-    members_page.set_items_per_page! 1
-
-    members_page.visit!
-    members_page.edit_user! 'Bob Bobbit', add_roles: ['Developer']
-    expect(page).to have_text 'Successful update'
-    expect(members_page).to have_user 'Bob Bobbit', roles: ['Developer', 'Manager']
-
-    members_page.go_to_page! 2
-    expect(members_page).to have_user 'Alice Alison'
+      SeleniumHubWaiter.wait
+      members_page.go_to_page! 1
+      expect(members_page).to have_user "Alice Alison"
+    end
   end
 end

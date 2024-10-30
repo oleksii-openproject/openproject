@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,10 +23,10 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require Rails.root.join("db", "migrate", "migration_utils", "migration_squasher").to_s
+require Rails.root.join("db/migrate/migration_utils/migration_squasher").to_s
 # This migration aggregates the migrations detailed in MIGRATION_FILES
 class ToV710AggregatedDocumentsMigrations < ActiveRecord::Migration[5.1]
   MIGRATION_FILES = <<-MIGRATIONS
@@ -50,8 +50,8 @@ class ToV710AggregatedDocumentsMigrations < ActiveRecord::Migration[5.1]
 
       create_table :document_journals, id: :integer do |t|
         t.integer  :journal_id, null: false
-        t.integer  :project_id, default: 0,  null: false
-        t.integer  :category_id, default: 0,  null: false
+        t.integer  :project_id, default: 0, null: false
+        t.integer  :category_id, default: 0, null: false
         t.string   :title, limit: 60, default: "", null: false
         t.text     :description
         t.datetime :created_on
@@ -68,7 +68,7 @@ class ToV710AggregatedDocumentsMigrations < ActiveRecord::Migration[5.1]
 
   def migrations
     MIGRATION_FILES.split.map do |m|
-      m.gsub(/_.*\z/, '')
+      m.gsub(/_.*\z/, "")
     end
   end
 end

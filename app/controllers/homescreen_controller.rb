@@ -1,13 +1,12 @@
-#-- encoding: UTF-8
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -24,16 +23,19 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 class HomescreenController < ApplicationController
   skip_before_action :check_if_login_required, only: [:robots]
+  no_authorization_required! :index, :robots
+  before_action :jump_to_module
 
-  layout 'no_menu'
+  layout "global"
 
   def index
     @newest_projects = Project.visible.newest.take(3)
+    @favorite_projects = Project.visible.active.favored_by(User.current)
     @newest_users = User.active.newest.take(3)
     @news = News.latest(count: 3)
     @announcement = Announcement.active_and_current
@@ -41,7 +43,28 @@ class HomescreenController < ApplicationController
     @homescreen = OpenProject::Static::Homescreen
   end
 
+  current_menu_item [:index] do
+    :home
+  end
+
   def robots
-    @projects = Project.active.public_projects
+    if Setting.login_required?
+      render template: "homescreen/robots-login-required", format: :text
+    else
+      @projects = Project.active.public_projects
+    end
+  end
+
+  def jump_to_module
+    if params[:jump]
+      # try to redirect to the requested menu item
+      redirect_to_global_menu_item(params[:jump]) && return
+    end
+  end
+
+  def default_breadcrumb; end
+
+  def show_local_breadcrumb
+    false
   end
 end

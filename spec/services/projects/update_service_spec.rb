@@ -1,14 +1,12 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -25,184 +23,69 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'spec_helper'
+require "spec_helper"
+require "services/base_services/behaves_like_update_service"
 
-describe Projects::UpdateService, type: :model do
-  let(:user) { FactoryBot.build_stubbed(:user) }
-  let(:contract_class) do
-    double('contract_class', '<=': true)
-  end
-  let(:project_valid) { true }
-  let(:instance) do
-    described_class.new(user: user,
-                        model: project,
-                        contract_class: contract_class)
-  end
-  let(:call_attributes) { { name: 'Some name', identifier: 'Some identifier' } }
-  let(:set_attributes_success) do
-    true
-  end
-  let(:set_attributes_errors) do
-    double('set_attributes_errors')
-  end
-  let(:set_attributes_result) do
-    ServiceResult.new result: project,
-                      success: set_attributes_success,
-                      errors: set_attributes_errors
-  end
-  let!(:project) do
-    FactoryBot.build_stubbed(:project, status: project_status).tap do |p|
-      allow(p)
-        .to receive(:save)
-        .and_return(project_valid)
-
-      project_status.clear_changes_information
-    end
-  end
-  let(:project_status) do
-    FactoryBot.build_stubbed(:project_status)
-  end
-  let!(:set_attributes_service) do
-    service = double('set_attributes_service_instance')
-
-    allow(Projects::SetAttributesService)
-      .to receive(:new)
-      .with(user: user,
-            model: project,
-            contract_class: contract_class,
-            contract_options: {})
-      .and_return(service)
-
-    allow(service)
-      .to receive(:call)
-      .and_return(set_attributes_result)
-  end
-
-  describe 'call' do
-    subject { instance.call(call_attributes) }
-
-    it 'is successful' do
-      expect(subject.success?).to be_truthy
+RSpec.describe Projects::UpdateService, type: :model do
+  it_behaves_like "BaseServices update service" do
+    let!(:model_instance) do
+      build_stubbed(:project, :with_status)
     end
 
-    it 'returns the result of the SetAttributesService' do
-      expect(subject)
-        .to eql set_attributes_result
-    end
-
-    it 'persists the project' do
-      expect(project)
-        .to receive(:save)
-        .and_return(project_valid)
-
-      subject
-    end
-
-    it 'returns the project' do
-      expect(subject.result)
-        .to eql project
-    end
-
-    it 'sends an update notification' do
+    it "sends an update notification" do
       expect(OpenProject::Notifications)
-        .to receive(:send)
-        .with('project_updated', project: project)
+        .to(receive(:send))
+        .with(OpenProject::Events::PROJECT_UPDATED, project: model_instance)
 
       subject
     end
 
-    context 'if the identifier is altered' do
-      let(:call_attributes) { { identifier: 'Some identifier' } }
+    context "if the identifier is altered" do
+      let(:call_attributes) { { identifier: "Some identifier" } }
 
       before do
-        allow(project)
-          .to receive(:changes)
-          .and_return('identifier' => %w(lorem ipsum))
+        allow(model_instance)
+          .to(receive(:changes))
+          .and_return("identifier" => %w(lorem ipsum))
       end
 
-      it 'sends the notification' do
+      it "sends the notification" do
         expect(OpenProject::Notifications)
-          .to receive(:send)
-          .with('project_updated', project: project)
+          .to(receive(:send))
+          .with(OpenProject::Events::PROJECT_UPDATED, project: model_instance)
         expect(OpenProject::Notifications)
-          .to receive(:send)
-          .with('project_renamed', project: project)
+          .to(receive(:send))
+          .with(OpenProject::Events::PROJECT_RENAMED, project: model_instance)
 
         subject
       end
     end
 
-    context 'if the parent is altered' do
+    context "if the parent is altered" do
       before do
-        allow(project)
-          .to receive(:changes)
-          .and_return('parent_id' => [nil, 5])
+        allow(model_instance)
+          .to(receive(:changes))
+          .and_return("parent_id" => [nil, 5])
       end
 
-      it 'updates the versions associated with the work packages' do
+      it "updates the versions associated with the work packages" do
         expect(WorkPackage)
-          .to receive(:update_versions_from_hierarchy_change)
-          .with(project)
+          .to(receive(:update_versions_from_hierarchy_change))
+          .with(model_instance)
 
         subject
       end
     end
 
-    context 'if the project status is altered' do
-      before do
-        allow(project_status)
-          .to receive(:changed?)
-          .and_return(true)
-      end
-
-      it 'persists the changes' do
-        expect(project_status)
-          .to receive(:save)
-
+    describe "section based validation" do
+      it "is reset after the save is done" do
+        model_instance._limit_custom_fields_validation_to_section_id = 1
         subject
-      end
-    end
-
-    context 'if the SetAttributeService is unsuccessful' do
-      let(:set_attributes_success) { false }
-
-      it 'is unsuccessful' do
-        expect(subject.success?).to be_falsey
-      end
-
-      it 'returns the result of the SetAttributesService' do
-        expect(subject)
-          .to eql set_attributes_result
-      end
-
-      it 'does not persist the changes' do
-        expect(project)
-          .to_not receive(:save)
-
-        subject
-      end
-
-      it "exposes the contract's errors" do
-        subject
-
-        expect(subject.errors).to eql set_attributes_errors
-      end
-    end
-
-    context 'if the project is invalid' do
-      let(:project_valid) { false }
-
-      it 'is unsuccessful' do
-        expect(subject.success?).to be_falsey
-      end
-
-      it "exposes the project's errors" do
-        subject
-
-        expect(subject.errors).to eql project.errors
+        # section scope is reset after the update
+        expect(model_instance._limit_custom_fields_validation_to_section_id).to be_nil
       end
     end
   end

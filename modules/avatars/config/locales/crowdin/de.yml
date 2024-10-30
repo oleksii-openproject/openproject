@@ -1,20 +1,23 @@
 #English strings go here
 de:
-  label_avatar: "Profilbild"
-  label_avatar_plural: "Avatare"
+  plugin_openproject_avatars:
+    name: "Avatars"
+    description: >-
+      Dieses Plugin erlaubt es OpenProject-Benutzern, Avatare hochzuladen oder von Gravatar zu übernehmen.
+  label_avatar: "Profilfoto"
+  label_avatar_plural: "Avatars"
   label_current_avatar: "Aktuelles Profilbild"
   label_choose_avatar: "Profilbild aus Datei auswählen"
   message_avatar_uploaded: "Das Porfilbild wurde erfolgreich geändert."
   error_image_upload: "Fehler beim Speichern des Bildes."
   error_image_size: "Das Bild ist zu groß."
-  button_change_avatar: "Profilbild ändern"
   are_you_sure_delete_avatar: "Sind Sie sicher, dass Sie das Profilbild löschen möchten?"
   avatar_deleted: "Profilbild erfolgreich gelöscht."
   unable_to_delete_avatar: "Profilbild konnte nicht gelöscht werden."
   wrong_file_format: "Erlaubte Formate sind JPG, PNG und GIF"
   empty_file_error: "Bitte laden Sie ein gültiges Bild hoch (JPG, PNG, GIF)"
   avatars:
-    label_avatar: "Profilbild"
+    label_avatar: "Profilfoto"
     label_gravatar: 'Gravatar'
     label_current_avatar: 'Aktuelles Profilbild'
     label_local_avatar: 'Selbsterstelltes Profilbild'
@@ -34,6 +37,3 @@ de:
       enable_gravatars: 'Aktiviere Gravatare'
       gravatar_default: "Standard-Gravatar-Bild"
       enable_local_avatars: 'Selbsterstellte Profilbilder aktivieren'
-
-
-

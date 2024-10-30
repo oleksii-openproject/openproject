@@ -1,35 +1,25 @@
-require 'fileutils'
+require "fileutils"
 
 module OpenProject::Bim::BcfXml
-  class Exporter < ::WorkPackage::Exporter::Base
-    include Redmine::I18n
-
+  class Exporter < ::WorkPackage::Exports::QueryExporter
     def initialize(object, options = {})
-      object.add_filter('bcf_issue_associated', '=', ['t'])
-      super(object, options)
+      object.add_filter("bcf_issue_associated", "=", ["t"])
+      super
     end
 
     def current_user
       User.current
     end
 
-    def list
-      Dir.mktmpdir do |dir|
-        files = create_bcf! dir
-
-        zip = zip_folder dir, files
-        yield success(zip)
-      end
-    rescue StandardError => e
-      Rails.logger.error "Failed to export work package list #{e} #{e.message}"
-      raise e
+    def self.key
+      :bcf
     end
 
-    def list_from_api
+    def export!
       Dir.mktmpdir do |dir|
         files = create_bcf! dir
-
-        zip_folder dir, files
+        zip = zip_folder dir, files
+        success(zip)
       end
     rescue StandardError => e
       Rails.logger.error "Failed to export work package list #{e} #{e.message}"
@@ -37,37 +27,38 @@ module OpenProject::Bim::BcfXml
     end
 
     def success(zip)
-      WorkPackage::Exporter::Result::Success
+      Exports::Result
         .new format: :xls,
              content: zip,
              title: bcf_filename,
-             mime_type: 'application/octet-stream'
+             mime_type: "application/octet-stream"
     end
 
     def bcf_filename
       # We often have an internal query name that is not meant
       # for public use or was given by a user.
-      if query.name.present? && query.name != '_'
+      if query.name.present? && query.name != "_"
         return sane_filename("#{query.name}.bcf")
       end
 
       sane_filename(
         "#{Setting.app_title} #{I18n.t(:label_work_package_plural)} \
-        #{format_time_as_date(Time.now, '%Y-%m-%d')}.bcf"
+        #{format_time_as_date(Time.current, format: '%Y-%m-%d')}.bcf"
       )
     end
 
     def zip_folder(dir, files)
-      zip_file = File.join(dir, bcf_filename)
+      zip_file = Tempfile.new bcf_filename
 
-      Zip::File.open(zip_file, Zip::File::CREATE) do |zip|
+      Zip::OutputStream.open(zip_file.path) do |zos|
         files.each do |file|
           name = file.sub("#{dir}/", "")
-          zip.add name, file
+          zos.put_next_entry(name)
+          zos.print File.read(file)
         end
       end
 
-      File.open(zip_file, 'r')
+      zip_file
     end
 
     def create_bcf!(bcf_folder)
@@ -113,7 +104,7 @@ module OpenProject::Bim::BcfXml
     ##
     # Write each work package BCF
     def topic_markup_file(issue_dir, issue)
-      File.join(issue_dir, 'markup.bcf').tap do |file|
+      File.join(issue_dir, "markup.bcf").tap do |file|
         dump_file file, issue.markup
       end
     end
@@ -123,7 +114,7 @@ module OpenProject::Bim::BcfXml
     def viewpoints_for(issue_dir, issue)
       [].tap do |files|
         issue.viewpoints.find_each do |vp|
-          vp_file = File.join(issue_dir, "#{vp.uuid}.xml")
+          vp_file = File.join(issue_dir, "#{vp.uuid}.bcfv")
           snapshot_file = File.join(issue_dir, "#{vp.uuid}#{vp.snapshot.extension}")
 
           # Copy the files
@@ -147,9 +138,7 @@ module OpenProject::Bim::BcfXml
     end
 
     def dump_file(path, content)
-      File.open(path, "w") do |f|
-        f.write content
-      end
+      File.write(path, content)
     end
 
     def created_by_comment

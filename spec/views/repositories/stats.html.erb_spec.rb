@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,37 +23,37 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'spec_helper'
+require "spec_helper"
 
-describe 'repositories/stats', type: :view do
-  let(:project) { FactoryBot.create(:project) }
+RSpec.describe "repositories/stats" do
+  let(:project) { create(:project) }
 
   before do
     assign(:project, project)
   end
 
-  describe 'requested by a user with view_commit_author_statistics permission' do
+  describe "requested by a user with view_commit_author_statistics permission" do
     before do
       assign(:show_commits_per_author, true)
       render
     end
 
-    it 'should embed the commits per author graph' do
-      expect(rendered).to include('commits_per_author')
+    it "embeds the commits per author graph" do
+      expect(rendered).to include("commits_per_author")
     end
   end
 
-  describe 'requested by a user without view_commit_author_statistics permission' do
+  describe "requested by a user without view_commit_author_statistics permission" do
     before do
       assign(:show_commits_per_author, false)
       render
     end
 
-    it 'should NOT embed the commits per author graph' do
-      expect(rendered).not_to include('commits_per_author')
+    it "does not embed the commits per author graph" do
+      expect(rendered).not_to include("commits_per_author")
     end
   end
 end

@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,13 +23,13 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 FactoryBot.define do
   factory :user_password, class: UserPassword.active_type do
     association :user
-    plain_password { 'adminADMIN!' }
+    plain_password { "adminADMIN!" }
 
     factory :old_user_password do
       created_at { 1.year.ago }
@@ -37,10 +37,10 @@ FactoryBot.define do
     end
   end
 
-  factory :legacy_sha1_password, class: UserPassword::SHA1 do
+  factory :legacy_sha1_password, class: "UserPassword::SHA1" do
     association :user
-    type { 'UserPassword::SHA1' }
-    plain_password { 'mylegacypassword!' }
+    type { "UserPassword::SHA1" }
+    plain_password { "mylegacypassword!" }
 
     # Avoid going through the after_save hook
     # As it's no longer possible for Sha1 passwords

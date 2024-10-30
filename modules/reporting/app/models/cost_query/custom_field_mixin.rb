@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,21 +23,22 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module CostQuery::CustomFieldMixin
   include Report::QueryUtils
 
   attr_reader :custom_field
+
   SQL_TYPES = {
-    'string' => 'varchar',
-    'list' => 'varchar',
-    'text' => 'text',
-    'bool' => 'boolean',
-    'date' => 'date',
-    'int' => 'decimal(60,3)',
-    'float' => 'decimal(60,3)'
+    "string" => "varchar",
+    "list" => "varchar",
+    "text" => "text",
+    "bool" => "boolean",
+    "date" => "date",
+    "int" => "decimal(60,3)",
+    "float" => "decimal(60,3)"
   }.freeze
 
   def self.extended(base)
@@ -67,7 +68,7 @@ module CostQuery::CustomFieldMixin
 
   def remove_subclasses
     module_parent.constants.each do |constant|
-      if constant.to_s.match /^CustomField\d+/
+      if constant.to_s.match? /^CustomField\d+/
         module_parent.send(:remove_const, constant)
       end
     end
@@ -108,32 +109,27 @@ module CostQuery::CustomFieldMixin
   end
 
   def list_join_table(field)
-    cast_as = SQL_TYPES[field.field_format]
-    cf_name = "custom_field#{field.id}"
-
     custom_values_table = CustomValue.table_name
     custom_options_table = CustomOption.table_name
 
-    # CustomValues of lists MAY have non-integer values when the list contained invalid values.
-    # Because of this, we do not cast the cv.value but rather the co.id
-
     <<-SQL
-    -- BEGIN Custom Field Join: #{cf_name}
+    -- BEGIN Custom Field Join: #{db_field}
     LEFT OUTER JOIN (
     SELECT
-      CAST(co.value AS #{cast_as}) AS #{cf_name},
+      co.id AS #{db_field},
+      co.value,
       cv.customized_type,
       cv.custom_field_id,
       cv.customized_id
       FROM #{custom_values_table} cv
       INNER JOIN #{custom_options_table} co
       ON cv.custom_field_id = co.custom_field_id AND cv.value = co.id::VARCHAR
-    ) AS #{cf_name}
-    ON #{cf_name}.customized_type = 'WorkPackage'
+    ) AS #{db_field}
+    ON #{db_field}.customized_type = 'WorkPackage'
 
-    AND #{cf_name}.custom_field_id = #{field.id}
-    AND #{cf_name}.customized_id = entries.work_package_id
-    -- END Custom Field Join: #{cf_name}
+    AND #{db_field}.custom_field_id = #{field.id}
+    AND #{db_field}.customized_id = entries.work_package_id
+    -- END Custom Field Join: #{db_field}
     SQL
   end
 
@@ -157,7 +153,7 @@ module CostQuery::CustomFieldMixin
   end
 
   def new(*)
-    fail "Only subclasses of #{self} should be instanciated." if factory?
+    fail "Only subclasses of #{self} should be instantiated." if factory?
 
     super
   end

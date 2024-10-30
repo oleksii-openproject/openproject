@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,32 +23,33 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'spec_helper'
-require 'open_project/footer'
+require "spec_helper"
+require "open_project/footer"
 
-describe OpenProject::Footer do
-  describe '.add_content' do
-    context 'empty content' do
+RSpec.describe OpenProject::Footer do
+  describe ".add_content" do
+    context "empty content" do
       before do
         OpenProject::Footer.content = nil
-        OpenProject::Footer.add_content('OpenProject', 'footer')
+        OpenProject::Footer.add_content("OpenProject", "footer")
       end
+
       it { expect(OpenProject::Footer.content.class).to eq(Hash) }
-      it { expect(OpenProject::Footer.content['OpenProject']).to eq('footer') }
+      it { expect(OpenProject::Footer.content["OpenProject"]).to eq("footer") }
     end
 
-    context 'existing content' do
+    context "existing content" do
       before do
         OpenProject::Footer.content = nil
-        OpenProject::Footer.add_content('OpenProject', 'footer')
-        OpenProject::Footer.add_content('footer_2', 'footer 2')
+        OpenProject::Footer.add_content("OpenProject", "footer")
+        OpenProject::Footer.add_content("footer_2", "footer 2")
       end
 
       it { expect(OpenProject::Footer.content.count).to eq(2) }
-      it { expect(OpenProject::Footer.content).to eq('OpenProject' => 'footer', 'footer_2' => 'footer 2') }
+      it { expect(OpenProject::Footer.content).to eq("OpenProject" => "footer", "footer_2" => "footer 2") }
     end
   end
 end

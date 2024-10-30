@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,27 +23,27 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'spec_helper'
+require "spec_helper"
 
-describe ::API::V3::Queries::Schemas::CustomOptionFilterDependencyRepresenter, clear_cache: true do
-  include ::API::V3::Utilities::PathHelper
+RSpec.describe API::V3::Queries::Schemas::CustomOptionFilterDependencyRepresenter do
+  include API::V3::Utilities::PathHelper
 
-  let(:project) { FactoryBot.build_stubbed(:project) }
-  let(:query) { FactoryBot.build_stubbed(:query, project: project) }
+  let(:project) { build_stubbed(:project) }
+  let(:query) { build_stubbed(:query, project:) }
   let(:custom_field) do
-    cf = FactoryBot.build_stubbed(:list_wp_custom_field)
+    cf = build_stubbed(:list_wp_custom_field)
 
     allow(cf)
       .to receive(:custom_options)
-      .and_return([FactoryBot.build_stubbed(:custom_option),
-                   FactoryBot.build_stubbed(:custom_option)])
+      .and_return([build_stubbed(:custom_option),
+                   build_stubbed(:custom_option)])
     cf
   end
   let(:filter) do
-    Queries::WorkPackages::Filter::CustomFieldFilter.from_custom_field! custom_field: custom_field,
+    Queries::WorkPackages::Filter::CustomFieldFilter.from_custom_field! custom_field:,
                                                                         context: query
   end
   let(:form_embedded) { false }
@@ -51,16 +51,16 @@ describe ::API::V3::Queries::Schemas::CustomOptionFilterDependencyRepresenter, c
   let(:instance) do
     described_class.new(filter,
                         operator,
-                        form_embedded: form_embedded)
+                        form_embedded:)
   end
 
   subject(:generated) { instance.to_json }
 
-  context 'generation' do
-    context 'properties' do
-      describe 'values' do
-        let(:path) { 'values' }
-        let(:type) { '[]CustomOption' }
+  context "generation" do
+    context "properties" do
+      describe "values" do
+        let(:path) { "values" }
+        let(:type) { "[]CustomOption" }
         let(:hrefs) do
           custom_field.custom_options.map do |value|
             api_v3_paths.custom_option(value.id)
@@ -70,30 +70,30 @@ describe ::API::V3::Queries::Schemas::CustomOptionFilterDependencyRepresenter, c
         context "for operator 'Queries::Operators::Equals'" do
           let(:operator) { Queries::Operators::Equals }
 
-          it_behaves_like 'filter dependency with allowed value link collection'
+          it_behaves_like "filter dependency with allowed value link collection"
         end
 
         context "for operator 'Queries::Operators::NotEquals'" do
           let(:operator) { Queries::Operators::NotEquals }
 
-          it_behaves_like 'filter dependency with allowed value link collection'
+          it_behaves_like "filter dependency with allowed value link collection"
         end
 
         context "for operator 'Queries::Operators::All'" do
           let(:operator) { Queries::Operators::All }
 
-          it_behaves_like 'filter dependency empty'
+          it_behaves_like "filter dependency empty"
         end
 
         context "for operator 'Queries::Operators::None'" do
           let(:operator) { Queries::Operators::None }
 
-          it_behaves_like 'filter dependency empty'
+          it_behaves_like "filter dependency empty"
         end
       end
     end
 
-    describe 'caching' do
+    describe "caching" do
       let(:operator) { Queries::Operators::Equals }
 
       before do
@@ -102,14 +102,14 @@ describe ::API::V3::Queries::Schemas::CustomOptionFilterDependencyRepresenter, c
         instance.to_json
       end
 
-      it 'is cached' do
+      it "is cached" do
         expect(instance)
           .not_to receive(:to_hash)
 
         instance.to_json
       end
 
-      it 'busts the cache on a different operator' do
+      it "busts the cache on a different operator" do
         instance.send(:operator=, Queries::Operators::NotEquals)
 
         expect(instance)
@@ -118,10 +118,10 @@ describe ::API::V3::Queries::Schemas::CustomOptionFilterDependencyRepresenter, c
         instance.to_json
       end
 
-      it 'busts the cache on a different cache_key' do
+      it "busts the cache on a different cache_key" do
         allow(custom_field)
           .to receive(:cache_key)
-          .and_return('something else')
+          .and_return("something else")
 
         expect(instance)
           .to receive(:to_hash)
@@ -129,7 +129,7 @@ describe ::API::V3::Queries::Schemas::CustomOptionFilterDependencyRepresenter, c
         instance.to_json
       end
 
-      it 'busts the cache on changes to the locale' do
+      it "busts the cache on changes to the locale" do
         expect(instance)
           .to receive(:to_hash)
 
@@ -138,7 +138,7 @@ describe ::API::V3::Queries::Schemas::CustomOptionFilterDependencyRepresenter, c
         end
       end
 
-      it 'busts the cache on different form_embedded' do
+      it "busts the cache on different form_embedded" do
         embedded_instance = described_class.new(filter,
                                                 operator,
                                                 form_embedded: !form_embedded)

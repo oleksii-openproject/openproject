@@ -1,14 +1,12 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -25,38 +23,17 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'spec_helper'
+require "spec_helper"
+require "contracts/shared/model_contract_shared_context"
 
-describe Projects::UnarchiveContract do
-  let(:project) { FactoryBot.build_stubbed(:project) }
+RSpec.describe Projects::UnarchiveContract do
+  include_context "ModelContract shared context"
 
-  subject(:contract) { described_class.new(project, current_user) }
+  let(:project) { build_stubbed(:project) }
+  let(:contract) { described_class.new(project, current_user) }
 
-  def expect_valid(valid, symbols = {})
-    expect(contract.validate).to eq(valid)
-
-    symbols.each do |key, arr|
-      expect(contract.errors.symbols_for(key)).to match_array arr
-    end
-  end
-
-  context 'when user is admin' do
-    let(:current_user) { FactoryBot.build_stubbed :admin }
-
-    it 'is valid' do
-      expect_valid(true)
-    end
-  end
-
-  context 'when user is not admin' do
-    let(:current_user) { FactoryBot.build_stubbed :user }
-    let(:permissions) { [] }
-
-    it 'is invalid' do
-      expect_valid(false, base: %i(error_unauthorized))
-    end
-  end
+  it_behaves_like "contract is valid for active admins and invalid for regular users"
 end

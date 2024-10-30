@@ -1,14 +1,12 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -25,20 +23,21 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
-require 'spec_helper'
+require "spec_helper"
 
-describe Relation, type: :model do
-  let(:from) { FactoryBot.create(:work_package) }
-  let(:to) { FactoryBot.create(:work_package) }
-  let(:type) { 'relates' }
-  let(:relation) { FactoryBot.build(:relation, from: from, to: to, relation_type: type) }
+RSpec.describe Relation do
+  create_shared_association_defaults_for_work_package_factory
 
-  describe 'all relation types' do
+  let(:from) { create(:work_package) }
+  let(:to) { create(:work_package) }
+  let(:type) { "relates" }
+  let(:relation) { build(:relation, from:, to:, relation_type: type) }
+
+  describe "all relation types" do
     Relation::TYPES.each do |key, type_hash|
       let(:type) { key }
-      let(:column_name) { type_hash[:sym] }
       let(:reversed) { type_hash[:reverse] }
 
       before do
@@ -52,95 +51,24 @@ describe Relation, type: :model do
           expect(relation.relation_type).to eq(reversed)
         end
       end
-
-      it "sets the correct column for '#{key}' to 1" do
-        expect(relation.send(column_name))
-          .to eql 1
-      end
     end
   end
 
-  describe '#relation_type' do
-    Relation::TYPES.each do |key, type_hash|
-      let(:column_name) { type_hash[:sym] }
-      let(:type) { key }
-      let(:reversed) { type_hash[:reverse] }
-      let(:relation) do
-        FactoryBot.build_stubbed(:relation,
-                                 relation_type: nil,
-                                 column_name => column_count)
-      end
-
-      context 'with the column set to 1' do
-        let(:column_count) { 1 }
-
-        it 'deduces the name from the column' do
-          if reversed.nil?
-            expect(relation.relation_type).to eq(type)
-          else
-            expect(relation.relation_type).to eq(reversed)
-          end
-        end
-      end
-
-      context 'with the column set to 2' do
-        let(:column_count) { 2 }
-
-        it 'deduces the name from the column' do
-          if reversed.nil?
-            expect(relation.relation_type).to eq(type)
-          else
-            expect(relation.relation_type).to eq(reversed)
-          end
-        end
-      end
-
-      context 'with the column set to 1 and another column also set to 1' do
-        let(:column_count) { 1 }
-        let(:other_column) do
-          if type == Relation::TYPE_RELATES
-            Relation::TYPE_DUPLICATES
-          else
-            Relation::TYPE_RELATES
-          end
-        end
-        let(:relation) do
-          FactoryBot.build_stubbed(:relation,
-                                   relation_type: nil,
-                                   column_name => 1,
-                                   other_column => 1)
-        end
-
-        it 'is "mixed"' do
-          expect(relation.relation_type)
-            .to eql 'mixed'
-        end
-      end
-    end
-  end
-
-  describe '#relation_type=' do
+  describe "#relation_type= / #relation_type" do
     let(:type) { Relation::TYPE_RELATES }
 
-    it 'updates the column value' do
-      relation.save!
-      expect(relation.relates).to eq 1
-
-      relation.relation_type = 'duplicates'
-      relation.save!
-      expect(relation.relation_type).to eq('duplicates')
-
-      expect(relation.relates).to eq 0
-      expect(relation.duplicates).to eq 1
+    it "sets the type" do
+      relation.relation_type = Relation::TYPE_BLOCKS
+      expect(relation.relation_type).to eq(Relation::TYPE_BLOCKS)
     end
   end
 
-  describe 'follows / precedes' do
-    context 'for FOLLOWS' do
+  describe "follows / precedes" do
+    context "for FOLLOWS" do
       let(:type) { Relation::TYPE_FOLLOWS }
 
-      it 'is not reversed' do
-        expect(relation.save).to eq(true)
+      it "is not reversed" do
+        expect(relation.save).to be(true)
         relation.reload
 
         expect(relation.relation_type).to eq(Relation::TYPE_FOLLOWS)
@@ -148,10 +76,10 @@ describe Relation, type: :model do
         expect(relation.from).to eq(from)
       end
 
-      it 'fails validation with invalid date and reverses' do
-        relation.delay = 'xx'
+      it "fails validation with invalid date and reverses" do
+        relation.lag = "xx"
         expect(relation).not_to be_valid
-        expect(relation.save).to eq(false)
+        expect(relation.save).to be(false)
 
         expect(relation.relation_type).to eq(Relation::TYPE_FOLLOWS)
         expect(relation.to).to eq(to)
@@ -159,11 +87,11 @@ describe Relation, type: :model do
       end
     end
 
-    context 'for PRECEDES' do
+    context "for PRECEDES" do
       let(:type) { Relation::TYPE_PRECEDES }
 
-      it 'is reversed' do
-        expect(relation.save).to eq(true)
+      it "is reversed" do
+        expect(relation.save).to be(true)
         relation.reload
 
         expect(relation.relation_type).to eq(Relation::TYPE_FOLLOWS)
@@ -173,97 +101,148 @@ describe Relation, type: :model do
     end
   end
 
-  describe '.visible' do
-    let(:user) { FactoryBot.create(:user) }
-    let(:role) { FactoryBot.create(:role, permissions: [:view_work_packages]) }
-    let(:member_project_to) do
-      FactoryBot.create(:member,
-                        project: to.project,
-                        user: user,
-                        roles: [role])
-    end
+  describe "#follows?" do
+    context "for a follows relation" do
+      let(:type) { Relation::TYPE_FOLLOWS }
 
-    let(:member_project_from) do
-      FactoryBot.create(:member,
-                        project: from.project,
-                        user: user,
-                        roles: [role])
-    end
-
-    before do
-      relation.save!
-    end
-
-    context 'user can see both work packages' do
-      before do
-        member_project_to
-        member_project_from
-      end
-
-      it 'returns the relation' do
-        expect(Relation.visible(user))
-          .to match_array([relation])
+      it "is truthy" do
+        expect(relation)
+          .to be_follows
       end
     end
 
-    context 'user can see only the from work packages' do
-      before do
-        member_project_from
-      end
+    context "for a precedes relation" do
+      let(:type) { Relation::TYPE_PRECEDES }
 
-      it 'does not return the relation' do
-        expect(Relation.visible(user))
-          .to be_empty
+      it "is truthy" do
+        expect(relation)
+          .to be_follows
       end
     end
 
-    context 'user can see only the to work packages' do
-      before do
-        member_project_to
-      end
+    context "for a blocks relation" do
+      let(:type) { Relation::TYPE_BLOCKS }
 
-      it 'does not return the relation' do
-        expect(Relation.visible(user))
-          .to be_empty
+      it "is falsey" do
+        expect(relation)
+          .not_to be_follows
       end
     end
   end
 
-  describe 'it should validate circular dependency' do
-    let(:otherwp) { FactoryBot.create(:work_package) }
-    let(:relation) do
-      FactoryBot.build(:relation, from: from, to: to, relation_type: Relation::TYPE_PRECEDES)
-    end
-    let(:relation2) do
-      FactoryBot.build(:relation, from: to, to: otherwp, relation_type: Relation::TYPE_PRECEDES)
+  describe "#successor_soonest_start" do
+    context "with a follows relation" do
+      let_schedule(<<~CHART)
+        days     | MTWTFSS |
+        main     | ]       |
+        follower |         | follows main
+      CHART
+
+      it "returns predecessor due_date + 1" do
+        relation = schedule.follows_relation(from: "follower", to: "main")
+        expect(relation.successor_soonest_start).to eq(schedule.tuesday)
+      end
     end
 
-    let(:invalid_precedes_relation) do
-      FactoryBot.build(:relation, from: otherwp, to: from, relation_type: Relation::TYPE_PRECEDES)
+    context "with a follows relation with predecessor having only start date" do
+      let_schedule(<<~CHART)
+        days     | MTWTFSS |
+        main     | [       |
+        follower |         | follows main
+      CHART
+
+      it "returns predecessor start_date + 1" do
+        relation = schedule.follows_relation(from: "follower", to: "main")
+        expect(relation.successor_soonest_start).to eq(schedule.tuesday)
+      end
     end
 
-    let(:invalid_follows_relation) do
-      FactoryBot.build(:relation, from: from, to: otherwp, relation_type: Relation::TYPE_FOLLOWS)
+    context "with a non-follows relation" do
+      let_schedule(<<~CHART)
+        days    | MTWTFSS |
+        main    | X       |
+        related |         |
+      CHART
+      let(:relation) { create(:relation, from: main, to: related) }
+
+      it "returns nil" do
+        expect(relation.successor_soonest_start).to be_nil
+      end
     end
 
-    it 'prevents invalid precedes relations' do
-      expect(relation.save).to eq(true)
-      expect(relation2.save).to eq(true)
-      from.reload
-      to.reload
-      otherwp.reload
-      expect(invalid_precedes_relation.save).to eq(false)
-      expect(invalid_precedes_relation.errors[:base]).not_to be_empty
+    context "with a follows relation with a lag" do
+      let_schedule(<<~CHART)
+        days       | MTWTFSS |
+        main       | X       |
+        follower_a |         | follows main with lag 0
+        follower_b |         | follows main with lag 1
+        follower_c |         | follows main with lag 3
+      CHART
+
+      it "returns predecessor due_date + lag + 1" do
+        relation_a = schedule.follows_relation(from: "follower_a", to: "main")
+        expect(relation_a.successor_soonest_start).to eq(schedule.tuesday)
+
+        relation_b = schedule.follows_relation(from: "follower_b", to: "main")
+        expect(relation_b.successor_soonest_start).to eq(schedule.wednesday)
+
+        relation_c = schedule.follows_relation(from: "follower_c", to: "main")
+        expect(relation_c.successor_soonest_start).to eq(schedule.friday)
+      end
     end
 
-    it 'prevents invalid follows relations' do
-      expect(relation.save).to eq(true)
-      expect(relation2.save).to eq(true)
-      from.reload
-      to.reload
-      otherwp.reload
-      expect(invalid_follows_relation.save).to eq(false)
-      expect(invalid_follows_relation.errors[:base]).not_to be_empty
+    context "with a follows relation with a lag and with non-working days in the lag period" do
+      let_schedule(<<~CHART)
+        days            | MTWTFSSmtw |
+        main            | X░ ░ ░░ ░  |
+        follower_lag0 |  ░ ░ ░░ ░  | follows main with lag 0
+        follower_lag1 |  ░ ░ ░░ ░  | follows main with lag 1
+        follower_lag2 |  ░ ░ ░░ ░  | follows main with lag 2
+        follower_lag3 |  ░ ░ ░░ ░  | follows main with lag 3
+      CHART
+
+      it "returns a date such as the number of working days between both work package is equal to the lag" do
+        set_work_week("monday", "wednesday", "friday")
+
+        relation_lag0 = schedule.follows_relation(from: "follower_lag0", to: "main")
+        expect(relation_lag0.successor_soonest_start).to eq(schedule.wednesday)
+
+        relation_lag1 = schedule.follows_relation(from: "follower_lag1", to: "main")
+        expect(relation_lag1.successor_soonest_start).to eq(schedule.friday)
+
+        relation_lag2 = schedule.follows_relation(from: "follower_lag2", to: "main")
+        expect(relation_lag2.successor_soonest_start).to eq(schedule.monday + 7.days)
+
+        relation_lag3 = schedule.follows_relation(from: "follower_lag3", to: "main")
+        expect(relation_lag3.successor_soonest_start).to eq(schedule.wednesday + 7.days)
+      end
+    end
+
+    context "with a follows relation with a lag, non-working days, and follower ignoring non-working days" do
+      let_schedule(<<~CHART)
+        days            | MTWTFSSmtw |
+        main            | X░ ░ ░░ ░  |
+        follower_lag0 |  ░ ░ ░░ ░  | follows main with lag 0, working days include weekends
+        follower_lag1 |  ░ ░ ░░ ░  | follows main with lag 1, working days include weekends
+        follower_lag2 |  ░ ░ ░░ ░  | follows main with lag 2, working days include weekends
+        follower_lag3 |  ░ ░ ░░ ░  | follows main with lag 3, working days include weekends
+      CHART
+
+      it "returns predecessor due_date + lag + 1 (like without non-working days)" do
+        set_work_week("monday", "wednesday", "friday")
+
+        relation_lag0 = schedule.follows_relation(from: "follower_lag0", to: "main")
+        expect(relation_lag0.successor_soonest_start).to eq(schedule.tuesday)
+
+        relation_lag1 = schedule.follows_relation(from: "follower_lag1", to: "main")
+        expect(relation_lag1.successor_soonest_start).to eq(schedule.wednesday)
+
+        relation_lag2 = schedule.follows_relation(from: "follower_lag2", to: "main")
+        expect(relation_lag2.successor_soonest_start).to eq(schedule.thursday)
+
+        relation_lag3 = schedule.follows_relation(from: "follower_lag3", to: "main")
+        expect(relation_lag3.successor_soonest_start).to eq(schedule.friday)
+      end
     end
   end
 end

@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 class WorkPackageBoxesController < WorkPackagesController
@@ -35,14 +35,16 @@ class WorkPackageBoxesController < WorkPackagesController
     load_journals
     @changesets = @work_package.changesets.visible.all
     @changesets.reverse! if User.current.wants_comments_in_reverse_order?
-    @relations = @work_package.relations.select { |r| r.other_work_package(@work_package) && r.other_work_package(@work_package).visible? }
+    @relations = @work_package.relations.select do |r|
+      r.other_work_package(@work_package) && r.other_work_package(@work_package).visible?
+    end
     @allowed_statuses = WorkPackages::UpdateContract.new(work_package, User.current).assignable_statuses
-    @edit_allowed = User.current.allowed_to?(:edit_work_packages, @project)
+    @edit_allowed = User.current.allowed_in_work_package?(:edit_work_packages, @work_package)
     @priorities = IssuePriority.all
     @time_entry = TimeEntry.new
 
     respond_to do |format|
-      format.js   { render partial: 'show' }
+      format.js   { render partial: "show" }
     end
   end
 
@@ -54,7 +56,7 @@ class WorkPackageBoxesController < WorkPackagesController
     @journal = @work_package.last_journal
 
     respond_to do |format|
-      format.js   { render partial: 'edit' }
+      format.js   { render partial: "edit" }
     end
   end
 
@@ -65,12 +67,12 @@ class WorkPackageBoxesController < WorkPackagesController
       @work_package.reload
       load_journals
       respond_to do |format|
-        format.js   { render partial: 'show' }
+        format.js   { render partial: "show" }
       end
     else
       @journal = @work_package.last_journal
       respond_to do |format|
-        format.js { render partial: 'edit' }
+        format.js { render partial: "edit" }
       end
     end
   end

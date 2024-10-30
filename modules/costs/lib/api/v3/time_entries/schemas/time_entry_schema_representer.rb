@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module API
@@ -39,26 +39,34 @@ module API
           end
 
           schema :id,
-                 type: 'Integer'
+                 type: "Integer"
 
           schema :created_at,
-                 type: 'DateTime'
+                 type: "DateTime"
 
           schema :updated_at,
-                 type: 'DateTime'
+                 type: "DateTime"
 
           schema :spent_on,
-                 type: 'Date'
+                 type: "Date"
 
           schema :hours,
-                 type: 'Duration'
-
-          schema :user,
-                 type: 'User'
+                 type: "Duration"
 
           schema :comment,
-                 type: 'Formattable',
+                 type: "Formattable",
                  required: false
+
+          schema :ongoing,
+                 type: "Boolean",
+                 required: false
+
+          schema_with_allowed_link :user,
+                                   has_default: false,
+                                   required: true,
+                                   href_callback: ->(*) {
+                                     allowed_user_href
+                                   }
 
           schema_with_allowed_link :work_package,
                                    has_default: false,
@@ -75,10 +83,10 @@ module API
                                    }
 
           schema_with_allowed_collection :activity,
-                                         type: 'TimeEntriesActivity',
+                                         type: "TimeEntriesActivity",
                                          value_representer: TimeEntriesActivityRepresenter,
                                          has_default: true,
-                                         required: true,
+                                         required: false,
                                          link_factory: ->(value) {
                                            {
                                              href: api_v3_paths.time_entries_activity(value.id),
@@ -96,6 +104,15 @@ module API
 
           def allowed_projects_href
             api_v3_paths.time_entries_available_projects
+          end
+
+          def allowed_user_href
+            api_v3_paths.path_for :principals,
+                                  filters: [
+                                    { status: { operator: "!", values: [Principal.statuses[:locked].to_s] } },
+                                    { type: { operator: "=", values: ["User"] } },
+                                    { member: { operator: "=", values: [represented.project_id] } }
+                                  ]
           end
         end
       end

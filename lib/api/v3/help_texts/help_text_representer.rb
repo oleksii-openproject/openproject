@@ -1,14 +1,12 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -25,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module API
@@ -38,13 +36,14 @@ module API
 
         self_link path: :help_text,
                   id_attribute: :id,
-                  title_getter: ->(*) { nil }
+                  title_getter: ->(*) {}
 
-        link :editText do
-          if current_user.admin? && represented.persisted?
+        link :editText,
+             cache_if: -> { current_user.allowed_globally?(:edit_attribute_help_texts) } do
+          if represented.persisted? && current_user.allowed_globally?(:edit_attribute_help_texts)
             {
               href: edit_attribute_help_text_path(represented.id),
-              type: 'text/html'
+              type: "text/html"
             }
           end
         end
@@ -65,7 +64,7 @@ module API
                  }
 
         def _type
-          'HelpText'
+          "HelpText"
         end
       end
     end

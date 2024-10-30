@@ -1,13 +1,12 @@
-#-- encoding: UTF-8
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -24,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module OpenProject
@@ -32,8 +31,9 @@ module OpenProject
     class ExtensibleTabs
       class << self
         def tabs
-          @@tabs ||= {
-            user: core_user_tabs
+          @tabs ||= {
+            user: core_user_tabs,
+            placeholder_user: core_placeholder_user_tabs
           }
         end
 
@@ -48,30 +48,73 @@ module OpenProject
           tabs[key] = [] if tabs[key].nil?
 
           raise ArgumentError.new "Invalid entry for tab #{key}" unless entry[:name] && entry[:partial]
+
           tabs[key] << entry
         end
 
         private
 
+        # rubocop:disable Metrics/AbcSize
         def core_user_tabs
           [
             {
-              name: 'general',
-              partial: 'users/general',
-              path: ->(params) { tab_edit_user_path(params[:user], tab: :general) },
-              label: :label_general
+              name: "general",
+              partial: "users/general",
+              path: ->(params) { edit_user_path(params[:user], tab: :general) },
+              label: :label_general,
+              only_if: ->(context) {
+                         ::Users::UpdateContract.new(context[:user], context[:current_user]).allowed_to_update?
+                       }
             },
             {
-              name: 'memberships',
-              partial: 'users/memberships',
-              path: ->(params) { tab_edit_user_path(params[:user], tab: :memberships) },
+              name: "memberships",
+              partial: "individual_principals/memberships",
+              path: ->(params) { edit_user_path(params[:user], tab: :memberships) },
               label: :label_project_plural
             },
             {
-              name: 'groups',
-              partial: 'users/groups',
-              path: ->(params) { tab_edit_user_path(params[:user], tab: :groups) },
-              label: :label_group_plural, if: ->(*) { Group.all.any? }
+              name: "groups",
+              partial: "users/groups",
+              path: ->(params) { edit_user_path(params[:user], tab: :groups) },
+              label: :label_group_plural,
+              only_if: ->(*) { User.current.admin? && Group.any? }
+            },
+            {
+              name: "global_roles",
+              partial: "principals/global_roles",
+              path: ->(params) { edit_user_path(params[:user], tab: :global_roles) },
+              label: :label_global_roles,
+              only_if: ->(*) { User.current.admin? }
+            },
+            {
+              name: "notifications",
+              partial: "users/notifications",
+              path: ->(params) { edit_user_path(params[:user], tab: :notifications) },
+              label: :"notifications.settings.title"
+            },
+            {
+              name: "reminders",
+              partial: "users/reminders",
+              path: ->(params) { edit_user_path(params[:user], tab: :reminders) },
+              label: :"reminders.settings.title"
+            }
+          ]
+        end
+        # rubocop:enable Metrics/AbcSize
+
+        def core_placeholder_user_tabs
+          [
+            {
+              name: "general",
+              partial: "placeholder_users/general",
+              path: ->(params) { edit_placeholder_user_path(params[:placeholder_user], tab: :general) },
+              label: :label_general
+            },
+            {
+              name: "memberships",
+              partial: "individual_principals/memberships",
+              path: ->(params) { edit_placeholder_user_path(params[:placeholder_user], tab: :memberships) },
+              label: :label_project_plural
             }
           ]
         end

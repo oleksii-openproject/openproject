@@ -1,14 +1,12 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -25,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module API
@@ -50,7 +48,7 @@ module API
               WorkPackage
                 .where(id: work_packages.map(&:id).uniq)
                 .left_joins(*checksum_associations)
-                .pluck('work_packages.id', Arel.sql(md5_concat.squish))
+                .pluck("work_packages.id", Arel.sql(md5_concat.squish))
                 .to_h
             end
 
@@ -59,9 +57,8 @@ module API
             def md5_concat
               md5_parts = checksum_associations.map do |association_name|
                 table_name = md5_checksum_table_name(association_name)
-                timestamp_column_name = md5_checksum_timestamp_column(association_name)
 
-                %W[#{table_name}.id #{table_name}.#{timestamp_column_name}]
+                %W[#{table_name}.id #{table_name}.updated_at]
               end.flatten
 
               <<-SQL
@@ -70,22 +67,18 @@ module API
             end
 
             def checksum_associations
-              %i[status author responsible assigned_to version priority category type]
+              %i[status author responsible assigned_to version priority category type budget]
             end
 
             def md5_checksum_table_name(association_name)
               case association_name
               when :responsible
-                'responsibles_work_packages'
+                "responsibles_work_packages"
               when :assigned_to
-                'assigned_tos_work_packages'
+                "assigned_tos_work_packages"
               else
                 association_class(association_name).table_name
               end
-            end
-
-            def md5_checksum_timestamp_column(association_name)
-              (association_class(association_name).all_timestamp_attributes_in_model & %w[updated_at updated_on]).first
             end
 
             def association_class(association_name)

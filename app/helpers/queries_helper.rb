@@ -1,13 +1,12 @@
-#-- encoding: UTF-8
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -24,22 +23,21 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module QueriesHelper
-  def retrieve_query
-    @query = if params[:query_id].present?
-               Query.where(project: @project).find(params[:query_id])
-             else
-               Query.new_default(name: '_',
-                                 project: @project)
-             end
+  def retrieve_query(project)
+    query = if params[:query_id].present?
+              Query.where(project:).find(params[:query_id])
+            else
+              Query.new_default(project:)
+            end
 
     ::API::V3::UpdateQueryFromV3ParamsService
-      .new(@query, current_user)
+      .new(query, current_user)
       .call(params.permit!.to_h)
 
-    @query
+    query
   end
 end

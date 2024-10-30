@@ -1,13 +1,12 @@
-#-- encoding: UTF-8
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -24,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module API
@@ -34,7 +33,7 @@ module API
       # http://tools.ietf.org/html/rfc3986#section-3.3
       SEGMENT_CHARACTER = '(\w|[-~!$&\'\(\)*+\.,:;=@]|%[0-9A-Fa-f]{2})'.freeze
       RESOURCE_REGEX =
-        "/api/v(?<version>\\d)/(?<namespace>[\\w\/]+)/(?<id>#{SEGMENT_CHARACTER}+)\\z".freeze
+        "/api/v(?<version>\\d)/(?<namespace>[\\w/]+)/(?<id>#{SEGMENT_CHARACTER}+)\\z".freeze
 
       class << self
         def parse(resource_link)
@@ -81,9 +80,9 @@ module API
         end
 
         def unescape(string)
-          @unescaper ||= Addressable::Template.new('{+id}')
+          @unescaper ||= Addressable::Template.new("{+id}")
 
-          @unescaper.extract(string)['id']
+          @unescaper.extract(string)["id"]
         end
 
         # returns whether expectation and actual are identical
@@ -93,8 +92,8 @@ module API
         end
 
         def make_expected_link(version, namespaces)
-          version = "v#{version}" || ':apiVersion'
-          namespaces = Array(namespaces || ':resource')
+          version = "v#{version}" || ":apiVersion"
+          namespaces = Array(namespaces || ":resource")
 
           namespaces.map { |namespace| "/api/#{version}/#{namespace}/:id" }
         end

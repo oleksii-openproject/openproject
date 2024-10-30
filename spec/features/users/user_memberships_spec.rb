@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,91 +23,41 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'spec_helper'
+require "spec_helper"
+require_relative "../principals/shared_memberships_examples"
 
-feature 'user memberships through user page', type: :feature, js: true do
-  let!(:project) { FactoryBot.create :project, name: 'Project 1', identifier: 'project1' }
-  let!(:project2) { FactoryBot.create :project, name: 'Project 2', identifier: 'project2' }
-  let(:admin) { FactoryBot.create :admin, firstname: 'Foobar', lastname: 'Blabla' }
+RSpec.describe "user memberships through user page", :js, :with_cuprite do
+  include_context "principal membership management context"
 
-  let!(:manager)   { FactoryBot.create :role, name: 'Manager' }
-  let!(:developer) { FactoryBot.create :role, name: 'Developer' }
+  shared_let(:principal) { create(:user, firstname: "Foobar", lastname: "Blabla") }
+  shared_let(:principal_page) { Pages::Admin::IndividualPrincipals::Edit.new(principal) }
 
-  let(:user_page) { Pages::Admin::Users::Edit.new(admin.id) }
+  context "as admin" do
+    current_user { create(:admin) }
 
-  before do
-    login_as(admin)
+    it_behaves_like "principal membership management flows"
 
-    user_page.visit!
-    user_page.open_projects_tab!
-  end
+    context "when setting global permissions" do
+      let(:global_role) { create(:global_role) }
+      let!(:global_user) { create(:global_member, principal:, roles: [global_role]) }
 
-  scenario 'handles role modification flow' do
-    user_page.add_to_project! project.name, as: 'Manager'
+      it "removes a global user (bug #57928)" do
+        # Check if user with global role is there
+        principal_page.visit!
+        principal_page.open_global_roles_tab!
+        principal_page.expect_global_roles([global_role.name])
 
-    member = admin.memberships.where(project_id: project.id).first
-    user_page.edit_roles!(member, %w(Manager Developer))
+        # Remove the global role from the user
+        principal_page.remove_global_role!(global_role.id)
 
-    # Modify roles
-    user_page.expect_project(project.name)
-    user_page.expect_roles(project.name, %w(Manager Developer))
-
-    user_page.expect_no_membership(project2.name)
-
-    # Remove all roles
-    user_page.expect_project(project.name)
-    user_page.edit_roles!(member, %w())
-
-    expect(page).to have_selector('.flash.error', text: 'Roles need to be assigned.')
-
-    # Remove the user from the project
-    user_page.remove_from_project!(project.name)
-    user_page.expect_no_membership(project.name)
-
-    # Readd the user
-    user_page.add_to_project! project.name, as: %w(Manager Developer)
-
-    user_page.expect_project(project.name)
-    user_page.expect_roles(project.name, %w(Manager Developer))
-  end
-
-  context 'when user has an inherited role' do
-    let(:group) { FactoryBot.create :group, lastname: 'A-Team' }
-    let(:group_page) { Pages::Groups.new.group(group.id) }
-
-    before do
-      group.add_members! admin
-    end
-
-    scenario 'it can remove all other roles' do
-      user_page.expect_no_membership(project.name)
-
-      group_page.visit!
-      group_page.add_to_project! project.name, as: 'Manager'
-      expect(page).to have_text 'Successful update'
-
-      user_page.visit!
-      user_page.open_projects_tab!
-
-      # Expect inherited membership
-      user_page.expect_project(project.name)
-      user_page.expect_roles(project.name, %w(Manager))
-
-      # Remove all roles
-      member = admin.memberships.where(project_id: project.id).first
-      user_page.edit_roles!(member, %w())
-
-      # Keeps inherited role
-      user_page.expect_project(project.name)
-      user_page.expect_roles(project.name, %w(Manager))
-
-      # Extend roles
-      user_page.edit_roles!(member, %w(Developer))
-      user_page.expect_project(project.name)
-      user_page.expect_roles(project.name, %w(Manager Developer))
+        # Verify that it is gone
+        principal_page.expect_global_roles([])
+      end
     end
   end
+
+  it_behaves_like "global user principal membership management flows", :manage_user
 end

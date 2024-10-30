@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module API
@@ -31,14 +31,15 @@ module API
     module TimeEntries
       class TimeEntriesActivityAPI < ::API::OpenProjectAPI
         resources :activities do
-          route_param :id, type: Integer, desc: 'Time entry activity ID' do
+          route_param :id, type: Integer, desc: "Time entry activity ID" do
             after_validation do
-              authorize_any(%i(log_time
-                               view_time_entries
-                               edit_time_entries
-                               edit_own_time_entries
-                               manage_project_activities), global: true) do
-                raise API::Errors::NotFound.new
+              authorize_in_any_work_package(:edit_own_time_entries) do
+                authorize_in_any_project(%i(log_time
+                                            view_time_entries
+                                            edit_time_entries
+                                            manage_project_activities)) do
+                  raise API::Errors::NotFound.new
+                end
               end
 
               @activity = TimeEntryActivity
@@ -48,7 +49,7 @@ module API
 
             get do
               TimeEntriesActivityRepresenter.new(@activity,
-                                                 current_user: current_user,
+                                                 current_user:,
                                                  embed_links: true)
             end
           end

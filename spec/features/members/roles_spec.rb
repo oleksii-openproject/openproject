@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,49 +23,54 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'spec_helper'
+require "spec_helper"
 
-feature 'members pagination', type: :feature, js: true do
-  using_shared_fixtures :admin
-  let!(:project) { FactoryBot.create :project, name: 'Project 1', identifier: 'project1' }
+RSpec.describe "Members Role CRUD", :js, :with_cuprite do
+  shared_let(:admin) { create(:admin) }
+  let(:project) do
+    create(:project,
+           name: "Project 1",
+           identifier: "project1",
+           members: {
+             alice => beta,
+             bob => alpha
+           })
+  end
 
-  let!(:bob)   { FactoryBot.create :user, firstname: 'Bob', lastname: 'Bobbit' }
-  let!(:alice) { FactoryBot.create :user, firstname: 'Alice', lastname: 'Alison' }
+  let(:bob)   { create(:user, firstname: "Bob", lastname: "Bobbit") }
+  let(:alice) { create(:user, firstname: "Alice", lastname: "Alison") }
 
-  let!(:alpha) { FactoryBot.create :role, name: 'alpha' }
-  let!(:beta)  { FactoryBot.create :role, name: 'beta' }
+  let(:alpha) { create(:project_role, name: "alpha") }
+  let(:beta)  { create(:project_role, name: "beta") }
 
   let(:members_page) { Pages::Members.new project.identifier }
 
+  current_user { admin }
+
   before do
-    allow(User).to receive(:current).and_return admin
-
-    project.add_member! alice, [beta]
-    project.add_member! bob, [alpha]
-
     members_page.visit!
   end
 
-  scenario 'Adding a Role to Alice' do
-    members_page.edit_user! 'Alice Alison', add_roles: ['alpha']
+  it "Adding a Role to Alice" do
+    members_page.edit_user! "Alice Alison", add_roles: ["alpha"]
 
-    expect(members_page).to have_user('Alice Alison', roles: ['alpha', 'beta'])
+    expect(members_page).to have_user("Alice Alison", roles: ["alpha", "beta"])
   end
 
-  scenario 'Adding a role while taking another role away from Alice' do
-    members_page.edit_user! 'Alice Alison', add_roles: ['alpha'], remove_roles: ['beta']
+  it "Adding a role while taking another role away from Alice" do
+    members_page.edit_user! "Alice Alison", add_roles: ["alpha"], remove_roles: ["beta"]
 
-    expect(members_page).to have_user('Alice Alison', roles: 'alpha')
-    expect(members_page).not_to have_roles('Alice Alison', ['beta'])
+    expect(members_page).to have_user("Alice Alison", roles: "alpha")
+    expect(members_page).not_to have_roles("Alice Alison", ["beta"])
   end
 
-  scenario "Removing Bob's last role results in an error" do
-    members_page.edit_user! 'Bob Bobbit', remove_roles: ['alpha']
+  it "Removing Bob's last role results in an error" do
+    members_page.edit_user! "Bob Bobbit", remove_roles: ["alpha"]
 
-    expect(page).to have_text 'Roles need to be assigned.'
-    expect(members_page).to have_user('Bob Bobbit', roles: ['alpha'])
+    expect(page).to have_text "Roles need to be assigned."
+    expect(members_page).to have_user("Bob Bobbit", roles: ["alpha"])
   end
 end

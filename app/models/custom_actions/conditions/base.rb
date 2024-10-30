@@ -1,14 +1,12 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -25,11 +23,12 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 class CustomActions::Conditions::Base
   attr_reader :values
+
   prepend CustomActions::ValuesToInteger
   include CustomActions::ValidateAllowedValue
 
@@ -43,7 +42,7 @@ class CustomActions::Conditions::Base
 
   def allowed_values
     associated
-      .map { |value, label| { value: value, label: label } }
+      .map { |value, label| { value:, label: } }
   end
 
   def human_name
@@ -51,8 +50,8 @@ class CustomActions::Conditions::Base
   end
 
   def fulfilled_by?(work_package, _user)
-    work_package.respond_to?(:"#{key}_id") && values.include?(work_package.send(:"#{key}_id")) ||
-      values.empty?
+    values.empty? ||
+    (work_package.respond_to?(:"#{key}_id") && values.include?(work_package.send(:"#{key}_id")))
   end
 
   def key
@@ -111,17 +110,17 @@ class CustomActions::Conditions::Base
   private_class_method :habtm_table
 
   def self.key_id
-    "#{key}_id".to_sym
+    @key_id ||= :"#{key}_id"
   end
   private_class_method :key_id
 
   def self.association_key
-    "#{key}_conditions".to_sym
+    :"#{key}_conditions"
   end
   private_class_method :association_key
 
   def self.association_ids
-    "#{key}_condition_ids".to_sym
+    :"#{key}_condition_ids"
   end
   private_class_method :association_ids
 end

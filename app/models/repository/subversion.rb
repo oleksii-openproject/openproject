@@ -1,13 +1,12 @@
-#-- encoding: UTF-8
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -24,14 +23,14 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'open_project/scm/adapters/subversion'
+require "open_project/scm/adapters/subversion"
 
 class Repository::Subversion < Repository
-  validates_presence_of :url
-  validates_format_of :url, with: /\A(http|https|svn(\+[^\s:\/\\]+)?|file):\/\/.+\z/i
+  validates :url, presence: true
+  validates :url, format: { with: /\A(http|https|svn(\+[^\s:\/\\]+)?|file):\/\/.+\z/i }
 
   def self.scm_adapter_class
     OpenProject::SCM::Adapters::Subversion
@@ -41,7 +40,7 @@ class Repository::Subversion < Repository
     if scm_type == self.class.managed_type
       unless manageable?
         raise OpenProject::SCM::Exceptions::RepositoryBuildError.new(
-          I18n.t('repositories.managed.error_not_manageable')
+          I18n.t("repositories.managed.error_not_manageable")
         )
       end
 
@@ -55,7 +54,7 @@ class Repository::Subversion < Repository
   end
 
   def self.permitted_params(params)
-    super(params).merge(params.permit(:login, :password))
+    super.merge(params.permit(:login, :password))
   end
 
   def self.supported_types
@@ -70,7 +69,7 @@ class Repository::Subversion < Repository
   end
 
   def repository_type
-    'Subversion'
+    "Subversion"
   end
 
   def supports_directory_revisions?
@@ -78,17 +77,17 @@ class Repository::Subversion < Repository
   end
 
   def repo_log_encoding
-    'UTF-8'
+    "UTF-8"
   end
 
   def latest_changesets(path, rev, limit = 10)
-    revisions = scm.revisions(path, rev, nil, limit: limit)
-    revisions ? changesets.where(revision: revisions.map(&:identifier)).order(Arel.sql('committed_on DESC')).includes(:user) : []
+    revisions = scm.revisions(path, rev, nil, limit:)
+    revisions ? changesets.where(revision: revisions.map(&:identifier)).order(Arel.sql("committed_on DESC")).includes(:user) : []
   end
 
   # Returns a path relative to the url of the repository
   def relative_path(path)
-    path.gsub(Regexp.new("^\/?#{Regexp.escape(relative_url)}\/"), '')
+    path.gsub(Regexp.new("^/?#{Regexp.escape(relative_url)}/"), "")
   end
 
   def fetch_changesets
@@ -98,34 +97,38 @@ class Repository::Subversion < Repository
       db_revision = latest_changeset&.revision&.to_i
 
       # first revision to fetch
-      identifier_from  = db_revision ? db_revision + 1 : scm.start_revision
+      identifier_from = db_revision ? db_revision + 1 : scm.start_revision
 
       # latest revision in the repository
       scm_revision = scm_info.lastrev.identifier.to_i
       if db_revision.nil? || db_revision < scm_revision
         Rails.logger.debug { "Fetching changesets for repository #{url}" }
-        while (identifier_from <= scm_revision)
+        while identifier_from <= scm_revision
           # loads changesets by batches of 200
           identifier_to = [identifier_from + 199, scm_revision].min
-          revisions = scm.revisions('', identifier_to, identifier_from, with_paths: true)
-          revisions.reverse_each do |revision|
-            transaction do
-              changeset = Changeset.create(repository: self,
-                                           revision: revision.identifier,
-                                           committer: revision.author,
-                                           committed_on: revision.time,
-                                           comments: revision.message)
+          revisions = scm.revisions("", identifier_to, identifier_from, with_paths: true)
+          unless revisions.nil?
+            revisions.reverse_each do |revision|
+              transaction do
+                changeset = Changeset.create(repository: self,
+                                             revision: revision.identifier,
+                                             committer: revision.author,
+                                             committed_on: revision.time,
+                                             comments: revision.message)
 
-              revision.paths.each do |change|
-                changeset.create_change(change)
-              end unless changeset.new_record?
+                unless changeset.new_record?
+                  revision.paths.each do |change|
+                    changeset.create_change(change)
+                  end
+                end
+              end
             end
-          end unless revisions.nil?
+          end
           identifier_from = identifier_to + 1
         end
       end
     end
-  rescue => e
+  rescue StandardError => e
     Rails.logger.error("Failed to fetch changesets from repository: #{e.message}")
   end
 
@@ -136,6 +139,6 @@ class Repository::Subversion < Repository
   #     url      = file:///var/svn/foo/bar
   #     => returns /bar
   def relative_url
-    @relative_url ||= url.gsub(Regexp.new("^#{Regexp.escape(root_url || scm.root_url)}", Regexp::IGNORECASE), '')
+    @relative_url ||= url.gsub(Regexp.new("^#{Regexp.escape(root_url || scm.root_url)}", Regexp::IGNORECASE), "")
   end
 end

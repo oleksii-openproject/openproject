@@ -1,4 +1,6 @@
 sl:
+  grids:
+    label_widget_in_grid: "Gradnik je vsebovan v mreži %{grid_name}"
   activerecord:
     attributes:
       grids/grid:

@@ -1,13 +1,12 @@
-#-- encoding: UTF-8
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -24,14 +23,14 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module API
   module Utilities
     # Since APIv3 uses different names for some properties, there is sometimes the need to convert
     # names between the "old" Rails/ActiveRecord world of names and the "new" APIv3 world of names.
-    # This class provides methods to cope with the neccessary name conversions
+    # This class provides methods to cope with the necessary name conversions
     # There are multiple reasons for naming differences:
     #  - APIv3 is using camelCase as opposed to snake_case
     #  - APIv3 defines some properties as a different type, which requires a name change
@@ -65,11 +64,11 @@ module API
         # Converts the attribute name as referred to by the APIv3 to the source name of the attribute
         # in ActiveRecord. For that to work properly, an instance of the correct AR-class needs
         # to be passed as context.
-        def to_ar_name(attribute, context:, refer_to_ids: false)
+        def to_ar_name(attribute, context:, refer_to_ids: false, collapse_cf_name: true)
           attribute = underscore_attribute attribute.to_s.underscore
-          attribute = collapse_custom_field_name(attribute)
+          attribute = collapse_custom_field_name(attribute) if collapse_cf_name
 
-          special_conversion = special_api_to_ar_conversions[attribute]
+          special_conversion = Constants::ARToAPIConversions.api_to_ar_conversions[attribute]
 
           if refer_to_ids
             special_conversion = denormalize_foreign_key_name(special_conversion, context)
@@ -86,14 +85,7 @@ module API
 
         private
 
-        def special_api_to_ar_conversions
-          @api_to_ar_conversions ||= Constants::ARToAPIConversions.all.inject({}) do |result, (k, v)|
-            result[v.underscore] = k.to_s
-            result
-          end
-        end
-
-        # Unifies different attributes refering to the same thing via a foreign key
+        # Unifies different attributes referring to the same thing via a foreign key
         # e.g. status_id -> status
         def normalize_foreign_key_name(attribute)
           attribute.to_s.sub(/(.+)_id\z/, '\1')

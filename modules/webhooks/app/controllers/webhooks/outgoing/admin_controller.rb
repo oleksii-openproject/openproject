@@ -1,10 +1,10 @@
 module Webhooks
   module Outgoing
     class AdminController < ::ApplicationController
-      layout 'admin'
+      layout "admin"
 
       before_action :require_admin
-      before_action :find_webhook, only: [:show, :edit, :update, :destroy]
+      before_action :find_webhook, only: %i[show edit update destroy]
 
       menu_item :plugin_webhooks
 
@@ -13,6 +13,7 @@ module Webhooks
       end
 
       def show; end
+
       def edit; end
 
       def new
@@ -20,7 +21,7 @@ module Webhooks
       end
 
       def create
-        service = ::Webhooks::Outgoing::UpdateWebhookService.new(webhook_class.new_default, current_user: current_user)
+        service = ::Webhooks::Outgoing::UpdateWebhookService.new(webhook_class.new_default, current_user:)
         action = service.call(attributes: permitted_webhooks_params)
         if action.success?
           flash[:notice] = I18n.t(:notice_successful_create)
@@ -32,7 +33,7 @@ module Webhooks
       end
 
       def update
-        service = ::Webhooks::Outgoing::UpdateWebhookService.new(@webhook, current_user: current_user)
+        service = ::Webhooks::Outgoing::UpdateWebhookService.new(@webhook, current_user:)
         action = service.call(attributes: permitted_webhooks_params)
         if action.success?
           flash[:notice] = I18n.t(:notice_successful_update)
@@ -70,16 +71,13 @@ module Webhooks
           .require(:webhook)
           .permit(:name, :description, :url, :secret, :enabled,
                   :project_ids, selected_project_ids: [], events: [])
-
       end
 
       def show_local_breadcrumb
-        true
+        false
       end
 
-      def default_breadcrumb
-        []
-      end
+      def default_breadcrumb; end
     end
   end
 end

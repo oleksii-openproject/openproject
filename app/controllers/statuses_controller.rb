@@ -1,13 +1,12 @@
-#-- encoding: UTF-8
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -24,13 +23,13 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 class StatusesController < ApplicationController
   include PaginationHelper
 
-  layout 'admin'
+  layout "admin"
 
   before_action :require_admin
 
@@ -38,34 +37,35 @@ class StatusesController < ApplicationController
     @statuses = Status.page(page_param)
                 .per_page(per_page_param)
 
-    render action: 'index', layout: false if request.xhr?
+    render action: "index", layout: false if request.xhr?
   end
 
   def new
     @status = Status.new
   end
 
+  def edit
+    @status = Status.find(params[:id])
+  end
+
   def create
     @status = Status.new(permitted_params.status)
     if @status.save
       flash[:notice] = I18n.t(:notice_successful_create)
-      redirect_to action: 'index'
+      redirect_to action: "index"
     else
-      render action: 'new'
+      render action: "new"
     end
-  end
-
-  def edit
-    @status = Status.find(params[:id])
   end
 
   def update
     @status = Status.find(params[:id])
     if @status.update(permitted_params.status)
+      recompute_progress_values
       flash[:notice] = I18n.t(:notice_successful_update)
-      redirect_to action: 'index'
+      redirect_to action: "index"
     else
-      render action: 'edit'
+      render action: "edit"
     end
   end
 
@@ -77,32 +77,28 @@ class StatusesController < ApplicationController
       status.destroy
       flash[:notice] = I18n.t(:notice_successful_delete)
     end
-    redirect_to action: 'index'
-  rescue
+    redirect_to action: "index"
+  rescue StandardError
     flash[:error] = I18n.t(:error_unable_delete_status)
-    redirect_to action: 'index'
-  end
-
-  def update_work_package_done_ratio
-    if Status.update_work_package_done_ratios
-      flash[:notice] = I18n.t(:notice_work_package_done_ratios_updated)
-    else
-      flash[:error] =  I18n.t(:error_work_package_done_ratios_not_updated)
-    end
-    redirect_to action: 'index'
+    redirect_to action: "index"
   end
 
   protected
 
-  def default_breadcrumb
-    if action_name == 'index'
-      t(:label_work_package_status_plural)
-    else
-      ActionController::Base.helpers.link_to(t(:label_work_package_status_plural), statuses_path)
-    end
+  def show_local_breadcrumb
+    false
   end
 
-  def show_local_breadcrumb
-    true
+  def recompute_progress_values
+    attributes_triggering_recomputing = ["excluded_from_totals"]
+    attributes_triggering_recomputing << "default_done_ratio" if WorkPackage.status_based_mode?
+    changes = @status.previous_changes.slice(*attributes_triggering_recomputing)
+    return if changes.empty?
+
+    WorkPackages::Progress::ApplyStatusesChangeJob
+      .perform_later(cause_type: "status_changed",
+                     status_name: @status.name,
+                     status_id: @status.id,
+                     changes:)
   end
 end

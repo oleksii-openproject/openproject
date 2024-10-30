@@ -1,10 +1,10 @@
 #-- copyright
 #OpenProject is an open source project management software.
-#Copyright (C) 2012-2020 the OpenProject GmbH
+#Copyright (C) the OpenProject GmbH
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License version 3.
 #OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-#Copyright (C) 2006-2017 Jean-Philippe Lang
+#Copyright (C) 2006-2013 Jean-Philippe Lang
 #Copyright (C) 2010-2013 the ChiliProject Team
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License
@@ -17,15 +17,16 @@
 #You should have received a copy of the GNU General Public License
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-#See docs/COPYRIGHT.rdoc for more details.
+#See COPYRIGHT and LICENSE files for more details.
 #++
 fi:
+  plugin_openproject_backlogs:
+    name: "OpenProject Backlogs"
+    description: "This module adds features enabling agile teams to work with OpenProject in Scrum projects."
   activerecord:
     attributes:
       work_package:
         position: "Sijainti"
-        remaining_hours: "Jäljellä olevat tunnit"
-        remaining_time: "Jäljellä olevat tunnit"
         story_points: "Tarinapisteet"
         backlogs_work_package_type: "Työjonon tyyppi"
     errors:
@@ -35,9 +36,6 @@ fi:
             blocks_ids:
               can_only_contain_work_packages_of_current_sprint: "voi sisältää vain tässä sprintissä mukana olevia typaketteja."
               must_block_at_least_one_work_package: "vähintään yhden tehtävän ID-mainittava."
-            parent_id:
-              parent_child_relationship_across_projects: "ei ole kelvollinen, koska tehtävä \"%{work_package_name}\" on työjonossa ja sillä ei voi olla päätehtävää nykyisen projektin ulkopuolella."
-              type_must_be_one_of_the_following: "Tyypin on oltava jokin seuraavista: %{type_names}."
             version_id:
               task_version_must_be_the_same_as_story_version: "must be the same as the parent story's version."
         sprint:
@@ -45,7 +43,7 @@ fi:
   backlogs:
     add_new_story: "Uusi tarina"
     any: "kaikki"
-    backlog_settings: "Backlogs settings"
+    backlog_settings: "Työjonon asetukset"
     burndown_graph: "Edistymiskäyrä"
     card_paper_size: "Paperin koko kortille"
     chart_options: "Kaavion asetukset"
@@ -56,7 +54,7 @@ fi:
     generating_chart: "Luodaan kaavio..."
     hours: "Tunnit"
     impediment: "Este"
-    label_versions_default_fold_state: "Näytä versiot taitettuna"
+    label_versions_default_fold_state: "Näytä versiot ryhmiteltyinä"
     work_package_is_closed: "Tehtävä on valmis, kun"
     label_is_done_status: "Tila %{status_name} tarkoittaa valmista"
     no_burndown_data: "Edistymistietoja ei ole saatavilla. Sprintin aloitus- ja lopetuspäivien asettaminen on välttämätöntä."
@@ -66,8 +64,8 @@ fi:
     properties: "Ominaisuudet"
     rebuild: "Luo uudelleen"
     rebuild_positions: "Luo paikat uudellee"
-    remaining_hours: "Jäljellä olevat tunnit"
-    remaining_hours_ideal: "Jäljellläolevat tunnit (ihanteellinen)"
+    remaining_hours: "Remaining work"
+    remaining_hours_ideal: "Remaining work (ideal)"
     show_burndown_chart: "Edistymiskuvaaja"
     story: "Tarina"
     story_points: "Tarinapisteet"
@@ -78,7 +76,6 @@ fi:
     x_more: "%{count} lisää..."
   backlogs_active: "aktiivinen"
   backlogs_any: "kaikki"
-  backlogs_card_specification: "Otsikoiden tyypit kortin tulostuksessa"
   backlogs_inactive: "Projektissa ei ole toimintaa"
   backlogs_points_burn_direction: "Pisteiden poltto ylös/alas"
   backlogs_product_backlog: "Tuotteen työjono"
@@ -99,6 +96,7 @@ fi:
   backlogs_empty_title: "No versions are defined to be used in backlogs"
   backlogs_empty_action_text: "To get started with backlogs, create a new version and assign it to a backlogs column."
   button_edit_wiki: "Muokkaa wiki-sivua"
+  error_backlogs_task_cannot_be_story: "The settings are invalid. The selected task type can not also be a story type."
   error_intro_plural: "Seuraavat virheet ilmenivät:"
   error_intro_singular: "Ilmeni seuraava virhe:"
   error_outro: "Korjaa edellä mainitut virheet ennen uudelleenlähettämistä."
@@ -136,6 +134,7 @@ fi:
   label_wiki: "Wiki"
   permission_view_master_backlog: "Näytä pääasiallinen työjono"
   permission_view_taskboards: "Näytä työtaulut"
+  permission_select_done_statuses: "Select done statuses"
   permission_update_sprints: "Päivitä sprinttejä"
   points_accepted: "hyväksytyt pisteet"
   points_committed: "pisteet joihin on sitouduttu"
@@ -148,7 +147,7 @@ fi:
   rb_label_copy_tasks_none: "Ei mitään"
   rb_label_copy_tasks_open: "Avoin"
   rb_label_link_to_original: "Sisällytä linkki alkuperäiseen tarinaan"
-  remaining_hours: "jäljellä olevat tunnit"
+  remaining_hours: "remaining work"
   required_burn_rate_hours: "tarvittava eistymisnopeus (tuntia)"
   required_burn_rate_points: "tarvittava eistymisnopeus (pistettä)"
   todo_work_package_description: "%{summary}: %{url}\n%{description}"

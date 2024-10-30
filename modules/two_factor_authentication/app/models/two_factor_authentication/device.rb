@@ -1,6 +1,6 @@
 module TwoFactorAuthentication
   class Device < ApplicationRecord
-    default_scope { order('id ASC') }
+    default_scope { order("id ASC") }
 
     belongs_to :user
     validates_presence_of :user_id
@@ -18,11 +18,19 @@ module TwoFactorAuthentication
     end
 
     def self.has_default?(user)
-      Device.where(user_id: user.id, active: true, default: true).exists?
+      Device.exists?(user_id: user.id, active: true, default: true)
     end
 
     def has_default?
       self.class.has_default? user
+    end
+
+    def has_other_default?
+      if persisted?
+        Device.where.not(id:).exists?(active: true, default: true, user:)
+      else
+        has_default?
+      end
     end
 
     ##
@@ -37,11 +45,7 @@ module TwoFactorAuthentication
     def identifier
       value = read_attribute(:identifier)
 
-      if value
-        value
-      else
-        default_identifier
-      end
+      value || default_identifier
     end
 
     def redacted_identifier
@@ -68,14 +72,14 @@ module TwoFactorAuthentication
       return false unless active?
 
       Device.transaction do
-        Device.where(user_id: user_id).update_all(default: false)
-        self.update_column(:default, true)
-        return true
+        Device.where(user_id:).update_all(default: false)
+        update_column(:default, true)
+        true
       end
     end
 
     def channel=(value)
-      super value.to_sym
+      super(value.to_sym)
     end
 
     def channel
@@ -91,7 +95,11 @@ module TwoFactorAuthentication
 
     def self.available_channels_in_strategy
       strategy_class = manager.get_strategy(device_type)
-      strategy_class.supported_channels & self.supported_channels
+      strategy_class.supported_channels & supported_channels
+    end
+
+    def input_based?
+      true
     end
 
     private
@@ -101,7 +109,7 @@ module TwoFactorAuthentication
     end
 
     def cannot_set_default_if_exists
-      if default && has_default?
+      if default && has_other_default?
         errors.add :default, :default_already_exists
       end
 

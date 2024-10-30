@@ -1,12 +1,12 @@
 //-- copyright
 // OpenProject is an open source project management software.
-// Copyright (C) 2012-2020 the OpenProject GmbH
+// Copyright (C) the OpenProject GmbH
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License version 3.
 //
 // OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-// Copyright (C) 2006-2017 Jean-Philippe Lang
+// Copyright (C) 2006-2013 Jean-Philippe Lang
 // Copyright (C) 2010-2013 the ChiliProject Team
 //
 // This program is free software; you can redistribute it and/or
@@ -23,7 +23,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 //
-// See docs/COPYRIGHT.rdoc for more details.
+// See COPYRIGHT and LICENSE files for more details.
 //++
 
 $advanced-filters--label-size: 20%
@@ -65,7 +65,7 @@ $advanced-filters--grid-gap: 10px
     margin-bottom: 10px
 
     &.--without-operator
-      grid-template-columns: $advanced-filters--label-size $advanced-filters--values-and-operator-size $advanced-filters--close-icon-size
+      grid-template-columns: $advanced-filters--label-size calc(#{$advanced-filters--values-and-operator-size} + #{$advanced-filters--grid-gap}) $advanced-filters--close-icon-size
 
   .advanced-filters--filter-name,
   .advanced-filters--add-filter-label
@@ -82,7 +82,7 @@ $advanced-filters--grid-gap: 10px
 
 .advanced-filters--add-filter
   display: grid
-  grid-template-columns: $advanced-filters--label-size $advanced-filters--values-and-operator-size $advanced-filters--close-icon-size
+  grid-template-columns: $advanced-filters--label-size calc(#{$advanced-filters--values-and-operator-size} + #{$advanced-filters--grid-gap}) $advanced-filters--close-icon-size
   grid-gap: $advanced-filters--grid-gap
 
 // The type="text" is required to be more specific
@@ -95,6 +95,9 @@ $advanced-filters--grid-gap: 10px
 
 .advanced-filters--select
   @extend .form--select
+
+.advanced-filters--ng-select
+  width: 100%
 
 .advanced-filters--affix
   @extend .form--field-affix
@@ -122,6 +125,7 @@ $advanced-filters--grid-gap: 10px
 .advanced-filters--add-filter-info
   @include grid-content()
   @include grid-visible-overflow
+  padding: 1rem 0 0 0
 
 .advanced-filters--spacer
   border-top: 1px solid $filters--border-color
@@ -136,7 +140,7 @@ $advanced-filters--grid-gap: 10px
 .work-packages-embedded-view--container .advanced-filters--container
   margin: 0 0 1rem 0
 
-@include breakpoint(680px down)
+@media screen and (max-width: $breakpoint-sm)
   .advanced-filters--filters
     .advanced-filters--filter
       grid-gap: 0 10px

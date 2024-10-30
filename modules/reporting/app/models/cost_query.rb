@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 class CostQuery < ApplicationRecord
@@ -35,7 +35,7 @@ class CostQuery < ApplicationRecord
   belongs_to :project
 
   before_save :serialize
-  serialize :serialized, Hash
+  serialize :serialized, type: Hash
 
   def_delegators :result, :real_costs
 
@@ -58,18 +58,45 @@ class CostQuery < ApplicationRecord
     end
   end
 
+  def self.public(project)
+    if project
+      CostQuery.where(["is_public = ? AND (project_id IS NULL OR project_id = ?)", true, project])
+        .order(Arel.sql("name ASC"))
+    else
+      CostQuery.where(["is_public = ? AND project_id IS NULL", true])
+        .order(Arel.sql("name ASC"))
+    end
+  end
+
+  def self.private(project, user)
+    if project
+      CostQuery.where(["user_id = ? AND is_public = ? AND (project_id IS NULL OR project_id = ?)",
+                       user,
+                       false,
+                       project])
+        .order(Arel.sql("name ASC"))
+    else
+      CostQuery.where(["user_id = ? AND is_public = ? AND project_id IS NULL", user, false])
+        .order(Arel.sql("name ASC"))
+    end
+  end
+
+  def self.exists_in?(project, user)
+    public(project).or(private(project, user)).exists?
+  end
+
   def serialize
     # have to take the reverse group_bys to retain the original order when deserializing
-    self.serialized = { filters: (filters.map(&:serialize).reject(&:nil?).sort { |a, b| a.first <=> b.first }),
+    self.serialized = { filters: filters.map(&:serialize).reject(&:nil?).sort_by(&:first),
                         group_bys: group_bys.map(&:serialize).reject(&:nil?).reverse }
   end
 
   def deserialize
-    unless @chain
+    if @chain
+      raise ArgumentError, "Cannot deserialize a report which already has a chain"
+    else
       hash = serialized || serialize
       self.class.deserialize(hash, self)
-    else
-      raise ArgumentError, 'Cannot deserialize a report which already has a chain'
     end
   end
 
@@ -94,7 +121,7 @@ class CostQuery < ApplicationRecord
   # This may be used to alter report properties without
   # creating a new report in a database.
   def migrate(report)
-    [:@chain, :@query, :@transformer, :@walker, :@table, :@depths, :@chain_initializer].each do |inst_var|
+    %i[@chain @query @transformer @walker @table @depths @chain_initializer].each do |inst_var|
       instance_variable_set inst_var, (report.instance_variable_get inst_var)
     end
   end
@@ -113,7 +140,10 @@ class CostQuery < ApplicationRecord
 
   def add_chain(type, name, options)
     chain type.const_get(name.to_s.camelcase), options
-    @transformer, @table, @depths, @walker = nil, nil, nil, nil
+    @transformer = nil
+    @table = nil
+    @depths = nil
+    @walker = nil
     self
   end
 
@@ -170,18 +200,11 @@ class CostQuery < ApplicationRecord
   end
 
   def_delegators :transformer, :column_first, :row_first
-  def_delegators :chain, :empty_chain, :top, :bottom, :chain_collect, :sql_statement, :all_group_fields, :child, :clear, :result
+  def_delegators :chain, :empty_chain, :top, :bottom, :chain_collect, :sql_statement,
+                 :all_group_fields, :child, :clear, :result, :to_a, :to_s
   def_delegators :result, :each_direct_result, :recursive_each, :recursive_each_with_level, :each, :each_row, :count,
                  :units, :final_number
   def_delegators :table, :row_index, :colum_index
-
-  def to_a
-    chain.to_a
-  end
-
-  def to_s
-    chain.to_s
-  end
 
   def size
     size = 0
@@ -191,9 +214,9 @@ class CostQuery < ApplicationRecord
 
   def cache_key
     deserialize unless @chain
-    parts = [self.class.table_name.sub('_reports', '')]
-    parts.concat [filters.sort, group_bys].map { |l| l.map(&:cache_key).join(' ') }
-    parts.join '/'
+    parts = [self.class.table_name.sub("_reports", "")]
+    parts.concat([filters.sort, group_bys].map { |l| l.map(&:cache_key).join(" ") })
+    parts.join "/"
   end
 
   def self.engine
@@ -218,32 +241,5 @@ class CostQuery < ApplicationRecord
 
   def private?
     !public?
-  end
-
-  User.before_destroy do |user|
-    CostQuery.where(user_id: user.id, is_public: false).delete_all
-    CostQuery.where(['user_id = ?', user.id]).update_all ['user_id = ?', DeletedUser.first.id]
-
-    max_query_id = 0
-    while((current_queries = CostQuery.limit(1000)
-                             .where(["id > ?", max_query_id])
-                             .order("id ASC")).size > 0) do
-
-      current_queries.each do |query|
-        serialized = query.serialized
-
-        serialized[:filters] = serialized[:filters].map do |name, options|
-          options[:values].delete(user.id.to_s) if ["UserId", "AuthorId", "AssignedToId"].include?(name)
-
-          options[:values].nil? || options[:values].size > 0 ?
-            [name, options] :
-            nil
-        end.compact
-
-        CostQuery.where(["id = ?", query.id]).update_all ["serialized = ?", YAML::dump(serialized)]
-
-        max_query_id = query.id
-      end
-    end
   end
 end

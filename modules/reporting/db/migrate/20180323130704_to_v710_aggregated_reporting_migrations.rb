@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,10 +23,10 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require Rails.root.join("db", "migrate", "migration_utils", "migration_squasher").to_s
+require Rails.root.join("db/migrate/migration_utils/migration_squasher").to_s
 # This migration aggregates the migrations detailed in MIGRATION_FILES
 class ToV710AggregatedReportingMigrations < ActiveRecord::Migration[5.1]
   MIGRATION_FILES = <<-MIGRATIONS
@@ -38,13 +38,13 @@ class ToV710AggregatedReportingMigrations < ActiveRecord::Migration[5.1]
   def up
     Migration::MigrationSquasher.squash(migrations) do
       create_table "cost_queries", id: :integer do |t|
-        t.integer  "user_id",                                       :null => false
+        t.integer  "user_id", null: false
         t.integer  "project_id"
-        t.string   "name",                                          :null => false
-        t.boolean  "is_public",                  :default => false, :null => false
-        t.datetime "created_on",                                    :null => false
-        t.datetime "updated_on",                                    :null => false
-        t.string   "serialized", :limit => 2000,                    :null => false
+        t.string   "name", null: false
+        t.boolean  "is_public", default: false, null: false
+        t.datetime "created_on",                                    null: false
+        t.datetime "updated_on",                                    null: false
+        t.string   "serialized", limit: 2000, null: false
       end
     end
   end
@@ -57,7 +57,7 @@ class ToV710AggregatedReportingMigrations < ActiveRecord::Migration[5.1]
 
   def migrations
     MIGRATION_FILES.split.map do |m|
-      m.gsub(/_.*\z/, '')
+      m.gsub(/_.*\z/, "")
     end
   end
 end

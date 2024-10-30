@@ -1,10 +1,10 @@
 #-- copyright
 #OpenProject is an open source project management software.
-#Copyright (C) 2012-2020 the OpenProject GmbH
+#Copyright (C) the OpenProject GmbH
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License version 3.
 #OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-#Copyright (C) 2006-2017 Jean-Philippe Lang
+#Copyright (C) 2006-2013 Jean-Philippe Lang
 #Copyright (C) 2010-2013 the ChiliProject Team
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License
@@ -17,13 +17,16 @@
 #You should have received a copy of the GNU General Public License
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-#See docs/COPYRIGHT.rdoc for more details.
+#See COPYRIGHT and LICENSE files for more details.
 #++
 it:
+  plugin_costs:
+    name: "Tempi e costi"
+    description: "Questo modulo aggiunge funzionalità per la pianificazione e il monitoraggio dei costi dei progetti."
   activerecord:
     attributes:
       cost_entry:
-        work_package: "Macro-attività"
+        work_package: "Macro-attività (work package)"
         overridden_costs: "Costi eccedenti"
         spent: "Trascorso"
         spent_on: "Data"
@@ -31,7 +34,7 @@ it:
         unit: "Nome dell'unità"
         unit_plural: "Nome unità pluralizzato"
       work_package:
-        costs_by_type: "Unita consumate"
+        costs_by_type: "Unità spese"
         labor_costs: "Costi della manodopera"
         material_costs: "Costi unitari"
         overall_costs: "Costi complessivi"
@@ -57,7 +60,7 @@ it:
     costs: "Costi"
     current_rate: "Tariffa attuale"
     hours: "Ore"
-    units: "Unità di misura"
+    units: "Unità"
     valid_from: "Valido dal"
     fixed_date: "Data fissa"
   button_add_rate: "Aggiungi tariffa"
@@ -108,6 +111,7 @@ it:
   label_rate: "Tariffa"
   label_rate_plural: "Tariffe"
   label_status_finished: "Terminato"
+  label_show: "Mostra"
   label_units: "Unità di costo"
   label_user: "Utente"
   label_until: "finché"
@@ -139,4 +143,4 @@ it:
   text_warning_hidden_elements: "Alcune voci potrebbero essere state escluse dall'aggregazione."
   week: "settimana"
   js:
-    text_are_you_sure: "Sei sicuro?"
+    text_are_you_sure: "Sei sicuro/a?"

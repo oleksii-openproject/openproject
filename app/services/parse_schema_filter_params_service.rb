@@ -1,13 +1,12 @@
-#-- encoding: UTF-8
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -24,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 class ParseSchemaFilterParamsService
@@ -56,31 +55,31 @@ class ParseSchemaFilterParamsService
   private
 
   def check_error_in_filter(filter)
-    if !filter.first['id']
+    if !filter.first["id"]
       :id_filter_required
-    elsif filter.first['id']['operator'] != '='
+    elsif filter.first["id"]["operator"] != "="
       :unsupported_operator
-    elsif filter.first['id']['values'].any? { |id_string| !id_string.match(/\d+-\d+/) }
+    elsif filter.first["id"]["values"].any? { |id_string| !id_string.match(/\d+-\d+/) }
       :invalid_values
     end
   end
 
   def parse_ids(filter)
-    ids_string = filter.first['id']['values']
+    ids_string = filter.first["id"]["values"]
 
     ids_string.map do |id_string|
-      id_string.split('-')
+      id_string.split("-")
     end
   end
 
   def error(message)
     errors = ActiveModel::Errors.new(self)
     errors.add(:base, message)
-    ServiceResult.new(errors: errors)
+    ServiceResult.failure(errors:)
   end
 
   def success(result)
-    ServiceResult.new(success: true, result: result)
+    ServiceResult.success(result:)
   end
 
   def valid_project_type_pairs(filter)

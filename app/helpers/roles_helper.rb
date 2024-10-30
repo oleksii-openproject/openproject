@@ -1,13 +1,12 @@
-#-- encoding: UTF-8
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -24,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module RolesHelper
@@ -40,15 +39,18 @@ module RolesHelper
     group_permissions_by_module(setable_permissions(role))
   end
 
-  private
-
   def group_permissions_by_module(perms)
-    perms_by_module = perms.group_by { |p| p.project_module.to_s }
-    ::OpenProject::AccessControl
-      .sorted_module_names(false)
-      .select { |module_name| perms_by_module[module_name].present? }
-      .map do |module_name|
-      [module_name, perms_by_module[module_name]]
+    enabled_module_names = ::OpenProject::AccessControl.sorted_module_names(include_disabled: false)
+    perms.group_by { |p| p.project_module.to_s }
+         .slice(*enabled_module_names)
+  end
+
+  def permission_header_for_project_module(mod)
+    if mod.blank?
+      Project.model_name.human
+    else
+      I18n.t("permission_header_for_project_module_#{mod}",
+             default: [:"project_module_#{mod}", mod.humanize])
     end
   end
 end

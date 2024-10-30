@@ -18,7 +18,8 @@
 
 module Token
   class Base < ApplicationRecord
-    self.table_name = 'tokens'
+    self.table_name = "tokens"
+    serialize :data, coder: ::Serializers::IndifferentHashSerializer
 
     # Hashed tokens belong to a user and are unique per type
     belongs_to :user
@@ -27,8 +28,8 @@ module Token
     after_initialize :initialize_values
 
     # Ensure uniqueness of the token value
-    validates_presence_of :value
-    validates_uniqueness_of :value
+    validates :value, presence: true
+    validates :value, uniqueness: true
 
     # Delete previous token of this type upon save
     before_save :delete_previous_token
@@ -37,6 +38,12 @@ module Token
     # Find a token from the token value
     def self.find_by_plaintext_value(input)
       find_by(value: input)
+    end
+
+    ##
+    # Find tokens for the given user
+    def self.for_user(user)
+      where(user:)
     end
 
     ##
@@ -56,7 +63,7 @@ module Token
     # Removes obsolete tokens (same user and action)
     def delete_previous_token
       if single_value? && user
-        self.class.where(user_id: user.id, type: type).delete_all
+        self.class.where(user_id: user.id, type:).delete_all
       end
     end
 

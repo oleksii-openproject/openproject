@@ -1,14 +1,12 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -25,32 +23,30 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require_relative 'base'
+require_relative "base"
 
 class Tables::Attachments < Tables::Base
-  # rubocop:disable Metrics/AbcSize
   def self.table(migration)
     create_table migration do |t|
       t.integer :container_id, default: 0, null: false
-      t.string :container_type, limit: 30, default: '', null: false
-      t.string :filename, default: '', null: false
-      t.string :disk_filename, default: '', null: false
+      t.string :container_type, limit: 30, default: "", null: false
+      t.string :filename, default: "", null: false
+      t.string :disk_filename, default: "", null: false
       t.integer :filesize, default: 0, null: false
-      t.string :content_type, default: ''
-      t.string :digest, limit: 40, default: '', null: false
+      t.string :content_type, default: ""
+      t.string :digest, limit: 40, default: "", null: false
       t.integer :downloads, default: 0, null: false
       t.integer :author_id, default: 0, null: false
       t.datetime :created_on
       t.string :description
       t.string :file
 
-      t.index :author_id, name: 'index_attachments_on_author_id'
-      t.index %i[container_id container_type], name: 'index_attachments_on_container_id_and_container_type'
-      t.index :created_on, name: 'index_attachments_on_created_on'
+      t.index :author_id, name: "index_attachments_on_author_id"
+      t.index %i[container_id container_type], name: "index_attachments_on_container_id_and_container_type"
+      t.index :created_on, name: "index_attachments_on_created_on"
     end
   end
-  # rubocop:enable Metrics/AbcSize
 end

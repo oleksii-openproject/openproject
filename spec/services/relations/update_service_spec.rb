@@ -1,14 +1,12 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -25,35 +23,35 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'spec_helper'
+require "spec_helper"
 
-describe Relations::UpdateService do
+RSpec.describe Relations::UpdateService do
   let(:work_package1_start_date) { nil }
   let(:work_package1_due_date) { Date.today }
   let(:work_package2_start_date) { nil }
   let(:work_package2_due_date) { nil }
 
   let(:follows_relation) { false }
-  let(:delay) { 3 }
+  let(:lag) { 3 }
 
   let(:work_package1) do
-    FactoryBot.build_stubbed(:stubbed_work_package,
-                             due_date: work_package1_due_date,
-                             start_date: work_package1_start_date)
+    build_stubbed(:work_package,
+                  due_date: work_package1_due_date,
+                  start_date: work_package1_start_date)
   end
   let(:work_package2) do
-    FactoryBot.build_stubbed(:stubbed_work_package,
-                             due_date: work_package2_due_date,
-                             start_date: work_package2_start_date)
+    build_stubbed(:work_package,
+                  due_date: work_package2_due_date,
+                  start_date: work_package2_start_date)
   end
   let(:instance) do
-    described_class.new(user: user, model: relation)
+    described_class.new(user:, model: relation)
   end
   let(:relation) do
-    relation = FactoryBot.build_stubbed(:relation)
+    relation = build_stubbed(:relation)
 
     allow(relation)
       .to receive(:follows?)
@@ -65,18 +63,18 @@ describe Relations::UpdateService do
     {
       to: work_package1,
       from: work_package2,
-      delay: delay
+      lag:
     }
   end
 
-  let(:user) { FactoryBot.build_stubbed(:user) }
+  let(:user) { build_stubbed(:user) }
   let(:model_valid) { true }
   let(:contract_valid) { true }
-  let(:contract) { double('contract') }
+  let(:contract) { double("contract") }
   let(:symbols_for_base) { [] }
 
   subject do
-    instance.call(attributes: attributes)
+    instance.call(attributes:)
   end
 
   before do
@@ -86,20 +84,20 @@ describe Relations::UpdateService do
 
     allow(Relations::UpdateContract)
       .to receive(:new)
-      .with(relation, user, options: { changed_by_system: [] })
+      .with(relation, user, options: {})
       .and_return(contract)
     allow(contract)
       .to receive(:validate)
       .and_return(contract_valid)
   end
 
-  context 'when all valid and it is a follows relation' do
-    let(:set_schedule_service) { double('set schedule service') }
+  context "when all valid and it is a follows relation" do
+    let(:set_schedule_service) { double("set schedule service") }
     let(:set_schedule_work_package2_result) do
-      ServiceResult.new success: true, result: work_package2, errors: work_package2.errors
+      ServiceResult.success result: work_package2, errors: work_package2.errors
     end
     let(:set_schedule_result) do
-      sr = ServiceResult.new success: true, result: work_package2, errors: work_package2.errors
+      sr = ServiceResult.success result: work_package2, errors: work_package2.errors
       sr.dependent_results << set_schedule_work_package2_result
       sr
     end
@@ -109,7 +107,7 @@ describe Relations::UpdateService do
     before do
       expect(WorkPackages::SetScheduleService)
         .to receive(:new)
-        .with(user: user, work_package: work_package1)
+        .with(user:, work_package: work_package1)
         .and_return(set_schedule_service)
 
       expect(set_schedule_service)
@@ -128,37 +126,37 @@ describe Relations::UpdateService do
         .to receive(:success=)
     end
 
-    it 'is successful' do
+    it "is successful" do
       expect(subject)
         .to be_success
     end
 
-    it 'returns the relation' do
+    it "returns the relation" do
       expect(subject.result)
         .to eql relation
     end
 
-    it 'has a dependent result for the from-work package' do
+    it "has a dependent result for the from-work package" do
       expect(subject.dependent_results)
-        .to match_array [set_schedule_work_package2_result]
+        .to contain_exactly(set_schedule_work_package2_result)
     end
   end
 
-  context 'when all is valid and it is not a follows relation' do
-    it 'is successful' do
+  context "when all is valid and it is not a follows relation" do
+    it "is successful" do
       expect(subject)
         .to be_success
     end
 
-    it 'returns the relation' do
+    it "returns the relation" do
       expect(subject.result)
         .to eql relation
     end
   end
 
-  context 'when the contract is invalid' do
+  context "when the contract is invalid" do
     let(:contract_valid) { false }
-    let(:contract_errors) { double('contract_errors') }
+    let(:contract_errors) { double("contract_errors") }
 
     before do
       allow(contract)
@@ -170,7 +168,7 @@ describe Relations::UpdateService do
         .and_return(symbols_for_base)
     end
 
-    it 'is unsuccessful' do
+    it "is unsuccessful" do
       expect(subject)
         .to be_failure
     end
@@ -181,9 +179,9 @@ describe Relations::UpdateService do
     end
   end
 
-  context 'when the model is invalid' do
+  context "when the model is invalid" do
     let(:model_valid) { false }
-    let(:model_errors) { double('model_errors') }
+    let(:model_errors) { double("model_errors") }
 
     before do
       allow(relation)
@@ -195,7 +193,7 @@ describe Relations::UpdateService do
         .and_return(symbols_for_base)
     end
 
-    it 'is unsuccessful' do
+    it "is unsuccessful" do
       expect(subject)
         .to be_failure
     end

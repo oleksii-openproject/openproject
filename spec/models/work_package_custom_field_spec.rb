@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,27 +23,27 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'spec_helper'
+require "spec_helper"
 
-describe WorkPackageCustomField, type: :model do
-  describe '.summable' do
+RSpec.describe WorkPackageCustomField do
+  describe ".summable" do
     let!(:list_custom_field) do
-      FactoryBot.create(:list_wp_custom_field)
+      create(:list_wp_custom_field)
     end
     let!(:int_custom_field) do
-      FactoryBot.create(:int_wp_custom_field)
+      create(:integer_wp_custom_field)
     end
     let!(:float_custom_field) do
-      FactoryBot.create(:float_wp_custom_field)
+      create(:float_wp_custom_field)
     end
 
-    context 'with a summable field' do
-      it 'contains the custom_field' do
+    context "with a summable field" do
+      it "contains the custom_field" do
         expect(described_class.summable)
-          .to match_array [int_custom_field, float_custom_field]
+          .to contain_exactly(int_custom_field, float_custom_field)
       end
     end
   end

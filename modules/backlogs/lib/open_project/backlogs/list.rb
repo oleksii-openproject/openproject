@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 module OpenProject::Backlogs::List
@@ -45,7 +45,7 @@ module OpenProject::Backlogs::List
     # Also sanitize_sql seems to be unavailable in a sensible way. Therefore
     # we're using send to circumvent visibility work_packages.
     def scope_condition
-      self.class.send(:sanitize_sql, ['project_id = ? AND version_id = ? AND type_id IN (?)',
+      self.class.send(:sanitize_sql, ["project_id = ? AND version_id = ? AND type_id IN (?)",
                                       project_id, version_id, types])
     end
 
@@ -58,7 +58,7 @@ module OpenProject::Backlogs::List
       remove_from_list
       reload
 
-      prev = self.class.find_by_id(prev_id.to_i)
+      prev = self.class.find_by(id: prev_id.to_i)
 
       # If it should be the first story, move it to the 1st position
       if prev.blank?
@@ -81,13 +81,15 @@ module OpenProject::Backlogs::List
 
     protected
 
-    def assume_bottom_position
-      update_columns(position: bottom_position_in_list(self).to_i + 1)
+    # Override acts_as_list implementation to avoid it calling save.
+    # Calling save would remove the changes/saved_changes information.
+    def set_list_position(new_position, _raise_exception_if_save_fails = false)
+      update_columns(position: new_position)
     end
 
     def fix_other_work_package_positions
-      if changes.slice('project_id', 'type_id', 'version_id').present?
-        if changes.slice('project_id', 'version_id').blank? and
+      if changes.slice("project_id", "type_id", "version_id").present?
+        if changes.slice("project_id", "version_id").blank? and
            Story.types.include?(type_id.to_i) and
            Story.types.include?(type_id_was.to_i)
           return
@@ -130,8 +132,8 @@ module OpenProject::Backlogs::List
     end
 
     def fix_own_work_package_position
-      if changes.slice('project_id', 'type_id', 'version_id').present?
-        if changes.slice('project_id', 'version_id').blank? and
+      if changes.slice("project_id", "type_id", "version_id").present?
+        if changes.slice("project_id", "version_id").blank? and
            Story.types.include?(type_id.to_i) and
            Story.types.include?(type_id_was.to_i)
           return
@@ -146,7 +148,12 @@ module OpenProject::Backlogs::List
     end
 
     def set_default_prev_positions_silently(prev)
-      prev.version.rebuild_positions(prev.project)
+      if prev.is_task?
+        prev.version.rebuild_task_positions(prev)
+      else
+        prev.version.rebuild_story_positions(prev.project)
+      end
+
       prev.reload.position
     end
   end

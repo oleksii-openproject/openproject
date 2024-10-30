@@ -1,5 +1,8 @@
 #English strings go here for Rails i18n
 tr:
+  plugin_openproject_bim:
+    name: "OpenProject BIM and BCF functionality"
+    description: "This OpenProject plugin introduces BIM and BCF functionality."
   bim:
     label_bim: 'BIM: Bina Bilgi Modellemesi'
   bcf:
@@ -20,7 +23,7 @@ tr:
     bcf_xml:
       xml_file: 'BCF XML Dosyası'
       import_title: 'İçeri Aktar'
-      export: 'Dışarı aktar'
+      export: 'ihracat'
       import_update_comment: '(BCF ithalatında güncellendi)'
       import_failed: 'BCF dosyası alınamıyor: %{error}'
       import_failed_unsupported_bcf_version: 'BCF dosyası okunamadı: BCF sürümü desteklenmiyor. Lütfen sürümün en az  %{minimal_version} veya daha yüksek olduğundan emin olun.'
@@ -113,10 +116,12 @@ tr:
       check_1: 'En az bir IFC modeli yüklediğinizi kontrol edin.'
       check_2: 'En az bir IFC modelinin "Varsayılan" olarak ayarlandığını kontrol edin.'
     no_results: "Bu projeye hiç IFC modeli yüklenmedi."
-    processing_state:
+    conversion_status:
       label: 'İşleme?'
-      in_progress: 'Devam eden'
+      pending: 'Bekliyor'
+      processing: 'İşleniyor'
       completed: 'Tamamlandı'
+      error: 'Hata'
     processing_notice:
       processing_default: 'Aşağıdaki varsayılan IFC modelleri hala işlenmektedir ve bu nedenle henüz kullanılamamaktadır:'
     flash_messages:
@@ -129,4 +134,3 @@ tr:
   extraction:
     available:
       ifc_convert: "IFC dönüşüm hattı mevcut"
-

@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,35 +23,56 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'spec_helper'
+require "spec_helper"
 
-RSpec.feature 'Work package index view' do
-  let(:user) { FactoryBot.create(:admin) }
-  let(:project) { FactoryBot.create(:project, enabled_module_names: %w[work_package_tracking]) }
+RSpec.describe "Work Packages", "index view", :js, :with_cuprite do
+  shared_let(:user) { create(:admin) }
+  shared_let(:project) { create(:project, enabled_module_names: %w[work_package_tracking]) }
+
   let(:wp_table) { Pages::WorkPackagesTable.new(project) }
 
-  before do
-    login_as(user)
+  current_user { user }
+
+  context "within a global context" do
+    before do
+      visit root_path
+    end
+
+    it "is reachable by clicking the global menu item" do
+      within("#main-menu") do
+        click_link "Work packages"
+      end
+
+      expect(page).to have_current_path(work_packages_path)
+
+      within("#content") do
+        wp_table.expect_title("All open", editable: true)
+        expect(page).to have_content("No work packages to display")
+      end
+    end
   end
 
-  scenario 'is reachable by clicking the sidebar menu item', js: true do
-    visit project_path(project)
+  context "within a project-specific context" do
+    it "is reachable by clicking the sidebar menu item" do
+      visit project_path(project)
 
-    within('#content') do
-      expect(page).to have_content('Overview')
-    end
+      within("#content") do
+        expect(page).to have_content("Overview")
+      end
 
-    within('#main-menu') do
-      click_link 'Work package'
-    end
+      within("#main-menu") do
+        click_link "Work packages"
+      end
 
-    expect(current_path).to eql("/projects/#{project.identifier}/work_packages")
-    within('#content') do
-      wp_table.expect_title('All open', editable: true)
-      expect(page).to have_content('No work packages to display')
+      expect(page).to have_current_path(project_work_packages_path(project))
+
+      within("#content") do
+        wp_table.expect_title("All open", editable: true)
+        expect(page).to have_content("No work packages to display")
+      end
     end
   end
 end

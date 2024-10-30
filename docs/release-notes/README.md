@@ -1,323 +1,250 @@
 ---
-  unnumbered_toc: true
+sidebar_navigation:
+  title: Release notes
+  priority: 930
 ---
 
 # Release Notes
 
-We never stop improving OpenProject. Every year there are several major stable releases offering new OpenProject features.
+We never stop improving OpenProject. Every year there are several stable releases offering new OpenProject features.
 
 Stay up to date and get an overview of the new features included in the releases.
-
 
 <!--- New release notes are generated below. Do not remove comment. -->
 <!--- RELEASE MARKER -->
 
-## 10.6.5
+## 14.6.2
 
-Release date: 2020-07-21
+Release date: 2024-10-22
 
-[Release Notes](10-6-5/)
+[Release Notes](14-6-2/)
 
 
-## 10.6.4
+## 14.6.1
 
-Release date: 2020-06-30
+Release date: 2024-10-10
 
-[Release Notes](10-6-4/)
+[Release Notes](14-6-1/)
 
 
-## 10.6.3
+## 14.6.0
 
-Release date: 2020-06-29
+Release date: 2024-10-09
 
-[Release Notes](10-6-3/)
+[Release Notes](14-6-0/)
 
 
-## 10.6.2
+## 14.5.1
 
-Release date: 2020-06-23
+Release date: 2024-09-24
 
-[Release Notes](10-6-2/)
+[Release Notes](14-5-1/)
 
 
-## 10.6.1
+## 14.5.0
 
-Release date: 2020-06-08
+Release date: 2024-09-11
 
-[Release Notes](10-6-1/)
+[Release Notes](14-5-0/)
 
+## 14.4.2
 
-## 10.6.0
+Release date: 2024-08-30
 
-Release date: 2020-06-02
+[Release Notes](14-4-2/)
 
-[Release Notes](10-6-0/)
 
-## 10.5.1
+## 14.4.1
 
-Release date: 2020-05-06
+Release date: 2024-08-28
 
-[Release Notes](10-5-1/)
+[Release Notes](14-4-1/)
 
 
-## 10.5.0
+## 14.4.0
 
-Release date: 2020-04-23
+Release date: 2024-08-14
 
-[Release Notes](10-5-0/)
+[Release Notes](14-4-0/)
 
-## 10.4.1
 
-Release date: 2020-03-04
+## 14.3.0
 
-[Release Notes](10-4-1/)
+Release date: 2024-07-17
 
+[Release Notes](14-3-0/)
 
-## 10.4.0
 
-Release date: 2020-02-20
+## 14.2.1
 
-[Release Notes](10-4-0/)
+Release date: 2024-07-02
 
-## 10.3.1
+[Release Notes](14-2-1/)
 
-Release date: 2020-01-15
 
-[Release Notes](10-3-1/)
+## 14.2.0
 
+Release date: 2024-06-19
 
-## 10.3.0
+[Release Notes](14-2-0/)
 
-Release date: 2019-12-17
 
-[Release Notes](10-3-0/)
+## 14.1.1
 
+Release date: 2024-06-04
 
-## 10.2.2
+[Release Notes](14-1-1/)
 
-Release date: 2019-12-11
 
-[Release Notes](10-2-2/)
+## 14.1.0
 
-## 10.2.1
+Release date: 2024-05-22
 
-Release date: 2019-11-13
+[Release Notes](14-1-0/)
+## 14.0.2
 
-[Release Notes](10-2-1/)
+Release date: 2024-05-22
 
-## 10.2.0
+[Release Notes](14-0-2/)
 
-Release date: 2019-11-11
 
-[Release Notes](10-2-0/)
+## 14.0.1
 
-## 10.1.0
+Release date: 2024-05-08
 
-Release date: 2019-10-28
+[Release Notes](14-0-1/)
 
-[Release Notes](10-1-0/)
+## 14.0.0
 
-## 10.0.2
+Release date: 2024-04-24
 
-Release date: 2019-10-02
+[Release Notes](14-0-0/)
 
-[Release Notes](10-0-2/)
+## 13.4.2
 
-## 10.0.1
+Release date: 2024-05-22
 
-Release date: 2019-09-30
+[Release Notes](13-4-2/)
 
-[Release Notes](10-0-1/)
+## 13.4.1
 
+Release date: 2024-03-26
 
-## 10.0.0
+[Release Notes](13-4-1/)
 
-Release date: 2019-09-23
+## 13.4.0
 
-#### Community features:
+Release date: 2024-03-20
 
-- Drag & Drop in work package table
-- Card view in work package module
-- Updated project overview page
-- Updated administration menu and structure
-- Checkboxes and sticky headers for wiki pages, work packages, etc.
-- Performance improvements
-- Substantial number of bug fixes
+[Release Notes](13-4-0/)
 
-#### Premium features:
+## 13.3.1
 
-- Graphs on project overview page (Cloud / Enterprise Edition)
+Release date: 2024-02-28
 
-[Read more](10-0-0/)
+[Release Notes](13-3-1/)
 
-## 9.0.4
+## 13.3.0
 
-Release date: 2019-10-02
+Release date: 2024-02-14
 
-[Release Notes](9-0-4/)
+[Release Notes](13-3-0/)
 
-## 9.0.3
+## 13.2.1
 
-Release date: 2019-07-23
+Release date: 2024-01-31
 
-[Release Notes](9-0-3/)
+[Release Notes](13-2-1/)
 
+## 13.2.0
 
-## 9.0.2
+Release date: 2024-01-17
 
-Release date: 2019-06-13
+[Release Notes](13-2-0/)
 
-- Fixed: Wiki TOC doesn’t render headings properly [[#30245](https://community.openproject.com/wp/30245)]
-- Fixed: Cannot create new boards in installations with relative_url_root set [[#30370](https://community.openproject.com/wp/30370)]
-- Fixed: Sass compilation fails on packaged installations with relative_url_root set [[#30372](https://community.openproject.com/wp/30372)]
-- Fixed: Chrome is logged out when accessing pages with images on S3 storage [[#28652](https://community.openproject.com/wp/28652)]
-- Fixed: OpenProject logo on My page does not redirect to landing page [[#30376](https://community.openproject.com/wp/30376)]
-- Fixed: The PDF export is cut off after the first page [[#29929](https://community.openproject.com/wp/29929)]
+## 13.1.2
 
-[Release Notes](9-0-2/)
+Release date: 2023-12-22
 
+[Release Notes](13-1-2/)
 
+## 13.1.1
 
-## 9.0.1
+Release date: 2023-12-20
 
-Release date: 2019-06-07
+[Release Notes](13-1-1/)
 
-- Fixed: Wiki TOC doesn’t render headings properly [[#30245](https://community.openproject.com/wp/30245)]
-- Fixed: Doubled files section in meeting agenda [[#30291](https://community.openproject.com/wp/30291)]
-- Fixed: Row highlighted by ‘Type’ makes table text unreadable [[#30298](https://community.openproject.com/wp/30298)]
-- Fixed: Cannot copy projects & wrong error message [[#30309](https://community.openproject.com/wp/30309)]
-- Fixed: Dark background for getting started tour does not cover entire page [[#30314](https://community.openproject.com/wp/30314)]
-- Fixed: JavaScript error when clicking on a link in My Page [[#30343](https://community.openproject.com/wp/30343)]
-- Fixed: Highlighting for add relation in Gantt chart not applied properly [[#30354](https://community.openproject.com/wp/30354)]
-- Changed: Styled scrollbars in WP views [[#30304](https://community.openproject.com/wp/30304)]
-- Changed: Improve print view of cost report via CSS [[#30305](https://community.openproject.com/wp/30305)]
-- Changed: Ensure PostgreSQL migration is finished before attachments are re-inserted [[#30352](https://community.openproject.com/wp/30352)]
+## 13.1.0
 
-[Read more](9-0-1/)
+Release date: 2023-12-13
 
-## 9.0.0
+[Release Notes](13-1-0/)
 
-Release date: 2019-06-06
+## 13.0.8
 
-#### Community features:
+Release date: 2023-12-05
 
-- Work package templates
-- Work package widgets on My Page
-- Autocompletion for filters and attributes
-- Updated design
-- Usability improvements
-- Substantial number of bug fixes
+[Release Notes](13-0-8/)
 
-#### Premium features:
+## 13.0.7
 
-- Agile / Kanban board
+Release date: 2023-10-23
 
-[Read more](9-0-0/)
+[Release Notes](13-0-7/)
+
+## 13.0.6
+
+Release date: 2023-10-13
+
+[Release Notes](13-0-6/)
+
+## 13.0.5
+
+Release date: 2023-10-10
+
+[Release Notes](13-0-5/)
+
+## 13.0.4
+
+Release date: 2023-09-26
+
+[Release Notes](13-0-4/)
+
+## 13.0.3
+
+Release date: 2023-09-12
+
+[Release Notes](13-0-3/)
+
+## 13.0.2
+
+Release date: 2023-09-07
+
+[Release Notes](13-0-2/)
+
+## 13.0.1
+
+Release date: 2023-08-29
+
+[Release Notes](13-0-1/)
+
+## 13.0.0
+
+Release date: 2023-08-21
+
+[Release Notes](13-0-0/)
 
 ## Older versions
 
-The following list contains all older releases including OpenProject 3.0, sorted by their release date
-
-  - [8.3.2](8-3-2/)
-  - [8.3.1](8-3-1/)
-  - [8.3.0](8-3-0/)
-  - [8.2.1](8-2-1/)
-  - [8.2.0](8-2-0/)
-  - [8.1.0](8-1-0/)
-  - [8.0.2](8-0-2/)
-  - [8.0.1](8-0-1/)
-  - [8.0.0](8-0-0/)
-  - [7.4.7](7-4-7/)
-  - [7.4.6](7-4-6/)
-  - [7.4.5](7-4-5/)
-  - [7.4.4](7-4-4/)
-  - [7.4.3](7-4-3/)
-  - [7.4.2](7-4-2/)
-  - [7.4.1](7-4-1/)
-  - [7.4.0](7-4-0/)
-  - [7.3.2](7-3-2/)
-  - [7.3.1](7-3-1/)
-  - [7.3.0](7-3-0/)
-  - [7.2.3](7-2-3/)
-  - [7.2.2](7-2-2/)
-  - [7.2.1](7-2-1/)
-  - [7.2.0](7-2-0/)
-  - [7.1.0](7-1-0/)
-  - [7.0.3](7-0-3/)
-  - [7.0.2](7-0-2/)
-  - [7.0.1](7-0-1/)
-  - [7.0.0](7-0-0/)
-  - [6.1.6](6-1-6/)
-  - [6.1.5](6-1-5/)
-  - [6.1.4](6-1-4/)
-  - [6.1.3](6-1-3/)
-  - [6.1.2](6-1-2/)
-  - [6.1.1](6-1-1/)
-  - [6.1.0](6-1-0/)
-  - [6.0.5](6-0-5/)
-  - [6.0.4](6-0-4/)
-  - [6.0.3](6-0-3/)
-  - [6.0.2](6-0-2/)
-  - [6.0.1](6-0-1/)
-  - [6.0.0](6-0-0/)
-  - [5.0.20](5-0-20/)
-  - [5.0.19](5-0-19/)
-  - [5.0.18](5-0-18/)
-  - [5.0.17](5-0-17/)
-  - [5.0.16](5-0-16/)
-  - [5.0.15](5-0-15/)
-  - [5.0.14](5-0-14/)
-  - [5.0.13](5-0-13/)
-  - [5.0.12](5-0-12/)
-  - [5.0.11](5-0-11/)
-  - [5.0.10](5-0-10/)
-  - [5.0.9](5-0-9/)
-  - [5.0.8](5-0-8/)
-  - [5.0.7](5-0-7/)
-  - [5.0.6](5-0-6/)
-  - [5.0.5](5-0-5/)
-  - [5.0.4](5-0-4/)
-  - [5.0.3](5-0-3/)
-  - [5.0.2](5-0-2/)
-  - [5.0.1](5-0-1/)
-  - [5.0.0](5-0-0/)
-  - [4.2.9](4-2-9/)
-  - [4.2.8](4-2-8/)
-  - [4.2.7](4-2-7/)
-  - [4.2.6](4-2-6/)
-  - [4.2.5](4-2-5/)
-  - [4.2.4](4-2-4/)
-  - [4.2.3](4-2-3/)
-  - [4.2.2](4-2-2/)
-  - [4.2.1](4-2-1/)
-  - [4.2.0](4-2-0/)
-  - [4.1.4](4-1-4/)
-  - [4.1.3](4-1-3/)
-  - [4.1.2](4-1-2/)
-  - [4.1.1](4-1-1/)
-  - [4.1.0](4-1-0/)
-  - [4.0.12](4-0-12/)
-  - [4.0.11](4-0-11/)
-  - [4.0.10](4-0-10/)
-  - [4.0.9](4-0-9/)
-  - [4.0.8](4-0-8/)
-  - [4.0.7](4-0-7/)
-  - [4.0.6](4-0-6/)
-  - [4.0.5](4-0-5/)
-  - [4.0.4](4-0-4/)
-  - [4.0.2](4-0-2/)
-  - [4.0.1](4-0-1/)
-  - [4.0.0](4-0-0/)
-  - [3.0.17](3-0-17/)
-  - [3.0.16](3-0-16/)
-  - [3.0.15](3-0-15/)
-  - [3.0.14](3-0-14/)
-  - [3.0.13](3-0-13/)
-  - [3.0.12](3-0-12/)
-  - [3.0.11](3-0-11/)
-  - [3.0.8](3-0-8/)
-  - [3.0.4](3-0-4/)
-  - [3.0.3](3-0-3/)
-  - [3.0.1](3-0-1/)
-  - [3.0.0](3-0-0/)
-
+| Version     | Years              |
+|-------------|--------------------|
+| [12.x](12/) | 2021 / 2022 / 2023 |
+| [11.x](11/) | 2020 / 2021        |
+| [10.x](10/) | 2019 / 2020        |
+| [9.x](9/)   | 2019               |
+| [8.x](8/)   | 2018 / 2019        |
+| [7.x](7/)   | 2017 / 2018        |
+| [6.x](6/)   | 2016 / 2017        |
+| [5.x](5/)   | 2015 / 2016        |
+| [4.x](4/)   | 2014 / 2015        |
+| [3.x](3/)   | 2014 / 2015        |

@@ -1,13 +1,12 @@
-#-- encoding: UTF-8
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -24,260 +23,344 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'spec_helper'
-require 'ostruct'
+require "spec_helper"
+require "ostruct"
 
-describe SettingsHelper, type: :helper do
+RSpec.describe SettingsHelper do
   include Capybara::RSpecMatchers
 
-  let(:options) { { class: 'custom-class' } }
+  let(:options) { { class: "custom-class" } }
 
-  describe '#setting_select' do
-    before do
-      expect(Setting).to receive(:field).and_return('2')
+  before do
+    allow(Setting)
+      .to receive(:host_name_writable?)
+            .and_return true
+
+    allow(I18n).to receive(:t).and_call_original
+    allow(I18n).to receive(:t).with("setting_field_a").and_return("Field A")
+    allow(I18n).to receive(:t).with("setting_field_b").and_return("Field B")
+    allow(I18n).to receive(:t).with("setting_field").and_return("Field")
+  end
+
+  shared_examples_for "field disabled if non writable" do
+    context "when the setting is writable" do
+      it "is enabled" do
+        expect(output)
+          .to have_field "settings_host_name", disabled: false
+      end
     end
 
-    subject(:output) {
-      helper.setting_select :field, [['Popsickle', '1'], ['Jello', '2'], ['Ice Cream', '3']], options
-    }
+    context "when the setting isn`t writable" do
+      before do
+        allow(Setting)
+          .to receive(:host_name_writable?)
+                .and_return false
+      end
 
-    it_behaves_like 'labelled by default'
-    it_behaves_like 'wrapped in field-container by default'
-    it_behaves_like 'wrapped in container', 'select-container'
-
-    it 'should output element' do
-      expect(output).to have_selector 'select.form--select > option', count: 3
-      expect(output).to have_select 'settings_field', selected: 'Jello'
+      it "is disabled" do
+        expect(output)
+          .to have_field "settings_host_name", disabled: true
+      end
     end
   end
 
-  describe '#setting_multiselect' do
-    before do
-      expect(Setting).to receive(:field).at_least(:once).and_return('1')
+  describe "#setting_select" do
+    subject(:output) do
+      helper.setting_select :host_name, [["Popsickle", "1"], ["Jello", "2"], ["Ice Cream", "3"]], options
     end
 
-    subject(:output) {
-      helper.setting_multiselect :field, [['Popsickle', '1'], ['Jello', '2'], ['Ice Cream', '3']], options
-    }
+    before do
+      allow(Setting).to receive(:host_name).and_return("2")
+    end
 
-    it_behaves_like 'wrapped in container' do
+    it_behaves_like "labelled by default"
+    it_behaves_like "wrapped in field-container by default"
+    it_behaves_like "wrapped in container", "select-container"
+    it_behaves_like "field disabled if non writable"
+
+    it "outputs element" do
+      expect(output).to have_css "select.form--select > option", count: 3
+      expect(output).to have_select "settings_host_name", selected: "Jello"
+    end
+  end
+
+  describe "#setting_multiselect" do
+    subject(:output) do
+      helper.setting_multiselect :host_name, [["Popsickle", "1"], ["Jello", "2"], ["Ice Cream", "3"]], options
+    end
+
+    before do
+      allow(Setting).to receive(:host_name).at_least(:once).and_return("1")
+    end
+
+    it_behaves_like "wrapped in container" do
       let(:container_count) { 3 }
     end
 
-    it 'should have checkboxes wrapped in checkbox-container' do
-      expect(output).to have_selector 'span.form--check-box-container', count: 3
+    it "has checkboxes wrapped in checkbox-container" do
+      expect(output).to have_css "span.form--check-box-container", count: 3
     end
 
-    it 'should have three labels' do
-      expect(output).to have_selector 'label.form--label-with-check-box', count: 3
+    it "has three labels" do
+      expect(output).to have_css "label.form--label-with-check-box", count: 3
     end
 
-    it 'should output element' do
-      expect(output).to have_selector 'input[type="checkbox"].form--check-box', count: 3
+    it "outputs element" do
+      expect(output).to have_css 'input[type="checkbox"].form--check-box', count: 3
+    end
+
+    context "when the setting isn`t writable" do
+      before do
+        allow(Setting)
+          .to receive(:host_name_writable?)
+                .and_return false
+      end
+
+      it "is disabled and has no hidden field" do
+        expect(output).to have_no_css 'input[type="hidden"][value=""]', visible: :all
+        expect(output).to have_css 'input[type="checkbox"][disabled="disabled"].form--check-box', count: 3
+      end
     end
   end
 
-  describe '#settings_matrix' do
-    before do
-      expect(Setting).to receive(:field_a).at_least(:once).and_return('2')
-      expect(Setting).to receive(:field_b).at_least(:once).and_return('3')
-    end
-
-    subject(:output) {
-      settings = [:field_a, :field_b]
+  describe "#settings_matrix" do
+    subject(:output) do
+      settings = %i[host_name protocol]
       choices = [
         {
-          caption: 'Popsickle',
-          value: '1'
+          caption: "Popsickle",
+          value: "1"
         },
         {
-          caption: 'Jello',
-          value: '2'
+          caption: "Jello",
+          value: "2"
         },
         {
-          caption: 'Ice Cream',
-          value: '3'
+          caption: "Ice Cream",
+          value: "3"
         },
         {
-          value: 'Quarkspeise'
+          value: "Quarkspeise"
         }
       ]
       helper.settings_matrix settings, choices
-    }
-
-    it_behaves_like 'not wrapped in container'
-
-    it 'is structured as a table' do
-      expect(output).to have_selector 'table.form--matrix'
     end
 
-    it 'has table headers' do
-      expect(output).to have_selector 'thead th.form--matrix-header-cell', count: 3
+    before do
+      allow(Setting).to receive(:host_name).at_least(:once).and_return("2")
+      allow(Setting).to receive(:protocol).at_least(:once).and_return("3")
+
+      without_partial_double_verification do
+        allow(Setting).to receive_messages(
+          host_name_writable?: true,
+          protocol_writable?: true
+        )
+      end
     end
 
-    it 'has three table rows' do
-      expect(output).to have_selector 'tbody > tr.form--matrix-row', count: 4
+    it_behaves_like "not wrapped in container"
+
+    it "is structured as a table" do
+      expect(output).to have_css "table.form--matrix"
     end
 
-    it 'has cells with text labels' do
+    it "has table headers" do
+      expect(output).to have_css "thead th.form--matrix-header-cell", count: 3
+    end
+
+    it "has three table rows" do
+      expect(output).to have_css "tbody > tr.form--matrix-row", count: 4
+    end
+
+    it "has cells with text labels" do
       expect(output).to be_html_eql(%{
         <td class="form--matrix-cell">Popsickle</td>
-      }).at_path('tr:first-child > td:first-child')
+      }).at_path("tr:first-child > td:first-child")
     end
 
-    it 'has cells with styled checkboxes' do
+    it "has cells with styled checkboxes" do
       expect(output).to be_html_eql(%{
         <td class="form--matrix-checkbox-cell">
           <span class="form--check-box-container">
-            <input class="form--check-box" id="field_a_1"
-              name="settings[field_a][]" type="checkbox" value="1">
+            <input class="form--check-box" id="host_name_1"
+              name="settings[host_name][]" type="checkbox" value="1">
           </span>
         </td>
-      }).at_path('tr.form--matrix-row:first-child > td:nth-of-type(2)')
+      }).at_path("tr.form--matrix-row:first-child > td:nth-of-type(2)")
 
       expect(output).to be_html_eql(%{
         <td class="form--matrix-checkbox-cell">
           <span class="form--check-box-container">
-            <input class="form--check-box" id="field_a_Quarkspeise"
-              name="settings[field_a][]" type="checkbox" value="Quarkspeise">
+            <input class="form--check-box" id="host_name_Quarkspeise"
+              name="settings[host_name][]" type="checkbox" value="Quarkspeise">
           </span>
         </td>
-      }).at_path('tr.form--matrix-row:last-child > td:nth-of-type(2)')
+      }).at_path("tr.form--matrix-row:last-child > td:nth-of-type(2)")
     end
 
-    it 'has the correct fields checked' do
-      expect(output).to have_checked_field 'field_a_2'
-      expect(output).to have_checked_field 'field_b_3'
+    it "has the correct fields checked" do
+      expect(output).to have_checked_field "host_name_2"
+      expect(output).to have_checked_field "protocol_3"
+    end
+
+    context "when the setting isn`t writable" do
+      before do
+        allow(Setting)
+          .to receive(:host_name_writable?)
+                .and_return false
+      end
+
+      it "is disabled" do
+        expect(output).to be_html_eql(%{
+        <td class="form--matrix-checkbox-cell">
+          <span class="form--check-box-container">
+            <input class="form--check-box" id="host_name_1"
+              name="settings[host_name][]" type="checkbox" disabled="disabled" value="1">
+          </span>
+        </td>
+      }).at_path("tr.form--matrix-row:first-child > td:nth-of-type(2)")
+      end
     end
   end
 
-  describe '#setting_text_field' do
-    before do
-      expect(Setting).to receive(:field).and_return('important value')
+  describe "#setting_text_field" do
+    subject(:output) do
+      helper.setting_text_field :host_name, options
     end
 
-    subject(:output) {
-      helper.setting_text_field :field, options
-    }
+    before do
+      allow(Setting).to receive(:host_name).and_return("important value")
+    end
 
-    it_behaves_like 'labelled by default'
-    it_behaves_like 'wrapped in field-container by default'
-    it_behaves_like 'wrapped in container', 'text-field-container'
+    it_behaves_like "labelled by default"
+    it_behaves_like "wrapped in field-container by default"
+    it_behaves_like "wrapped in container", "text-field-container"
+    it_behaves_like "field disabled if non writable"
 
-    it 'should output element' do
+    it "outputs element" do
       expect(output).to be_html_eql(%{
         <input class="custom-class form--text-field"
-          id="settings_field" name="settings[field]" type="text" value="important value" />
-      }).at_path('input')
+          id="settings_host_name" name="settings[host_name]" type="text" value="important value" />
+      }).at_path("input")
     end
   end
 
-  describe '#setting_text_area' do
-    before do
-      expect(Setting).to receive(:field).and_return('important text')
+  describe "#setting_text_area" do
+    subject(:output) do
+      helper.setting_text_area :host_name, options
     end
 
-    subject(:output) {
-      helper.setting_text_area :field, options
-    }
+    before do
+      allow(Setting).to receive(:host_name).and_return("important text")
+    end
 
-    it_behaves_like 'labelled by default'
-    it_behaves_like 'wrapped in field-container by default'
-    it_behaves_like 'wrapped in container', 'text-area-container'
+    it_behaves_like "labelled by default"
+    it_behaves_like "wrapped in field-container by default"
+    it_behaves_like "wrapped in container", "text-area-container"
+    it_behaves_like "field disabled if non writable"
 
-    it 'should output element' do
+    it "outputs element" do
       expect(output).to be_html_eql(%{
-        <textarea class="custom-class form--text-area" id="settings_field" name="settings[field]">
+        <textarea class="custom-class form--text-area" id="settings_host_name" name="settings[host_name]">
 important text</textarea>
-      }).at_path('textarea')
+      }).at_path("textarea")
     end
   end
 
-  describe '#setting_check_box' do
-    subject(:output) {
-      helper.setting_check_box :field, options
-    }
+  describe "#setting_check_box" do
+    subject(:output) do
+      helper.setting_check_box :host_name, options
+    end
 
-    context 'when setting is true' do
+    context "when setting is true" do
       before do
-        expect(Setting).to receive(:field?).and_return(true)
+        allow(Setting).to receive(:host_name?).and_return(true)
       end
 
-      it_behaves_like 'labelled by default'
-      it_behaves_like 'wrapped in field-container by default'
-      it_behaves_like 'wrapped in container', 'check-box-container'
+      it_behaves_like "labelled by default"
+      it_behaves_like "wrapped in field-container by default"
+      it_behaves_like "wrapped in container", "check-box-container"
+      it_behaves_like "field disabled if non writable"
 
-      it 'should output element' do
-        expect(output).to have_selector 'input[type="checkbox"].custom-class.form--check-box'
-        expect(output).to have_checked_field 'settings_field'
+      it "outputs element" do
+        expect(output).to have_css 'input[type="hidden"][value=0]', visible: :hidden
+        expect(output).to have_css 'input[type="checkbox"].custom-class.form--check-box'
+        expect(output).to have_checked_field "settings_host_name"
+      end
+
+      context "when the setting isn`t writable" do
+        before do
+          allow(Setting)
+            .to receive(:host_name_writable?)
+                  .and_return false
+        end
+
+        it "does not output a hidden field" do
+          expect(output).to have_no_css 'input[type="hidden"][value=0]', visible: :hidden
+        end
       end
     end
 
-    context 'when setting is false' do
+    context "when setting is false" do
       before do
-        expect(Setting).to receive(:field?).and_return(false)
+        allow(Setting).to receive(:host_name?).and_return(false)
       end
 
-      it_behaves_like 'labelled by default'
-      it_behaves_like 'wrapped in field-container by default'
-      it_behaves_like 'wrapped in container', 'check-box-container'
+      it_behaves_like "labelled by default"
+      it_behaves_like "wrapped in field-container by default"
+      it_behaves_like "wrapped in container", "check-box-container"
+      it_behaves_like "field disabled if non writable"
 
-      it 'should output element' do
-        expect(output).to have_selector 'input[type="checkbox"].custom-class.form--check-box'
-        expect(output).to have_unchecked_field 'settings_field'
+      it "outputs element" do
+        expect(output).to have_css 'input[type="hidden"][value=0]', visible: :hidden
+        expect(output).to have_css 'input[type="checkbox"].custom-class.form--check-box'
+        expect(output).to have_unchecked_field "settings_host_name"
+      end
+
+      context "when the setting isn`t writable" do
+        before do
+          allow(Setting)
+            .to receive(:host_name_writable?)
+                  .and_return false
+        end
+
+        it "does not output a hidden field" do
+          expect(output).to have_no_css 'input[type="hidden"][value=0]', visible: :hidden
+        end
       end
     end
   end
 
-  describe '#setting_label' do
-    subject(:output) {
-      helper.setting_label :field
-    }
+  describe "#setting_time_field" do
+    subject(:output) do
+      helper.setting_time_field :host_name, options
+    end
 
-    it_behaves_like 'labelled'
-    it_behaves_like 'not wrapped in container'
-  end
-
-  describe '#notification_field' do
     before do
-      expect(Setting).to receive(:notified_events).and_return(%w(interesting_stuff))
+      allow(Setting).to receive(:host_name).and_return("16:00")
     end
 
-    subject(:output) {
-      helper.notification_field(notifiable, options)
-    }
+    it_behaves_like "labelled by default"
+    it_behaves_like "wrapped in field-container by default"
+    it_behaves_like "wrapped in container", "text-field-container"
 
-    context 'when setting includes option' do
-      let(:notifiable) { OpenStruct.new(name: 'interesting_stuff') }
+    it "outputs element" do
+      expect(output).to be_html_eql(%{
+        <input class="custom-class form--text-field -time"
+          id="settings_host_name" name="settings[host_name]" type="time" value="16:00" />
+      }).at_path("input")
+    end
+  end
 
-      it 'should have a label' do
-        expect(output).to have_selector 'label.form--label-with-check-box', count: 1
-      end
-
-      it_behaves_like 'wrapped in container', 'check-box-container'
-
-      it 'should output element' do
-        expect(output).to have_selector 'input[type="checkbox"].form--check-box'
-        expect(output).to have_checked_field 'Interesting stuff'
-      end
+  describe "#setting_label" do
+    subject(:output) do
+      helper.setting_label :host_name
     end
 
-    context 'when setting does not include option' do
-      let(:notifiable) { OpenStruct.new(name: 'boring_stuff') }
-
-      it 'should have a label' do
-        expect(output).to have_selector 'label.form--label-with-check-box', count: 1
-      end
-
-      it_behaves_like 'wrapped in container', 'check-box-container'
-
-      it 'should output element' do
-        expect(output).to have_selector 'input[type="checkbox"].form--check-box'
-        expect(output).to have_unchecked_field 'Boring stuff'
-      end
-    end
+    it_behaves_like "labelled"
+    it_behaves_like "not wrapped in container"
   end
 end

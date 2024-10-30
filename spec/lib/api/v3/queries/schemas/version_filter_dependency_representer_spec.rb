@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,47 +23,47 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'spec_helper'
+require "spec_helper"
 
-describe ::API::V3::Queries::Schemas::VersionFilterDependencyRepresenter, clear_cache: true do
-  include ::API::V3::Utilities::PathHelper
+RSpec.describe API::V3::Queries::Schemas::VersionFilterDependencyRepresenter do
+  include API::V3::Utilities::PathHelper
 
-  let(:project) { FactoryBot.build_stubbed(:project) }
-  let(:query) { FactoryBot.build_stubbed(:query, project: project) }
+  let(:project) { build_stubbed(:project) }
+  let(:query) { build_stubbed(:query, project:) }
   let(:filter) { Queries::WorkPackages::Filter::VersionFilter.create!(context: query) }
   let(:form_embedded) { false }
 
   let(:instance) do
     described_class.new(filter,
                         operator,
-                        form_embedded: form_embedded)
+                        form_embedded:)
   end
 
   subject(:generated) { instance.to_json }
 
-  context 'generation' do
-    context 'properties' do
-      describe 'values' do
-        let(:path) { 'values' }
-        let(:type) { '[]Version' }
-        let(:order) { "sortBy=#{CGI.escape(JSON.dump([%i(semver_name asc)]))}" }
+  context "generation" do
+    context "properties" do
+      describe "values" do
+        let(:path) { "values" }
+        let(:type) { "[]Version" }
+        let(:order) { "sortBy=#{CGI.escape(JSON.dump([%i(semver_name asc)]))}&pageSize=-1" }
 
         context "for operator 'Queries::Operators::All'" do
           let(:operator) { Queries::Operators::All }
 
-          it_behaves_like 'filter dependency empty'
+          it_behaves_like "filter dependency empty"
         end
 
         context "for operator 'Queries::Operators::None'" do
           let(:operator) { Queries::Operators::None }
 
-          it_behaves_like 'filter dependency empty'
+          it_behaves_like "filter dependency empty"
         end
 
-        context 'within project' do
+        context "within project" do
           let(:href) do
             "#{api_v3_paths.versions_by_project(project.id)}?#{order}"
           end
@@ -71,57 +71,57 @@ describe ::API::V3::Queries::Schemas::VersionFilterDependencyRepresenter, clear_
           context "for operator 'Queries::Operators::Equals'" do
             let(:operator) { Queries::Operators::Equals }
 
-            it_behaves_like 'filter dependency with allowed link'
+            it_behaves_like "filter dependency with allowed link"
           end
 
           context "for operator 'Queries::Operators::NotEquals'" do
             let(:operator) { Queries::Operators::NotEquals }
 
-            it_behaves_like 'filter dependency with allowed link'
+            it_behaves_like "filter dependency with allowed link"
           end
         end
 
-        context 'global' do
+        context "global" do
           let(:project) { nil }
           let(:filter_params) do
-            [{ sharing: { operator: '=', values: ['system'] } }]
+            [{ sharing: { operator: "=", values: ["system"] } }]
           end
           let(:href) do
-            "#{api_v3_paths.versions}?filters=#{CGI.escape(::JSON.dump(filter_params))}&#{order}"
+            "#{api_v3_paths.versions}?filters=#{CGI.escape(JSON.dump(filter_params))}&#{order}"
           end
 
           context "for operator 'Queries::Operators::Equals'" do
             let(:operator) { Queries::Operators::Equals }
 
-            it_behaves_like 'filter dependency with allowed link'
+            it_behaves_like "filter dependency with allowed link"
           end
 
           context "for operator 'Queries::Operators::NotEquals'" do
             let(:operator) { Queries::Operators::NotEquals }
 
-            it_behaves_like 'filter dependency with allowed link'
+            it_behaves_like "filter dependency with allowed link"
           end
         end
       end
     end
 
-    describe 'caching' do
+    describe "caching" do
       let(:operator) { Queries::Operators::Equals }
-      let(:other_project) { FactoryBot.build_stubbed(:project) }
+      let(:other_project) { build_stubbed(:project) }
 
       before do
         # fill the cache
         instance.to_json
       end
 
-      it 'is cached' do
+      it "is cached" do
         expect(instance)
           .not_to receive(:to_hash)
 
         instance.to_json
       end
 
-      it 'busts the cache on a different operator' do
+      it "busts the cache on a different operator" do
         instance.send(:operator=, Queries::Operators::NotEquals)
 
         expect(instance)
@@ -130,7 +130,7 @@ describe ::API::V3::Queries::Schemas::VersionFilterDependencyRepresenter, clear_
         instance.to_json
       end
 
-      it 'busts the cache on a different project' do
+      it "busts the cache on a different project" do
         query.project = other_project
 
         expect(instance)
@@ -139,7 +139,7 @@ describe ::API::V3::Queries::Schemas::VersionFilterDependencyRepresenter, clear_
         instance.to_json
       end
 
-      it 'busts the cache on changes to the locale' do
+      it "busts the cache on changes to the locale" do
         expect(instance)
           .to receive(:to_hash)
 
@@ -148,7 +148,7 @@ describe ::API::V3::Queries::Schemas::VersionFilterDependencyRepresenter, clear_
         end
       end
 
-      it 'busts the cache on different form_embedded' do
+      it "busts the cache on different form_embedded" do
         embedded_instance = described_class.new(filter,
                                                 operator,
                                                 form_embedded: !form_embedded)

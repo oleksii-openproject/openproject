@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 class Report::Filter
@@ -39,12 +39,12 @@ class Report::Filter
     accepts_property :values, :value, :operator
 
     mattr_accessor :skip_inherited_operators
-    self.skip_inherited_operators = [:time_operators, 'y', 'n']
+    self.skip_inherited_operators = [:time_operators, "y", "n"]
 
     attr_accessor :values
 
     def cache_key
-      self.class.cache_key + operator.to_s + Array(values).join(',')
+      self.class.cache_key + operator.to_s + Array(values).join(",")
     end
 
     ##
@@ -96,7 +96,7 @@ class Report::Filter
 
     use :default_operators
 
-    def self.new(*args, &block) # :nodoc:
+    def self.new(*args, &) # :nodoc:
       # this class is abstract. instances are only allowed from child classes
       raise "#{name} is an abstract class" if base?
 
@@ -105,7 +105,7 @@ class Report::Filter
 
     def self.inherited(klass)
       if base?
-        self.dont_display!
+        dont_display!
         klass.display!
       end
       super
@@ -186,8 +186,8 @@ class Report::Filter
       super.tap do |query|
         arity = operator.arity
         query_values = [*transformed_values].compact
-        # if there is just the nil it might be actually intendet to be there
-        query_values.unshift nil if Array(self.values).size == 1 && Array(self.values).first.nil?
+        # if there is just the nil it might be actually intended to be there
+        query_values.unshift nil if Array(values).size == 1 && Array(values).first.nil?
         query_values = query_values[0, arity] if query_values and arity >= 0 and arity != query_values.size
         operator.modify(query, field, *query_values) unless field.empty?
       end

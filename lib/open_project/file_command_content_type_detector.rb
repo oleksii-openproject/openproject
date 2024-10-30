@@ -1,13 +1,12 @@
-#-- encoding: UTF-8
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -24,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 # This file is mostly based on source code of thoughbot's paperclip gem
@@ -59,11 +58,11 @@
 # - sensible default changed to "application/binary"
 # - removed references to paperclip
 
-require 'open3'
+require "open3"
 
 module OpenProject
   class FileCommandContentTypeDetector
-    SENSIBLE_DEFAULT = 'application/binary'
+    SENSIBLE_DEFAULT = "application/binary"
 
     def initialize(filename)
       @filename = filename
@@ -77,13 +76,13 @@ module OpenProject
 
     def type_from_file_command
       # On BSDs, `file` doesn't give a result code of 1 if the file doesn't exist.
-      type, status = Open3.capture2('file', '-b', '--mime', @filename)
+      type, status = Open3.capture2("file", "-b", "--mime", @filename)
 
       if type.nil? || status.to_i > 0 || type.match(/\(.*?\)/)
         type = SENSIBLE_DEFAULT
       end
       type.split(/[:;\s]+/)[0]
-    rescue => e
+    rescue StandardError => e
       Rails.logger.info { "Failed to get mime type from #{@filename}: #{e} #{e.message}" }
       SENSIBLE_DEFAULT
     end

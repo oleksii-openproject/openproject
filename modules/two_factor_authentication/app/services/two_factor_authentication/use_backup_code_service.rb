@@ -13,12 +13,13 @@ module TwoFactorAuthentication
     def verify(code)
       token = user.otp_backup_codes.find_by_plaintext_value(code)
 
-      raise I18n.t('two_factor_authentication.error_invalid_backup_code') if token.nil?
+      raise I18n.t("two_factor_authentication.error_invalid_backup_code") if token.nil?
+
       use_valid_token! token
-    rescue => e
+    rescue StandardError => e
       Rails.logger.error "[2FA plugin] Error during backup code validation for user##{user.id}: #{e}"
 
-      result = ServiceResult.new(success: false)
+      result = ServiceResult.failure
       result.errors.add(:base, e.message)
 
       result
@@ -30,7 +31,7 @@ module TwoFactorAuthentication
       token.destroy!
 
       Rails.logger.info { "[2FA plugin] User ##{user.id} has used backup code." }
-      ServiceResult.new(success: true, result: token)
+      ServiceResult.success(result: token)
     end
   end
 end

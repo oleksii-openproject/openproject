@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,12 +23,13 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 class WorkPackagesPage
   include Rails.application.routes.url_helpers
   include Capybara::DSL
+  include Capybara::RSpecMatchers
   include RSpec::Matchers
 
   def initialize(project = nil)
@@ -54,24 +55,24 @@ class WorkPackagesPage
   end
 
   def visit_calendar
-    visit index_path + '/calendar'
+    visit index_path + "/calendar"
   end
 
   def open_settings!
-    click_on 'work-packages-settings-button'
+    click_on "work-packages-settings-button"
   end
 
   def click_work_packages_menu_item
-    find('#main-menu .work-packages').click
+    find("#main-menu .work-packages").click
   end
 
   def click_toolbar_button(button)
-    close_notifications
-    find('.toolbar-container', wait: 5).click_button button
+    close_toasters
+    find(".toolbar-container", wait: 5).click_button button
   end
 
-  def close_notifications
-    page.all(:css, '.notification-box--close').each(&:click)
+  def close_toasters
+    page.all(:css, ".op-toast--close").each(&:click)
   end
 
   def select_query(query)
@@ -82,9 +83,9 @@ class WorkPackagesPage
 
   def find_subject_field(text = nil)
     if text
-      find('#inplace-edit--write-value--subject', text: text)
+      find_by_id("inplace-edit--write-value--subject", text:)
     else
-      find('#inplace-edit--write-value--subject')
+      find_by_id("inplace-edit--write-value--subject")
     end
   end
 
@@ -106,7 +107,7 @@ class WorkPackagesPage
 
   def ensure_index_page_loaded
     if Capybara.current_driver == Capybara.javascript_driver
-      expect(page).to have_selector('.work-packages--filters-optional-container.-loaded', visible: :all, wait: 20)
+      expect(page).to have_css(".work-packages--filters-optional-container.-loaded", visible: :all, wait: 20)
     end
   end
 end

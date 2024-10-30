@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,10 +23,10 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'api/v3/attachments/attachment_representer'
+require "api/v3/attachments/attachment_representer"
 
 module API
   module V3
@@ -39,28 +39,15 @@ module API
             def container
               nil
             end
-
-            def check_attachments_addable
-              raise API::Errors::Unauthorized if Redmine::Acts::Attachable.attachables.none?(&:attachments_addable?)
-            end
           end
 
-          post do
-            check_attachments_addable
-
-            ::API::V3::Attachments::AttachmentRepresenter.new(parse_and_create, current_user: current_user)
-          end
+          post &API::V3::Attachments::AttachmentsByContainerAPI.create
 
           namespace :prepare do
-            post do
-              require_direct_uploads
-              check_attachments_addable
-
-              ::API::V3::Attachments::AttachmentUploadRepresenter.new(parse_and_prepare, current_user: current_user)
-            end
+            post &API::V3::Attachments::AttachmentsByContainerAPI.prepare
           end
 
-          route_param :id, type: Integer, desc: 'Attachment ID' do
+          route_param :id, type: Integer, desc: "Attachment ID" do
             after_validation do
               @attachment = Attachment.find(params[:id])
 
@@ -68,30 +55,24 @@ module API
             end
 
             get do
-              AttachmentRepresenter.new(@attachment, embed_links: true, current_user: current_user)
+              AttachmentRepresenter.new(@attachment, embed_links: true, current_user:)
             end
 
             delete &::API::V3::Utilities::Endpoints::Delete.new(model: Attachment).mount
 
-            namespace :content do
-              helpers ::API::Helpers::AttachmentRenderer
-
-              get do
-                # Cache that value at max 604799 seconds, which is the max
-                # allowed expiry time for AWS generated links
-                respond_with_attachment @attachment, cache_seconds: 604799
-              end
-            end
+            namespace :content, &::API::Helpers::AttachmentRenderer.content_endpoint(&-> {
+              @attachment
+            })
 
             namespace :uploaded do
               get do
-                attachment = Attachment.pending_direct_uploads.where(id: params[:id]).first!
+                attachment = Attachment.pending_direct_upload.find(params[:id])
 
                 raise API::Errors::NotFound unless attachment.file.readable?
 
                 ::Attachments::FinishDirectUploadJob.perform_later attachment.id
 
-                ::API::V3::Attachments::AttachmentRepresenter.new(attachment, current_user: current_user)
+                ::API::V3::Attachments::AttachmentRepresenter.new(attachment, current_user:)
               end
             end
           end

@@ -1,14 +1,12 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -25,7 +23,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 class Version < ApplicationRecord
@@ -33,7 +31,7 @@ class Version < ApplicationRecord
   include ::Scopes::Scoped
 
   belongs_to :project
-  has_many :work_packages, foreign_key: :version_id, dependent: :nullify
+  has_many :work_packages, dependent: :nullify
   acts_as_customizable
 
   VERSION_STATUSES = %w(open locked closed).freeze
@@ -43,29 +41,29 @@ class Version < ApplicationRecord
             presence: true,
             uniqueness: { scope: [:project_id], case_sensitive: false }
 
-  validates_format_of :effective_date, with: /\A\d{4}-\d{2}-\d{2}\z/, message: :not_a_date, allow_nil: true
-  validates_format_of :start_date, with: /\A\d{4}-\d{2}-\d{2}\z/, message: :not_a_date, allow_nil: true
-  validates_inclusion_of :status, in: VERSION_STATUSES
+  validates :effective_date, format: { with: /\A\d{4}-\d{2}-\d{2}\z/, message: :not_a_date, allow_nil: true }
+  validates :start_date, format: { with: /\A\d{4}-\d{2}-\d{2}\z/, message: :not_a_date, allow_nil: true }
+  validates :status, inclusion: { in: VERSION_STATUSES }
   validate :validate_start_date_before_effective_date
 
-  scope_classes ::Versions::Scopes::OrderBySemverName
+  scopes :order_by_semver_name,
+         :rolled_up,
+         :shared_with
 
   scope :visible, ->(*args) {
     joins(:project)
       .merge(Project.allowed_to(args.first || User.current, :view_work_packages))
   }
 
-  scope :systemwide, -> { where(sharing: 'system') }
-
-  scope :order_by_name, -> { order(Arel.sql("LOWER(#{Version.table_name}.name) ASC")) }
+  scope :systemwide, -> { where(sharing: "system") }
 
   def self.with_status_open
-    where(status: 'open')
+    where(status: "open")
   end
 
   # Returns true if +user+ or current user is allowed to view the version
   def visible?(user = User.current)
-    user.allowed_to?(:view_work_packages, project)
+    user.allowed_in_project?(:view_work_packages, project)
   end
 
   def due_date
@@ -75,24 +73,25 @@ class Version < ApplicationRecord
   # Returns the total estimated time for this version
   # (sum of leaves estimated_hours)
   def estimated_hours
-    @estimated_hours ||= work_packages.hierarchy_leaves.sum(:estimated_hours).to_f
+    @estimated_hours ||= work_packages.leaves.sum(:estimated_hours).to_f
   end
 
   # Returns the total reported time for this version
   def spent_hours
     @spent_hours ||= TimeEntry
-                     .includes(:work_package)
-                     .where(work_packages: { version_id: id })
-                     .sum(:hours)
-                     .to_f
+      .not_ongoing
+      .includes(:work_package)
+      .where(work_packages: { version_id: id })
+      .sum(:hours)
+      .to_f
   end
 
   def closed?
-    status == 'closed'
+    status == "closed"
   end
 
   def open?
-    status == 'open'
+    status == "open"
   end
 
   # Returns true if the version is completed: finish date reached and no open issues
@@ -100,15 +99,8 @@ class Version < ApplicationRecord
     effective_date && (effective_date <= Date.today) && open_issues_count.zero?
   end
 
-  def behind_schedule?
-    if completed_percent == 100
-      false
-    elsif due_date && start_date
-      done_date = start_date + ((due_date - start_date + 1) * completed_percent / 100).floor
-      done_date <= Date.today
-    else
-      false # No issues so it's not late
-    end
+  def systemwide?
+    sharing == "system"
   end
 
   # Returns the completion percentage of this version based on the amount of open/closed issues
@@ -153,13 +145,15 @@ class Version < ApplicationRecord
   end
 
   def wiki_page
-    if project.wiki && !wiki_page_title.blank?
+    if project.wiki && wiki_page_title.present?
       @wiki_page ||= project.wiki.find_page(wiki_page_title)
     end
     @wiki_page
   end
 
-  def to_s; name end
+  def to_s
+    name
+  end
 
   def to_s_with_project
     "#{project} - #{name}"
@@ -217,15 +211,15 @@ class Version < ApplicationRecord
       progress = 0
 
       if issues_count > 0
-        ratio = open ? 'done_ratio' : 100
+        ratio = open ? "done_ratio" : 100
         sum_sql = self.class.sanitize_sql_array(
           ["COALESCE(#{WorkPackage.table_name}.estimated_hours, ?) * #{ratio}", estimated_average]
         )
 
         done = work_packages
-               .where(statuses: { is_closed: !open })
-               .includes(:status)
-               .sum(sum_sql)
+          .where(statuses: { is_closed: !open })
+          .includes(:status)
+          .sum(sum_sql)
         progress = done.to_f / (estimated_average * issues_count)
       end
       progress

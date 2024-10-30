@@ -1,13 +1,12 @@
-#-- encoding: UTF-8
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -24,20 +23,20 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 class MenuItems::WikiMenuItem < MenuItem
-  belongs_to :wiki, foreign_key: 'navigatable_id'
+  belongs_to :wiki, foreign_key: "navigatable_id"
 
   scope :main_items, ->(wiki_id) {
     where(navigatable_id: wiki_id, parent_id: nil)
       .includes(:children)
-      .order(Arel.sql('id ASC'))
+      .order(Arel.sql("title ASC"))
   }
 
   def slug
-    name.to_url
+    WikiPage.slug(name)
   end
 
   def item_class
@@ -45,7 +44,7 @@ class MenuItems::WikiMenuItem < MenuItem
   end
 
   def menu_identifier
-    "wiki-#{slug}".to_sym
+    :"wiki-#{slug}"
   end
 
   def index_page
@@ -69,6 +68,6 @@ class MenuItems::WikiMenuItem < MenuItem
   end
 
   def self.add_entry_item_prefix(identifier)
-    "entry-item-#{identifier}".to_sym
+    :"entry-item-#{identifier}"
   end
 end

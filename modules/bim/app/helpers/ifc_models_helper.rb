@@ -5,12 +5,11 @@ module IfcModelsHelper
     gon.ifc_models = {
       models: gon_ifc_model_models(all_converted_models),
       shown_models: gon_ifc_shown_models(all_converted_models, shown_models),
-      projects: [{id: @project.identifier, name: @project.name}],
+      projects: [{ id: @project.identifier, name: @project.name }],
       xkt_attachment_ids: gon_ifc_model_xkt_attachment_ids(all_converted_models),
-      metadata_attachment_ids: gon_ifc_model_metadata_attachment_ids(all_converted_models),
       permissions: {
-        manage_ifc_models: User.current.allowed_to?(:manage_ifc_models, @project),
-        manage_bcf: User.current.allowed_to?(:manage_bcf, @project),
+        manage_ifc_models: User.current.allowed_in_project?(:manage_ifc_models, @project),
+        manage_bcf: User.current.allowed_in_project?(:manage_bcf, @project)
       }
     }
   end
@@ -26,8 +25,7 @@ module IfcModelsHelper
       {
         id: ifc_model.id,
         name: ifc_model.title,
-        default: ifc_model.is_default,
-        saoEnabled: ifc_model.is_default
+        default: ifc_model.is_default
       }
     end
   end
@@ -43,15 +41,6 @@ module IfcModelsHelper
   end
 
   def gon_ifc_model_xkt_attachment_ids(models)
-    Hash[models.map { |model| [model.id, model.xkt_attachment.id] }]
-  end
-
-  def gon_ifc_model_metadata_attachment_ids(models)
-    Hash[
-      models.map do |model|
-        [model.id,
-         model.metadata_attachment.id]
-      end
-    ]
+    models.map { |model| [model.id, model.xkt_attachment.id] }.to_h
   end
 end

@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,48 +23,57 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'spec_helper'
+require "spec_helper"
 
 module OnboardingHelper
-  def step_through_onboarding_wp_tour project, wp
-    expect(page).not_to have_selector('.loading-indicator')
-    expect(page).to have_text  'This is the Work package list'
+  def step_through_onboarding_wp_tour(project, wp)
+    expect(page).to have_no_css(".op-loading-indicator")
+    expect(page).to have_text sanitize_string(I18n.t("js.onboarding.steps.wp.list")), normalize_ws: true
 
     next_button.click
-    expect(page).to have_current_path project_work_package_path(project, wp.id, 'activity')
-    expect(page).to have_text  'Within the Work package details you find all relevant information'
+    expect(page).to have_current_path project_work_package_path(project, wp.id, "activity")
+    expect(page).to have_text sanitize_string(I18n.t("js.onboarding.steps.wp.full_view")), normalize_ws: true
 
     next_button.click
-    expect(page).to have_text 'With the arrow you can navigate back to the work package list.'
+    expect(page).to have_text sanitize_string(I18n.t("js.onboarding.steps.wp.back_button")), normalize_ws: true
 
     next_button.click
-    expect(page).to have_text 'The Create button will add a new work package to your project'
+    expect(page).to have_text sanitize_string(I18n.t("js.onboarding.steps.wp.create_button")), normalize_ws: true
 
     next_button.click
-    expect(page).to have_text 'You can activate the Gantt chart to create a timeline for your project.'
+    expect(page).to have_text sanitize_string(I18n.t("js.onboarding.steps.wp.gantt_menu")), normalize_ws: true
 
     next_button.click
-    expect(page).to have_text 'Here you can edit your project plan. Create new phases, milestones, and add dependencies.'
+    expect(page).to have_text sanitize_string(I18n.t("js.onboarding.steps.wp.timeline")), normalize_ws: true
 
     next_button.click
-    expect(page).to have_text "With the arrow you can navigate back to the project's Main menu."
+    expect(page).to have_text sanitize_string(I18n.t("js.onboarding.steps.sidebar_arrow")), normalize_ws: true
   end
 
-  def step_through_onboarding_main_menu_tour
-    next_button.click
-    expect(page).to have_text 'Invite new Members to join your project.'
+  def step_through_onboarding_main_menu_tour(has_full_capabilities:)
+    if has_full_capabilities
+      next_button.click
+      expect(page).to have_text sanitize_string(I18n.t("js.onboarding.steps.members")), normalize_ws: true
+
+      next_button.click
+      expect(page).to have_text sanitize_string(I18n.t("js.onboarding.steps.wiki")), normalize_ws: true
+
+      next_button.click
+      expect(page).to have_text sanitize_string(I18n.t("js.onboarding.steps.quick_add_button")), normalize_ws: true
+    end
 
     next_button.click
-    expect(page).to have_text 'Within the Wiki you can document and share knowledge together with your team.'
+    expect(page).to have_text sanitize_string(I18n.t("js.onboarding.steps.help_menu")), normalize_ws: true
 
     next_button.click
-    expect(page).to have_text 'In the Help menu you will find a user guide and additional help resources.'
+    expect(page).to have_no_css ".enjoy_hint_label"
+  end
 
-    next_button.click
-    expect(page).not_to have_selector '.enjoy_hint_label'
+  def sanitize_string(string)
+    Sanitize.clean(string).squish
   end
 end
 

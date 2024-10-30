@@ -1,14 +1,12 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -25,11 +23,11 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'roar/decorator'
-require 'roar/json/hal'
+require "roar/decorator"
+require "roar/json/hal"
 
 module API
   module V3
@@ -50,13 +48,13 @@ module API
             next unless embed_links && container_representer
 
             container_representer
-              .new(represented.container, current_user: current_user)
+              .create(represented.container, current_user:)
           end
         end
 
         def self.associated_container_link
           ->(*) do
-            return nil unless v3_container_name == 'nil_class' || api_v3_paths.respond_to?(v3_container_name)
+            return nil unless v3_container_name == "nil_class" || api_v3_paths.respond_to?(v3_container_name)
 
             ::API::Decorators::LinkObject
               .new(represented,
@@ -67,15 +65,12 @@ module API
           end
         end
 
-        attr_reader :form_url
-        attr_reader :form_fields
+        attr_reader :form_url, :form_fields, :attachment
 
-        attr_reader :attachment
-
-        def initialize(attachment, options = {})
+        def initialize(attachment, current_user:, embed_links: false)
           super
 
-          fog_hash = DirectFogUploader.direct_fog_hash attachment: attachment
+          fog_hash = DirectFogUploader.direct_fog_hash(attachment:)
 
           @form_url = fog_hash[:uri]
           @form_fields = fog_hash.except :uri
@@ -90,7 +85,7 @@ module API
           {
             href: form_url,
             method: :post,
-            form_fields: form_fields
+            form_fields:
           }
         end
 
@@ -134,7 +129,7 @@ module API
         date_time_property :created_at
 
         def _type
-          'AttachmentUpload'
+          "AttachmentUpload"
         end
 
         def container_representer

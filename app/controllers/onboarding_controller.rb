@@ -1,13 +1,12 @@
-#-- encoding: UTF-8
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -24,16 +23,18 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 class OnboardingController < ApplicationController
+  no_authorization_required! :user_settings
+
   def user_settings
     @user = User.current
 
     result = Users::UpdateService
-             .new(current_user: @user)
-             .call(permitted_params, params)
+             .new(model: @user, user: @user)
+             .call(permitted_params.user.to_h)
 
     if result.success?
       flash[:notice] = I18n.t(:notice_account_updated)
@@ -42,7 +43,7 @@ class OnboardingController < ApplicationController
     # Remove all query params:
     # the first_time_user param so that the modal is not shown again after redirect,
     # the welcome param so that the analytics is not fired again
-    uri = Addressable::URI.parse(request.referrer.to_s)
+    uri = Addressable::URI.parse(request.referer.to_s)
     uri.query_values = {}
     redirect_to uri.to_s
   end

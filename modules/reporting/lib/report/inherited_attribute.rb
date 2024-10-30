@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,10 +23,8 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
-
-require 'set'
 
 module Report::InheritedAttribute
   include Report::QueryUtils
@@ -43,27 +41,30 @@ module Report::InheritedAttribute
       define_singleton_method(name) do |*values|
         # FIXME: I'm ugly
         return get_inherited_attribute(name, default, list, uniq) if values.empty?
+
         if list
-          old = instance_variable_get("@#{name}") if merge
+          old = instance_variable_get(:"@#{name}") if merge
           old ||= []
           return set_inherited_attribute(name, values.map(&map) + old)
         end
         raise ArgumentError, "wrong number of arguments (#{values.size} for 1)" if values.size > 1
+
         set_inherited_attribute name, map.call(values.first)
       end
       define_method(name) { |*values| self.class.send(name, *values) }
     end
-    end
+  end
 
-  def define_singleton_method(name, &block)
+  def define_singleton_method(name, &)
     singleton_class.send :attr_writer, name
-    singleton_class.class_eval { define_method(name, &block) }
-    define_method(name) { instance_variable_get("@#{name}") or singleton_class.send(name) }
+    singleton_class.class_eval { define_method(name, &) }
+    define_method(name) { instance_variable_get(:"@#{name}") or singleton_class.send(name) }
   end
 
   def get_inherited_attribute(name, default = nil, list = false, uniq = false)
     return get_inherited_attribute(name, default, list, false).uniq if list and uniq
-    result = instance_variable_get("@#{name}")
+
+    result = instance_variable_get(:"@#{name}")
     super_result = superclass.get_inherited_attribute(name, default, list) if inherit? name
     if result.nil?
       super_result || default
@@ -85,6 +86,6 @@ module Report::InheritedAttribute
   end
 
   def set_inherited_attribute(name, value)
-    instance_variable_set "@#{name}", value
+    instance_variable_set :"@#{name}", value
   end
 end

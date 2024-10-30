@@ -1,5 +1,8 @@
 #English strings go here for Rails i18n
 ar:
+  plugin_openproject_bim:
+    name: "OpenProject BIM and BCF functionality"
+    description: "This OpenProject plugin introduces BIM and BCF functionality."
   bim:
     label_bim: 'BIM'
   bcf:
@@ -15,15 +18,11 @@ ar:
       file_invalid: "ملف BCF غير صالح"
     x_bcf_issues:
       zero: 'لا توجد مشاكل BCF'
-      zero: '%{count} BCF issues'
       one: 'One BCF issue'
-      two: '%{count} BCF issues'
-      few: '%{count} BCF issues'
-      many: '%{count} BCF issues'
       other: '%{count} BCF issues'
     bcf_xml:
       xml_file: 'BCF XML File'
-      import_title: 'Import'
+      import_title: 'استيراد'
       export: 'تصدير'
       import_update_comment: '(Updated in BCF import)'
       import_failed: 'Cannot import BCF file: %{error}'
@@ -82,7 +81,7 @@ ar:
     attributes:
       bim/ifc_models/ifc_model:
         ifc_attachment: "IFC file"
-        is_default: "Default model"
+        is_default: "النموذج الافتراضي"
         attachments: "IFC file"
     errors:
       models:
@@ -117,10 +116,12 @@ ar:
       check_1: 'Check that you have uploaded at least one IFC model.'
       check_2: 'Check that at least one IFC model is set to "Default".'
     no_results: "No IFC models have been uploaded in this project."
-    processing_state:
+    conversion_status:
       label: 'Processing?'
-      in_progress: 'بصدد الإنجاز'
-      completed: 'Completed'
+      pending: 'قيد الانتظار'
+      processing: 'Processing'
+      completed: 'اكتمل'
+      error: 'خطأ'
     processing_notice:
       processing_default: 'The following default IFC models are still being processed and are thus not available, yet:'
     flash_messages:
@@ -133,4 +134,3 @@ ar:
   extraction:
     available:
       ifc_convert: "IFC conversion pipeline available"
-

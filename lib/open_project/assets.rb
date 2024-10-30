@@ -1,13 +1,12 @@
-#-- encoding: UTF-8
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -24,9 +23,9 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
-require 'fileutils'
+require "fileutils"
 
 module OpenProject
   module Assets
@@ -44,18 +43,18 @@ module OpenProject
       end
 
       def frontend_asset_path
-        Rails.root.join('public/assets/frontend/')
+        Rails.public_path.join("assets/frontend/")
       end
 
       def manifest_path
-        Rails.root.join('config/frontend_assets.manifest.json')
+        Rails.root.join("config/frontend_assets.manifest.json")
       end
 
       def load_manifest
         @manifest ||= begin
           JSON.parse File.read(manifest_path)
         rescue StandardError => e
-          Rails.logger.error "Failed to read frontend manifest file: #{e} #{e.message}."
+          Rails.logger.error "Failed to read frontend manifest file: #{e}."
           {}
         end
       end
@@ -70,12 +69,12 @@ module OpenProject
       # Rebuilds the manifest file
       def rebuild_manifest!
         # Remove index html
-        FileUtils.remove File.join(frontend_asset_path, 'index2.html'), force: true
+        FileUtils.remove File.join(frontend_asset_path, "index2.html"), force: true
 
         # Create map of asset chunk name to current hash
         manifest = {}
         OpenProject::Assets.current_assets.each do |filename|
-          md = filename.match /\A([^\.]+)\.(\w+)\.(\w+)\z/
+          md = filename.match /\A([^.]+)\.(\w+)\.(\w+)\z/
 
           # Non-hashed asset
           next if md.nil?
@@ -84,11 +83,11 @@ module OpenProject
           manifest[chunk_name] = filename
         end
 
-        File.open(manifest_path, 'w+') { |file| file.write manifest.to_json }
+        File.write(manifest_path, manifest.to_json)
       end
 
       def current_assets
-        Dir.glob(OpenProject::Assets.frontend_asset_path + '*')
+        Dir.glob(OpenProject::Assets.frontend_asset_path + "*")
           .select { |f| File.file? f }
           .map { |f| File.basename(f) }
       end

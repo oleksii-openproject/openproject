@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,41 +23,41 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'spec_helper'
+require "spec_helper"
 
-describe 'users 2fa devices', type: :routing do
-  it 'route to GET new' do
-    expect(get('/users/2/two_factor_devices/new')).to route_to(controller: 'two_factor_authentication/users/two_factor_devices',
-                                                                action: 'new',
-                                                                id: '2')
+RSpec.describe "users 2fa devices" do
+  it "route to GET new" do
+    expect(get("/users/2/two_factor_devices/new")).to route_to(controller: "two_factor_authentication/users/two_factor_devices",
+                                                               action: "new",
+                                                               id: "2")
   end
 
-  it 'route to POST register' do
-    expect(post('/users/2/two_factor_devices/register')).to route_to(controller: 'two_factor_authentication/users/two_factor_devices',
-                                                                     action: 'register',
-                                                                     id: '2')
+  it "route to POST register" do
+    expect(post("/users/2/two_factor_devices/register")).to route_to(controller: "two_factor_authentication/users/two_factor_devices",
+                                                                     action: "register",
+                                                                     id: "2")
   end
 
-  it 'route to POST confirm' do
-    expect(post('/users/2/two_factor_devices/1/make_default')).to route_to(controller: 'two_factor_authentication/users/two_factor_devices',
-                                                                      action: 'make_default',
-                                                                      id: '2',
-                                                                      device_id: '1')
+  it "route to POST confirm" do
+    expect(post("/users/2/two_factor_devices/1/make_default")).to route_to(controller: "two_factor_authentication/users/two_factor_devices",
+                                                                           action: "make_default",
+                                                                           id: "2",
+                                                                           device_id: "1")
   end
 
-  it 'route to POST delete_all' do
-    expect(post('/users/2/two_factor_devices/delete_all')).to route_to(controller: 'two_factor_authentication/users/two_factor_devices',
-                                                                         action: 'delete_all',
-                                                                         id: '2')
+  it "route to POST delete_all" do
+    expect(post("/users/2/two_factor_devices/delete_all")).to route_to(controller: "two_factor_authentication/users/two_factor_devices",
+                                                                       action: "delete_all",
+                                                                       id: "2")
   end
 
-  it 'route to DELETE destroy' do
-    expect(delete('/users/2/two_factor_devices/1')).to route_to(controller: 'two_factor_authentication/users/two_factor_devices',
-                                                              action: 'destroy',
-                                                              id: '2',
-                                                              device_id: '1')
+  it "route to DELETE destroy" do
+    expect(delete("/users/2/two_factor_devices/1")).to route_to(controller: "two_factor_authentication/users/two_factor_devices",
+                                                                action: "destroy",
+                                                                id: "2",
+                                                                device_id: "1")
   end
 end

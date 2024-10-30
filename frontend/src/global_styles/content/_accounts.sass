@@ -1,12 +1,12 @@
 //-- copyright
 // OpenProject is an open source project management software.
-// Copyright (C) 2012-2020 the OpenProject GmbH
+// Copyright (C) the OpenProject GmbH
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License version 3.
 //
 // OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-// Copyright (C) 2006-2017 Jean-Philippe Lang
+// Copyright (C) 2006-2013 Jean-Philippe Lang
 // Copyright (C) 2010-2013 the ChiliProject Team
 //
 // This program is free software; you can redistribute it and/or
@@ -23,21 +23,20 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 //
-// See docs/COPYRIGHT.rdoc for more details.
+// See COPYRIGHT and LICENSE files for more details.
 //++
 
 #login-form
   margin: 50px auto 0
-  padding-top: 20px
+  padding: 20px
   width: 511px
   word-break: break-word
+  background-color: var(--display-gray-bgColor-muted)
 
-  .login-options-container
+  .login-form--footer
+    display: flex
+    justify-content: space-between
     margin-bottom: 10px
-    .login-links
-      float: right
-      text-align: right
-      margin-top: -3rem
 
 #content .login-auth-providers.wide
   width: auto
@@ -47,37 +46,42 @@
     float: none
     display: inline-block
 
+#nav-login-content
+  padding: 1rem
+
+  .form--text-field
+    min-width: 170px
+
+#login-pulldown
+  margin-right: 0
+
 // use id selectors to be specific enough to override general content and top-menu definitions
-#content .login-auth-providers, #top-menu #nav-login-content .login-auth-providers,
-.modal-wrapper .login-auth-providers
+#content .login-auth-providers,
+#nav-login-content .login-auth-providers
   width: 471px
   margin-top: 25px
 
   h3
-    border: none
-    margin-top: 20px
     font-weight: normal
     font-size: 1rem
-    text-decoration: none
     text-align: center
-
     position: relative
     z-index: 1
 
     // line behind title
     // from http://codepen.io/ericrasch/pen/Irlpm
-    &:before
-      border-top: 2px solid var(--content-form-separator-color)
+
+    &:after
+      border-bottom: 2px solid var(--borderColor-default)
       content: ""
       // this centers the line to the full width specified
       margin: 0 auto
       // positioning must be absolute here, and relative positioning
       //  must be applied to the parent
       position: absolute
-      top: 50%
+      bottom: 5px
       left: 0
       right: 0
-      bottom: 0
       width: 95%
       z-index: -1
 
@@ -85,47 +89,33 @@
     span
       // to hide the lines from behind the text, you have to set the
       // background color the same as the container
-      background: var(--content-form-bg-color)
-      padding: 0 15px
+      background: var(--display-gray-bgColor-muted)
+      padding: 0 0.5rem
 
   .login-auth-provider-list
     @include prevent-float-collapse
+    margin-top: 1em
 
-  a.auth-provider
-    float: left
-    padding: 0.5rem 0.5rem 0.5rem 2rem
-    margin-left: 10px
-    margin-bottom: 10px
-    background-size: 20px 20px
-    background-repeat: no-repeat
-    background-position: 5px center
-    background-color: light-grey
-    font-weight: normal
-    color: var(--body-font-color)
+  a.auth-provider:hover
+    text-decoration: none
 
-    &:hover
-      text-decoration: none
-
-    .auth-provider-name
-      line-height: normal
-      white-space: normal
-
-.modal-wrapper .login-auth-providers h3 span
-  background: var(--header-drop-down-bg-color)
-
-#top-menu #nav-login-content .login-auth-providers
+#nav-login-content .login-auth-providers
   h3
-    &:before
-      width: 100%
     span
-      background: var(--header-drop-down-bg-color)
+      background: var(--body-background)
   .login-auth-provider-list
-    margin-top: -15px
+    margin-top: 1em
     margin-bottom: 10px
 
-#top-menu #nav-login-content .login-auth-providers.no-pwd
+#nav-login-content .login-auth-providers.no-pwd
   margin-top: 0
 
 .registration-footer
   display: block
   margin-top: 2em
+
+.op-user-consent-form
+  font-size: var(--body-font-size)
+
+  &--agreement
+    font-size: inherit

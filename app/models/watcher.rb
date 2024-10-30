@@ -1,13 +1,12 @@
-#-- encoding: UTF-8
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -24,21 +23,21 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 class Watcher < ApplicationRecord
   belongs_to :watchable, polymorphic: true
   belongs_to :user
 
-  validates_presence_of :watchable, :user
-  validates_uniqueness_of :user_id, scope: [:watchable_type, :watchable_id]
+  validates :watchable, :user, presence: true
+  validates :user_id, uniqueness: { scope: %i[watchable_type watchable_id] }
 
   validate :validate_active_user
   validate :validate_user_allowed_to_watch
 
   def self.prune(user: [], project_id: nil)
-    user_ids = Array(user).compact.map { |u| u.is_a?(User) ? u.id : nil }.compact
+    user_ids = Array(user).compact.filter_map { |u| u.is_a?(User) ? u.id : nil }
 
     projects = project_id ? Project.where(id: project_id) : Project.all
 
@@ -48,15 +47,18 @@ class Watcher < ApplicationRecord
   protected
 
   def validate_active_user
-    # TODO add informative error message
     return if user.blank?
-    errors.add :user_id, :invalid unless user.active_or_registered?
+
+    errors.add :user_id, :locked if user.locked?
   end
 
   def validate_user_allowed_to_watch
-    # TODO add informative error message
     return if user.blank? || watchable.blank?
-    errors.add :user_id, :invalid unless watchable.possible_watcher?(user)
+    # No need to add a missing permission error on top of the user locked error
+    # created by validate_active_user.
+    return if user.locked?
+
+    errors.add :user_id, :not_allowed_to_view unless watchable.possible_watcher?(user)
   end
 
   class << self
@@ -136,7 +138,7 @@ class Watcher < ApplicationRecord
                     .joins(:watchers)
                     .joins(:project)
                     .where(projects: { id: projects.map(&:id) })
-                    .select('watchers.id')
+                    .select("watchers.id")
 
       id_subquery = id_subquery.where(watchers: { user_id: user_ids }) unless user_ids.empty?
 
@@ -145,7 +147,7 @@ class Watcher < ApplicationRecord
 
     def active_watchable_classes(user_ids)
       classes = distinct(:watchable_type)
-      classes.where(user_id: user_ids) unless user_ids.blank?
+      classes.where(user_id: user_ids) if user_ids.present?
       classes.pluck(:watchable_type)
     end
   end

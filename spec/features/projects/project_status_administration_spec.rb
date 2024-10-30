@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,77 +23,67 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'spec_helper'
+require "spec_helper"
 
-describe 'Projects status administration', type: :feature, js: true do
+RSpec.describe "Projects status administration", :js, :with_cuprite do
+  include_context "ng-select-autocomplete helpers"
+
   let(:current_user) do
-    FactoryBot.create(:user).tap do |user|
-      FactoryBot.create(:principal_role,
-                        principal: user,
-                        role: FactoryBot.create(:global_role, permissions: global_permissions))
+    create(:user) do |u|
+      create(:global_member,
+             principal: u,
+             roles: [create(:global_role, permissions: global_permissions)])
     end
   end
   let(:global_permissions) { [:add_project] }
   let(:project_permissions) { [:edit_project] }
   let!(:project_role) do
-    FactoryBot.create(:role, permissions: project_permissions).tap do |r|
+    create(:project_role, permissions: project_permissions) do |r|
       allow(Setting)
         .to receive(:new_project_user_role_id)
         .and_return(r.id.to_s)
     end
   end
-  let(:create_status_description) { Components::WysiwygEditor.new('.form--field:nth-of-type(5)') }
-  let(:edit_status_description) { Components::WysiwygEditor.new('.form--field:nth-of-type(6)') }
+  let(:status_description) { Components::WysiwygEditor.new('[data-qa-field-name="statusExplanation"]') }
+
+  let(:name_field) { FormFields::InputFormField.new :name }
+  let(:status_field) { FormFields::SelectFormField.new :status }
 
   before do
     login_as current_user
   end
 
-  it 'allows setting the status on project creation' do
+  it "allows setting the status on project creation" do
     visit new_project_path
 
     # Create the project with status
-    click_link 'Advanced settings'
+    click_button "Advanced settings"
 
-    fill_in 'Name', with: 'New project'
-    select 'On track', from: 'Status'
-    create_status_description.set_markdown 'Everything is fine at the start'
-    create_status_description.expect_supports_no_macros
+    name_field.set_value "New project"
+    status_field.select_option "On track"
 
-    click_button 'Create'
+    status_description.set_markdown "Everything is fine at the start"
+    status_description.expect_supports_macros
 
-    expect(page)
-      .to have_content('Successful creation.')
+    click_button "Save"
+
+    expect(page).to have_current_path /projects\/new-project\/?/
 
     # Check that the status has been set correctly
-    visit settings_generic_project_path(Project.last)
+    visit project_settings_general_path(project_id: "new-project")
 
-    expect(page)
-      .to have_select('Status', selected: 'On track')
+    status_field.expect_selected "ON TRACK"
+    status_description.expect_value "Everything is fine at the start"
 
-    edit_status_description.expect_value 'Everything is fine at the start'
+    status_field.select_option "Off track"
+    status_description.set_markdown "Oh no"
 
-    select '', from: 'Status'
-    edit_status_description.set_markdown 'Now we do not know'
+    click_button "Save"
 
-    click_button 'Save'
-
-    expect(page)
-      .to have_select('Status', selected: '')
-
-    edit_status_description.expect_value 'Now we do not know'
-
-    select 'Off track', from: 'Status'
-    edit_status_description.set_markdown 'Oh no'
-
-    click_button 'Save'
-
-    expect(page)
-      .to have_select('Status', selected: 'Off track')
-
-    edit_status_description.expect_value 'Oh no'
+    status_field.expect_selected "OFF TRACK"
+    status_description.expect_value "Oh no"
   end
 end

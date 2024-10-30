@@ -1,5 +1,8 @@
 #English strings go here for Rails i18n
 sl:
+  plugin_openproject_bim:
+    name: "OpenProject BIM and BCF functionality"
+    description: "This OpenProject plugin introduces BIM and BCF functionality."
   bim:
     label_bim: 'BIM'
   bcf:
@@ -15,10 +18,8 @@ sl:
       file_invalid: "BCF datoteka ni veljavna"
     x_bcf_issues:
       zero: 'Ni BCF napak'
-      one: "%{count} BCF napaka\n"
-      two: '%{count} BCF napaki'
-      few: '%{count} BCF napak'
-      other: '%{count} BCF napak'
+      one: 'Ena BCF napaka'
+      other: '%{count} BCF napake'
     bcf_xml:
       xml_file: 'BCF XML datoteka'
       import_title: 'Uvozi'
@@ -28,7 +29,7 @@ sl:
       import_failed_unsupported_bcf_version: 'Datoteke BCF ni bilo mogoče prebrati: Različica BCF ni podprta. Prepričajte se, da je različica vsaj %{minimal_version} ali višja.'
       import_successful: 'Uvožene %{count} težave BCF'
       import_canceled: "BCF-XML uvoz preklican\n"
-      type_not_active: "Vrsta težave za ta projekt ni aktivirana"
+      type_not_active: "Vrsta zahtevka za ta projekt ni aktivirana"
       import:
         num_issues_found: '%{x_bcf_issues} vsebujejo datoteko BCF-XML, njihove podrobnosti so navedene spodaj.'
         button_prepare: 'Pripravi uvoz'
@@ -44,7 +45,7 @@ sl:
         invalid_priorities_found: 'Najdena so neveljavna imena prioritet'
         invalid_emails_found: 'Najdeni so neveljavni e-poštni naslovi'
         unknown_emails_found: 'Najdeni so neznani e-poštni naslovi'
-        unknown_property: 'Neznana lastnina'
+        unknown_property: 'Neznana lastnost'
         non_members_found: 'Ni najdenih članov projekta'
         import_types_as: 'Nastavite vse te vrste na'
         import_statuses_as: 'Nastavite vsa ta stanja na'
@@ -90,7 +91,7 @@ sl:
               ifc_attachment_missing: "Ni priložene datoteke IFC."
               invalid_ifc_file: "Priložena datoteka ni veljavna datoteka IFC."
         bim/bcf/viewpoint:
-          bitmaps_not_writable: "bitnih slik ni mogoče pisati, ker še niso izvedeni."
+          bitmaps_not_writable: "bitnih slik ni mogoče pisati, ker to še ni bilo implementirano."
           index_not_integer: "indeks ni celo število."
           invalid_clipping_planes: "clipping_planes ni veljaven. "
           invalid_components: "komponente niso veljavne."
@@ -103,7 +104,7 @@ sl:
           snapshot_data_blank: "navesti je treba snapshot_data."
           unsupported_key: "Vključena je nepodprta lastnost json."
         bim/bcf/issue:
-          uuid_already_taken: "Te izdaje BCF ni mogoče uvoziti, saj je že ena z istim GUID-om. Ali je morda ta BCF problem že uvožen v drug projekt?"
+          uuid_already_taken: "Te izdaje BCF ni mogoče uvoziti, saj je že ena z istim GUID-om. Ali je bil morda ta BCF problem že uvožen v drug projekt?"
   ifc_models:
     label_ifc_models: 'model IFC'
     label_new_ifc_model: 'Nov IFC model'
@@ -115,10 +116,12 @@ sl:
       check_1: 'Preverite, ali ste naložili vsaj en model IFC.'
       check_2: 'Preverite, ali je vsaj en model IFC nastavljen na "Privzeto".'
     no_results: "V tem projektu ni bil naložen noben model IFC."
-    processing_state:
-      label: 'Obdelujem?'
-      in_progress: 'V teku'
+    conversion_status:
+      label: 'Obdelovanje?'
+      pending: 'Čakajoče'
+      processing: 'V obdelavi'
       completed: 'Zaključeno'
+      error: 'Napaka'
     processing_notice:
       processing_default: 'Naslednji privzeti modeli IFC se še vedno obdelujejo in zato še niso na voljo:'
     flash_messages:
@@ -131,4 +134,3 @@ sl:
   extraction:
     available:
       ifc_convert: "Na voljo je vod za pretvorbo IFC"
-

@@ -1,12 +1,12 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2020 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
 #
 # OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-# Copyright (C) 2006-2017 Jean-Philippe Lang
+# Copyright (C) 2006-2013 Jean-Philippe Lang
 # Copyright (C) 2010-2013 the ChiliProject Team
 #
 # This program is free software; you can redistribute it and/or
@@ -23,55 +23,71 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# See docs/COPYRIGHT.rdoc for more details.
+# See COPYRIGHT and LICENSE files for more details.
 #++
 
 class Meeting < ApplicationRecord
   include VirtualAttribute
+  include OpenProject::Journal::AttachmentHelper
 
-  self.table_name = 'meetings'
+  self.table_name = "meetings"
 
   belongs_to :project
-  belongs_to :author, class_name: 'User', foreign_key: 'author_id'
-  has_one :agenda, dependent: :destroy, class_name: 'MeetingAgenda'
-  has_one :minutes, dependent: :destroy, class_name: 'MeetingMinutes'
-  has_many :contents, -> { readonly }, class_name: 'MeetingContent'
-  has_many :participants, dependent: :destroy, class_name: 'MeetingParticipant'
+  belongs_to :author, class_name: "User"
+  has_one :agenda, dependent: :destroy, class_name: "MeetingAgenda"
+  has_one :minutes, dependent: :destroy, class_name: "MeetingMinutes"
+  has_many :contents, -> { readonly }, class_name: "MeetingContent"
 
-  default_scope {
+  has_many :participants,
+           dependent: :destroy,
+           class_name: "MeetingParticipant",
+           after_add: :send_participant_added_mail
+
+  has_many :sections, dependent: :destroy, class_name: "MeetingSection"
+  has_many :agenda_items, dependent: :destroy, class_name: "MeetingAgendaItem"
+
+  default_scope do
     order("#{Meeting.table_name}.start_time DESC")
-  }
-  scope :from_tomorrow, -> { where(['start_time >= ?', Date.tomorrow.beginning_of_day]) }
+  end
+  scope :from_tomorrow, -> { where(["start_time >= ?", Date.tomorrow.beginning_of_day]) }
+  scope :from_today, -> { where(["start_time >= ?", Time.zone.today.beginning_of_day]) }
   scope :with_users_by_date, -> {
     order("#{Meeting.table_name}.title ASC")
       .includes({ participants: :user }, :author)
   }
+  scope :visible, ->(*args) {
+    includes(:project)
+      .references(:projects)
+      .merge(Project.allowed_to(args.first || User.current, :view_meetings))
+  }
 
-  acts_as_watchable
+  acts_as_attachable(
+    after_remove: :attachments_changed,
+    order: "#{Attachment.table_name}.file",
+    add_on_new_permission: :create_meetings,
+    add_on_persisted_permission: :edit_meetings,
+    view_permission: :view_meetings,
+    delete_permission: :edit_meetings,
+    modification_blocked: ->(*) { false }
+  )
 
-  acts_as_searchable columns: ["#{table_name}.title", "#{MeetingContent.table_name}.text"],
-                     include: [:contents, :project],
-                     references: :meeting_contents,
+  acts_as_watchable permission: :view_meetings
+
+  acts_as_searchable columns: [
+                       "#{table_name}.title",
+                       "#{MeetingContent.table_name}.text",
+                       "#{MeetingAgendaItem.table_name}.title",
+                       "#{MeetingAgendaItem.table_name}.notes"
+                     ],
+                     include: %i[contents project agenda_items],
+                     references: %i[meeting_contents agenda_items],
                      date_column: "#{table_name}.created_at"
 
-  acts_as_journalized
-  acts_as_event title: Proc.new { |o|
-      "#{I18n.t(:label_meeting)}: #{o.title} \
-        #{format_date o.start_time} \
-        #{format_time o.start_time, false}-#{format_time o.end_time, false})"
-    },
-    url: Proc.new { |o| { controller: '/meetings', action: 'show', id: o } },
-    author: Proc.new(&:user),
-    description: ''
-
-  register_on_journal_formatter(:plaintext, 'title')
-  register_on_journal_formatter(:fraction, 'duration')
-  register_on_journal_formatter(:datetime, 'start_time')
-  register_on_journal_formatter(:plaintext, 'location')
+  include Meeting::Journalized
 
   accepts_nested_attributes_for :participants, allow_destroy: true
 
-  validates_presence_of :title, :duration
+  validates_presence_of :title, :project_id, :duration
 
   # We only save start_time as an aggregated value of start_date and hour,
   # but still need start_date and _hour for validation purposes
@@ -83,14 +99,29 @@ class Meeting < ApplicationRecord
   end
 
   validate :validate_date_and_time
+
   before_save :update_start_time!
-
   before_save :add_new_participants_as_watcher
-
   after_initialize :set_initial_values
+  after_update :send_rescheduling_mail, if: -> { saved_change_to_start_time? || saved_change_to_duration? }
 
-  User.before_destroy do |user|
-    Meeting.where(['author_id = ?', user.id]).update_all ['author_id = ?', DeletedUser.first.id]
+  enum state: {
+    open: 0, # 0 -> default, leave values for future states between open and closed
+    closed: 5
+  }
+
+  ##
+  # Cache key for detecting changes to be shown to the user
+  def changed_hash
+    parts = Meeting
+      .unscoped
+      .where(id:)
+      .left_joins(:agenda_items, :sections)
+      .pick(MeetingAgendaItem.arel_table[:updated_at].maximum, MeetingSection.arel_table[:updated_at].maximum)
+
+    parts << lock_version
+
+    OpenProject::Cache::CacheKey.expand(parts)
   end
 
   ##
@@ -101,6 +132,11 @@ class Meeting < ApplicationRecord
     else
       super
     end
+  end
+
+  def start_time=(value)
+    super(value&.to_datetime)
+    update_derived_fields
   end
 
   def start_month
@@ -126,38 +162,31 @@ class Meeting < ApplicationRecord
   def author=(user)
     super
     # Don't add the author as participant if we already have some through nested attributes
-    participants.build(user: user, invited: true) if self.new_record? && participants.empty? && user
+    participants.build(user:, invited: true) if new_record? && participants.empty? && user
   end
 
-  # Returns true if usr or current user is allowed to view the meeting
-  def visible?(user = nil)
-    (user || User.current).allowed_to?(:view_meetings, project)
+  # Returns true if user or current user is allowed to view the meeting
+  def visible?(user = User.current)
+    user.allowed_in_project?(:view_meetings, project)
+  end
+
+  def editable?(user = User.current)
+    open? && user.allowed_in_project?(:edit_meetings, project)
+  end
+
+  def invited_or_attended_participants
+    participants.where(invited: true).or(participants.where(attended: true))
   end
 
   def all_changeable_participants
     changeable_participants = participants.select(&:invited).collect(&:user)
     changeable_participants = changeable_participants + participants.select(&:attended).collect(&:user)
-    changeable_participants = changeable_participants + \
-                              User.allowed_members(:view_meetings, project)
+    changeable_participants = changeable_participants +
+      User.allowed_members(:view_meetings, project)
 
-    changeable_participants.uniq(&:id)
-  end
-
-  def copy(attrs)
-    copy = dup
-
-    # Called simply to initialize the value
-    copy.start_date
-    copy.start_time_hour
-
-    copy.author = attrs.delete(:author)
-    copy.attributes = attrs
-    copy.set_initial_values
-
-    copy.participants.clear
-    copy.participants_attributes = participants.collect(&:copy_attributes)
-
-    copy
+    changeable_participants
+      .compact
+      .uniq(&:id)
   end
 
   def self.group_by_time(meetings)
@@ -184,7 +213,9 @@ class Meeting < ApplicationRecord
 
       attachments = agenda.attachments.map { |a| [a, a.copy] }
       original_text = String(agenda.text)
-      minutes = create_minutes(text: original_text, comment: 'Minutes created', attachments: attachments.map(&:last))
+      minutes = create_minutes(text: original_text,
+                               journal_notes: I18n.t("events.meeting_minutes_created"),
+                               attachments: attachments.map(&:last))
 
       # substitute attachment references in text to use the respective copied attachments
       updated_text = original_text.gsub(/(?<=\(\/api\/v3\/attachments\/)\d+(?=\/content\))/) do |id|
@@ -199,22 +230,38 @@ class Meeting < ApplicationRecord
   end
 
   alias :original_participants_attributes= :participants_attributes=
+
   def participants_attributes=(attrs)
     attrs.each do |participant|
-      participant['_destroy'] = true if !(participant['attended'] || participant['invited'])
+      participant["_destroy"] = true if !(participant[:attended] || participant[:invited])
     end
     self.original_participants_attributes = attrs
+  end
+
+  # Participants of older meetings
+  # might contain users no longer in the project
+  #
+  # This returns the set currently allowed to view the meeting
+  def allowed_participants
+    available_members = User.allowed_members(:view_meetings, project).select(:id)
+
+    participants
+      .where(user_id: available_members)
   end
 
   protected
 
   def set_initial_values
     # set defaults
-    write_attribute(:start_time, Date.tomorrow + 10.hours) if start_time.nil?
+    # Start date is set to tomorrow at 10 AM (Current users local time)
+    write_attribute(:start_time, User.current.time_zone.now.at_midnight + 34.hours) if start_time.nil?
     self.duration ||= 1
+    update_derived_fields
+  end
 
-    @start_date = start_time.to_date.iso8601
-    @start_time_hour = start_time.strftime('%H:%M')
+  def update_derived_fields
+    @start_date = format_time_as_date(start_time, format: "%Y-%m-%d")
+    @start_time_hour = format_time(start_time, include_date: false, format: "%H:%M")
   end
 
   private
@@ -227,8 +274,8 @@ class Meeting < ApplicationRecord
     if parse_start_time?
       errors.add :start_date, :not_an_iso_date if parsed_start_date.nil?
       errors.add :start_time_hour, :invalid_time_format if parsed_start_time_hour.nil?
-    else
-      errors.add :start_time, :invalid if start_time.nil?
+    elsif start_time.nil?
+      errors.add :start_time, :invalid
     end
   end
 
@@ -239,9 +286,9 @@ class Meeting < ApplicationRecord
   end
 
   ##
-  # Determines whether new raw values werde provided.
+  # Determines whether new raw values were provided.
   def parse_start_time?
-    !(changed & %w(start_date start_time_hour)).empty?
+    changed.intersect?(%w(start_date start_time_hour))
   end
 
   ##
@@ -250,9 +297,7 @@ class Meeting < ApplicationRecord
     date = parsed_start_date
     time = parsed_start_time_hour
 
-    if date.nil? || time.nil?
-      raise ArgumentError, 'Provided composite start_time is invalid.'
-    end
+    return if date.nil? || time.nil?
 
     Time.zone.local(
       date.year,
@@ -275,7 +320,7 @@ class Meeting < ApplicationRecord
   ##
   # Enforce HH::MM time parsing for the given input string
   def parsed_start_time_hour
-    Time.strptime(@start_time_hour, '%H:%M')
+    Time.strptime(@start_time_hour, "%H:%M")
   rescue ArgumentError
     nil
   end
@@ -284,5 +329,23 @@ class Meeting < ApplicationRecord
     participants.select(&:new_record?).each do |p|
       add_watcher(p.user)
     end
+  end
+
+  def send_participant_added_mail(participant)
+    if persisted? && Journal::NotificationConfiguration.active?
+      MeetingMailer.invited(self, participant.user, User.current).deliver_later
+    end
+  end
+
+  def send_rescheduling_mail
+    MeetingNotificationService
+      .new(self)
+      .call :rescheduled,
+            changes: {
+              old_start: saved_change_to_start_time? ? saved_change_to_start_time.first : start_time,
+              new_start: start_time,
+              old_duration: saved_change_to_duration? ? saved_change_to_duration.first : duration,
+              new_duration: duration
+            }
   end
 end

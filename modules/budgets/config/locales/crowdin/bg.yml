@@ -1,10 +1,10 @@
 #-- copyright
 #OpenProject is an open source project management software.
-#Copyright (C) 2012-2020 the OpenProject GmbH
+#Copyright (C) the OpenProject GmbH
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License version 3.
 #OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
-#Copyright (C) 2006-2017 Jean-Philippe Lang
+#Copyright (C) 2006-2013 Jean-Philippe Lang
 #Copyright (C) 2010-2013 the ChiliProject Team
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License
@@ -17,9 +17,11 @@
 #You should have received a copy of the GNU General Public License
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-#See docs/COPYRIGHT.rdoc for more details.
+#See COPYRIGHT and LICENSE files for more details.
 #++
 bg:
+  plugin_budgets_engine:
+    name: 'Бюджети'
   activerecord:
     attributes:
       budget:
@@ -27,13 +29,11 @@ bg:
         available: "Достъпно"
         budget: "Планирано"
         budget_ratio: "Разход (съотношение)"
-        created_on: "Създаден на"
         description: "Описание"
         spent: "Отменено"
         status: "Състояние"
         subject: "Заглавие"
         type: "Тип разходи"
-        updated_on: "Актуализиран на"
         labor_budget: "Планирани разходи за труд"
         material_budget: "Планирани единични разходи"
       work_package:
@@ -41,6 +41,9 @@ bg:
     models:
       budget: "Бюджет"
       material_budget_item: "Мерна единица"
+  activity:
+    filter:
+      budget: "Бюджети"
   attributes:
     budget: "Бюджет"
   button_add_budget_item: "Добавете планираните разходи"
@@ -53,20 +56,23 @@ bg:
   caption_material_costs: "Реални единични разходи"
   budgets_title: "Бюджети"
   events:
-    budget: "Budget edited"
-  help_click_to_edit: "Click here to edit."
-  help_currency_format: "Format of displayed currency values. %n is replaced with the currency value, %u ist replaced with the currency unit."
-  help_override_rate: "Enter a value here to override the default rate."
+    budget: "Бюджетът е редактиран"
+  help_click_to_edit: "Натисни, за да редактираш"
+  help_currency_format: "Формат на показваните валутни стойности. %n се заменя с валутната стойност, %u се заменя с валутната единица."
+  help_override_rate: "Въведете стойност тук, за да отмените ставката по подразбиране."
   label_budget: "Бюджет"
-  label_budget_new: "New budget"
+  label_budget_new: "Добавете бюджет"
   label_budget_plural: "Бюджети"
-  label_budget_id: "Budget #%{id}"
+  label_budget_id: "Бюджет #%{id}"
   label_deliverable: "Бюджет"
   label_example_placeholder: 'e.g., %{decimal}'
-  label_view_all_budgets: "View all budgets"
+  label_view_all_budgets: "Преглед на всички бюджети"
   label_yes: "Да"
-  notice_budget_conflict: "WorkPackages must be of the same project."
-  notice_no_budgets_available: "No budgets available."
-  permission_edit_budgets: "Edit budgets"
-  permission_view_budgets: "View budgets"
+  notice_budget_conflict: "Work packages must be of the same project."
+  notice_no_budgets_available: "Няма налични бюджети."
+  permission_edit_budgets: "Редактиране на бюджети"
+  permission_view_budgets: "Преглед на всички бюджети"
   project_module_budgets: "Бюджети"
+  text_budget_reassign_to: "Пренасочете ги към този бюджет:"
+  text_budget_delete: "Изтриване на бюджета от всички работни пакети"
+  text_budget_destroy_assigned_wp: "Към този бюджет са прикрепени %{count} работни пакети. Какво искате да направите?"
