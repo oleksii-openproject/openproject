@@ -48,10 +48,14 @@ class WorkPackageRelationsTab::IndexComponent < ApplicationComponent
       end
 
       items.each do |item|
-        border_box.with_row(py: 2) do
+        border_box.with_row(py: 2, test_selector: row_test_selector(item)) do
           yield(item)
         end
       end
     end
+  end
+
+  def row_test_selector(item)
+    "op-relation-row-#{item.id}"
   end
 end

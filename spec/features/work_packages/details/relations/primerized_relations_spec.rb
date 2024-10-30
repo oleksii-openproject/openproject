@@ -29,8 +29,7 @@
 require "spec_helper"
 
 RSpec.describe "Primerized work package relations tab",
-               :cuprite,
-               :js do
+               :js, :with_cuprite do
   let(:user) { create(:admin) }
   let(:project) { create(:project) }
   let(:work_package) { create(:work_package, project:) }
@@ -69,6 +68,12 @@ RSpec.describe "Primerized work package relations tab",
            from: to1,
            to: from1,
            relation_type: Relation::TYPE_FOLLOWS)
+  end
+  let!(:child_wp) do
+    create(:work_package,
+           parent: work_package,
+           type: type1,
+           project: project)
   end
 
   current_user { user }
@@ -115,6 +120,49 @@ RSpec.describe "Primerized work package relations tab",
       # is not the currently visited work package. From the current user's
       # perspective on the work package's page, this is the "forward" relation.
       expect(page).to have_text(label_for_relation_type(target_relation_type))
+    end
+  end
+
+  describe "deletion" do
+    it "can delete relations" do
+      scroll_to_element find(".detail-panel--relations")
+
+      # Find the first relation and delete it
+      relation_row = page.find("[data-test-selector='op-relation-row-#{relation1.id}']")
+
+      within(relation_row) do
+        page.find("[data-test-selector='op-relation-row-#{relation1.id}-action-menu']").click
+        page.find("[data-test-selector='op-relation-row-#{relation1.id}-delete-button']").click
+      end
+
+      wait_for_reload
+
+      # Expect the relation to be gone
+      within "##{WorkPackageRelationsTab::IndexComponent::FRAME_ID}" do
+        expect(page).to have_no_text(relation1.to.subject)
+      end
+
+      expect { relation1.reload }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+
+    it "can delete children" do
+      scroll_to_element find(".detail-panel--relations")
+
+      # Find the first relation and delete it
+      child_row = page.find("[data-test-selector='op-relation-row-#{child_wp.id}']")
+
+      within(child_row) do
+        page.find("[data-test-selector='op-relation-row-#{child_wp.id}-action-menu']").click
+        page.find("[data-test-selector='op-relation-row-#{child_wp.id}-delete-button']").click
+      end
+
+      wait_for_reload
+
+      within "##{WorkPackageRelationsTab::IndexComponent::FRAME_ID}" do
+        expect(page).to have_no_text(child_wp.subject)
+      end
+
+      expect(child_wp.reload.parent).to be_nil
     end
   end
 end

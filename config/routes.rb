@@ -603,6 +603,7 @@ Rails.application.routes.draw do
                as: :work_package_progress
     end
     resources :relations_tab, only: %i[index], controller: "work_package_relations_tab"
+    resources :relations, only: %i[destroy], controller: "work_package_relations"
     get "/export_dialog" => "work_packages#export_dialog", on: :collection, as: "export_dialog"
     get :show_conflict_flash_message, on: :collection # we don't need a specific work package for this
 
@@ -618,6 +619,8 @@ Rails.application.routes.draw do
     get "/share_upsale" => "work_packages#index", on: :collection, as: "share_upsale"
     get "/edit" => "work_packages#show", on: :member, as: "edit"
   end
+
+  resources :work_package_children, only: %i[destroy]
 
   resources :versions, only: %i[show edit update destroy] do
     member do

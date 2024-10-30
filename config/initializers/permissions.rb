@@ -323,7 +323,9 @@ Rails.application.reloader.to_prepare do
                      dependencies: :view_work_packages
 
       wpt.permission :manage_subtasks,
-                     {},
+                     {
+                       work_package_children: %i[destroy]
+                     },
                      permissible_on: :project,
                      dependencies: :view_work_packages
       # Queries
