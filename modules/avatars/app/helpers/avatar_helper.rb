@@ -107,7 +107,8 @@ module AvatarHelper
                             size: tag_options[:size],
                             hideName: tag_options[:hide_name],
                             nameClasses: tag_options[:name_classes],
-                            title: tag_options.fetch(:title, "")
+                            title: tag_options.fetch(:title, ""),
+                            hover_card_url: "work_packages/14/hover_card"
                           }
   end
 

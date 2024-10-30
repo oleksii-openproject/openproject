@@ -40,7 +40,7 @@ module Users
       @link = link
       @size = size
       @title = title
-      @classes = classes
+      @classes = [classes, "op-hover-card--preview-trigger"].compact.join(" ")
       @name_classes = name_classes
     end
 
