@@ -15,7 +15,7 @@ services:
   web: &openproject
     environment:
       - DATABASE_URL=postgres://postgres:p4ssw0rd@database/openproject
-    image: openproject/openproject:14
+    image: openproject/openproject:15
     command: ./docker/web
   worker:
     <<: *openproject
