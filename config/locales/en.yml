@@ -711,6 +711,8 @@ en:
       no_results_title_text: There are currently no relations available.
       blankslate_heading: "No relations"
       blankslate_description: "This work package does not yet have any relations."
+    label_edit_x: "Edit %{x}"
+    label_add_description: "Add description"
     relations:
       label_relates_singular: "related to"
       label_relates_plural: "related to"
@@ -751,7 +753,7 @@ en:
 
       label_parent_singular: "parent"
       label_parent_plural: "parent"
-
+    
   label_invitation: Invitation
   account:
     delete: "Delete account"

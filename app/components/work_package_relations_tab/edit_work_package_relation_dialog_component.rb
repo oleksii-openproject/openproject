@@ -28,33 +28,28 @@
 # See COPYRIGHT and LICENSE files for more details.
 #++
 
-class WorkPackageRelationsTab::EditWorkPackageRelationFormComponent < ApplicationComponent
+class WorkPackageRelationsTab::EditWorkPackageRelationDialogComponent < ApplicationComponent
   include ApplicationHelper
   include OpTurbo::Streamable
   include OpPrimer::ComponentHelpers
 
-  FORM_ID = "edit-work-package-relation-form"
-  STIMULUS_CONTROLLER = "work-packages--relations-tab--relation-form"
   I18N_NAMESPACE = "work_package_relations_tab"
+  DIALOG_ID = "edit-work-package-relation-dialog"
+  FORM_ID = "edit-work-package-relation-form"
 
-  def initialize(work_package:, relation:, base_errors: nil)
+  attr_reader :relation, :work_package
+
+  def initialize(work_package:, relation:)
     super()
 
-    @work_package = work_package
     @relation = relation
-    @base_errors = base_errors
+    @work_package = work_package
   end
 
-  def not_parent_child_relation?
-    @relation.is_a?(Relation)
-  end
+  private
 
-  def related_work_package
-    @related_work_package ||= case @relation
-                              when Relation
-                                @relation.to
-                              when WorkPackage
-                                @relation
-                              end
+  def dialog_title
+    relation_label = t("#{I18N_NAMESPACE}.relations.#{relation.label_for(work_package)}_singular")
+    t("#{I18N_NAMESPACE}.label_edit_x", x: relation_label)
   end
 end

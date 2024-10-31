@@ -35,6 +35,8 @@ RSpec.describe "Primerized work package relations tab",
   let(:work_package) { create(:work_package, project:) }
   let(:full_wp_view) { Pages::FullWorkPackage.new(work_package) }
   let(:relations_tab) { Components::WorkPackages::Relations.new(work_package) }
+  let(:relations_panel_selector) { ".detail-panel--relations" }
+  let(:relations_panel) { find(relations_panel_selector) }
   let(:work_packages_page) { Pages::PrimerizedSplitWorkPackage.new(work_package) }
   let(:tabs) { Components::WorkPackages::PrimerizedTabs.new }
 
@@ -91,44 +93,48 @@ RSpec.describe "Primerized work package relations tab",
 
   describe "rendering" do
     it "renders the relations tab" do
-      scroll_to_element find(".detail-panel--relations")
-      expect(page).to have_css(".detail-panel--relations")
+      scroll_to_element relations_panel
+      expect(page).to have_css(relations_panel_selector)
 
       [relation1, relation2].each do |relation|
         target = relation.to == work_package ? "from" : "to"
         target_relation_type = target == "from" ? relation.reverse_type : relation.relation_type
 
-        expect(page).to have_text(relation.to.type.name.upcase)
-        expect(page).to have_text(relation.to.id)
-        expect(page).to have_text(relation.to.status.name)
-        expect(page).to have_text(relation.to.subject)
-        # We reference the reverse type as the "from" node of the relation
-        # is the currently visited work package, and the "to" node is the
-        # relation target. From the current user's perspective on the work package's
-        # page, this is the "reverse" relation.
-        expect(page).to have_text(label_for_relation_type(target_relation_type))
+        within(relations_panel) do
+          expect(page).to have_text(relation.to.type.name.upcase)
+          expect(page).to have_text(relation.to.id)
+          expect(page).to have_text(relation.to.status.name)
+          expect(page).to have_text(relation.to.subject)
+          # We reference the reverse type as the "from" node of the relation
+          # is the currently visited work package, and the "to" node is the
+          # relation target. From the current user's perspective on the work package's
+          # page, this is the "reverse" relation.
+          expect(page).to have_text(label_for_relation_type(target_relation_type))
+        end
       end
 
       target = relation3.to == work_package ? "from" : "to"
       target_relation_type = target == "from" ? relation3.reverse_type : relation3.relation_type
 
-      expect(page).to have_text(relation3.to.type.name.upcase)
-      expect(page).to have_text(relation3.to.id)
-      expect(page).to have_text(relation3.to.status.name)
-      expect(page).to have_text(relation3.to.subject)
-      # We reference the relation type as the "from" node of the relation
-      # is not the currently visited work package. From the current user's
-      # perspective on the work package's page, this is the "forward" relation.
-      expect(page).to have_text(label_for_relation_type(target_relation_type))
+      within(relations_panel) do
+        expect(page).to have_text(relation3.to.type.name.upcase)
+        expect(page).to have_text(relation3.to.id)
+        expect(page).to have_text(relation3.to.status.name)
+        expect(page).to have_text(relation3.to.subject)
+        # We reference the relation type as the "from" node of the relation
+        # is not the currently visited work package. From the current user's
+        # perspective on the work package's page, this is the "forward" relation.
+        expect(page).to have_text(label_for_relation_type(target_relation_type))
+      end
     end
   end
 
   describe "deletion" do
     it "can delete relations" do
-      scroll_to_element find(".detail-panel--relations")
+      scroll_to_element relations_panel
 
       # Find the first relation and delete it
-      relation_row = page.find("[data-test-selector='op-relation-row-#{relation1.id}']")
+      relation_row = relations_panel.find("[data-test-selector='op-relation-row-#{relation1.id}']")
 
       within(relation_row) do
         page.find("[data-test-selector='op-relation-row-#{relation1.id}-action-menu']").click
@@ -146,10 +152,10 @@ RSpec.describe "Primerized work package relations tab",
     end
 
     it "can delete children" do
-      scroll_to_element find(".detail-panel--relations")
+      scroll_to_element relations_panel
 
       # Find the first relation and delete it
-      child_row = page.find("[data-test-selector='op-relation-row-#{child_wp.id}']")
+      child_row = relations_panel.find("[data-test-selector='op-relation-row-#{child_wp.id}']")
 
       within(child_row) do
         page.find("[data-test-selector='op-relation-row-#{child_wp.id}-action-menu']").click
@@ -163,6 +169,63 @@ RSpec.describe "Primerized work package relations tab",
       end
 
       expect(child_wp.reload.parent).to be_nil
+    end
+  end
+
+  describe "editing" do
+    it "renders an edit form" do
+      scroll_to_element relations_panel
+
+      relation_row = relations_panel.find("[data-test-selector='op-relation-row-#{relation1.id}']")
+
+      within(relation_row) do
+        page.find("[data-test-selector='op-relation-row-#{relation1.id}-action-menu']").click
+        page.find("[data-test-selector='op-relation-row-#{relation1.id}-edit-button']").click
+      end
+
+      within "##{WorkPackageRelationsTab::EditWorkPackageRelationDialogComponent::DIALOG_ID}" do
+        wait_for_network_idle
+        expect(page).to have_text("Edit successor (after)")
+        expect(page).to have_button("Add description")
+        expect(page).to have_field("Description", visible: :hidden)
+
+        click_link_or_button "Add description"
+
+        expect(page).to have_field("Description")
+
+        fill_in "Description", with: "Discovered relations have descriptions!"
+
+        click_link_or_button "Save"
+      end
+
+      # Reflects new description
+      wait_for_reload
+      within(relation_row) do
+        expect(page).to have_text("Discovered relations have descriptions!")
+      end
+
+      # Edit again
+      within(relation_row) do
+        page.find("[data-test-selector='op-relation-row-#{relation1.id}-action-menu']").click
+        page.find("[data-test-selector='op-relation-row-#{relation1.id}-edit-button']").click
+      end
+
+      within "##{WorkPackageRelationsTab::EditWorkPackageRelationDialogComponent::DIALOG_ID}" do
+        wait_for_network_idle
+        expect(page).to have_text("Edit successor (after)")
+        expect(page).to have_no_button("Add description")
+        expect(page).to have_field("Description", visible: :visible, with: "Discovered relations have descriptions!")
+
+        fill_in "Description", with: "And they can be edited!"
+
+        click_link_or_button "Save"
+      end
+
+      # Reflects new description
+      wait_for_reload
+      within(relation_row) do
+        expect(page).to have_text("And they can be edited!")
+      end
     end
   end
 end

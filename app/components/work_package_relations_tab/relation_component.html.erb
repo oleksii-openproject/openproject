@@ -31,9 +31,10 @@
                               scheme: :invisible,
                               ml: 2)
         menu.with_item(label: "Edit relation",
-          href: "#",
+          href: edit_path,
+          test_selector: edit_button_test_selector,
           content_arguments: {
-            data: { "turbo-stream": true }
+            data: { turbo_stream: true }
           }) do |item|
           item.with_leading_visual_icon(icon: :pencil)
         end
@@ -54,13 +55,16 @@
     end
   end
 
-  if related_work_package.description.present?
+  if parent_child_relationship? && child.description.present?
     flex.with_row(flex_layout: true, justify_content: :flex_start) do |description_row|
       description_row.with_column do
-        render(Primer::Beta::Text.new(font_size: :small,
-                                      color: :muted)) do
-          format_text(related_work_package, :description)
-        end
+        render(Primer::Beta::Text.new(font_size: :small, color: :muted)) { format_text(child, :description) }
+      end
+    end
+  elsif !parent_child_relationship? && relation.description.present?
+    flex.with_row(flex_layout: true, justify_content: :flex_start) do |description_row|
+      description_row.with_column do
+        render(Primer::Beta::Text.new(font_size: :small, color: :muted)) { format_text(relation, :description) }
       end
     end
   end

@@ -30,10 +30,36 @@
 
 class WorkPackageRelationsController < ApplicationController
   include OpTurbo::ComponentStream
+  include OpTurbo::DialogStreamHelper
 
   before_action :set_work_package
   before_action :set_relation
   before_action :authorize
+
+  def edit
+    respond_with_dialog(
+      WorkPackageRelationsTab::EditWorkPackageRelationDialogComponent
+        .new(work_package: @work_package, relation: @relation)
+    )
+  end
+
+  def update
+    service_result = Relations::UpdateService
+      .new(user: current_user,
+           model: @relation)
+      .call(relation_params)
+
+    if service_result.success?
+      @work_package.reload
+      component = WorkPackageRelationsTab::IndexComponent.new(work_package: @work_package,
+                                                              relations: @work_package.relations,
+                                                              children: @work_package.children)
+      replace_via_turbo_stream(component:)
+      respond_with_turbo_streams
+    else
+      respond_with_turbo_streams(status: :unprocessable_entity)
+    end
+  end
 
   def destroy
     service_result = Relations::DeleteService.new(user: current_user, model: @relation).call
@@ -62,5 +88,10 @@ class WorkPackageRelationsController < ApplicationController
 
   def set_relation
     @relation = @work_package.relations.find(params[:id])
+  end
+
+  def relation_params
+    params.require(:relation)
+          .permit(:description)
   end
 end

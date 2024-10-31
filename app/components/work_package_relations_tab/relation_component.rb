@@ -2,7 +2,7 @@ class WorkPackageRelationsTab::RelationComponent < ApplicationComponent
   include ApplicationHelper
   include OpPrimer::ComponentHelpers
 
-  attr_reader :work_package, :relation
+  attr_reader :work_package, :relation, :child
 
   def initialize(work_package:,
                  relation:,
@@ -34,6 +34,14 @@ class WorkPackageRelationsTab::RelationComponent < ApplicationComponent
                                 end
   end
 
+  def edit_path
+    if parent_child_relationship?
+      "#" # TODO: Implement work package child edit path
+    else
+      edit_work_package_relation_path(@work_package, @relation)
+    end
+  end
+
   def destroy_path
     if parent_child_relationship?
       work_package_child_path(@child)
@@ -44,6 +52,10 @@ class WorkPackageRelationsTab::RelationComponent < ApplicationComponent
 
   def action_menu_test_selector
     "op-relation-row-#{underlying_resource_id}-action-menu"
+  end
+
+  def edit_button_test_selector
+    "op-relation-row-#{underlying_resource_id}-edit-button"
   end
 
   def delete_button_test_selector

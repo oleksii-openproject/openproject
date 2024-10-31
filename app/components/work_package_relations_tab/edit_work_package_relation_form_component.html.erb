@@ -1,42 +1,61 @@
-<%=
-  component_wrapper do
-    primer_form_with(
-      id: FORM_ID,
+<%= component_wrapper do %>
+  <%= primer_form_with(
+    id: FORM_ID,
       model: @relation,
       method: :patch,
-      url: work_package_relation_path(@relation),
-    ) do |f|
-      flex_layout(my: 3) do |flex|
+      url: work_package_relation_path(@work_package, @relation),
+      data: { turbo: true,
+              controller: STIMULUS_CONTROLLER,
+              application_target: "dynamic" }
+    ) do |f| %>
+    <%# Form fields section %>
+    <%= flex_layout(my: 3) do |flex|
         flex.with_row do
           if @base_errors&.any?
             render(Primer::Alpha::Banner.new(mb: 3, icon: :stop, scheme: :danger)) { @base_errors.join("\n") }
           end
         end
         flex.with_row do
+          relation = @relation
+          target_work_package = related_work_package
+          stimulus_controller = STIMULUS_CONTROLLER
+          i18n_namespace = I18N_NAMESPACE
+          not_parent_child_relation = not_parent_child_relation?
           render_inline_form(f) do |my_form|
-            my_form.work_package_autocompleter(
+            my_form.text_field(
               name: :to_id,
               label: WorkPackage.model_name.human,
               visually_hide_label: false,
-              autocomplete_options: {
-                resource: 'work_packages',
-                searchKey: 'subjectOrId',
-                openDirectly: false,
-                focusDirectly: false,
-                dropdownPosition: 'bottom',
-                append_to: "##{WorkPackageRelationsTab::EditWorkPackageRelationDialogComponent::DIALOG_ID}"
-              }
+              value: "#{target_work_package.type.name.upcase} ##{target_work_package.id} - #{target_work_package.subject}",
+              readonly: true
             )
-          end
-        end
-        flex.with_row(mt: 3) do
-          flex_layout(justify_content: :flex_end) do |actions_row|
-            actions_row.with_column do
-              render(Primer::Beta::Button.new(scheme: :primary, type: :submit)) { t(:button_save) }
+
+            if not_parent_child_relation
+              my_form.text_field(
+                name: :description,
+                label: Relation.human_attribute_name(:description),
+                hidden: relation.description.blank?,
+                data: { "#{stimulus_controller}-target": "descriptionField" }
+              )
             end
           end
         end
-      end
-    end
-  end
-%>
+      end %>
+    <%# Actions section %>
+    <%= flex_layout(my: 3) do |flex|
+        flex.with_row do
+          if not_parent_child_relation? && @relation.description.blank?
+            render(Primer::Beta::Button.new(
+              scheme: :secondary,
+              title: I18n.t("#{I18N_NAMESPACE}.label_add_description"),
+              data: { action: "#{STIMULUS_CONTROLLER}#toggleDescriptionField",
+                     "#{STIMULUS_CONTROLLER}-target": "descriptionButton" }
+            )) do |button|
+              button.with_leading_visual_icon(icon: :plus)
+              I18n.t("#{I18N_NAMESPACE}.label_add_description")
+            end
+          end
+        end
+      end %>
+  <% end %>
+<% end %>

@@ -317,7 +317,7 @@ Rails.application.reloader.to_prepare do
 
       wpt.permission :manage_work_package_relations,
                      {
-                       work_package_relations: %i[create destroy]
+                       work_package_relations: %i[edit update create destroy]
                      },
                      permissible_on: %i[work_package project],
                      dependencies: :view_work_packages

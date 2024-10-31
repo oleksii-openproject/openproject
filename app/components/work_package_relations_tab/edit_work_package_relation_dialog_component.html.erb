@@ -1,0 +1,35 @@
+<%=
+  render(Primer::Alpha::Dialog.new(title: dialog_title,
+                                   size: :xlarge,
+                                   id: DIALOG_ID)) do |d|
+    d.with_header(variant: :large)
+    d.with_body do
+      # render(WorkPackageMeetingsTab::AddWorkPackageToMeetingFormComponent.new(
+      #   work_package: @work_package,
+      #   meeting_agenda_item: @meeting_agenda_item
+      # ))
+      render(WorkPackageRelationsTab::EditWorkPackageRelationFormComponent.new(
+        work_package: @work_package,
+        relation: @relation
+      ))
+    end
+    d.with_footer do
+      component_collection do |buttons|
+        buttons.with_component(Primer::ButtonComponent.new(
+          data: {
+            'close-dialog-id': DIALOG_ID
+          }
+        )) do
+          t("button_cancel")
+        end
+        buttons.with_component(Primer::ButtonComponent.new(
+          scheme: :primary,
+          form: FORM_ID,
+          data: { turbo: true },
+          type: :submit)) do
+          t("button_save")
+        end
+      end
+    end
+  end
+%>
