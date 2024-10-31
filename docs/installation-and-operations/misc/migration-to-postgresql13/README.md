@@ -163,7 +163,7 @@ sudo yum remove pgsql10
 > Please follow this section only if you have installed OpenProject using [this procedure](../../installation/docker/).
 > Before attempting the upgrade, please ensure you have performed a backup of your installation by following the [backup guide](../../operation/backing-up/).
 
-You can find the upgrade instructions for your docker-compose setup in the [openproject-deploy](https://github.com/opf/openproject-deploy/blob/stable/14/compose/control/README.md#upgrade) repository.
+You can find the upgrade instructions for your docker-compose setup in the [openproject-deploy](https://github.com/opf/openproject-deploy/blob/stable/15/compose/control/README.md#upgrade) repository.
 
 Remember that you need to have checked out that repository and work in the `compose` directory for the instructions to work.
 
