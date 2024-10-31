@@ -24,6 +24,22 @@ pt-BR:
   activities:
     index:
       no_results_title_text: Não há nenhuma atividade no projeto neste período de tempo.
+    work_packages:
+      activity_tab:
+        no_results_title_text: No activity to display
+        no_results_description_text: "Choose \"Show everything\" to show all activity and comments"
+        label_activity_show_all: "Show everything"
+        label_activity_show_only_comments: "Show comments only"
+        label_activity_show_only_changes: "Show changes only"
+        label_sort_asc: "Newest at the bottom"
+        label_sort_desc: "Newest on top"
+        label_type_to_comment: "Type here to comment"
+        label_submit_comment: "Submit comment"
+        changed_on: "changed on"
+        created_on: "created this on"
+        changed: "changed"
+        created: "created"
+        commented: "commented"
   admin:
     plugins:
       no_results_title_text: Atualmente, não existem plugins instalados.
@@ -39,16 +55,9 @@ pt-BR:
         accent-color: "Destaque"
         header-bg-color: "Fundo do cabeçalho"
         header-item-bg-hover-color: "Fundo do cabeçalho ao passar o mouse"
-        header-item-font-color: "Fonte do cabeçalho"
-        header-item-font-hover-color: "Fonte do cabeçalho ao passar o mouse"
-        header-border-bottom-color: "Margem do cabeçalho"
         main-menu-bg-color: "Fundo do menu principal"
         main-menu-bg-selected-background: "Menu principal quando selecionado"
         main-menu-bg-hover-background: "Menu principal ao passar o mouse"
-        main-menu-font-color: "Fonte do menu principal"
-        main-menu-selected-font-color: "Fonte do menu principal quando selecionado"
-        main-menu-hover-font-color: "Fonte do menu principal ao passar o mouse"
-        main-menu-border-color: "Margem do menu principal"
       custom_colors: "Cores personalizadas"
       customize: "Personalize a instalação de seu OpenProject com seu logotipo e cores."
       enterprise_notice: "Como agradecimento especial por sua contribuição financeira para o desenvolvimento do OpenProject, este singelo complemento está disponível apenas para assinantes que deram suporte à edição Enterprise."
@@ -211,11 +220,20 @@ pt-BR:
           heading: Em todos os projetos
           description: Este campo personalizado é habilitado em todos os projetos, uma vez que a opção "para todos os projetos" está marcada. Ele não pode ser desativado para projetos individuais.
       items:
+        actions: "Item actions"
         blankslate:
           title: "Sua lista de itens está vazia"
           description: "Comece adicionando itens ao campo personalizado do tipo hierarquia. Cada item pode ser utilizado para construir uma hierarquia abaixo dele. Para navegar e criar subitens dentro dessa hierarquia, clique no item que você criou."
+        placeholder:
+          label: "Item label"
+          short: "Short name"
       notice:
         remember_items_and_projects: "Lembre-se de configurar itens e projetos nas respectivas abas para este campo personalizado."
+      hierarchy:
+        subitems:
+          zero: no sub-items
+          one: 1 sub-item
+          other: "%{count} sub-items"
     text_add_new_custom_field: >
       Para adicionar campos personalizados a um projeto é necessário criá-los primeiro para depois adicioná-los a este projeto.
     is_enabled_globally: "Está habilitado globalmente"
@@ -228,6 +246,7 @@ pt-BR:
       is_required: "Marcar o campo personalizado como obrigatório. Isto tornará obrigatório o preenchimento do campo ao criar novos recursos ou ao atualizar recursos existentes."
       is_required_for_project: "Marque esta opção para ativar este atributo e torná-lo obrigatório em todos os projetos. Este atributo não pode ser desativado em projetos individuais."
       is_for_all: "Marcar o campo personalizado como disponível em todos os projetos existentes e novos."
+      multi_select: "Allows the user to assign multiple values to this custom field."
       searchable: "Incluir os valores dos campos ao utilizar a funcionalidade de busca global."
       searchable_for_project: "Marque esta opção para disponibilizar este atributo como um filtro nas listas de projetos."
       editable: "Permita que o campo seja editável pelos próprios usuários."
@@ -239,6 +258,14 @@ pt-BR:
       no_results_content_text: Criar um novo campo personalizado
   concatenation:
     single: "ou"
+  dry_validation:
+    errors:
+      rules:
+        label:
+          filled?: "must be filled"
+          not_unique: "must be unique within the same hierarchy level"
+    rules:
+      label: "Label"
   global_search:
     placeholder: "Buscar em %{app_title}"
     overwritten_tabs:
@@ -472,22 +499,37 @@ pt-BR:
       priority_color_text: |
         Clique para atribuir ou alterar a cor desta prioridade.
         Pode ser usado para destacar pacotes de trabalho na tabela.
+  reactions:
+    action_title: "React"
+    add_reaction: "Add reaction"
+    react_with: "React with %{reaction}"
+    and_user: "and %{user}"
+    and_others:
+      one: and 1 other
+      other: and %{count} others
+    reaction_by: "%{reaction} by"
   reportings:
     index:
       no_results_title_text: Atualmente, não há nenhum relatório de situação.
       no_results_content_text: Adicionar um relatório de situação
   statuses:
     edit:
+      status_color_text: |
+        Clique para atribuir ou alterar a cor desta situação.
+        É exibido no botão de situação e pode ser usado para destacar pacotes de trabalho na tabela.
+      status_default_text: |-
+        New work packages are by default set to this type. They cannot be read-only.
+      status_excluded_from_totals_text: |-
+        Selecione esta opção para excluir pacotes de trabalho com este status dos totais de Trabalho, Trabalho Restante e % de conclusão em uma hierarquia.
+      status_percent_complete_text: |-
+        In <a href="%{href}">status-based progress calculation mode</a>, the % Complete of a work
+        package is automatically set to this value when this status is selected.
+        Ignored in work-based mode.
       status_readonly_html: |
         Use esta opção para marcar pacotes de trabalho com situação como somente leitura.
         Nenhum atributo pode ser alterado com exceção da situação.
         <br/>
         <strong>Nota</strong>: valores herdados (por exemplo, de filhos ou relações) ainda serão aplicados.
-      status_excluded_from_totals_text: |-
-        Selecione esta opção para excluir pacotes de trabalho com este status dos totais de Trabalho, Trabalho Restante e % de conclusão em uma hierarquia.
-      status_color_text: |
-        Clique para atribuir ou alterar a cor desta situação.
-        É exibido no botão de situação e pode ser usado para destacar pacotes de trabalho na tabela.
     index:
       no_results_title_text: Atualmente, não há nenhuma situação de pacote de trabalho.
       no_results_content_text: Adicionar uma nova situação
@@ -497,7 +539,7 @@ pt-BR:
         is_readonly: "Somente leitura"
         excluded_from_totals: "Excluído dos totais"
   themes:
-    dark: "Dark (Beta)"
+    dark: "Dark"
     light: "Claro"
     light_high_contrast: "Contraste alto claro"
   types:
@@ -759,7 +801,6 @@ pt-BR:
         consented_at: "Consentido em"
       user_preference:
         comments_sorting: "Exibir comentários"
-        hide_mail: "Ocultar meu endereço de e-mail"
         impaired: "Modo de acessibilidade"
         time_zone: "Fuso horário"
         auto_hide_popups: "Auto-ocultar notificações de sucesso"
@@ -818,7 +859,7 @@ pt-BR:
         blank: "não pode ficar em branco."
         blank_nested: "precisa ter a propriedade '%{property}' definida. "
         cannot_delete_mapping: "é obrigatório. Não pode ser excluído."
-        is_for_all_cannot_modify: "é para todos. Não pode ser modificado."
+        is_for_all_cannot_modify: "is for all projects and can therefore not be modified."
         cant_link_a_work_package_with_a_descendant: "Um pacote de trabalho não pode ser vinculado a uma das suas subtarefas."
         circular_dependency: "Esta relação vai criar uma dependência circular."
         confirmation: "não coincide com %{attribute}."
@@ -849,10 +890,12 @@ pt-BR:
         not_available: "não está disponível devido a uma configuração do sistema."
         not_deletable: "não pode ser excluído."
         not_current_user: "não é o usuário atual."
+        not_found: "not found."
         not_a_date: "não é uma data válida."
         not_a_datetime: "não é uma data/hora válida."
         not_a_number: "não é um número."
         not_allowed: "é inválido devido à falta de permissões."
+        not_json: "is not a valid JSON object."
         not_an_integer: "não é um número inteiro."
         not_an_iso_date: "não é uma data válida. Formato exigido: AAAA-MM-DD."
         not_same_project: "não pertence ao mesmo projeto."
@@ -1809,6 +1852,7 @@ pt-BR:
       progress_mode_changed_to_status_based: "Cálculo de progresso atualizado"
       status_changed: "Status '%{status_name}'"
       system_update: "Atualização do sistema OpenProject:"
+      work_package_duplicate_closed: "Duplicate work package updated:"
       total_percent_complete_mode_changed_to_work_weighted_average: "O cálculo dos totais de % de conclusão agora é ponderado pelo Trabalho."
       total_percent_complete_mode_changed_to_simple_average: "O cálculo dos totais de % de conclusão agora é feito com base na média simples dos valores de % de conclusão."
     cause_descriptions:
@@ -1816,6 +1860,7 @@ pt-BR:
       work_package_parent_changed_times: por alterações ao primário %{link}
       work_package_children_changed_times: por alterações ao secundário %{link}
       work_package_related_changed_times: por alterações ao %{link} relacionado
+      work_package_duplicate_closed: The status was automatically updated by the duplicated work package %{link}
       unaccessable_work_package_changed: por alterações a um pacote de trabalho relacionado
       working_days_changed:
         changed: "por alterações a dias úteis (%{changes})"
@@ -1961,6 +2006,7 @@ pt-BR:
   label_ical_access_key_generation_hint: "Gerado automaticamente ao assinar um calendário."
   label_ical_access_key_latest: "último"
   label_ical_access_key_revoke: "Revogar"
+  label_add_column: "Add column"
   label_applied_status: "Situação aplicada"
   label_archive_project: "Arquivar projeto"
   label_ascending: "Ascendente"
@@ -1987,6 +2033,7 @@ pt-BR:
   label_api_doc: "Documentação da API"
   label_backup: "Backup"
   label_backup_code: "Código de backup"
+  label_basic_details: "Basic details"
   label_between: "entre"
   label_blocked_by: "Bloqueado por"
   label_blocks: "bloqueios"
@@ -2025,7 +2072,6 @@ pt-BR:
   label_check_uncheck_all_in_row: "Marcar/Desmarcar todos na linha"
   label_child_element: "Elemento filho"
   label_choices: "Escolhas"
-  label_chronological_order: "Mais antigo primeiro"
   label_close_versions: "Fechar versões concluídas"
   label_closed_work_packages: "fechado"
   label_collapse: "Recolher"
@@ -2130,8 +2176,9 @@ pt-BR:
   label_feeds_access_key_created_on: "Chave de acesso RSS criada %{value} atrás"
   label_feeds_access_key_type: "RSS"
   label_file_plural: "Arquivos"
-  label_filter_add: "Adicionar filtro"
   label_filter: "Filtros"
+  label_filter_add: "Adicionar filtro"
+  label_filter_by: "Filter by"
   label_filter_plural: "Filtros"
   label_filters_toggle: "Mostrar/ocultar filtros"
   label_float: "Ponto flutuante"
@@ -2220,6 +2267,7 @@ pt-BR:
   label_custom_favicon: "Ícone personalizado"
   label_custom_touch_icon: "Ícone de toque personalizado"
   label_logout: "Desconectar"
+  label_mapping_for: "Mapping for: %{attribute}"
   label_main_menu: "Menu lateral"
   label_manage: "Gerenciar"
   label_manage_groups: "Gerenciar grupos"
@@ -2254,6 +2302,8 @@ pt-BR:
   label_months_from: "meses de"
   label_more: "Mais"
   label_more_than_ago: "mais do que dias atrás"
+  label_move_column_left: "Move column left"
+  label_move_column_right: "Move column right"
   label_move_work_package: "Mover pacote de trabalho"
   label_my_account: "Configurações de conta"
   label_my_activity: "Minha atividade"
@@ -2345,7 +2395,7 @@ pt-BR:
   label_project_latest: "Últimos projetos"
   label_project_default_type: "Permitir tipo vazio"
   label_project_hierarchy: "Hierarquia de projeto"
-  label_project_mappings: "Habilitado em projetos"
+  label_project_mappings: "Projects"
   label_project_new: "Novo projeto"
   label_project_plural: "Projetos"
   label_project_list_plural: "Listas de projeto"
@@ -2376,6 +2426,7 @@ pt-BR:
   label_relation_new: "Nova relação"
   label_release_notes: "Notas da versão"
   label_remaining_work: "Trabalho restante"
+  label_remove_column: "Remove column"
   label_remove_columns: "Remover colunas selecionadas"
   label_renamed: "renomeado"
   label_reply_plural: "Respostas"
@@ -2391,7 +2442,6 @@ pt-BR:
   label_required: "requerido"
   label_requires: "requer"
   label_result_plural: "Resultados"
-  label_reverse_chronological_order: "Mais recentes primeiro"
   label_revision: "Revisão"
   label_revision_id: "Revisão %{value}"
   label_revision_plural: "Revisões"
@@ -2417,8 +2467,10 @@ pt-BR:
   label_show_completed_versions: "Mostrar versões concluídas"
   label_columns: "Colunas"
   label_sort: "Ordenar"
+  label_sort_ascending: "Sort ascending"
   label_sort_by: "Ordenar por %{value}"
   label_sorted_by: "ordenados por %{value}"
+  label_sort_descending: "Sort descending"
   label_sort_higher: "Mover para cima"
   label_sort_highest: "Mover para o topo"
   label_sort_lower: "Mover para baixo"
@@ -2787,8 +2839,6 @@ pt-BR:
   notice_successful_update_custom_fields_added_to_project: |
     Atualização bem-sucedida. Os campos personalizados dos tipos ativados são ativados automaticamente
     no formulário do pacote de trabalho. <a href="%{url}" target="_blank">Ver mais</a>.
-  notice_successful_update_custom_fields_added_to_type: |
-    Atualização bem-sucedida. Os campos personalizados ativos são ativados automaticamente para os projetos associados deste tipo
   notice_to_many_principals_to_display: "Existem muitos resultados. Reduza a busca, digitando o nome do novo membro (ou grupo)."
   notice_user_missing_authentication_method: Usuário ainda tem que escolher uma senha ou outra maneira de acesso.
   notice_user_invitation_resent: Um convite foi enviado para %{email}.
@@ -2907,6 +2957,7 @@ pt-BR:
   permission_view_shared_work_packages: "Ver pacotes de trabalho compartilhado"
   permission_view_time_entries: "Ver tempo gasto"
   permission_view_timelines: "Ver cronogramas"
+  permission_view_user_email: "View users' mail addresses"
   permission_view_wiki_edits: "Ver histórico do wiki"
   permission_view_wiki_pages: "Ver wiki"
   permission_work_package_assigned: "Torne-se responsável"
@@ -3137,7 +3188,9 @@ pt-BR:
   setting_default_language: "Idioma padrão"
   setting_default_projects_modules: "Módulos habilitados por padrão para novos projetos"
   setting_default_projects_public: "Novos projetos são públicos por padrão"
+  setting_disable_password_login: "Disable password authentication"
   setting_diff_max_lines_displayed: "Número máximo de linhas diferentes exibidas"
+  setting_omniauth_direct_login_provider: "Direct login SSO provider"
   setting_display_subprojects_work_packages: "Exibir pacotes de trabalho de subprojetos no projeto principal por padrão"
   setting_duration_format: "formato de duração"
   setting_duration_format_hours_only: "Apenas horas"
@@ -3199,7 +3252,6 @@ pt-BR:
   setting_registration_footer: "Rodapé de registro"
   setting_repositories_automatic_managed_vendor: "Tipo de fornecedor de repositório automático"
   setting_repositories_encodings: "Codificações dos repositórios"
-  setting_repository_authentication_caching_enabled: "Ativar armazenamento em cache para solicitação de autenticação do software de controle de versão"
   setting_repository_storage_cache_minutes: "Tamanho do cache em disco para o repositório"
   setting_repository_checkout_display: "Mostrar instruções de check-out"
   setting_repository_checkout_base_url: "URL raiz de check-out"
@@ -3234,6 +3286,10 @@ pt-BR:
   setting_work_package_list_default_highlighted_attributes: "Atributos embutidos com destaque padrão"
   setting_working_days: "Dias úteis"
   settings:
+    authentication:
+      single_sign_on: "Single Sign-On"
+      omniauth_direct_login_hint_html: >
+        If this option is active, login requests will redirect to the configured omniauth provider. The login dropdown and sign-in page will be disabled. <br/> <strong>Note:</strong> Unless you also disable password logins, with this option enabled, users can still log in internally by visiting the <code>%{internal_path}</code> login page.
     attachments:
       whitelist_text_html: >
         Defina uma lista de extensões de arquivo válidas e/ou tipos MIME para arquivos carregados. <br/> Insira as extensões de arquivo  (e.x., <code>%{ext_example}</code>) ou tipos de mime (e.x., <code>%{mime_example}</code>). <br/> Deixe em branco para permitir que qualquer tipo de arquivo seja carregado. Vários valores permitidos (uma linha para cada valor).

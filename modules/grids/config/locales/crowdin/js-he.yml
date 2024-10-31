@@ -27,9 +27,6 @@ he:
         project_description:
           title: 'תיאור הפרויקט'
           no_results: "No description has been written yet. One can be provided in the 'Project settings'."
-        project_details:
-          title: 'פרטי הפרויקט'
-          no_results: 'No custom fields have been defined for projects.'
         project_status:
           title: 'מצב הפרוייקט'
           not_started: 'Not started'

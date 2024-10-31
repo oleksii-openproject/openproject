@@ -65,12 +65,6 @@ import { WidgetWpOverviewComponent } from 'core-app/shared/components/grids/widg
 import { WidgetCustomTextComponent } from 'core-app/shared/components/grids/widgets/custom-text/custom-text.component';
 import { OpenprojectFieldsModule } from 'core-app/shared/components/fields/openproject-fields.module';
 import {
-  WidgetProjectDetailsComponent,
-} from 'core-app/shared/components/grids/widgets/project-details/project-details.component';
-import {
-  WidgetProjectDetailsMenuComponent,
-} from 'core-app/shared/components/grids/widgets/project-details/project-details-menu.component';
-import {
   WidgetTimeEntriesProjectComponent,
 } from 'core-app/shared/components/grids/widgets/time-entries/project/time-entries-project.component';
 import { WidgetSubprojectsComponent } from 'core-app/shared/components/grids/widgets/subprojects/subprojects.component';
@@ -89,7 +83,7 @@ import {
 } from './widgets/time-entries/current-user/configuration-modal/configuration.modal';
 import {
   WidgetProjectFavoritesComponent,
-} from "core-app/shared/components/grids/widgets/project-favorites/widget-project-favorites.component";
+} from 'core-app/shared/components/grids/widgets/project-favorites/widget-project-favorites.component';
 import { IconModule } from 'core-app/shared/components/icon/icon.module';
 
 @NgModule({
@@ -130,7 +124,6 @@ import { IconModule } from 'core-app/shared/components/icon/icon.module';
     WidgetWpTableQuerySpaceComponent,
     WidgetWpGraphComponent,
     WidgetProjectDescriptionComponent,
-    WidgetProjectDetailsComponent,
     WidgetProjectStatusComponent,
     WidgetSubprojectsComponent,
     WidgetProjectFavoritesComponent,
@@ -138,7 +131,6 @@ import { IconModule } from 'core-app/shared/components/icon/icon.module';
     WidgetTimeEntriesProjectComponent,
 
     // Widget menus
-    WidgetProjectDetailsMenuComponent,
     WidgetMenuComponent,
     WidgetWpTableMenuComponent,
     WidgetWpGraphMenuComponent,
@@ -329,14 +321,6 @@ export function registerWidgets(injector:Injector) {
           text: {
             raw: '',
           },
-        },
-      },
-      {
-        identifier: 'project_details',
-        component: WidgetProjectDetailsComponent,
-        title: i18n.t('js.grid.widgets.project_details.title'),
-        properties: {
-          name: i18n.t('js.grid.widgets.project_details.title'),
         },
       },
       {

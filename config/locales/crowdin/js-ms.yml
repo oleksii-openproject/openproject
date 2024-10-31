@@ -715,7 +715,6 @@ ms:
     project:
       required_outside_context: >
         Sila pilih projek untuk mencipta pakej kerja untuk melihat semua atribut. Anda hanya boleh memilih projek yang mempunyai jenis di atas yang telah diaktifkan.
-      details_activity: "Aktiviti butiran projek"
       context: "Konteks projek"
       click_to_switch_to_project: "Projek: %{projectname}"
       confirm_template_load: "Menukar templat akan memuat semula laman dan anda akan kehilangan semua input untuk borang ini. Teruskan?"

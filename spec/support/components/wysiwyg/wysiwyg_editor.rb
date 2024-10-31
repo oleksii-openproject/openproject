@@ -83,7 +83,7 @@ module Components
 
     ##
     # Create an image fixture with the optional caption from inside the ckeditor
-    def drag_attachment(image_fixture, caption = "Some caption")
+    def drag_attachment(image_fixture, caption = "Some caption", scroll: true)
       in_editor do |_container, editable|
         # Click the latest figure, if any
         # Do not wait more than 1 second to check if there is an image
@@ -98,7 +98,7 @@ module Components
 
         editable.base.send_keys(:enter, "some text", :enter, :enter)
 
-        attachments.drag_and_drop_file(editable, image_fixture, :bottom)
+        attachments.drag_and_drop_file(editable, image_fixture, :bottom, scroll:)
 
         expect(page)
             .to have_css('img[src^="/api/v3/attachments/"]', count: images.length + 1, wait: 10)

@@ -226,11 +226,8 @@ An example where this comes into play is the [`CustomText`](https://github.com/o
 - [`EditFieldComponent`](https://github.com/opf/openproject/tree/dev/frontend/src/app/shared/components/fields/edit/field-types) definitions containing all display fields and the service to instantiate them
 - [`EditingPortalService`](https://github.com/opf/openproject/tree/dev/frontend/src/app/shared/components/fields/edit/editing-portal/editing-portal-service.ts) service to create an edit field with event handling in code
 - [`WorkPackageFullViewComponent`](https://github.com/opf/openproject/blob/dev/frontend/src/app/features/work-packages/routing/wp-full-view/wp-full-view.html) Work package full view template that uses the `edit-form` attribute to create a form for the work package full view (as seen in the Gif above)
-- [`ProjectDetailsComponent`](https://github.com/opf/openproject/blob/dev/frontend/src/app/shared/components/grids/widgets/project-details/project-details.component.html) Exemplary widget template that uses the form for project attributes
 
 ## Minimal example
-
-The  [`ProjectDetailsComponent`](https://github.com/opf/openproject/blob/dev/frontend/src/app/shared/components/grids/widgets/project-details/project-details.component.html) is a very isolated example showing how to use the edit-form together with `EditableAttributeField` component to show the actual inline-editable field.
 
 On the example of a work package, this following code snippet would create an edit form for a given work package resource and an attribute for the `subject` attribute of that work package.
 

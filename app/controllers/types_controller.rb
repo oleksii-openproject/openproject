@@ -83,7 +83,7 @@ class TypesController < ApplicationController
       .new(@type, current_user)
       .call(permitted_type_params) do |call|
       call.on_success do
-        redirect_to_type_tab_path(@type, update_success_message)
+        redirect_to_type_tab_path(@type, t(:notice_successful_update))
       end
 
       call.on_failure do |result|
@@ -149,14 +149,6 @@ class TypesController < ApplicationController
 
   def show_local_breadcrumb
     false
-  end
-
-  def update_success_message
-    if params[:tab].in?(%w[form_configuration projects])
-      t(:notice_successful_update_custom_fields_added_to_type)
-    else
-      t(:notice_successful_update)
-    end
   end
 
   def destroy_error_message

@@ -32,5 +32,13 @@ module CustomFields
   class DetailsComponent < ApplicationComponent
     include OpPrimer::ComponentHelpers
     include OpTurbo::Streamable
+
+    alias_method :custom_field, :model
+
+    def has_no_items_or_projects?
+      custom_field.field_format_hierarchy? &&
+        custom_field.hierarchy_root.children.empty? &&
+        custom_field.projects.empty?
+    end
   end
 end

@@ -32,7 +32,7 @@ source "https://rubygems.org"
 # then we can use the new bundler syntax `ruby file: '.ruby-version'`.
 # https://github.com/heroku/heroku-buildpack-ruby/issues/1408#issuecomment-1841596215
 
-ruby File.read(".ruby-version").strip
+ruby File.read(File.expand_path(".ruby-version", __dir__)).strip
 
 gem "actionpack-xml_parser", "~> 2.0.0"
 gem "activemodel-serializers-xml", "~> 1.0.1"
@@ -93,7 +93,7 @@ gem "deckar01-task_list", "~> 2.3.1"
 # Requires escape-utils for faster escaping
 gem "escape_utils", "~> 1.3"
 # Syntax highlighting used in html-pipeline with rouge
-gem "rouge", "~> 4.3.0"
+gem "rouge", "~> 4.4.0"
 # HTML sanitization used for html-pipeline
 gem "sanitize", "~> 6.1.0"
 # HTML autolinking for mails and urls (replaces autolink)
@@ -137,7 +137,7 @@ gem "rack-protection", "~> 3.2.0"
 gem "rack-attack", "~> 6.7.0"
 
 # CSP headers
-gem "secure_headers", "~> 6.5.0"
+gem "secure_headers", "~> 7.0.0"
 
 # Browser detection for incompatibility checks
 gem "browser", "~> 6.0.0"
@@ -167,7 +167,7 @@ gem "matrix", "~> 0.4.2"
 
 gem "meta-tags", "~> 2.22.0"
 
-gem "paper_trail", "~> 15.1.0"
+gem "paper_trail", "~> 15.2.0"
 
 gem "op-clamav-client", "~> 3.4", require: "clamav"
 
@@ -175,7 +175,7 @@ group :production do
   # we use dalli as standard memcache client
   # requires memcached 1.4+
   gem "dalli", "~> 3.2.0"
-  gem "redis", "~> 5.2.0"
+  gem "redis", "~> 5.3.0"
 end
 
 gem "i18n-js", "~> 4.2.3"
@@ -222,12 +222,12 @@ gem "appsignal", "~> 3.10.0", require: false
 
 gem "view_component"
 # Lookbook
-gem "lookbook", "~> 2.3.0"
+gem "lookbook", "~> 2.3.3"
 
 # Require factory_bot for usage with openproject plugins testing
 gem "factory_bot", "~> 6.5.0", require: false
 # require factory_bot_rails for convenience in core development
-gem "factory_bot_rails", "~> 6.4.0", require: false
+gem "factory_bot_rails", "~> 6.4.4", require: false
 
 gem "turbo_power", "~> 0.6.2"
 gem "turbo-rails", "~> 2.0.0"
@@ -322,6 +322,7 @@ group :development, :test do
   gem "rack-mini-profiler", require: false
   gem "ruby-prof", require: false
   gem "stackprof", require: false
+  gem "vernier", require: false
 
   # Output a stack trace anytime, useful when a process is stuck
   gem "rbtrace"
@@ -358,7 +359,7 @@ end
 gem "bootsnap", "~> 1.18.0", require: false
 
 # API gems
-gem "grape", "~> 2.1.0"
+gem "grape", "~> 2.2.0"
 gem "grape_logging", "~> 1.8.4"
 gem "roar", "~> 1.2.0"
 
@@ -397,6 +398,6 @@ gemfiles.each do |file|
   send(:eval_gemfile, file) if File.readable?(file)
 end
 
-gem "openproject-octicons", "~>19.18.0"
-gem "openproject-octicons_helper", "~>19.18.0"
-gem "openproject-primer_view_components", "~>0.47.1"
+gem "openproject-octicons", "~>19.19.0"
+gem "openproject-octicons_helper", "~>19.19.0"
+gem "openproject-primer_view_components", "~>0.48.2"

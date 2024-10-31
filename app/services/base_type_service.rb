@@ -80,9 +80,7 @@ class BaseTypeService
     set_milestone_param(params) unless params[:is_milestone].nil?
     set_active_custom_fields
 
-    if params[:project_ids].present?
-      set_active_custom_fields_for_project_ids(params[:project_ids])
-    end
+    set_active_custom_fields_for_project_ids(params[:project_ids]) if params[:project_ids].present?
 
     set_scalar_params(params)
 
@@ -167,43 +165,25 @@ class BaseTypeService
   # for this type. If a custom field is not in a group, it is removed from the
   # custom_field_ids list.
   def set_active_custom_fields
-    new_cf_ids_to_add = active_custom_field_ids - type.custom_field_ids
-    type.custom_field_ids = active_custom_field_ids
-    set_active_custom_fields_for_projects(type.projects,
-                                          new_cf_ids_to_add)
+    type.custom_field_ids = type
+                              .attribute_groups
+                              .flat_map(&:members)
+                              .select { CustomField.custom_field_attribute? _1 }
+                              .map { _1.gsub(/^custom_field_/, "").to_i }
+                              .uniq
   end
 
-  def active_custom_field_ids
-    @active_custom_field_ids ||= begin
-      active_cf_ids = []
+  def set_active_custom_fields_for_project_ids(project_ids)
+    new_project_ids_to_activate_cfs = project_ids.reject(&:empty?).map(&:to_i) - type.project_ids
 
-      type.attribute_groups.each do |group|
-        group.members.each do |attribute|
-          if CustomField.custom_field_attribute? attribute
-            active_cf_ids << attribute.gsub(/^custom_field_/, "").to_i
-          end
-        end
-      end
-      active_cf_ids.uniq
-    end
-  end
-
-  def set_active_custom_fields_for_projects(projects, custom_field_ids)
-    values = projects
+    values = Project
+               .where(id: new_project_ids_to_activate_cfs)
                .to_a
-               .product(custom_field_ids)
+               .product(type.custom_field_ids)
                .map { |p, cf_ids| { project_id: p.id, custom_field_id: cf_ids } }
 
     return if values.empty?
 
     CustomFieldsProject.insert_all(values)
-  end
-
-  def set_active_custom_fields_for_project_ids(project_ids)
-    new_project_ids_to_activate_cfs = project_ids.reject(&:empty?).map(&:to_i) - type.project_ids
-    set_active_custom_fields_for_projects(
-      Project.where(id: new_project_ids_to_activate_cfs),
-      type.custom_field_ids
-    )
   end
 end

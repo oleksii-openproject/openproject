@@ -95,7 +95,7 @@ ro:
         keep_safe_warning: "Fie le salvați în managerul de parole, fie imprimați această pagină și puneți-o într-un loc sigur."
         regenerate_warning: "Avertisment: Dacă ați creat coduri de rezervă înainte, acestea vor fi invalidate și nu vor mai funcționa."
     devices:
-      add_new: "Adăugați un nou dispozitiv 2FA"
+      add_new: "Adaugă un nou dispozitiv 2FA"
       register: "Dispozitivul de înregistrare"
       confirm_default: "Confirmați schimbarea dispozitivului implicit"
       confirm_device: "Confirmați dispozitivul"
@@ -107,7 +107,7 @@ ro:
       registration_complete: "Înregistrarea dispozitivului 2FA este completă!"
       registration_failed_token_invalid: "Înregistrarea dispozitivului 2FA a eșuat, token-ul nu era valid."
       registration_failed_update: "Înregistrarea dispozitivului 2FA a eșuat, token-ul era valid, dar dispozitivul nu a putut fi actualizat."
-      confirm_send_failed: "Confirmarea dispozitivului dvs. 2FA a eșuat."
+      confirm_send_failed: "Confirmarea dispozitivului tău 2FA a eșuat."
       button_complete_registration: "Completați înregistrarea 2FA"
       text_confirm_to_complete_html: "Vă rugăm să completați înregistrarea dispozitivului dvs <strong>%{identifier}</strong> prin introducerea unei parole unice de la dispozitivul dvs. implicit."
       text_confirm_to_change_default_html: "Vă rugăm să confirmați schimbarea dispozitivului implicit în <strong>%{new_identifier}</strong> introducând o parolă unică de pe dispozitivul dvs. implicit actual."

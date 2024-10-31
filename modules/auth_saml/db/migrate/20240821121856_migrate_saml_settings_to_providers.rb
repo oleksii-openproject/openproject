@@ -1,6 +1,9 @@
 class MigrateSamlSettingsToProviders < ActiveRecord::Migration[7.1]
   def up
-    providers = Hash(Setting.plugin_openproject_auth_saml).with_indifferent_access[:providers]
+    settings = Setting.plugin_openproject_auth_saml
+    return if settings.blank?
+
+    providers = Hash(settings).with_indifferent_access[:providers]
     return if providers.blank?
 
     providers.each do |name, options|

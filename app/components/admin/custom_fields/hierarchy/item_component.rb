@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #-- copyright
 # OpenProject is an open source project management software.
 # Copyright (C) the OpenProject GmbH
@@ -32,6 +34,44 @@ module Admin
       class ItemComponent < ApplicationComponent
         include OpTurbo::Streamable
         include OpPrimer::ComponentHelpers
+
+        def initialize(item:, show_edit_form: false)
+          super(item)
+          @show_edit_form = show_edit_form
+          @root = item.root
+        end
+
+        def wrapper_uniq_by
+          model.id
+        end
+
+        def short_text
+          "(#{model.short})"
+        end
+
+        def show_edit_form? = @show_edit_form
+
+        def children_count
+          I18n.t("custom_fields.admin.hierarchy.subitems", count: model.children.count)
+        end
+
+        def deletion_action_item(menu)
+          menu.with_item(label: I18n.t(:button_delete),
+                         scheme: :danger,
+                         tag: :a,
+                         href: deletion_dialog_custom_field_item_path(custom_field_id: @root.custom_field_id, id: model.id),
+                         content_arguments: { data: { controller: "async-dialog" } }) do |item|
+            item.with_leading_visual_icon(icon: :trash)
+          end
+        end
+
+        def edit_action_item(menu)
+          menu.with_item(label: I18n.t(:button_edit),
+                         tag: :a,
+                         href: edit_custom_field_item_path(@root.custom_field_id, model)) do |item|
+            item.with_leading_visual_icon(icon: :pencil)
+          end
+        end
       end
     end
   end

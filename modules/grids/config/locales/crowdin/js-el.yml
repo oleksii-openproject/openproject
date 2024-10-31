@@ -27,9 +27,6 @@ el:
         project_description:
           title: 'Περιγραφή έργου'
           no_results: "Δεν έχει γραφτεί ακόμα περιγραφή. Μπορεί να παρασχεθεί μια στις 'Ρυθμίσεις έργου'."
-        project_details:
-          title: 'Λεπτομέρειες έργου'
-          no_results: 'Δεν έχουν οριστεί προσαρμοσμένα πεδία για έργα.'
         project_status:
           title: 'Κατάσταση έργου'
           not_started: 'Not started'

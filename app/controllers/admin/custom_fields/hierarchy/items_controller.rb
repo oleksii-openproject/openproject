@@ -32,22 +32,119 @@ module Admin
   module CustomFields
     module Hierarchy
       class ItemsController < ApplicationController
-        layout "admin"
+        include OpTurbo::ComponentStream
+        include OpTurbo::DialogStreamHelper
 
+        layout :admin_or_frame_layout
         model_object CustomField
 
-        before_action :require_admin
-        before_action :find_model_object
+        before_action :require_admin, :find_model_object, :find_active_item
 
         menu_item :custom_fields
 
+        # See https://github.com/hotwired/turbo-rails?tab=readme-ov-file#a-note-on-custom-layouts
+        def admin_or_frame_layout
+          return "turbo_rails/frame" if turbo_frame_request?
+
+          "admin"
+        end
+
         def index; end
+
+        def show
+          render action: :index
+        end
+
+        def new
+          @new_item = ::CustomField::Hierarchy::Item.new(parent: @active_item)
+        end
+
+        def edit; end
+
+        def create
+          item_service
+            .insert_item(**item_input)
+            .either(
+              ->(_) { redirect_to(new_child_custom_field_item_path(@custom_field, @active_item), status: :see_other) },
+              ->(validation_result) do
+                add_errors_to_form(validation_result)
+                render action: :new
+              end
+            )
+        end
+
+        def update
+          item_service
+            .update_item(item: @active_item, label: item_input[:label], short: item_input[:short])
+            .either(
+              ->(_) do
+                redirect_to(custom_field_item_path(@custom_field, @active_item.parent), status: :see_other)
+              end,
+              ->(validation_result) do
+                add_errors_to_edit_form(validation_result)
+                render action: :edit
+              end
+            )
+        end
+
+        def destroy
+          item_service
+            .delete_branch(item: @active_item)
+            .either(
+              ->(_) { update_via_turbo_stream(component: ItemsComponent.new(item: @active_item.parent)) },
+              ->(errors) { update_flash_message_via_turbo_stream(message: errors.full_messages, scheme: :danger) }
+            )
+
+          respond_with_turbo_streams(&:html)
+        end
+
+        def deletion_dialog
+          respond_with_dialog DeleteItemDialogComponent.new(custom_field: @custom_field, hierarchy_item: @active_item)
+        end
 
         private
 
-        def find_model_object(object_id = :custom_field_id)
-          super
+        def item_service
+          ::CustomFields::Hierarchy::HierarchicalItemService.new
+        end
+
+        def item_input
+          input = { parent: @active_item, label: params[:label] }
+          input[:short] = params[:short] if params[:short].present?
+
+          input
+        end
+
+        def add_errors_to_form(validation_result)
+          @new_item = ::CustomField::Hierarchy::Item.new(parent: @active_item, **validation_result.to_h)
+          validation_result.errors(full: true).to_h.each do |attribute, errors|
+            @new_item.errors.add(attribute, errors.join(", "))
+          end
+        end
+
+        def add_errors_to_edit_form(validation_result)
+          @active_item.assign_attributes(**validation_result.to_h.slice(:label, :short))
+
+          validation_result.errors(full: true).to_h.each do |attribute, errors|
+            @active_item.errors.add(attribute, errors.join(", "))
+          end
+        end
+
+        def find_model_object
+          @object = CustomField.hierarchy_root_and_children.find(params[:custom_field_id])
           @custom_field = @object
+        rescue ActiveRecord::RecordNotFound
+          render_404
+        end
+
+        def find_active_item
+          @active_item = if params[:id].present?
+                           CustomField::Hierarchy::Item.including_children.find(params[:id])
+                         else
+                           @object.hierarchy_root
+                         end
+        rescue ActiveRecord::RecordNotFound
+          render_404
         end
       end
     end

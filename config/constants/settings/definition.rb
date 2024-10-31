@@ -877,9 +877,6 @@ module Settings
         default: nil,
         format: :string
       },
-      repository_authentication_caching_enabled: {
-        default: true
-      },
       repository_checkout_data: {
         default: {
           "git" => { "enabled" => 0 },

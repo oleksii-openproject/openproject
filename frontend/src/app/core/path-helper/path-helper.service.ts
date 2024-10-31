@@ -149,7 +149,7 @@ export class PathHelperService {
   }
 
   public projectCalendarPath(projectId:string) {
-    return `${this.projectPath(projectId)}/calendar`;
+    return `${this.projectPath(projectId)}/calendars`;
   }
 
   public projectMembershipsPath(projectId:string) {
@@ -278,6 +278,10 @@ export class PathHelperService {
 
   public workPackageSharePath(workPackageId:string|number) {
     return `${this.workPackagePath(workPackageId)}/shares`;
+  }
+
+  public workPackageHoverCardPath(workPackageId:string|number) {
+    return `${this.workPackagePath(workPackageId)}/hover_card`;
   }
 
   public workPackageProgressModalPath(workPackageId:string|number) {

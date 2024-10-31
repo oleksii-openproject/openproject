@@ -29,5 +29,19 @@
 FactoryBot.define do
   factory :global_role do
     sequence(:name) { |n| "Global Role #{n}" }
+
+    factory :standard_global_role do
+      name { "Standard global role" }
+      builtin { Role::BUILTIN_STANDARD_GLOBAL }
+      initialize_with { GlobalRole.where(builtin: Role::BUILTIN_STANDARD_GLOBAL).first_or_initialize }
+      permissions { [:view_user_email] }
+    end
+
+    factory :empty_global_role do
+      name { "Empty global role" }
+      builtin { Role::BUILTIN_STANDARD_GLOBAL }
+      initialize_with { GlobalRole.where(builtin: Role::BUILTIN_STANDARD_GLOBAL).first_or_initialize }
+      permissions { [] }
+    end
   end
 end

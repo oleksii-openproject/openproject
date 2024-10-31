@@ -69,7 +69,7 @@ ro:
   label_filter_add: "Adăugare filtru"
   label_filter_plural: "Filtre"
   label_group_by: "Grupare după"
-  label_group_by_add: "Adăugați atributul Group-by"
+  label_group_by_add: "Adaugă atributul Grupare-după"
   label_inactive: "Inactiv"
   label_no: "Nu"
   label_none: "Sincronizați datele"

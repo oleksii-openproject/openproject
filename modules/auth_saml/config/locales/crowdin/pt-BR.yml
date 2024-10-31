@@ -33,6 +33,7 @@ pt-BR:
           unmatched_private_key: "não pertence ao certificado fornecido"
   saml:
     menu_title: Provedores SAML
+    delete_title: Delete SAML provider
     info:
       title: "Parâmetros de configuração do protocolo SAML"
       description: >
@@ -54,7 +55,6 @@ pt-BR:
       label_edit: Editar provedor de identidade SAML %{name}
       label_uid: Id do usuário interno
       label_mapping: Mapeamento
-      label_mapping_for: "Mapeamento para: %{attribute}"
       label_requested_attribute_for: "Atributo solicitado para: %{attribute}"
       no_results_table: Nenhum provedor de identidade SAML foi definido até o momento.
       plural: Provedores de identidade SAML
@@ -98,7 +98,7 @@ pt-BR:
       display_name: >
         O nome do provedor. Isso será exibido como o botão de login e na lista de provedores.
       metadata_none: >
-        Seu provedor de identidade não tem um ponto de extremidade de metadados nem a opção de download de XML. Você pode fazer a configuração manualmente.
+        Your identity provider does not have a metadata endpoint or XML download option. You can configure it manually.
       metadata_url: >
         Seu provedor de identidade fornece uma URL de metadados.
       metadata_xml: >
