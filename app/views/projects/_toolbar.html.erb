@@ -27,63 +27,90 @@ See COPYRIGHT and LICENSE files for more details.
 
 ++#%>
 
-<%= toolbar title: t(:label_information_plural) do %>
-  <% if User.current.allowed_in_project?(:add_subprojects, @project) %>
-    <li class="toolbar-item">
-      <%= link_to new_project_path(parent_id: @project.id),
-                  { class: 'button -primary',
-                    aria: {label: t(:label_subproject_new)},
-                    title: t(:label_subproject_new)} do %>
-        <%= op_icon('button--icon icon-add') %>
-        <span class="button--text"><%= t(:label_subproject) %></span>
-      <% end %>
-    </li>
-  <% end %>
-  <li class="toolbar-item hidden-for-tablet">
-    <%= link_to project_identifier_path(@project), class: 'button' do %>
-      <%= op_icon('button--icon icon-edit') %>
-      <span class="button--text"><%= t('projects.settings.change_identifier') %></span>
-    <% end %>
-  </li>
-  <% if @project.copy_allowed? %>
-    <li class="toolbar-item hidden-for-tablet">
-      <%= link_to copy_project_path(@project), class: 'button copy', accesskey: accesskey(:copy), data: { turbo: false } do %>
-        <%= op_icon('button--icon icon-copy') %>
-        <span class="button--text"><%= t(:button_copy) %></span>
-      <% end %>
-    </li>
-  <% end %>
-  <% if User.current.allowed_in_project?(:archive_project, @project) %>
-    <li class="toolbar-item hidden-for-tablet">
-      <%= link_to(project_archive_path(@project, status: '', name: @project.name),
-                  data: { confirm: t('project.archive.are_you_sure', name: @project.name) },
-                  method: :post,
-                  title: t(:label_archive_project),
-                  class: 'button') do %>
-        <%= op_icon('button--icon icon-locked') %>
-        <span class="button--text"><%= t(:button_archive) %></span>
-      <% end %>
-    </li>
-  <% end %>
-  <% if User.current.admin? %>
-    <li class="toolbar-item hidden-for-tablet">
-      <% label = @project.templated ? 'remove_from_templates' : 'make_template' %>
-      <%= link_to(project_templated_path(@project),
-                  method: @project.templated ? :delete : :post,
-                  title: t("project.template.#{label}"),
-                  class: 'button') do %>
-        <%= op_icon('button--icon icon-duplicate') unless @project.templated %>
-        <span class="button--text"><%= t("project.template.#{label}") %></span>
-      <% end %>
-    </li>
-    <li class="toolbar-item">
-      <%= link_to confirm_destroy_project_path(@project),
-                  class: 'button delete',
-                  title: t(:label_delete_project),
-                  data: { turbo: false } do %>
-        <%= op_icon('button--icon icon-delete') %>
-        <span class="button--text"><%= t(:button_delete) %></span>
-      <% end %>
-    </li>
-  <% end %>
-<% end %>
+<%=
+  render Primer::OpenProject::PageHeader.new do |header|
+    header.with_title { t(:label_information_plural) }
+    header.with_breadcrumbs( [
+                               { href: project_overview_path(@project.id), text: @project.name  },
+                               { href: project_settings_general_path(@project.id), text: I18n.t("label_project_settings") },
+                               t(:label_information_plural)
+                             ])
+
+    if User.current.allowed_in_project?(:add_subprojects, @project)
+      header.with_action_button(scheme: :primary,
+                                   mobile_icon: :plus,
+                                   mobile_label: t(:label_subproject_new),
+                                   aria: { label: t(:label_subproject_new) },
+                                   title: t(:label_subproject_new),
+                                   tag: :a,
+                                   href: new_project_path(parent_id: @project.id)) do |button|
+        button.with_leading_visual_icon(icon: :plus)
+        t(:label_subproject)
+      end
+    end
+
+    header.with_action_button(tag: :a,
+                              mobile_icon: :pencil,
+                              mobile_label: t('projects.settings.change_identifier'),
+                              size: :medium,
+                              href: project_identifier_path(@project),
+                              aria: { label: t('projects.settings.change_identifier') },
+                              title: t('projects.settings.change_identifier')) do |button|
+      button.with_leading_visual_icon(icon: :pencil)
+      t('projects.settings.change_identifier')
+    end
+
+    header.with_action_menu(
+      menu_arguments: {
+        anchor_align: :end
+      },
+      button_arguments: {
+        icon: "op-kebab-vertical",
+        "aria-label": t(:label_more)
+      }
+    ) do |menu|
+      if @project.copy_allowed?
+        menu.with_item(
+          label:t(:button_copy),
+          href: copy_project_path(@project),
+          content_arguments: { data: { turbo: false }, },
+          accesskey: accesskey(:copy),
+          ) do |item|
+          item.with_leading_visual_icon(icon: :copy)
+        end
+      end
+
+      if User.current.allowed_in_project?(:archive_project, @project)
+        menu.with_item(
+          tag: :a,
+          label: t(:button_archive),
+          href: project_archive_path(@project, status: '', name: @project.name),
+          content_arguments: { data: { confirm: t('project.archive.are_you_sure', name: @project.name), method: :post, } }
+        ) do |item|
+          item.with_leading_visual_icon(icon: 'lock')
+        end
+      end
+      if User.current.admin?
+        label = @project.templated ? 'remove_from_templates' : 'make_template'
+        menu.with_item(
+          tag: :a,
+          label: t("project.template.#{label}"),
+          href: project_templated_path(@project),
+          content_arguments: { data: { confirm: t('project.archive.are_you_sure', name: @project.name), method: @project.templated ? :delete : :post, } }
+        ) do |item|
+          item.with_leading_visual_icon(icon: :duplicate) unless @project.templated
+        end
+
+        menu.with_item(
+          tag: :a,
+          scheme: :danger,
+          label: t(:button_delete),
+          href: confirm_destroy_project_path(@project),
+          content_arguments: { data: { turbo: false } }
+        ) do |item|
+          item.with_leading_visual_icon(icon: :trash)
+        end
+      end
+    end
+  end
+%>
