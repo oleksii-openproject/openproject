@@ -57,10 +57,13 @@ export class HoverCardTriggerService {
           return;
         }
 
+        // When set in an angular component, the url attribute might be wrapped in additional quotes. Strip them.
+        const cleanedTurboFrameUrl = turboFrameUrl.replace(/^"(.*)"$/, '$1');
+
         this.opModalService.show(
           HoverCardComponent,
           this.injector,
-          { turboFrameSrc: turboFrameUrl, event: e },
+          { turboFrameSrc: cleanedTurboFrameUrl, event: e },
           true,
         ).subscribe((previewModal) => {
           this.modalElement = previewModal.elementRef.nativeElement as HTMLElement;
