@@ -1,12 +1,10 @@
 import { Injectable } from '@angular/core';
-import { Board } from 'core-app/features/boards/board/board';
 import { QueryResource } from 'core-app/features/hal/resources/query-resource';
 import { CachedBoardActionService } from 'core-app/features/boards/board/board-actions/cached-board-action.service';
 import { HalResource } from 'core-app/features/hal/resources/hal-resource';
 import { imagePath } from 'core-app/shared/helpers/images/path-helper';
-import {PriorityBoardHeaderComponent} from 'core-app/features/boards/board/board-actions/priority/priority-board-header.component';
+import { PriorityBoardHeaderComponent } from 'core-app/features/boards/board/board-actions/priority/priority-board-header.component';
 import { ApiV3FilterBuilder } from 'core-app/shared/helpers/api-v3/api-v3-filter-builder';
-import { CollectionResource } from 'core-app/features/hal/resources/collection-resource';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -29,7 +27,7 @@ export class BoardPriorityActionService extends CachedBoardActionService {
   readonly noPriority:any = {
     id: null,
     href: null,
-    name: this.I18n.t('js.filter.noneElement')
+    name: this.I18n.t('js.filter.noneElement'),
   };
 
   /**
@@ -40,11 +38,8 @@ export class BoardPriorityActionService extends CachedBoardActionService {
 
   getLoadedActionValue(query:QueryResource):Promise<HalResource|undefined> {
     const filter = this.getActionFilter(query);
-    if (filter && filter.operator.id === '!*') {
-      return Promise.resolve(this.noPriority);
-    }
-
-    return super.getLoadedActionValue(query);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+    return filter && filter.operator.id === '!*' ? Promise.resolve(this.noPriority) : super.getLoadedActionValue(query);
   }
 
   public headerComponent() {
@@ -52,7 +47,7 @@ export class BoardPriorityActionService extends CachedBoardActionService {
   }
 
   protected loadUncached = ():Observable<HalResource[]> => {
-    let filters = new ApiV3FilterBuilder();
+    const filters = new ApiV3FilterBuilder();
     filters.add('1', '=', true);
     return this.apiV3Service.priorities.filtered(filters).get()
       .pipe(
