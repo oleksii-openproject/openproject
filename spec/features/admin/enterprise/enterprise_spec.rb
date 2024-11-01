@@ -108,6 +108,7 @@ RSpec.describe "Enterprise token", :js, :with_cuprite do
 
         # Remove token
         click_on "Delete"
+        wait_for_network_idle
 
         # Expect modal
         find_test_selector("confirmation-modal--confirmed").click
