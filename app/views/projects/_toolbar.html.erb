@@ -96,7 +96,7 @@ See COPYRIGHT and LICENSE files for more details.
           tag: :a,
           label: t("project.template.#{label}"),
           href: project_templated_path(@project),
-          content_arguments: { data: { confirm: t('project.archive.are_you_sure', name: @project.name), method: @project.templated ? :delete : :post, } }
+          content_arguments: { data: { method: @project.templated ? :delete : :post } }
         ) do |item|
           item.with_leading_visual_icon(icon: :duplicate) unless @project.templated
         end
