@@ -2,8 +2,7 @@
   <%= primer_form_with(
     id: FORM_ID,
       model: @relation,
-      method: :patch,
-      url: work_package_relation_path(@work_package, @relation),
+      **submit_url_options,
       data: { turbo: true,
               controller: STIMULUS_CONTROLLER,
               application_target: "dynamic" }
@@ -20,15 +19,40 @@
           target_work_package = related_work_package
           stimulus_controller = STIMULUS_CONTROLLER
           i18n_namespace = I18N_NAMESPACE
+          dialog_id = DIALOG_ID
           not_parent_child_relation = not_parent_child_relation?
+          to_id_field_test_selector = TO_ID_FIELD_TEST_SELECTOR
+          to_id_field_value = relation.to.present? ? "#{target_work_package.type.name.upcase} ##{target_work_package.id} - #{target_work_package.subject}" : nil
           render_inline_form(f) do |my_form|
-            my_form.text_field(
-              name: :to_id,
-              label: WorkPackage.model_name.human,
-              visually_hide_label: false,
-              value: "#{target_work_package.type.name.upcase} ##{target_work_package.id} - #{target_work_package.subject}",
-              readonly: true
-            )
+            if relation.persisted?
+              my_form.text_field(
+                name: :to_id,
+                label: WorkPackage.model_name.human,
+                visually_hide_label: false,
+                value: to_id_field_value,
+                readonly: true
+              )
+            else
+              my_form.hidden(
+                name: :relation_type,
+                value: relation.relation_type
+              )
+
+              my_form.work_package_autocompleter(
+                name: :to_id,
+                label: WorkPackage.model_name.human,
+                visually_hide_label: false,
+                autocomplete_options: {
+                  resource: 'work_packages',
+                  searchKey: 'subjectOrId',
+                  openDirectly: false,
+                  focusDirectly: false,
+                  dropdownPosition: 'bottom',
+                  appendTo: "##{dialog_id}",
+                  data: { test_selector: to_id_field_test_selector}
+                }
+              )
+            end
 
             if not_parent_child_relation
               my_form.text_field(

@@ -33,7 +33,9 @@ class WorkPackageRelationsTab::EditWorkPackageRelationFormComponent < Applicatio
   include OpTurbo::Streamable
   include OpPrimer::ComponentHelpers
 
+  DIALOG_ID = "edit-work-package-relation-dialog"
   FORM_ID = "edit-work-package-relation-form"
+  TO_ID_FIELD_TEST_SELECTOR = "work-package-relation-form-to-id"
   STIMULUS_CONTROLLER = "work-packages--relations-tab--relation-form"
   I18N_NAMESPACE = "work_package_relations_tab"
 
@@ -56,5 +58,15 @@ class WorkPackageRelationsTab::EditWorkPackageRelationFormComponent < Applicatio
                               when WorkPackage
                                 @relation
                               end
+  end
+
+  def submit_url_options
+    if @relation.persisted?
+      { method: :patch,
+        url: work_package_relation_path(@work_package, @relation) }
+    else
+      { method: :post,
+        url: work_package_relations_path(@work_package) }
+    end
   end
 end

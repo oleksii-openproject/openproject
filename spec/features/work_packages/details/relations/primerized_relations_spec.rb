@@ -30,6 +30,8 @@ require "spec_helper"
 
 RSpec.describe "Primerized work package relations tab",
                :js, :with_cuprite do
+  include Components::Autocompleter::NgSelectAutocompleteHelpers
+
   let(:user) { create(:admin) }
   let(:project) { create(:project) }
   let(:work_package) { create(:work_package, project:) }
@@ -45,6 +47,7 @@ RSpec.describe "Primerized work package relations tab",
 
   let(:to1) { create(:work_package, type: type1, project:) }
   let(:to2) { create(:work_package, type: type2, project:) }
+  let(:to3) { create(:work_package, type: type1, project:) }
   let(:from1) { create(:work_package, type: type1, project:) }
 
   let!(:relation1) do
@@ -186,6 +189,7 @@ RSpec.describe "Primerized work package relations tab",
       within "##{WorkPackageRelationsTab::EditWorkPackageRelationDialogComponent::DIALOG_ID}" do
         wait_for_network_idle
         expect(page).to have_text("Edit successor (after)")
+        expect(page).to have_field("Work package", readonly: true)
         expect(page).to have_button("Add description")
         expect(page).to have_field("Description", visible: :hidden)
 
@@ -213,6 +217,7 @@ RSpec.describe "Primerized work package relations tab",
       within "##{WorkPackageRelationsTab::EditWorkPackageRelationDialogComponent::DIALOG_ID}" do
         wait_for_network_idle
         expect(page).to have_text("Edit successor (after)")
+        expect(page).to have_field("Work package", readonly: true)
         expect(page).to have_no_button("Add description")
         expect(page).to have_field("Description", visible: :visible, with: "Discovered relations have descriptions!")
 
@@ -236,6 +241,46 @@ RSpec.describe "Primerized work package relations tab",
       within(child_row) do
         page.find("[data-test-selector='op-relation-row-#{child_wp.id}-action-menu']").click
         expect(page).to have_no_css("[data-test-selector='op-relation-row-#{child_wp.id}-edit-button']")
+      end
+    end
+  end
+
+  describe "creating a relation" do
+    it "renders the new relation form for the selected type and creates the relation" do
+      scroll_to_element relations_panel
+
+      relations_panel.find("[data-test-selector='new-relation-action-menu']").click
+
+      within page.find_by_id("new-relation-action-menu-list") do # Primer appends "list" to the menu id automatically
+        click_link_or_button "Successor (after)"
+      end
+
+      wait_for_reload
+
+      within "##{WorkPackageRelationsTab::EditWorkPackageRelationFormComponent::DIALOG_ID}" do
+        expect(page).to have_text("Add successor (after)")
+        expect(page).to have_button("Add description")
+
+        autocomplete_field = page.find("[data-test-selector='work-package-relation-form-to-id']")
+        select_autocomplete(autocomplete_field,
+                            query: to3.subject,
+                            results_selector: "body")
+
+        click_link_or_button "Add description"
+
+        fill_in "Description", with: "Discovered relations have descriptions!"
+
+        click_link_or_button "Save"
+      end
+
+      wait_for_reload
+
+      within relations_panel do
+        new_relation = Relation.last
+        expect(new_relation.to).to eq(to3)
+        new_relation_row = page.find("[data-test-selector='op-relation-row-#{new_relation.id}']")
+        expect(new_relation_row).to have_text(to3.subject)
+        expect(new_relation_row).to have_text("Discovered relations have descriptions!")
       end
     end
   end

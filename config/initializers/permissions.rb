@@ -231,7 +231,9 @@ Rails.application.reloader.to_prepare do
                      contract_actions: { work_packages: %i[read] }
 
       wpt.permission :add_work_packages,
-                     {},
+                     {
+                       work_package_relations: %i[new create]
+                     },
                      permissible_on: :project,
                      dependencies: :view_work_packages,
                      contract_actions: { work_packages: %i[create] }

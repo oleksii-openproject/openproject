@@ -33,8 +33,20 @@ class WorkPackageRelationsController < ApplicationController
   include OpTurbo::DialogStreamHelper
 
   before_action :set_work_package
-  before_action :set_relation
+  before_action :set_relation, except: %i[new create]
   before_action :authorize
+
+  def new
+    @relation = @work_package.relations.build(
+      from: @work_package,
+      relation_type: params[:relation_type]
+    )
+
+    respond_with_dialog(
+      WorkPackageRelationsTab::EditWorkPackageRelationDialogComponent
+        .new(work_package: @work_package, relation: @relation)
+    )
+  end
 
   def edit
     respond_with_dialog(
@@ -43,11 +55,27 @@ class WorkPackageRelationsController < ApplicationController
     )
   end
 
+  def create
+    service_result = Relations::CreateService.new(user: current_user)
+                                             .call(create_relation_params)
+
+    if service_result.success?
+      @work_package.reload
+      component = WorkPackageRelationsTab::IndexComponent.new(work_package: @work_package,
+                                                              relations: @work_package.relations,
+                                                              children: @work_package.children)
+      replace_via_turbo_stream(component:)
+      respond_with_turbo_streams
+    else
+      respond_with_turbo_streams(status: :unprocessable_entity)
+    end
+  end
+
   def update
     service_result = Relations::UpdateService
       .new(user: current_user,
            model: @relation)
-      .call(relation_params)
+      .call(update_relation_params)
 
     if service_result.success?
       @work_package.reload
@@ -90,7 +118,13 @@ class WorkPackageRelationsController < ApplicationController
     @relation = @work_package.relations.find(params[:id])
   end
 
-  def relation_params
+  def create_relation_params
+    params.require(:relation)
+          .permit(:relation_type, :to_id, :description)
+          .merge(from_id: @work_package.id)
+  end
+
+  def update_relation_params
     params.require(:relation)
           .permit(:description)
   end

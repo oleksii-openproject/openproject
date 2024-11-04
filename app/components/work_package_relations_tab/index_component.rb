@@ -2,6 +2,7 @@
 
 class WorkPackageRelationsTab::IndexComponent < ApplicationComponent
   FRAME_ID = "work-package-relations-tab-content"
+  NEW_RELATION_ACTION_MENU = "new-relation-action-menu"
   I18N_NAMESPACE = "work_package_relations_tab"
   include ApplicationHelper
   include OpPrimer::ComponentHelpers
@@ -53,6 +54,20 @@ class WorkPackageRelationsTab::IndexComponent < ApplicationComponent
         end
       end
     end
+  end
+
+  def new_relation_path(relation_type:)
+    raise ArgumentError, "Invalid relation type: #{relation_type}" unless Relation::TYPES.key?(relation_type)
+
+    if relation_type == Relation::TYPE_CHILD
+      raise NotImplementedError, "Child relations are not supported yet"
+    else
+      new_work_package_relation_path(work_package, relation_type:)
+    end
+  end
+
+  def new_button_test_selector(relation_type:)
+    "op-new-relation-button-#{relation_type}"
   end
 
   def row_test_selector(item)

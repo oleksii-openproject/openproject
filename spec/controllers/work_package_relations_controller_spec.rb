@@ -35,6 +35,7 @@ RSpec.describe WorkPackageRelationsController do
   shared_let(:project) { create(:project) }
   shared_let(:work_package) { create(:work_package, project:) }
   shared_let(:related_work_package) { create(:work_package, project:) }
+  shared_let(:unrelated_work_package) { create(:work_package, project:) }
   shared_let(:relation) do
     create(:relation,
            from: work_package,
@@ -46,6 +47,33 @@ RSpec.describe WorkPackageRelationsController do
   end
 
   current_user { user }
+
+  describe "GET /work_packages/:work_package_id/relations/new" do
+    let(:new_relation) do
+      build(:relation,
+            from: work_package,
+            to: nil,
+            relation_type: Relation::TYPE_RELATES)
+    end
+
+    before do
+      allow(WorkPackageRelationsTab::EditWorkPackageRelationDialogComponent)
+        .to receive(:new)
+        .and_call_original
+      allow(controller).to receive(:respond_with_dialog).and_call_original
+    end
+
+    it "renders the relations new dialog" do
+      get("new",
+          params: { work_package_id: work_package.id,
+                    relation_type: Relation::TYPE_RELATES },
+          as: :turbo_stream)
+
+      expect(WorkPackageRelationsTab::EditWorkPackageRelationDialogComponent)
+        .to have_received(:new)
+      expect(controller).to have_received(:respond_with_dialog)
+    end
+  end
 
   describe "GET /work_packages/:work_package_id/relations/:id/edit" do
     before do
@@ -68,6 +96,30 @@ RSpec.describe WorkPackageRelationsController do
         .with(an_instance_of(WorkPackageRelationsTab::EditWorkPackageRelationDialogComponent))
 
       expect(response).to be_successful
+    end
+  end
+
+  describe "POST /work_packages/:work_package_id/relations" do
+    before do
+      allow(WorkPackageRelationsTab::IndexComponent).to receive(:new).and_call_original
+      allow(controller).to receive(:replace_via_turbo_stream).and_call_original
+    end
+
+    it "creates the relation" do
+      post("create",
+           params: { work_package_id: work_package.id,
+                     relation: { to_id: unrelated_work_package.id,
+                                 relation_type: Relation::TYPE_RELATES } },
+           as: :turbo_stream)
+
+      expect(response).to be_successful
+
+      new_relation = Relation.last
+
+      expect(WorkPackageRelationsTab::IndexComponent).to have_received(:new)
+        .with(work_package:, relations: [relation, new_relation], children:)
+      expect(controller).to have_received(:replace_via_turbo_stream)
+        .with(component: an_instance_of(WorkPackageRelationsTab::IndexComponent))
     end
   end
 

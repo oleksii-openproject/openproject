@@ -7,14 +7,23 @@
         end
       end
       action_bar.with_column do
-        render(Primer::Alpha::ActionMenu.new(menu_id: "relations-list-action-menu")) do |menu|
+        render(Primer::Alpha::ActionMenu.new(test_selector: NEW_RELATION_ACTION_MENU,
+                                             menu_id: NEW_RELATION_ACTION_MENU)) do |menu|
           menu.with_show_button do |button|
             button.with_leading_visual_icon(icon: :"plus")
             button.with_trailing_action_icon(icon: :"triangle-down")
             t(:label_relation)
           end
           Relation::TYPES.each do |relation_type, type_configuration_hash|
-            menu.with_item(label: t(type_configuration_hash[:name]).capitalize) do |item|
+            label_key = "#{I18N_NAMESPACE}.relations.#{type_configuration_hash[:name]}_singular"
+            menu.with_item(
+              label: t(label_key).capitalize,
+              href: new_relation_path(relation_type:),
+              test_selector: new_button_test_selector(relation_type:),
+              content_arguments: {
+                data: { turbo_stream: true }
+              }
+            ) do |item|
               item.with_description.with_content(t("#{I18N_NAMESPACE}.relations.#{relation_type}_description"))
             end
           end

@@ -50,6 +50,10 @@ class WorkPackageRelationsTab::EditWorkPackageRelationDialogComponent < Applicat
 
   def dialog_title
     relation_label = t("#{I18N_NAMESPACE}.relations.#{relation.label_for(work_package)}_singular")
-    t("#{I18N_NAMESPACE}.label_edit_x", x: relation_label)
+    if relation.persisted?
+      t("#{I18N_NAMESPACE}.label_edit_x", x: relation_label)
+    else
+      t("#{I18N_NAMESPACE}.label_add_x", x: relation_label)
+    end
   end
 end
