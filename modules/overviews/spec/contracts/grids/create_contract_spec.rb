@@ -130,13 +130,13 @@ RSpec.describe Grids::CreateContract, "for Grids::Overview" do
       context "(widget added)" do
         before do
           grid.row_count = 4
-          grid.widgets.build(identifier: "project_details",
+          grid.widgets.build(identifier: "project_description",
                              start_row: 3,
                              end_row: 4,
                              start_column: 1,
                              end_column: 3,
                              options: {
-                               name: I18n.t("js.grid.widgets.work_packages_overview.title")
+                               name: I18n.t("js.grid.widgets.project_description.title")
                              })
         end
 

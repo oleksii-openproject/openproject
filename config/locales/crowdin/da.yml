@@ -24,6 +24,22 @@ da:
   activities:
     index:
       no_results_title_text: Der har ikke været nogen aktivitet for projektet i tidsperioden.
+    work_packages:
+      activity_tab:
+        no_results_title_text: No activity to display
+        no_results_description_text: "Choose \"Show everything\" to show all activity and comments"
+        label_activity_show_all: "Show everything"
+        label_activity_show_only_comments: "Show comments only"
+        label_activity_show_only_changes: "Show changes only"
+        label_sort_asc: "Newest at the bottom"
+        label_sort_desc: "Newest on top"
+        label_type_to_comment: "Type here to comment"
+        label_submit_comment: "Submit comment"
+        changed_on: "changed on"
+        created_on: "created this on"
+        changed: "changed"
+        created: "created"
+        commented: "commented"
   admin:
     plugins:
       no_results_title_text: There are currently no plugins installed.
@@ -39,16 +55,9 @@ da:
         accent-color: "Accent"
         header-bg-color: "Overskriftsbaggrund"
         header-item-bg-hover-color: "Overskriftsbaggrund ved mus over"
-        header-item-font-color: "Hoved skrifttype"
-        header-item-font-hover-color: "Hoved skrifttype ved mus over"
-        header-border-bottom-color: "Hoved kant"
         main-menu-bg-color: "Hovedmenu baggrund"
         main-menu-bg-selected-background: "Hovedmenu når valgt"
         main-menu-bg-hover-background: "Hovedmenu ved mus over"
-        main-menu-font-color: "Hovedmenuens skrifttype"
-        main-menu-selected-font-color: "Hovedmenuens skrifttype når valgt"
-        main-menu-hover-font-color: "Hovedmenuens skrifttype ved mus over"
-        main-menu-border-color: "Hovedmenu kant"
       custom_colors: "Brugerdefinerede farver"
       customize: "Customize your OpenProject installation with your own logo and colors."
       enterprise_notice: "As a special 'Thank you!' for their financial contribution to develop OpenProject, this tiny add-on is only available for Enterprise edition support subscribers."
@@ -209,6 +218,25 @@ da:
         is_for_all_blank_slate:
           heading: For all projects
           description: This custom field is enabled in all projects since the "For all projects" option is checked. It cannot be deactivated for individual projects.
+      items:
+        actions: "Item actions"
+        blankslate:
+          root:
+            title: "Your list of items is empty"
+            description: "Start by adding items to the custom field of type hierarchy. Each item can be used to create a hierarchy bellow it. To navigate and create sub-items inside a hierarchy click on the created item."
+          item:
+            title: This item doesn't have any hierarchy level below
+            description: Add items to this list to create sub-items inside another one
+        placeholder:
+          label: "Item label"
+          short: "Short name"
+      notice:
+        remember_items_and_projects: "Remember to set items and projects in the respective tabs for this custom field."
+      hierarchy:
+        subitems:
+          zero: no sub-items
+          one: 1 sub-item
+          other: "%{count} sub-items"
     text_add_new_custom_field: >
       For at tilføje nye brugerdefinerede felter til et projekt, skal du først oprette dem, før du kan føje dem til dette projekt.
     is_enabled_globally: "Er aktiveret globalt"
@@ -221,6 +249,7 @@ da:
       is_required: "Mark the custom field as required. This will make it mandatory to fill in the field when creating new or updating existing resources."
       is_required_for_project: "Check to enable this attribute and make it required in all projects. It cannot be deactived for individual projects."
       is_for_all: "Mark the custom field as available in all existing and new projects."
+      multi_select: "Allows the user to assign multiple values to this custom field."
       searchable: "Include the field values when using the global search functionality."
       searchable_for_project: "Check to make this attribute available as a filter in project lists."
       editable: "Allow the field to be editable by users themselves."
@@ -232,6 +261,14 @@ da:
       no_results_content_text: Oprette en ny brugerdefineret felt
   concatenation:
     single: "eller"
+  dry_validation:
+    errors:
+      rules:
+        label:
+          filled?: "must be filled"
+          not_unique: "must be unique within the same hierarchy level"
+    rules:
+      label: "Label"
   global_search:
     placeholder: "Search in %{app_title}"
     overwritten_tabs:
@@ -465,23 +502,38 @@ da:
       priority_color_text: |
         Click to assign or change the color of this priority.
         It can be used for highlighting work packages in the table.
+  reactions:
+    action_title: "React"
+    add_reaction: "Add reaction"
+    react_with: "React with %{reaction}"
+    and_user: "and %{user}"
+    and_others:
+      one: and 1 other
+      other: and %{count} others
+    reaction_by: "%{reaction} by"
   reportings:
     index:
       no_results_title_text: There are currently no status reportings.
       no_results_content_text: Add a status reporting
   statuses:
     edit:
+      status_color_text: |
+        Click to assign or change the color of this status.
+        It is shown in the status button and can be used for highlighting work packages in the table.
+      status_default_text: |-
+        New work packages are by default set to this type. They cannot be read-only.
+      status_excluded_from_totals_text: |-
+        Check this option to exclude work packages with this status from totals of Work,
+        Remaining work, and % Complete in a hierarchy.
+      status_percent_complete_text: |-
+        In <a href="%{href}">status-based progress calculation mode</a>, the % Complete of a work
+        package is automatically set to this value when this status is selected.
+        Ignored in work-based mode.
       status_readonly_html: |
         Check this option to mark work packages with this status as read-only.
         No attributes can be changed with the exception of the status.
         <br/>
         <strong>Note</strong>: Inherited values (e.g., from children or relations) will still apply.
-      status_excluded_from_totals_text: |-
-        Check this option to exclude work packages with this status from totals of Work,
-        Remaining work, and % Complete in a hierarchy.
-      status_color_text: |
-        Click to assign or change the color of this status.
-        It is shown in the status button and can be used for highlighting work packages in the table.
     index:
       no_results_title_text: There are currently no work package statuses.
       no_results_content_text: Add a new status
@@ -491,7 +543,7 @@ da:
         is_readonly: "Skrivebeskyttet"
         excluded_from_totals: "Excluded from totals"
   themes:
-    dark: "Dark (Beta)"
+    dark: "Dark"
     light: "Light"
     light_high_contrast: "Light high contrast"
   types:
@@ -534,7 +586,7 @@ da:
       could_not_be_saved: "The following work packages could not be saved:"
       none_could_be_saved: "None of the %{total} work packages could be updated."
       x_out_of_y_could_be_saved: "%{failing} out of the %{total} work packages could not be updated while %{success} could."
-      selected_because_descendants: "While %{selected} work packages where selected, in total %{total} work packages are affected which includes descendants."
+      selected_because_descendants: "While %{selected} work packages were selected, in total %{total} work packages are affected which includes descendants."
       descendant: "descendant of selected"
     move:
       no_common_statuses_exists: "There is no status available for all selected work packages. Their status cannot be changed."
@@ -624,6 +676,7 @@ da:
         editable: "Redigerbar"
         field_format: "Format"
         is_filter: "Bruges som filter"
+        is_for_all: "For all projects"
         is_required: "Påkrævet"
         max_length: "Største længde"
         min_length: "Mindste længde"
@@ -752,7 +805,6 @@ da:
         consented_at: "Consented at"
       user_preference:
         comments_sorting: "Vis kommentarer"
-        hide_mail: "Skjul min e-mailadresse"
         impaired: "Tilgængelighedstilstand"
         time_zone: "Tidszone"
         auto_hide_popups: "Auto-hide success notifications"
@@ -811,7 +863,7 @@ da:
         blank: "må ikke være tomt."
         blank_nested: "needs to have the property '%{property}' set."
         cannot_delete_mapping: "is required. Cannot be deleted."
-        is_for_all_cannot_modify: "is for all. Cannot be modified."
+        is_for_all_cannot_modify: "is for all projects and can therefore not be modified."
         cant_link_a_work_package_with_a_descendant: "En arbejdspakke kan ikke knyttes til en af dens underopgaver."
         circular_dependency: "Denne relation vil skabe en cirkulær afhængighed."
         confirmation: "matcher ikke %{attribute}."
@@ -842,10 +894,12 @@ da:
         not_available: "is not available due to a system configuration."
         not_deletable: "Kan ikke slettes"
         not_current_user: "er ikke den aktuelle bruger."
+        not_found: "not found."
         not_a_date: "is not a valid date."
         not_a_datetime: "is not a valid date time."
         not_a_number: "er ikke et tal."
         not_allowed: "is invalid because of missing permissions."
+        not_json: "is not a valid JSON object."
         not_an_integer: "er ikke et heltal."
         not_an_iso_date: "is not a valid date. Required format: YYYY-MM-DD."
         not_same_project: "hører ikke til samme projekt."
@@ -1327,6 +1381,9 @@ da:
   button_actions: "Handlinger"
   button_add: "Tilføj"
   button_add_comment: "Tilføj kommentar"
+  button_add_item_above: "Add item above"
+  button_add_item_below: "Add item below"
+  button_add_sub_item: "Add sub-item"
   button_add_member: Tilføj medlem
   button_add_watcher: "Tilføj tilsynsførende"
   button_annotate: "Anmærke"
@@ -1360,6 +1417,7 @@ da:
   button_expand_all: "Fold alle ud"
   button_favorite: "Add to favorites"
   button_filter: "Filter"
+  button_finish_setup: "Finish setup"
   button_generate: "Generér"
   button_list: "Liste"
   button_lock: "Lås"
@@ -1412,8 +1470,8 @@ da:
     failure_message: Consent failed, cannot proceed.
     title: User Consent
     decline_warning_message: You have declined to consent and have been logged out.
-    user_has_consented: User has consented to your configured statement at the given time.
-    not_yet_consented: User has not consented yet, will be requested upon next login.
+    user_has_consented: The user gave their consent to your [configured consent information text](consent_settings).
+    not_yet_consented: The user has not yet given their consent to your [configured consent information text](consent_settings). They will be reminded the next time they log in.
     contact_mail_instructions: Define the mail address that users can reach a data controller to perform data change or removal requests.
     contact_your_administrator: Please contact your administrator if you want to have your account deleted.
     contact_this_mail_address: Please contact %{mail_address} if you want to have your account deleted.
@@ -1801,11 +1859,15 @@ da:
       progress_mode_changed_to_status_based: "Progress calculation updated"
       status_changed: "Status '%{status_name}'"
       system_update: "OpenProject system update:"
+      work_package_duplicate_closed: "Duplicate work package updated:"
+      total_percent_complete_mode_changed_to_work_weighted_average: "Calculation of % Complete totals now weighted by Work."
+      total_percent_complete_mode_changed_to_simple_average: "Calculation of % Complete totals now based on a simple average of only % Complete values."
     cause_descriptions:
       work_package_predecessor_changed_times: by changes to predecessor %{link}
       work_package_parent_changed_times: by changes to parent %{link}
       work_package_children_changed_times: by changes to child %{link}
       work_package_related_changed_times: by changes to related %{link}
+      work_package_duplicate_closed: The status was automatically updated by the duplicated work package %{link}
       unaccessable_work_package_changed: by changes to a related work package
       working_days_changed:
         changed: "by changes to working days (%{changes})"
@@ -1828,6 +1890,10 @@ da:
           Progress calculation automatically <a href="%{href}" target="_blank">adjusted with version update</a>.
         totals_removed_from_childless_work_packages: >-
           Work and progress totals automatically removed for non-parent work packages with <a href="%{href}" target="_blank">version update</a>. This is a maintenance task and can be safely ignored.
+      total_percent_complete_mode_changed_to_work_weighted_average: >-
+        Child work packages without Work are ignored.
+      total_percent_complete_mode_changed_to_simple_average: >-
+        Work values of child work packages are ignored.
   links:
     configuration_guide: "Configuration guide"
     get_in_touch: "Har du spørgsmål? Kom i kontakt med os."
@@ -1947,6 +2013,7 @@ da:
   label_ical_access_key_generation_hint: "Automatically generated when subscribing to a calendar."
   label_ical_access_key_latest: "latest"
   label_ical_access_key_revoke: "Revoke"
+  label_add_column: "Add column"
   label_applied_status: "Tildelt status"
   label_archive_project: "Archive project"
   label_ascending: "Stigende"
@@ -1973,6 +2040,7 @@ da:
   label_api_doc: "API-dokumentation"
   label_backup: "Backup"
   label_backup_code: "Backup code"
+  label_basic_details: "Basic details"
   label_between: "mellem"
   label_blocked_by: "spærret af"
   label_blocks: "spærringer"
@@ -1991,6 +2059,7 @@ da:
   label_calendars_and_dates: "Calendars and dates"
   label_calendar_show: "Vis kalender"
   label_category: "Kategori"
+  label_completed: Completed
   label_consent_settings: "User Consent"
   label_wiki_menu_item: Wiki-menupunkt
   label_select_main_menu_item: Vælg nyt punkt i hovedmenu
@@ -2010,7 +2079,6 @@ da:
   label_check_uncheck_all_in_row: "Markér/Afmarkér alle i rækken"
   label_child_element: "Underelement"
   label_choices: "Choices"
-  label_chronological_order: "Oldest first"
   label_close_versions: "Luk afsluttede versioner"
   label_closed_work_packages: "lukket"
   label_collapse: "Fold sammen"
@@ -2115,8 +2183,9 @@ da:
   label_feeds_access_key_created_on: "RSS adgangsnøgle lavet for %{value} siden"
   label_feeds_access_key_type: "RSS"
   label_file_plural: "Filer"
-  label_filter_add: "Tilføj filter"
   label_filter: "Filtre"
+  label_filter_add: "Tilføj filter"
+  label_filter_by: "Filter by"
   label_filter_plural: "Filtre"
   label_filters_toggle: "Show/hide filters"
   label_float: "Flyd"
@@ -2139,6 +2208,7 @@ da:
   label_here: her
   label_hide: "Gem"
   label_history: "Historik"
+  label_hierarchy: "Hierarchy"
   label_hierarchy_leaf: "Hierarchy leaf"
   label_home: "Hjem"
   label_subject_or_id: "Subject or ID"
@@ -2150,6 +2220,7 @@ da:
   label_inactive: "Inactive"
   label_incoming_emails: "Indkommende e-mails"
   label_includes: "inkluderer"
+  label_incomplete: Incomplete
   label_include_sub_projects: Include sub-projects
   label_index_by_date: "Indhold efter dato"
   label_index_by_title: "Indhold efter titel"
@@ -2160,6 +2231,8 @@ da:
   label_internal: "Intern"
   label_introduction_video: "Introduction video"
   label_invite_user: "Invitér bruger"
+  label_item: "Item"
+  label_item_plural: "Items"
   label_share: "Del"
   label_share_project_list: "Share project list"
   label_share_work_package: "Share work package"
@@ -2201,6 +2274,7 @@ da:
   label_custom_favicon: "Custom favicon"
   label_custom_touch_icon: "Custom touch icon"
   label_logout: "Log ud"
+  label_mapping_for: "Mapping for: %{attribute}"
   label_main_menu: "Sidemenu"
   label_manage: "Manage"
   label_manage_groups: "Administrér grupper"
@@ -2235,8 +2309,10 @@ da:
   label_months_from: "måneder fra"
   label_more: "mere"
   label_more_than_ago: "mere end dage siden"
+  label_move_column_left: "Move column left"
+  label_move_column_right: "Move column right"
   label_move_work_package: "Flyt arbejdspakke"
-  label_my_account: "Min konto"
+  label_my_account: "Account settings"
   label_my_activity: "My activity"
   label_my_account_data: "Mine kontodata"
   label_my_avatar: "My avatar"
@@ -2263,6 +2339,7 @@ da:
   label_no_parent_page: "No parent page"
   label_nothing_display: "Intet at vise"
   label_nobody: "ingen"
+  label_not_configured: "Not configured"
   label_not_found: "not found"
   label_none: "ingen"
   label_none_parentheses: "(ingen)"
@@ -2325,7 +2402,7 @@ da:
   label_project_latest: "Seneste projekter"
   label_project_default_type: "Tillad tom typebetegnelse"
   label_project_hierarchy: "Projekthierarki"
-  label_project_mappings: "Enabled in projects"
+  label_project_mappings: "Projects"
   label_project_new: "Nyt projekt"
   label_project_plural: "Projekter"
   label_project_list_plural: "Project lists"
@@ -2356,6 +2433,7 @@ da:
   label_relation_new: "Ny forbindelse"
   label_release_notes: "Udgivelsesnoter"
   label_remaining_work: "Remaining work"
+  label_remove_column: "Remove column"
   label_remove_columns: "Fjern valgte kolonner"
   label_renamed: "omdøbt"
   label_reply_plural: "Svar"
@@ -2371,7 +2449,6 @@ da:
   label_required: "required"
   label_requires: "requires"
   label_result_plural: "Resultater"
-  label_reverse_chronological_order: "Newest first"
   label_revision: "Revidering"
   label_revision_id: "Revidering %{value}"
   label_revision_plural: "Revideringer"
@@ -2397,8 +2474,10 @@ da:
   label_show_completed_versions: "Vis færdige versioner"
   label_columns: "Kolonner"
   label_sort: "Sorter"
+  label_sort_ascending: "Sort ascending"
   label_sort_by: "Sorter efter %{value}"
   label_sorted_by: "er sorteret efter %{value}"
+  label_sort_descending: "Sort descending"
   label_sort_higher: "Flyt op"
   label_sort_highest: "Flyt til toppen"
   label_sort_lower: "Flyt ned"
@@ -2768,9 +2847,6 @@ da:
   notice_successful_update_custom_fields_added_to_project: |
     Successful update. The custom fields of the activated types are automatically activated
     on the work package form. <a href="%{url}" target="_blank">See more</a>.
-  notice_successful_update_custom_fields_added_to_type: |
-    Successful update. The active custom fields are automatically activated for
-    the associated projects of this type.
   notice_to_many_principals_to_display: "Der er for mange resultater.\nIndsnævr søgningen ved at indtste navnet på det nye medlem (eller gruppe)."
   notice_user_missing_authentication_method: User has yet to choose a password or another way to sign in.
   notice_user_invitation_resent: An invitation has been sent to %{email}.
@@ -2889,6 +2965,7 @@ da:
   permission_view_shared_work_packages: "View work package shares"
   permission_view_time_entries: "Vis anvendt tid"
   permission_view_timelines: "Vis tidslinjer"
+  permission_view_user_email: "View users' mail addresses"
   permission_view_wiki_edits: "Vis wiki-historik"
   permission_view_wiki_pages: "Vis wiki"
   permission_work_package_assigned: "Become assignee/responsible"
@@ -3117,7 +3194,9 @@ da:
   setting_default_language: "Forhåndsvalgt sprog"
   setting_default_projects_modules: "Forhåndsvalgt aktive moduler for nye projekter"
   setting_default_projects_public: "Nye projekter er på forhånd sat som offentlige"
+  setting_disable_password_login: "Disable password authentication"
   setting_diff_max_lines_displayed: "Højeste antal viste linjer for afvigelser"
+  setting_omniauth_direct_login_provider: "Direct login SSO provider"
   setting_display_subprojects_work_packages: "Vælg altid at vise underprojekters arbejdspakker ved hovedprojektet"
   setting_duration_format: "Duration format"
   setting_duration_format_hours_only: "Hours only"
@@ -3179,7 +3258,6 @@ da:
   setting_registration_footer: "Registration footer"
   setting_repositories_automatic_managed_vendor: "Automatisk repositorie-leverandørtype"
   setting_repositories_encodings: "Kodning af projektarkiv"
-  setting_repository_authentication_caching_enabled: "Aktivér cache-lagring ved forespørgsel om godkendelse af software til kontrol af version"
   setting_repository_storage_cache_minutes: "Repositorie diskstørrelsescache"
   setting_repository_checkout_display: "Vis checkout-instruktioner"
   setting_repository_checkout_base_url: "Standard Checkout-URL"
@@ -3195,6 +3273,13 @@ da:
   setting_sys_api_enabled: "Aktiver repositorieadministrations-webtjeneste"
   setting_sys_api_description: "Repositorieadministration-webtjenesten sørger for integration og brugertilladelse for adgang til repositorier."
   setting_time_format: "Tidspunkt"
+  setting_total_percent_complete_mode: "Calculation of % Complete hierarchy totals"
+  setting_total_percent_complete_mode_work_weighted_average: "Weighted by work"
+  setting_total_percent_complete_mode_work_weighted_average_caption_html: >-
+    The <i>total % Complete</i> will be weighted against the <i>Work</i> of each work package in the hierarchy. Work packages without <i>Work</i> will be ignored.
+  setting_total_percent_complete_mode_simple_average: "Simple average"
+  setting_total_percent_complete_mode_simple_average_caption_html: >-
+    <i>Work</i> is ignored and the <i>total % Complete</i> will be a simple average of <i>% Complete</i> values of work packages in the hierarchy.
   setting_accessibility_mode_for_anonymous: "Aktivér tilgængelighedstilstand for anonyme brugere"
   setting_user_format: "Users name format"
   setting_user_default_timezone: "Users default time zone"
@@ -3207,6 +3292,10 @@ da:
   setting_work_package_list_default_highlighted_attributes: "Default inline highlighted attributes"
   setting_working_days: "Working days"
   settings:
+    authentication:
+      single_sign_on: "Single Sign-On"
+      omniauth_direct_login_hint_html: >
+        If this option is active, login requests will redirect to the configured omniauth provider. The login dropdown and sign-in page will be disabled. <br/> <strong>Note:</strong> Unless you also disable password logins, with this option enabled, users can still log in internally by visiting the <code>%{internal_path}</code> login page.
     attachments:
       whitelist_text_html: >
         Define a list of valid file extensions and/or mime types for uploaded files. <br/> Enter file extensions (e.g., <code>%{ext_example}</code>) or mime types (e.g., <code>%{mime_example}</code>). <br/> Leave empty to allow any file type to be uploaded. Multiple values allowed (one line for each value).

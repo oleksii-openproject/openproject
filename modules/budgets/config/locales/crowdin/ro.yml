@@ -46,7 +46,7 @@ ro:
       budget: "Bugete"
   attributes:
     budget: "Buget"
-  button_add_budget_item: "Adăugați costurile planificate"
+  button_add_budget_item: "Adaugă costurile planificate"
   button_add_budget: "Adaugă bugetul"
   button_add_cost_type: "Adaugați acest câmp la un pachet de lucru"
   button_cancel_edit_budget: "Anularea bugetului de editare"

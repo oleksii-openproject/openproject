@@ -366,28 +366,7 @@ RSpec.describe "API V3 Authentication" do
     end
   end
 
-  describe(
-    "OIDC",
-    :webmock,
-    with_settings: {
-      plugin_openproject_openid_connect: {
-        "providers" => {
-          "keycloak" => {
-            "display_name" => "Keycloak",
-            "identifier" => "https://openproject.local",
-            "secret" => "9AWjVC3A4U1HLrZuSP4xiwHfw6zmgECn",
-            "host" => "keycloak.local",
-            "issuer" => "https://keycloak.local/realms/master",
-            "authorization_endpoint" => "/realms/master/protocol/openid-connect/auth",
-            "token_endpoint" => "/realms/master/protocol/openid-connect/token",
-            "userinfo_endpoint" => "/realms/master/protocol/openid-connect/userinfo",
-            "end_session_endpoint" => "https://keycloak.local/realms/master/protocol/openid-connect/logout",
-            "jwks_uri" => "https://keycloak.local/realms/master/protocol/openid-connect/certs"
-          }
-        }
-      }
-    }
-  ) do
+  describe("OIDC", :webmock) do
     let(:rsa_signed_access_token_without_aud) do
       "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICI5N0FteXZvUzhCRkZSZm01ODVHUGdBMTZHMUgyVjIyRWR4eHVBWVV1b0trIn0.eyJleHAiOjE3MjEyODM0MzAsImlhdCI6MTcyMTI4MzM3MCwianRpIjoiYzUyNmI0MzUtOTkxZi00NzRhLWFkMWItYzM3MTQ1NmQxZmQwIiwiaXNzIjoiaHR0cHM6Ly9rZXljbG9hay5sb2NhbC9yZWFsbXMvbWFzdGVyIiwiYXVkIjpbIm1hc3Rlci1yZWFsbSIsImFjY291bnQiXSwic3ViIjoiYjcwZTJmYmYtZWE2OC00MjBjLWE3YTUtMGEyODdjYjY4OWM2IiwidHlwIjoiQmVhcmVyIiwiYXpwIjoiaHR0cHM6Ly9vcGVucHJvamVjdC5sb2NhbCIsInNlc3Npb25fc3RhdGUiOiJlYjIzNTI0MC0wYjQ3LTQ4ZmEtOGIzZS1mM2IzMTBkMzUyZTMiLCJhY3IiOiIxIiwiYWxsb3dlZC1vcmlnaW5zIjpbImh0dHBzOi8vb3BlbnByb2plY3QubG9jYWwiXSwicmVhbG1fYWNjZXNzIjp7InJvbGVzIjpbImNyZWF0ZS1yZWFsbSIsImRlZmF1bHQtcm9sZXMtbWFzdGVyIiwib2ZmbGluZV9hY2Nlc3MiLCJhZG1pbiIsInVtYV9hdXRob3JpemF0aW9uIl19LCJyZXNvdXJjZV9hY2Nlc3MiOnsibWFzdGVyLXJlYWxtIjp7InJvbGVzIjpbInZpZXctcmVhbG0iLCJ2aWV3LWlkZW50aXR5LXByb3ZpZGVycyIsIm1hbmFnZS1pZGVudGl0eS1wcm92aWRlcnMiLCJpbXBlcnNvbmF0aW9uIiwiY3JlYXRlLWNsaWVudCIsIm1hbmFnZS11c2VycyIsInF1ZXJ5LXJlYWxtcyIsInZpZXctYXV0aG9yaXphdGlvbiIsInF1ZXJ5LWNsaWVudHMiLCJxdWVyeS11c2VycyIsIm1hbmFnZS1ldmVudHMiLCJtYW5hZ2UtcmVhbG0iLCJ2aWV3LWV2ZW50cyIsInZpZXctdXNlcnMiLCJ2aWV3LWNsaWVudHMiLCJtYW5hZ2UtYXV0aG9yaXphdGlvbiIsIm1hbmFnZS1jbGllbnRzIiwicXVlcnktZ3JvdXBzIl19LCJhY2NvdW50Ijp7InJvbGVzIjpbIm1hbmFnZS1hY2NvdW50IiwibWFuYWdlLWFjY291bnQtbGlua3MiLCJ2aWV3LXByb2ZpbGUiXX19LCJzY29wZSI6ImVtYWlsIHByb2ZpbGUiLCJzaWQiOiJlYjIzNTI0MC0wYjQ3LTQ4ZmEtOGIzZS1mM2IzMTBkMzUyZTMiLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsInByZWZlcnJlZF91c2VybmFtZSI6ImFkbWluIn0.cLgbN9kygRwthUx0R0FazPfIUeEUVnw4HnDgN-Hsnm9oXVr6MqmfTRKEI-6n62dlnVKsdadF_tWf3jp26d6neLj1zlR-vojwaHm8A08S9m6IeMr9e0CGiYVHjrJtEeTgq6P9cJJfe7uuhSSvlG3ltFPDxaAe14Dz3BjhLO3iaCRkWfAZjKmnW-IMzzzHfGH-7of7qCAlF5ObEax38mf1Q0OmsPA4_5po-FFtw7H7FfDjsr6EXgtdwloDePkk2XIHs2XsIo0YugVHC9GqCWgBA8MBvCirFivqM53paZMnjhpQH-xgTpYGWlw3WNbG2Rny2GoEwIxdYOUO2amDQ_zkrQ"
     end
@@ -400,6 +379,7 @@ RSpec.describe "API V3 Authentication" do
     let(:keys_request_stub) { nil }
 
     before do
+      create(:oidc_provider, slug: "keycloak")
       create(:user, identity_url: "keycloak:#{token_sub}")
       keys_request_stub
 
@@ -444,7 +424,7 @@ RSpec.describe "API V3 Authentication" do
               headers: {
                 "Accept" => "*/*",
                 "Accept-Encoding" => "gzip;q=1.0,deflate;q=0.6,identity;q=0.3",
-                "User-Agent" => "JSON::JWK::Set::Fetcher 2.7.2"
+                "User-Agent" => "JSON::JWK::Set::Fetcher 2.7.4"
               }
             )
             .to_return(status: 200, body: '{"keys":[{"kid":"CANAG6lJUPKqKDoWxxXL5wAHf2U18BAzm_LJm7RPTGk","kty":"RSA","alg":"RSA-OAEP","use":"enc","n":"nqJexS6n-SxKSDUxXp_dsNwDW6cZ4Rtgqq9ut_lp1CNSph5wTnLG3aQQsTEvx5o3-SZ-pHjJ0gtEpg7clAz-w-YQyZoAXkFtQqmZJxsmdS4K0yILxO3WUNdJQlutjmq-Ri50Senn5IV7yEYWLo8St1qzUqWZhp0HKudyty24triC9UJTK03W3_Tr5c1X8vKL8duAjvLB7p_sYUOrnLq5pD5lqwxVSAiN8qS5zVNZMrhGV5aN1vN_vue_tw8c2SVOCLLTrUh3441rYaeo-UwQZF7ZTm30xflqAIfe8qMoB20wtWYAXR0D5iqkkdEH4XanCYVm5vdUFIPPvXZhRDWoNQ","e":"AQAB","x5c":["MIICmzCCAYMCBgGQupeGPzANBgkqhkiG9w0BAQsFADARMQ8wDQYDVQQDDAZtYXN0ZXIwHhcNMjQwNzE2MDgwODMwWhcNMzQwNzE2MDgxMDEwWjARMQ8wDQYDVQQDDAZtYXN0ZXIwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCeol7FLqf5LEpINTFen92w3ANbpxnhG2Cqr263+WnUI1KmHnBOcsbdpBCxMS/Hmjf5Jn6keMnSC0SmDtyUDP7D5hDJmgBeQW1CqZknGyZ1LgrTIgvE7dZQ10lCW62Oar5GLnRJ6efkhXvIRhYujxK3WrNSpZmGnQcq53K3Lbi2uIL1QlMrTdbf9OvlzVfy8ovx24CO8sHun+xhQ6ucurmkPmWrDFVICI3ypLnNU1kyuEZXlo3W83++57+3DxzZJU4IstOtSHfjjWthp6j5TBBkXtlObfTF+WoAh97yoygHbTC1ZgBdHQPmKqSR0QfhdqcJhWbm91QUg8+9dmFENag1AgMBAAEwDQYJKoZIhvcNAQELBQADggEBAB/AGvP0gviPoJszj/oQgBsMpPGRHLpnTmrXnTaa7Xk2sgExAb4zUAwxGjtR347t697cpiKQYBkR2ndswnt93Sx/Ot+yn5BdYcNvZuEh5jb5bkH2V4h6/LrYljTymby+XPBEf+XLhBOjoI3SKtNJk4pEqVNwLuKKbObqJcE3G3VBVSdzRUcIrjZr7yAQeLnhczS3hJ0Ct6Y7S5Q6DK+/PU1+AvlW+7GfzpRMqVfLcqhNpRwdCVGlJYKaUJfIe1vav10D94xA0U1sKex3iA1S+1HlS2BCWx/0rXwgcquMpUZlOAKiT0K6SIFxBFFnM9eQbF97Dz7Bzw+jyqStGUcH9YA="],"x5t":"TuBfrOL00KXDrOWTv3jw7Uxx3hA","x5t#S256":"7su5lOXF5qcMuvp44ynsoyk3B0l9Sr_bOVlg768shpY"},{"kid":"97AmyvoS8BFFRfm585GPgA16G1H2V22EdxxuAYUuoKk","kty":"RSA","alg":"RS256","use":"sig","n":"jMB2r7BG4QJzLnA2_fgG1mxlh2RX_MSx0lc2lrPIVFGYBuAu8irwRLSexX5aQdD_AtnxLD4g9jiG6VEDwmWopEe0fr-QMl0IiES5tJuQMrjhajOkzr8xTYu6zl-knL0tu99iRbmKNYzEcv0TAgY_95n4gD5tPhYvY4gXuHrFKqYkJQPsSgoThlH7hAtfzsDt6yp3P2lQUESGg3pzc_J_NKnQkkggcNB06Hlz4DmcHxhWXK51P1V9cE7qh4PrhsJ-SOH5grcN9PtOZi6f2VlWdFdyisT-YehNklfVqBtdCLm7Ocghhl0HSgLuV-9dHCdwBLUpABsdsd0L3LRCUgRfjQ","e":"AQAB","x5c":["MIICmzCCAYMCBgGQupeFFTANBgkqhkiG9w0BAQsFADARMQ8wDQYDVQQDDAZtYXN0ZXIwHhcNMjQwNzE2MDgwODMwWhcNMzQwNzE2MDgxMDEwWjARMQ8wDQYDVQQDDAZtYXN0ZXIwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCMwHavsEbhAnMucDb9+AbWbGWHZFf8xLHSVzaWs8hUUZgG4C7yKvBEtJ7FflpB0P8C2fEsPiD2OIbpUQPCZaikR7R+v5AyXQiIRLm0m5AyuOFqM6TOvzFNi7rOX6ScvS2732JFuYo1jMRy/RMCBj/3mfiAPm0+Fi9jiBe4esUqpiQlA+xKChOGUfuEC1/OwO3rKnc/aVBQRIaDenNz8n80qdCSSCBw0HToeXPgOZwfGFZcrnU/VX1wTuqHg+uGwn5I4fmCtw30+05mLp/ZWVZ0V3KKxP5h6E2SV9WoG10Iubs5yCGGXQdKAu5X710cJ3AEtSkAGx2x3QvctEJSBF+NAgMBAAEwDQYJKoZIhvcNAQELBQADggEBAIoBCsOO0bXiVspoXkqdOts4+3sULbbp5aEwQscmLX017Zvv5jxdkZxUYk8L08lNB+WlC1ES4VlmtE06D0cWYErGpArJzVBKgYSA3CkA9veBEugHviMqfwg3suNc8S+GtaRBvpbVZtXydjjqA8GZ4eKhPoJLHHCX6X2Ad33Cdt0/ftucjTqAKVzzzgWZejy+ZKP6ybAqYJ+EZoPUXlyWT3uwcpGEJ3nzOYYGTfxOSmAwnH2v5Z/JWr9ex5o/+QBuBhFcg0z8NcHa3Z0E6ZC9GGxV7XztBqYicO+nONHTLCctoJmyXvLM4j8qIG2UQgPIiwIL0Jkz6xQAYyXvsb+LhM8="],"x5t":"BFrni6MoX-CJwtMT4vzij1HBSTI","x5t#S256":"-Ge3y4JRezxhGTDfbkNoz7prkokzYtbKQ9ardPtfcz4"}]}', headers: {})
@@ -515,7 +495,7 @@ RSpec.describe "API V3 Authentication" do
               headers: {
                 "Accept" => "*/*",
                 "Accept-Encoding" => "gzip;q=1.0,deflate;q=0.6,identity;q=0.3",
-                "User-Agent" => "JSON::JWK::Set::Fetcher 2.7.2"
+                "User-Agent" => "JSON::JWK::Set::Fetcher 2.7.4"
               }
             )
             .to_return(status: 200, body: '{"keys":[{"kid":"CANAG6lJUPKqKDoWxxXL5wAHf2U18BAzm_LJm7RPTGk","kty":"RSA","alg":"RSA-OAEP","use":"enc","n":"nqJexS6n-SxKSDUxXp_dsNwDW6cZ4Rtgqq9ut_lp1CNSph5wTnLG3aQQsTEvx5o3-SZ-pHjJ0gtEpg7clAz-w-YQyZoAXkFtQqmZJxsmdS4K0yILxO3WUNdJQlutjmq-Ri50Senn5IV7yEYWLo8St1qzUqWZhp0HKudyty24triC9UJTK03W3_Tr5c1X8vKL8duAjvLB7p_sYUOrnLq5pD5lqwxVSAiN8qS5zVNZMrhGV5aN1vN_vue_tw8c2SVOCLLTrUh3441rYaeo-UwQZF7ZTm30xflqAIfe8qMoB20wtWYAXR0D5iqkkdEH4XanCYVm5vdUFIPPvXZhRDWoNQ","e":"AQAB","x5c":["MIICmzCCAYMCBgGQupeGPzANBgkqhkiG9w0BAQsFADARMQ8wDQYDVQQDDAZtYXN0ZXIwHhcNMjQwNzE2MDgwODMwWhcNMzQwNzE2MDgxMDEwWjARMQ8wDQYDVQQDDAZtYXN0ZXIwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCeol7FLqf5LEpINTFen92w3ANbpxnhG2Cqr263+WnUI1KmHnBOcsbdpBCxMS/Hmjf5Jn6keMnSC0SmDtyUDP7D5hDJmgBeQW1CqZknGyZ1LgrTIgvE7dZQ10lCW62Oar5GLnRJ6efkhXvIRhYujxK3WrNSpZmGnQcq53K3Lbi2uIL1QlMrTdbf9OvlzVfy8ovx24CO8sHun+xhQ6ucurmkPmWrDFVICI3ypLnNU1kyuEZXlo3W83++57+3DxzZJU4IstOtSHfjjWthp6j5TBBkXtlObfTF+WoAh97yoygHbTC1ZgBdHQPmKqSR0QfhdqcJhWbm91QUg8+9dmFENag1AgMBAAEwDQYJKoZIhvcNAQELBQADggEBAB/AGvP0gviPoJszj/oQgBsMpPGRHLpnTmrXnTaa7Xk2sgExAb4zUAwxGjtR347t697cpiKQYBkR2ndswnt93Sx/Ot+yn5BdYcNvZuEh5jb5bkH2V4h6/LrYljTymby+XPBEf+XLhBOjoI3SKtNJk4pEqVNwLuKKbObqJcE3G3VBVSdzRUcIrjZr7yAQeLnhczS3hJ0Ct6Y7S5Q6DK+/PU1+AvlW+7GfzpRMqVfLcqhNpRwdCVGlJYKaUJfIe1vav10D94xA0U1sKex3iA1S+1HlS2BCWx/0rXwgcquMpUZlOAKiT0K6SIFxBFFnM9eQbF97Dz7Bzw+jyqStGUcH9YA="],"x5t":"TuBfrOL00KXDrOWTv3jw7Uxx3hA","x5t#S256":"7su5lOXF5qcMuvp44ynsoyk3B0l9Sr_bOVlg768shpY"},{"kid":"9755555S8BFFRfm585GPgA16G1H2V22EdxxuAYUuoKk","kty":"RSA","alg":"RS256","use":"sig","n":"jMB2r7BG4QJzLnA2_fgG1mxlh2RX_MSx0lc2lrPIVFGYBuAu8irwRLSexX5aQdD_AtnxLD4g9jiG6VEDwmWopEe0fr-QMl0IiES5tJuQMrjhajOkzr8xTYu6zl-knL0tu99iRbmKNYzEcv0TAgY_95n4gD5tPhYvY4gXuHrFKqYkJQPsSgoThlH7hAtfzsDt6yp3P2lQUESGg3pzc_J_NKnQkkggcNB06Hlz4DmcHxhWXK51P1V9cE7qh4PrhsJ-SOH5grcN9PtOZi6f2VlWdFdyisT-YehNklfVqBtdCLm7Ocghhl0HSgLuV-9dHCdwBLUpABsdsd0L3LRCUgRfjQ","e":"AQAB","x5c":["MIICmzCCAYMCBgGQupeFFTANBgkqhkiG9w0BAQsFADARMQ8wDQYDVQQDDAZtYXN0ZXIwHhcNMjQwNzE2MDgwODMwWhcNMzQwNzE2MDgxMDEwWjARMQ8wDQYDVQQDDAZtYXN0ZXIwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCMwHavsEbhAnMucDb9+AbWbGWHZFf8xLHSVzaWs8hUUZgG4C7yKvBEtJ7FflpB0P8C2fEsPiD2OIbpUQPCZaikR7R+v5AyXQiIRLm0m5AyuOFqM6TOvzFNi7rOX6ScvS2732JFuYo1jMRy/RMCBj/3mfiAPm0+Fi9jiBe4esUqpiQlA+xKChOGUfuEC1/OwO3rKnc/aVBQRIaDenNz8n80qdCSSCBw0HToeXPgOZwfGFZcrnU/VX1wTuqHg+uGwn5I4fmCtw30+05mLp/ZWVZ0V3KKxP5h6E2SV9WoG10Iubs5yCGGXQdKAu5X710cJ3AEtSkAGx2x3QvctEJSBF+NAgMBAAEwDQYJKoZIhvcNAQELBQADggEBAIoBCsOO0bXiVspoXkqdOts4+3sULbbp5aEwQscmLX017Zvv5jxdkZxUYk8L08lNB+WlC1ES4VlmtE06D0cWYErGpArJzVBKgYSA3CkA9veBEugHviMqfwg3suNc8S+GtaRBvpbVZtXydjjqA8GZ4eKhPoJLHHCX6X2Ad33Cdt0/ftucjTqAKVzzzgWZejy+ZKP6ybAqYJ+EZoPUXlyWT3uwcpGEJ3nzOYYGTfxOSmAwnH2v5Z/JWr9ex5o/+QBuBhFcg0z8NcHa3Z0E6ZC9GGxV7XztBqYicO+nONHTLCctoJmyXvLM4j8qIG2UQgPIiwIL0Jkz6xQAYyXvsb+LhM8="],"x5t":"BFrni6MoX-CJwtMT4vzij1HBSTI","x5t#S256":"-Ge3y4JRezxhGTDfbkNoz7prkokzYtbKQ9ardPtfcz4"}]}', headers: {})

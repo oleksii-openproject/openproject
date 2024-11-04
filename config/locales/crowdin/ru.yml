@@ -24,6 +24,22 @@ ru:
   activities:
     index:
       no_results_title_text: В течение этого периода времени не было никакой деятельности по проекту.
+    work_packages:
+      activity_tab:
+        no_results_title_text: Нет деятельности для отображения
+        no_results_description_text: "Выберите \"Показать всё\" для отображения всей деятельности и комментариев"
+        label_activity_show_all: "Показать всё"
+        label_activity_show_only_comments: "Показать только комментарии"
+        label_activity_show_only_changes: "Показать только изменения"
+        label_sort_asc: "Новые внизу"
+        label_sort_desc: "Новые вверху"
+        label_type_to_comment: "Введите комментарий"
+        label_submit_comment: "Отправить комментарий"
+        changed_on: "изменено"
+        created_on: "создано в"
+        changed: "изменено"
+        created: "создано"
+        commented: "прокомментировано"
   admin:
     plugins:
       no_results_title_text: В настоящее время плагины не установлены.
@@ -31,24 +47,17 @@ ru:
     custom_styles:
       color_theme: "Цветовая тема"
       color_theme_custom: "(Пользовательская)"
-      tab_interface: "Interface"
-      tab_branding: "Branding"
-      tab_pdf_export_styles: "PDF export styles"
+      tab_interface: "Интерфейс"
+      tab_branding: "Фирменное оформление"
+      tab_pdf_export_styles: "Стили экспорта PDF"
       colors:
         primary-button-color: "Основная кнопка"
         accent-color: "Оттенок"
         header-bg-color: "Фон заголовка"
         header-item-bg-hover-color: "Фон заголовка при наведении курсора"
-        header-item-font-color: "Шрифт заголовка"
-        header-item-font-hover-color: "Шрифт заголовка при наведении курсора"
-        header-border-bottom-color: "Граница заголовка"
         main-menu-bg-color: "Фон главного меню"
         main-menu-bg-selected-background: "Главное меню при выборе"
         main-menu-bg-hover-background: "Главное меню при наведении"
-        main-menu-font-color: "Шрифт главного меню"
-        main-menu-selected-font-color: "Шрифт главного меню при выборе"
-        main-menu-hover-font-color: "Шрифт главного меню при наведении"
-        main-menu-border-color: "Граница главного меню"
       custom_colors: "Настроить цвета"
       customize: "Установите в вашем OpenProject свой логотип и цвета."
       enterprise_notice: "В качестве особого \"Спасибо!\" за их финансовый вклад в разработку OpenProject, это крошечное дополнение доступно только для подписчиков службы поддержки Корпоративной версии."
@@ -82,7 +91,7 @@ ru:
         contact: "Свяжитесь с нами для демо"
       enterprise_info_html: "является дополнением Корпоративной версии <span class='spot-icon spot-icon_inline spot-icon_enterprise-addons'></span>."
       upgrade_info: "Пожалуйста, перейдите на платный тарифный план, чтобы активировать его и начать использовать в вашей команде."
-    jemalloc_allocator: Jemalloc memory allocator
+    jemalloc_allocator: Распределитель памяти Jemalloc
     journal_aggregation:
       explanation:
         text: "Личные действия пользователя (например, обновление пакета работ дважды) агрегируются в одно действие, если их разница во времени не больше указанной. Они будут отображаться как одно действие внутри приложения. Это также задерживает уведомление на такое же количество времени, уменьшая количество отправляемых писем и также повлияет на %{webhook_link} задержки."
@@ -210,6 +219,25 @@ ru:
         is_for_all_blank_slate:
           heading: Для всех проектов
           description: Это пользовательское поле включено во всех проектах, так как отмечена опция «Для всех проектов». Его нельзя отключить для отдельных проектов.
+      items:
+        actions: "Действия с элементом"
+        blankslate:
+          root:
+            title: "Your list of items is empty"
+            description: "Start by adding items to the custom field of type hierarchy. Each item can be used to create a hierarchy bellow it. To navigate and create sub-items inside a hierarchy click on the created item."
+          item:
+            title: This item doesn't have any hierarchy level below
+            description: Add items to this list to create sub-items inside another one
+        placeholder:
+          label: "Название элемента"
+          short: "Краткое имя"
+      notice:
+        remember_items_and_projects: "Не забудьте задать элементы и проекты на соответствующих вкладках для этого настраиваемого поля."
+      hierarchy:
+        subitems:
+          zero: no sub-items
+          one: 1 sub-item
+          other: "%{count} sub-items"
     text_add_new_custom_field: >
       Прежде чем добавлять настраиваемые поля в проект, нужно создать их.
     is_enabled_globally: "Разрешено в глобальном масштабе"
@@ -219,9 +247,10 @@ ru:
     reorder_alphabetical: "Переупорядочить значения по алфавиту"
     reorder_confirmation: "Внимание: Текущий порядок доступных значений будет утерян. Продолжить?"
     instructions:
-      is_required: ""
+      is_required: "Пометить пользовательское поле как обязательное. Это сделает заполнение поля обязательным при создании новых или обновлении существующих ресурсов."
       is_required_for_project: "Установите флажок, чтобы включить этот атрибут и сделать его обязательным для всех проектов. Он не может быть отключен для отдельных проектов."
-      is_for_all: ""
+      is_for_all: "Отметьте пользовательское поле как доступное во всех существующих и новых проектах."
+      multi_select: "Позволяет пользователю присвоить несколько значений этому пользовательскому полю."
       searchable: "Включать значения полей при использовании функции глобального поиска."
       searchable_for_project: "Установите флажок, чтобы сделать этот атрибут доступным в качестве фильтра в списках проектов."
       editable: "Разрешить редактирование поля самими пользователями."
@@ -233,6 +262,14 @@ ru:
       no_results_content_text: Создать новое настраиваемое поле
   concatenation:
     single: "или"
+  dry_validation:
+    errors:
+      rules:
+        label:
+          filled?: "должно быть заполнено"
+          not_unique: "должно быть уникальным в пределах одного уровня иерархии"
+    rules:
+      label: "Метка"
   global_search:
     placeholder: "Поиск в %{app_title}"
     overwritten_tabs:
@@ -478,23 +515,40 @@ ru:
       priority_color_text: |
         Щелкните, чтобы задать или изменить цвет этого приоритета.
         Этот цвет может использоваться для выделения пакетов работ в таблице.
+  reactions:
+    action_title: "React"
+    add_reaction: "Add reaction"
+    react_with: "React with %{reaction}"
+    and_user: "and %{user}"
+    and_others:
+      one: and 1 other
+      few: and %{count} others
+      many: and %{count} others
+      other: and %{count} others
+    reaction_by: "%{reaction} by"
   reportings:
     index:
       no_results_title_text: В данный момент статусы отчётов отсутствуют.
       no_results_content_text: Добавить статус отчёта
   statuses:
     edit:
+      status_color_text: |
+        Щелкните, чтобы задать или изменить цвет этого статуса.
+        Этот цвет отображается на кнопке статуса и может использоваться для выделения пакетов работ в таблице.
+      status_default_text: |-
+        Новые пакеты работ установлены по умолчанию с этим типом. Такие пакеты работ не могут быть доступны только для чтения.
+      status_excluded_from_totals_text: |-
+        Отметьте эту опцию, чтобы исключить пакеты работ с этим статусом из итогов Работы,
+        Оставшейся работы и % Завершения в иерархии.
+      status_percent_complete_text: |-
+        В <a href="%{href}">режиме расчета прогресса на основе статуса</a>% Завершения работы
+        автоматически устанавливается на это значение, когда выбран этот статус.
+        Игнорируется в режиме, основанном на работе.
       status_readonly_html: |
         Установите этот флажок, чтобы пометить пакеты работ как доступные только для чтения.
         Никакие атрибуты не могут быть изменены за исключением статуса.
         <br/>
         <strong>Примечание</ strong>: Будут применены унаследованные значения (например, элементов предков или потомков).
-      status_excluded_from_totals_text: |-
-        Отметьте эту опцию, чтобы исключить пакеты работ с этим статусом из итогов Работы,
-        Оставшейся работы и % Завершения в иерархии.
-      status_color_text: |
-        Щелкните, чтобы задать или изменить цвет этого статуса.
-        Этот цвет отображается на кнопке статуса и может использоваться для выделения пакетов работ в таблице.
     index:
       no_results_title_text: В данный момент статусы пакетов работ отсутствуют.
       no_results_content_text: Добавить новый статус
@@ -504,7 +558,7 @@ ru:
         is_readonly: "Только для чтения"
         excluded_from_totals: "Исключен из итогов"
   themes:
-    dark: "Темный (бета)"
+    dark: "Dark"
     light: "Светлая"
     light_high_contrast: "Светлый высокий контраст"
   types:
@@ -549,7 +603,7 @@ ru:
       could_not_be_saved: "Не удалось сохранить следующие пакеты работ:"
       none_could_be_saved: "Ни один из пакетов работ %{total} не может быть обновлен."
       x_out_of_y_could_be_saved: "%{failing} из %{total} пакетов работ не может быть обновлен, в то время как %{success} может."
-      selected_because_descendants: "В то время как выбрано %{selected} пакетов работ, в общей сложности затрагиваются %{total} пакетов работ, включая дочерние."
+      selected_because_descendants: "Хотя были выбраны пакеты работ %{selected}, всего затронуто %{total} пакетов работ, включая потомков."
       descendant: "дочерний рабочий пакет выбранного элемента"
     move:
       no_common_statuses_exists: "Статус не доступен для всех выбранных пакетов работ. Их статус изменен быть не может."
@@ -639,6 +693,7 @@ ru:
         editable: "Доступно для правки"
         field_format: "Формат"
         is_filter: "Используется в качестве фильтра"
+        is_for_all: "Для всех проектов"
         is_required: "Обязательно"
         max_length: "Максимальная длина"
         min_length: "Минимальная длина"
@@ -739,7 +794,7 @@ ru:
         is_closed: "Пакет работ закрыт"
         is_readonly: "Пакет работ только для просмотра"
         excluded_from_totals: "Исключить из расчета итогов в иерархии"
-        default_done_ratio: "% Завершено"
+        default_done_ratio: "% Завершения"
       time_entry:
         activity: "Деятельность"
         hours: "Часы"
@@ -767,7 +822,6 @@ ru:
         consented_at: "Согласен с"
       user_preference:
         comments_sorting: "Показывать комментарии"
-        hide_mail: "Скрывать мой адрес электронной почты"
         impaired: "Режим отображения для людей с ограниченными возможностями"
         time_zone: "Часовой пояс"
         auto_hide_popups: "Автоматически скрывать успешные уведомления"
@@ -789,7 +843,7 @@ ru:
         derived_done_ratio: "Всего % завершено"
         derived_remaining_hours: "Всего оставшихся работ"
         derived_remaining_time: "Всего оставшихся работ"
-        done_ratio: "% Завершено"
+        done_ratio: "% Завершения"
         duration: "Продолжительность"
         end_insertion: "Завершение вставки"
         end_deletion: "Завершение удаления"
@@ -803,7 +857,7 @@ ru:
         parent_issue: "Родитель"
         parent_work_package: "Родитель"
         priority: "Приоритет"
-        progress: "% Завершено"
+        progress: "% Завершения"
         readonly: "Только для чтения"
         remaining_hours: "Оставшиеся часы"
         remaining_time: "Оставшиеся часы"
@@ -826,7 +880,7 @@ ru:
         blank: "не может быть пустым."
         blank_nested: "должно быть установлено свойство '%{property}'."
         cannot_delete_mapping: "требуется. Невозможно удалить."
-        is_for_all_cannot_modify: "предназначен для всех. Не может быть изменен."
+        is_for_all_cannot_modify: "предназначено для всех проектов и поэтому не может быть изменено."
         cant_link_a_work_package_with_a_descendant: "Пакет работ не может быть связан с одной из своих подзадач."
         circular_dependency: "Это отношение создаст циклическую зависимость."
         confirmation: "не совпадает со значением поля %{attribute}."
@@ -857,10 +911,12 @@ ru:
         not_available: "недоступно из-за конфигурации системы."
         not_deletable: "не может быть удален."
         not_current_user: "не является текущим пользователем."
+        not_found: "not found."
         not_a_date: "не является допустимой датой."
         not_a_datetime: "дата и время не являются допустимыми."
         not_a_number: "не является числом."
         not_allowed: "неверно, ввиду отсутствия прав."
+        not_json: "не является допустимым объектом JSON."
         not_an_integer: "не является целым числом."
         not_an_iso_date: "недопустимая дата. Требуемый формат: гггг-мм-дд."
         not_same_project: "не принадлежит тому же проекту."
@@ -935,7 +991,7 @@ ru:
               blank: "является обязательным. Пожалуйста, выберите имя."
               not_unique: "уже используется. Пожалуйста, выберите другое имя."
         meeting:
-          error_conflict: "Unable to save because the meeting was updated by someone else in the meantime. Please reload the page."
+          error_conflict: "Невозможно сохранить, потому что встреча была обновлена кем-то другим за это время. Пожалуйста, перезагрузите страницу."
         notifications:
           at_least_one_channel: "Нужно указать хотя бы один канал для отправки уведомлений."
           attributes:
@@ -1362,6 +1418,9 @@ ru:
   button_actions: "Действия"
   button_add: "Добавить"
   button_add_comment: "Добавить комментарий"
+  button_add_item_above: "Add item above"
+  button_add_item_below: "Add item below"
+  button_add_sub_item: "Add sub-item"
   button_add_member: Добавить участника
   button_add_watcher: "Добавить наблюдателя"
   button_annotate: "Комментировать"
@@ -1395,6 +1454,7 @@ ru:
   button_expand_all: "Развернуть все"
   button_favorite: "Добавить в избранное"
   button_filter: "Фильтр"
+  button_finish_setup: "Завершить настройку"
   button_generate: "Генерировать"
   button_list: "Список"
   button_lock: "Заблокировать"
@@ -1447,8 +1507,8 @@ ru:
     failure_message: Согласие не получено, продолжение невозможно.
     title: Согласие пользователя
     decline_warning_message: Вы отказались согласиться и были занесены в журнал.
-    user_has_consented: На данный момент пользователь согласен с вашей формулировкой.
-    not_yet_consented: Согласие от пользователя пока не получено и будет у него запрошено при следующем его входе в систему.
+    user_has_consented: Пользователь дал свое согласие на [настроенный текст информации о согласии](consent_settings).
+    not_yet_consented: Пользователь еще не дал своего согласия на [настроенный текст информации о согласии](consent_settings). При следующем входе в систему ему об этом напомнят.
     contact_mail_instructions: Укажите адрес электронной почты для контроля пользователями выполнения запросов на изменение или удаление данных.
     contact_your_administrator: Пожалуйста, обратитесь к администратору, если хотите, чтобы ваша учетная запись была удалена.
     contact_this_mail_address: Пожалуйста, свяжитесь по %{mail_address}, если хотите, чтобы ваша учетная запись была удалена.
@@ -1553,9 +1613,9 @@ ru:
       half_a_minute: "полминуты"
       less_than_x_minutes:
         one: "менее минуты"
-        few: "менее %{count} минуты"
-        many: "менее %{count} минуты"
-        other: "менее %{count} минуты"
+        few: "менее %{count} минут"
+        many: "менее %{count} минут"
+        other: "менее %{count} минут"
       less_than_x_seconds:
         one: "меньше секунды"
         few: "менее %{count} секунд"
@@ -1587,10 +1647,10 @@ ru:
         many: "%{count} часов"
         other: "%{count} часов"
       x_hours_abbreviated:
-        one: "1 час"
-        few: "%{count} часов"
-        many: "%{count} часов"
-        other: "%{count} часов"
+        one: "1 ч"
+        few: "%{count} ч"
+        many: "%{count} ч"
+        other: "%{count} ч"
       x_weeks:
         one: "1 неделя"
         few: "%{count} недель"
@@ -1604,7 +1664,7 @@ ru:
       x_years:
         one: "1 год"
         few: "%{count} года"
-        many: "%{count} years"
+        many: "%{count} лет"
         other: "%{count} лет"
       x_seconds:
         one: "1 секунда"
@@ -1717,7 +1777,7 @@ ru:
   error_menu_item_not_saved: Пункт меню не может быть сохранен
   error_wiki_root_menu_item_conflict: >
     Невозможно переименовать "%{old_name}" в "%{new_name}" из-за конфликта между получающимся и существующим пунктами меню "%{existing_caption}" (%{existing_identifier}).
-  error_external_authentication_failed_message: "An error occurred during external authentication: %{message}"
+  error_external_authentication_failed_message: "Во время внешней аутентификации произошла ошибка: %{message}"
   error_attribute_not_highlightable: "Атрибуты не выделяются: %{attributes}"
   events:
     changeset: "Набор изменений отредактирован"
@@ -1872,11 +1932,15 @@ ru:
       progress_mode_changed_to_status_based: "Расчет прогресса обновлен"
       status_changed: "Статус '%{status_name}'"
       system_update: "Обновление системы OpenProject:"
+      work_package_duplicate_closed: "Дубликат пакета работ обновлён:"
+      total_percent_complete_mode_changed_to_work_weighted_average: "Вычисление % Завершения теперь взвешивается по Работе."
+      total_percent_complete_mode_changed_to_simple_average: "Вычисление % Завершения теперь основано на среднем арифметическом % Завершения."
     cause_descriptions:
       work_package_predecessor_changed_times: внесением изменений в предшественника %{link}
       work_package_parent_changed_times: внесением изменений в родительский %{link}
       work_package_children_changed_times: внесением изменений в дочерний элемент %{link}
       work_package_related_changed_times: внесением изменений в связанный элемент %{link}
+      work_package_duplicate_closed: Статус был автоматически обновлен дубликатом пакета работ %{link}
       unaccessable_work_package_changed: внесением изменений в связанный пакет работ
       working_days_changed:
         changed: "внесением изменений в рабочие дни (%{changes})"
@@ -1889,7 +1953,7 @@ ru:
       progress_mode_changed_to_status_based: Расчет прогресса установлен в режим "На основе статуса"
       status_excluded_from_totals_set_to_false_message: теперь включено в иерархию итогов
       status_excluded_from_totals_set_to_true_message: теперь исключено из иерархии итогов
-      status_percent_complete_changed: "% Complete changed from %{old_value}% to %{new_value}%"
+      status_percent_complete_changed: "% Завершения изменен с %{old_value}% на %{new_value}%"
       system_update:
         file_links_journal: >
           Теперь на вкладке Активность появится активность, связанная со ссылками файлов (файлы, хранящиеся во внешних хранилищах). Ниже описывается деятельность по уже существующим ссылкам:
@@ -1899,6 +1963,10 @@ ru:
           Расчет прогресса автоматически <a href="%{href}" target="_blank">корректируется при обновлении версии</a>.
         totals_removed_from_childless_work_packages: >-
           При <a href="%{href}" target="_blank">обновлении версии</a> автоматически удаляются итоги работы и прогресса для неродительских пакетов работ. Это задача по обслуживанию, и её можно смело игнорировать.
+      total_percent_complete_mode_changed_to_work_weighted_average: >-
+        Дочерние пакеты работ без Работы игнорируются.
+      total_percent_complete_mode_changed_to_simple_average: >-
+        Значения Работы дочерних пакетов работ игнорируются.
   links:
     configuration_guide: "Руководство по конфигурации"
     get_in_touch: "У вас есть вопросы? Свяжитесь с нами."
@@ -1998,8 +2066,8 @@ ru:
   label_additional_workflow_transitions_for_assignee: "Дополнительные переходы допускается, если пользователь является правопреемником"
   label_additional_workflow_transitions_for_author: "Дополнительные переходы допускаются, если пользователь является автором"
   label_administration: "Администрирование"
-  label_interface_colors: "Interface colors"
-  label_interface_colors_description: "These colors control how the application looks. If you modify them the theme will automatically be changed to Custom theme, but we can’t assure the compliance of the accessibility contrast minimums (WCAG 2.1). "
+  label_interface_colors: "Цвета интерфейса"
+  label_interface_colors_description: "Эти цвета определяют внешний вид приложения. Если вы их измените, то тема будет автоматически изменена на пользовательскую тему, Но мы не можем гарантировать соответствие минимальным требованиям по контрасту (WCAG 2.1). "
   label_age: "Возраст"
   label_ago: "дней назад"
   label_all: "все"
@@ -2018,6 +2086,7 @@ ru:
   label_ical_access_key_generation_hint: "Автоматически генерируется при подписке на календарь."
   label_ical_access_key_latest: "последний"
   label_ical_access_key_revoke: "Отозвать"
+  label_add_column: "Добавить столбец"
   label_applied_status: "Прикладной статус"
   label_archive_project: "Архивировать проект"
   label_ascending: "По возрастанию"
@@ -2044,6 +2113,7 @@ ru:
   label_api_doc: "Документация по API"
   label_backup: "Резервное копирование"
   label_backup_code: "Код резервного копирования"
+  label_basic_details: "Основные сведения"
   label_between: "между"
   label_blocked_by: "заблокировано"
   label_blocks: "блоки"
@@ -2062,6 +2132,7 @@ ru:
   label_calendars_and_dates: "Календари и даты"
   label_calendar_show: "Показать календарь"
   label_category: "Категория"
+  label_completed: Завершено
   label_consent_settings: "Согласие пользователя"
   label_wiki_menu_item: Пункт меню wiki
   label_select_main_menu_item: Выберите новый пункт главного меню
@@ -2081,7 +2152,6 @@ ru:
   label_check_uncheck_all_in_row: "Поставить/снять все флажки в строке"
   label_child_element: "Дочерний элемент"
   label_choices: "Выбор"
-  label_chronological_order: "Самый старый в начале"
   label_close_versions: "Закрыть завершённые этапы"
   label_closed_work_packages: "закрыт"
   label_collapse: "свернуть"
@@ -2113,7 +2183,7 @@ ru:
   label_custom_field_plural: "Пользовательские поля"
   label_custom_field_default_type: "Пустой тип"
   label_custom_style: "Дизайн"
-  label_custom_style_description: "Choose how OpenProject looks to you with themes, select your default colors to use in the app and how exports look like."
+  label_custom_style_description: "Выберите, как OpenProject будет выглядеть с помощью тем, выберите цвета по умолчанию, которые Вы будете использовать в приложении, и как будет выглядеть экспорт."
   label_dashboard: "Панель"
   label_database_version: "Версия PostgreSQL"
   label_date: "Дата"
@@ -2186,8 +2256,9 @@ ru:
   label_feeds_access_key_created_on: "Ключ доступа RSS, созданный %{value} назад"
   label_feeds_access_key_type: "RSS"
   label_file_plural: "Файлы"
-  label_filter_add: "Добавить фильтр"
   label_filter: "Фильтры"
+  label_filter_add: "Добавить фильтр"
+  label_filter_by: "Фильтровать по"
   label_filter_plural: "Фильтры"
   label_filters_toggle: "Показать/скрыть фильтры"
   label_float: "Плавающий"
@@ -2210,6 +2281,7 @@ ru:
   label_here: здесь
   label_hide: "Скрыть"
   label_history: "История"
+  label_hierarchy: "Иерархия"
   label_hierarchy_leaf: "Уровень иерархии"
   label_home: "Главная"
   label_subject_or_id: "Тема или ID"
@@ -2221,6 +2293,7 @@ ru:
   label_inactive: "Неактивен"
   label_incoming_emails: "Входящие e-mail"
   label_includes: "включает"
+  label_incomplete: Не завершено
   label_include_sub_projects: Включить подпроекты
   label_index_by_date: "Индекс по дате"
   label_index_by_title: "Индекс по названию"
@@ -2231,12 +2304,14 @@ ru:
   label_internal: "Внутренние"
   label_introduction_video: "Вводное видео"
   label_invite_user: "Пригласить пользователя"
+  label_item: "Элемент"
+  label_item_plural: "Элементы"
   label_share: "Поделиться"
   label_share_project_list: "Поделитесь списком проектов"
   label_share_work_package: "Поделиться пакетом работ"
   label_show_all_registered_users: "Показать всех зарегистрированных пользователей"
-  label_show_less: "Show less"
-  label_show_more: "Show more"
+  label_show_less: "Показать меньше"
+  label_show_more: "Показать больше"
   label_journal: "Журнал"
   label_journal_diff: "Описание сравнения"
   label_language: "Язык"
@@ -2272,6 +2347,7 @@ ru:
   label_custom_favicon: "Пользовательские иконки"
   label_custom_touch_icon: "Пользовательский значок логотипа"
   label_logout: "Выход"
+  label_mapping_for: "Привязки для: %{attribute}"
   label_main_menu: "Боковое меню"
   label_manage: "Управление"
   label_manage_groups: "Управление группами"
@@ -2306,8 +2382,10 @@ ru:
   label_months_from: "месяцев с"
   label_more: "Более"
   label_more_than_ago: "больше, чем дней назад"
+  label_move_column_left: "Переместить столбец влево"
+  label_move_column_right: "Переместить столбец вправо"
   label_move_work_package: "Переместить пакет работ"
-  label_my_account: "Моя учетная запись"
+  label_my_account: "Настройки учетной записи"
   label_my_activity: "Моя активность"
   label_my_account_data: "Данные моей учетной записи"
   label_my_avatar: "Мой аватар"
@@ -2334,6 +2412,7 @@ ru:
   label_no_parent_page: "Без родительской страницы"
   label_nothing_display: "Нет данных для отображения"
   label_nobody: "никто"
+  label_not_configured: "Не настроено"
   label_not_found: "не найдено"
   label_none: "Ничего"
   label_none_parentheses: "(нет)"
@@ -2396,7 +2475,7 @@ ru:
   label_project_latest: "Последние проекты"
   label_project_default_type: "Разрешить пустой тип"
   label_project_hierarchy: "Иерархия проектов"
-  label_project_mappings: "Включено в проектах"
+  label_project_mappings: "Проекты"
   label_project_new: "Новый проект"
   label_project_plural: "Проекты"
   label_project_list_plural: "Списки проектов"
@@ -2427,6 +2506,7 @@ ru:
   label_relation_new: "Новая связь"
   label_release_notes: "Список изменений"
   label_remaining_work: "Оставшиеся часы"
+  label_remove_column: "Удалить столбец"
   label_remove_columns: "Удалить выбранные столбцы"
   label_renamed: "переименовано"
   label_reply_plural: "Ответы"
@@ -2442,7 +2522,6 @@ ru:
   label_required: "требуется"
   label_requires: "требуется"
   label_result_plural: "Результаты"
-  label_reverse_chronological_order: "Самый новый в начале"
   label_revision: "Редакция"
   label_revision_id: "Редакция %{value}"
   label_revision_plural: "Редакции"
@@ -2468,8 +2547,10 @@ ru:
   label_show_completed_versions: "Показать завершённые этапы"
   label_columns: "Столбцы"
   label_sort: "Сортировать"
+  label_sort_ascending: "Сортировать по возрастанию"
   label_sort_by: "Сортировать по %{value}"
   label_sorted_by: "отсортировано по %{value}"
+  label_sort_descending: "Сортировать по убыванию"
   label_sort_higher: "Переместить вверх"
   label_sort_highest: "В начало"
   label_sort_lower: "Переместить вниз"
@@ -2840,9 +2921,6 @@ ru:
   notice_successful_update_custom_fields_added_to_project: |
     Успешное обновление. Пользовательские поля активированных типов автоматически активируются
     в форме пакета работ. <a href="%{url}" target="_blank">Подробнее</a>.
-  notice_successful_update_custom_fields_added_to_type: |
-    Успешное обновление. Активные настраиваемые поля автоматически активируются для
-    связанных проектов этого типа.
   notice_to_many_principals_to_display: "Слишком много результатов. Сузьте поиск, введя имя нового участника (или группы)."
   notice_user_missing_authentication_method: Пользователь еще не выбрал пароль или другой способ авторизации.
   notice_user_invitation_resent: Приглашение было отправлено на %{email}.
@@ -2963,6 +3041,7 @@ ru:
   permission_view_shared_work_packages: "Просмотр общих ресурсов пакета работ"
   permission_view_time_entries: "Просмотр потраченного времени"
   permission_view_timelines: "Просмотр графиков"
+  permission_view_user_email: "Просмотр почтовых адресов пользователей"
   permission_view_wiki_edits: "Просмотр истории wiki"
   permission_view_wiki_pages: "Просмотр wiki"
   permission_work_package_assigned: "Назначиться/стать отвественным"
@@ -3191,7 +3270,9 @@ ru:
   setting_default_language: "Язык по умолчанию"
   setting_default_projects_modules: "По умолчанию доступные в новых проектах модули"
   setting_default_projects_public: "По умолчанию новые проекты видимы всем"
+  setting_disable_password_login: "Отключить аутентификацию по паролю"
   setting_diff_max_lines_displayed: "Максимальное количество отображаемых строк diff(разницы)"
+  setting_omniauth_direct_login_provider: "Прямая аутентификация у провайдера SSO"
   setting_display_subprojects_work_packages: "Отображать пакеты работ подпроектов в основном проекте по-умолчанию"
   setting_duration_format: "Формат длительности"
   setting_duration_format_hours_only: "Только часы"
@@ -3238,13 +3319,13 @@ ru:
   setting_password_min_length: "Минимальная длина"
   setting_password_min_adhered_rules: "Минимальное количество необходимых классов"
   setting_per_page_options: "Количество объектов на страницу"
-  setting_percent_complete_on_status_closed: "% Complete when status is closed"
-  setting_percent_complete_on_status_closed_no_change: "No change"
+  setting_percent_complete_on_status_closed: "% Завершения, когда статус закрыт"
+  setting_percent_complete_on_status_closed_no_change: "Без изменений"
   setting_percent_complete_on_status_closed_no_change_caption_html: >-
-    The value of <i>% Complete</i> will not change even when a work package is closed.
-  setting_percent_complete_on_status_closed_set_100p: "Automatically set to 100%"
+    Значение <i>% Завершения</i> не изменится, даже если пакет работ будет закрыт.
+  setting_percent_complete_on_status_closed_set_100p: "Автоматически устанавливается на 100%"
   setting_percent_complete_on_status_closed_set_100p_caption: >-
-    A closed work package is considered complete.
+    Закрытый пакет работ считается завершенным.
   setting_plain_text_mail: "Обычный текст электронной почты (не HTML)"
   setting_protocol: "Протокол"
   setting_project_gantt_query: "Портфолио проекта в виде диаграммы Ганта"
@@ -3253,7 +3334,6 @@ ru:
   setting_registration_footer: "Нижний колонтитул регистрации"
   setting_repositories_automatic_managed_vendor: "Автоматический тип поставщика репозитория"
   setting_repositories_encodings: "Кодировка репозиториев"
-  setting_repository_authentication_caching_enabled: "Разрешить кэширование при аутентификации в программе управления версиями ПО"
   setting_repository_storage_cache_minutes: "Размер кеша на диске репозитория"
   setting_repository_checkout_display: "Показать инструкции проверки"
   setting_repository_checkout_base_url: "Проверить основной URL"
@@ -3269,6 +3349,13 @@ ru:
   setting_sys_api_enabled: "Разрешить веб-сервис управления репозиторием"
   setting_sys_api_description: "Веб-сервис управления репозиторием обеспечивает интеграцию и авторизацию пользователя для доступа к репозиторию."
   setting_time_format: "Время"
+  setting_total_percent_complete_mode: "Расчет общего % Завершения полной иерархии"
+  setting_total_percent_complete_mode_work_weighted_average: "Взвешенное по работе"
+  setting_total_percent_complete_mode_work_weighted_average_caption_html: >-
+    <i>Общий % Завершения</i> будет взвешен по  <i>Работе</i> каждого пакета работ в иерархии. Пакеты работ без <i>Работы</i> будут игнорироваться.
+  setting_total_percent_complete_mode_simple_average: "Среднее арифметическое"
+  setting_total_percent_complete_mode_simple_average_caption_html: >-
+    <i>Работа</i> игнорируется, и <i>Общий % Завершения</i> будет средним арифметическим значением <i>% Завершения</i> пакетов работ в иерархии.
   setting_accessibility_mode_for_anonymous: "Разрешить режим доступа людей с ограниченными возможностями для анонимных пользователей"
   setting_user_format: "Формат имени пользователя"
   setting_user_default_timezone: "Часовой пояс пользователя по умолчанию"
@@ -3281,6 +3368,10 @@ ru:
   setting_work_package_list_default_highlighted_attributes: "Выделенные встроенные атрибуты по умолчанию"
   setting_working_days: "Рабочие дни"
   settings:
+    authentication:
+      single_sign_on: "Единый вход"
+      omniauth_direct_login_hint_html: >
+        If this option is active, login requests will redirect to the configured omniauth provider. The login dropdown and sign-in page will be disabled. <br/> <strong>Note:</strong> Unless you also disable password logins, with this option enabled, users can still log in internally by visiting the <code>%{internal_path}</code> login page.
     attachments:
       whitelist_text_html: >
         Определите список допустимых расширений файлов и/или mime типов для загруженных файлов. <br/> Введите расширения файлов (например, <code>%{ext_example}</code>) или mime типы (e. ., <code>%{mime_example}</code>). <br/> Оставьте пустым, чтобы разрешить загрузку любого типа файла. Допустимы несколько значений (одна строка для каждого значения).
@@ -3432,8 +3523,8 @@ ru:
   text_work_packages_destroy_confirmation: "Вы уверены, что хотите удалить выбранные пакет(-ы) работ?"
   text_work_packages_ref_in_commit_messages: "Привязка и фиксация пакетов работ в сообщениях коммитов"
   text_journal_added: "%{label} %{value} добавлено"
-  text_journal_attachment_added: "%{label} %{value} добавлено как вложение"
-  text_journal_attachment_deleted: "%{label} %{old} удален как вложение"
+  text_journal_attachment_added: "%{label} %{value} добавлено вложение"
+  text_journal_attachment_deleted: "%{label} %{old} удалено вложение"
   text_journal_changed_plain: "%{label} изменено с %{old} %{linebreak}на %{new}"
   text_journal_changed_no_detail: "%{label} обновлено"
   text_journal_changed_with_diff: "%{label} изменена (%{link})"

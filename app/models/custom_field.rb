@@ -43,8 +43,10 @@ class CustomField < ApplicationRecord
 
   has_one :hierarchy_root,
           class_name: "CustomField::Hierarchy::Item",
-          dependent: :delete, # todo: cascade into children with service
+          dependent: :destroy,
           inverse_of: "custom_field"
+
+  scope :hierarchy_root_and_children, -> { includes(hierarchy_root: { children: :children }) }
 
   acts_as_list scope: [:type]
 
@@ -289,8 +291,12 @@ class CustomField < ApplicationRecord
     field_format == "bool"
   end
 
+  def field_format_hierarchy?
+    field_format == "hierarchy"
+  end
+
   def multi_value_possible?
-    version? || user? || list?
+    version? || user? || list? || field_format_hierarchy?
   end
 
   def allow_non_open_versions_possible?

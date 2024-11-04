@@ -537,7 +537,7 @@ module Settings
       },
       host_name: {
         format: :string,
-        default: "localhost:3000",
+        default: -> { "#{ENV.fetch('HOST', 'localhost')}:#{ENV.fetch('PORT', 3000)}" },
         default_by_env: {
           # We do not want to set a localhost host name in production
           production: nil
@@ -876,9 +876,6 @@ module Settings
       repositories_encodings: {
         default: nil,
         format: :string
-      },
-      repository_authentication_caching_enabled: {
-        default: true
       },
       repository_checkout_data: {
         default: {

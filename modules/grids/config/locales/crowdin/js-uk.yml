@@ -27,9 +27,6 @@ uk:
         project_description:
           title: 'Опис проекту'
           no_results: "Опис ще не створено. Можна вказати в налаштуваннях проекту."
-        project_details:
-          title: 'Деталі проекту'
-          no_results: 'У проектів немає жодних власних полів.'
         project_status:
           title: 'Статус Проекту'
           not_started: 'Не почато'

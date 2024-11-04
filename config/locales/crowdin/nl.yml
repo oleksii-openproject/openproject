@@ -24,6 +24,22 @@ nl:
   activities:
     index:
       no_results_title_text: Er is geen activiteit voor deze projecten binnen deze periode.
+    work_packages:
+      activity_tab:
+        no_results_title_text: No activity to display
+        no_results_description_text: "Choose \"Show everything\" to show all activity and comments"
+        label_activity_show_all: "Show everything"
+        label_activity_show_only_comments: "Show comments only"
+        label_activity_show_only_changes: "Show changes only"
+        label_sort_asc: "Newest at the bottom"
+        label_sort_desc: "Newest on top"
+        label_type_to_comment: "Type here to comment"
+        label_submit_comment: "Submit comment"
+        changed_on: "changed on"
+        created_on: "created this on"
+        changed: "changed"
+        created: "created"
+        commented: "commented"
   admin:
     plugins:
       no_results_title_text: There are currently no plugins installed.
@@ -39,16 +55,9 @@ nl:
         accent-color: "Accent"
         header-bg-color: "Koptekst achtergrond"
         header-item-bg-hover-color: "Header background on hover"
-        header-item-font-color: "Lettertype koptekst"
-        header-item-font-hover-color: "Koptekst lettertype bij zweven"
-        header-border-bottom-color: "Koptekst rand"
         main-menu-bg-color: "Achtergrond hoofdmenu"
         main-menu-bg-selected-background: "Hoofdmenu wanneer geselecteerd"
         main-menu-bg-hover-background: "Hoofd menu bij zweven"
-        main-menu-font-color: "Lettertype hoofdmenu"
-        main-menu-selected-font-color: "Lettertype hoofdmenu wanneer geselecteerd"
-        main-menu-hover-font-color: "Lettertype hoofdmenu bij zweven"
-        main-menu-border-color: "Hoofd menu rand"
       custom_colors: "Aangepaste kleuren"
       customize: "Pas uw OpenProject installatie aan met uw eigen logo en kleuren."
       enterprise_notice: "As a special 'Thank you!' for their financial contribution to develop OpenProject, this tiny add-on is only available for Enterprise edition support subscribers."
@@ -208,6 +217,25 @@ nl:
         is_for_all_blank_slate:
           heading: For all projects
           description: This custom field is enabled in all projects since the "For all projects" option is checked. It cannot be deactivated for individual projects.
+      items:
+        actions: "Item actions"
+        blankslate:
+          root:
+            title: "Your list of items is empty"
+            description: "Start by adding items to the custom field of type hierarchy. Each item can be used to create a hierarchy bellow it. To navigate and create sub-items inside a hierarchy click on the created item."
+          item:
+            title: This item doesn't have any hierarchy level below
+            description: Add items to this list to create sub-items inside another one
+        placeholder:
+          label: "Item label"
+          short: "Short name"
+      notice:
+        remember_items_and_projects: "Remember to set items and projects in the respective tabs for this custom field."
+      hierarchy:
+        subitems:
+          zero: no sub-items
+          one: 1 sub-item
+          other: "%{count} sub-items"
     text_add_new_custom_field: >
       Om de nieuwe aangepaste velden toevoegen aan een project moet u deze eerst maken voordat u ze aan dit project toevoegen kunt.
     is_enabled_globally: "Is ingeschakeld Op het hoofdniveau"
@@ -220,6 +248,7 @@ nl:
       is_required: "Mark the custom field as required. This will make it mandatory to fill in the field when creating new or updating existing resources."
       is_required_for_project: "Check to enable this attribute and make it required in all projects. It cannot be deactived for individual projects."
       is_for_all: "Mark the custom field as available in all existing and new projects."
+      multi_select: "Allows the user to assign multiple values to this custom field."
       searchable: "Include the field values when using the global search functionality."
       searchable_for_project: "Check to make this attribute available as a filter in project lists."
       editable: "Sta toe dat het veld door gebruikers zelf bewerkt kan worden."
@@ -231,6 +260,14 @@ nl:
       no_results_content_text: Maak een nieuw aangepast veld
   concatenation:
     single: "of"
+  dry_validation:
+    errors:
+      rules:
+        label:
+          filled?: "must be filled"
+          not_unique: "must be unique within the same hierarchy level"
+    rules:
+      label: "Label"
   global_search:
     placeholder: "Zoeken in %{app_title}"
     overwritten_tabs:
@@ -464,23 +501,38 @@ nl:
       priority_color_text: |
         Klik op toewijzen of wijzigen van de kleur van deze prioriteit.
         het kan worden gebruikt voor het benadrukken van de werkpakketten in de tabel.
+  reactions:
+    action_title: "React"
+    add_reaction: "Add reaction"
+    react_with: "React with %{reaction}"
+    and_user: "and %{user}"
+    and_others:
+      one: and 1 other
+      other: and %{count} others
+    reaction_by: "%{reaction} by"
   reportings:
     index:
       no_results_title_text: Er zijn momenteel geen status rapporten.
       no_results_content_text: Voeg een statusrapport toe
   statuses:
     edit:
+      status_color_text: |
+        Klik op toewijzen of wijzigen van de kleur van deze status.
+        het wordt weergegeven in de statusknop en kan worden gebruikt voor het benadrukken van de werkpakketten in de tabel.
+      status_default_text: |-
+        New work packages are by default set to this type. They cannot be read-only.
+      status_excluded_from_totals_text: |-
+        Check this option to exclude work packages with this status from totals of Work,
+        Remaining work, and % Complete in a hierarchy.
+      status_percent_complete_text: |-
+        In <a href="%{href}">status-based progress calculation mode</a>, the % Complete of a work
+        package is automatically set to this value when this status is selected.
+        Ignored in work-based mode.
       status_readonly_html: |
         Schakel deze optie in om de werkpakketten met deze status alleen-lezen te markeren.
         geen kenmerken kunnen worden gewijzigd met uitzondering van de status.
         <br/>
         <strong></strong>Opmerking: overgenomen waarden (bijvoorbeeld van kinderen of betrekkingen) blijft van toepassing.
-      status_excluded_from_totals_text: |-
-        Check this option to exclude work packages with this status from totals of Work,
-        Remaining work, and % Complete in a hierarchy.
-      status_color_text: |
-        Klik op toewijzen of wijzigen van de kleur van deze status.
-        het wordt weergegeven in de statusknop en kan worden gebruikt voor het benadrukken van de werkpakketten in de tabel.
     index:
       no_results_title_text: Er zijn momenteel geen werkpakket statussen.
       no_results_content_text: Voeg een nieuwe status toe
@@ -490,7 +542,7 @@ nl:
         is_readonly: "Alleen-lezen"
         excluded_from_totals: "Uitgesloten van totalen"
   themes:
-    dark: "Dark (Beta)"
+    dark: "Dark"
     light: "Licht"
     light_high_contrast: "Licht hoog contrast"
   types:
@@ -533,7 +585,7 @@ nl:
       could_not_be_saved: "De volgende werkpakketten konden niet worden opgeslagen:"
       none_could_be_saved: "Geen van de %{total} werkpakketten konden worden bijgewerkt."
       x_out_of_y_could_be_saved: "%{failing} van de %{total} werkpakketten konden niet worden bijgewerkt terwijl %{success} kon."
-      selected_because_descendants: "Terwijl %{selected} werkpakketten zijn geselecteerd, worden in totaal %{total} werkpakketten beïnvloed, die ook afstammelingen bevatten."
+      selected_because_descendants: "While %{selected} work packages were selected, in total %{total} work packages are affected which includes descendants."
       descendant: "afstammeling van geselecteerde"
     move:
       no_common_statuses_exists: "Er is geen status beschikbaar voor alle geselecteerde werkpakketten. Hun status kan niet worden gewijzigd."
@@ -623,6 +675,7 @@ nl:
         editable: "Bewerkbaar"
         field_format: "Formaat"
         is_filter: "Als een filter gebruikt"
+        is_for_all: "For all projects"
         is_required: "Vereist"
         max_length: "Maximale lengte"
         min_length: "Minimale lengte"
@@ -751,7 +804,6 @@ nl:
         consented_at: "Ingestemd op"
       user_preference:
         comments_sorting: "Toon reacties"
-        hide_mail: "Verberg mijn e-mailadres"
         impaired: "Toegankelijkheidsmodus"
         time_zone: "Tijdzone"
         auto_hide_popups: "Automatisch verbergen geslaagd-meldingen"
@@ -810,7 +862,7 @@ nl:
         blank: "mag niet leeg zijn."
         blank_nested: "moet de eigenschap '%{property}' ingesteld hebben."
         cannot_delete_mapping: "is vereist. Kan niet worden verwijderd."
-        is_for_all_cannot_modify: "is for all. Cannot be modified."
+        is_for_all_cannot_modify: "is for all projects and can therefore not be modified."
         cant_link_a_work_package_with_a_descendant: "Een werkpakket kan niet worden gekoppeld aan een van de bijbehorende subtaken."
         circular_dependency: "Deze relatie zou een circulaire afhankelijkheid creëren."
         confirmation: "komt niet overeen met %{attribute}."
@@ -841,10 +893,12 @@ nl:
         not_available: "is niet beschikbaar vanwege een systeemconfiguratie."
         not_deletable: "kan niet worden verwijderd."
         not_current_user: "is niet de huidige gebruiker."
+        not_found: "not found."
         not_a_date: "is geen geldige datum."
         not_a_datetime: "is geen geldige datum tijd."
         not_a_number: "is geen getal."
         not_allowed: "is ongeldig vanwege ontbrekende machtigingen."
+        not_json: "is not a valid JSON object."
         not_an_integer: "is niet een geheel getal."
         not_an_iso_date: "is geen geldige datum. Vereist formaat: JJJJ-MM-DD."
         not_same_project: "hoort niet bij hetzelfde project."
@@ -1326,6 +1380,9 @@ nl:
   button_actions: "Acties"
   button_add: "Toevoegen"
   button_add_comment: "Commentaar toevoegen"
+  button_add_item_above: "Add item above"
+  button_add_item_below: "Add item below"
+  button_add_sub_item: "Add sub-item"
   button_add_member: Lid toevoegen
   button_add_watcher: "Watcher toevoegen"
   button_annotate: "Aantekeningen"
@@ -1359,6 +1416,7 @@ nl:
   button_expand_all: "Alles uitklappen"
   button_favorite: "Aan favorieten toevoegen"
   button_filter: "Filter"
+  button_finish_setup: "Finish setup"
   button_generate: "Genereer"
   button_list: "Lijst"
   button_lock: "Vergrendelen"
@@ -1411,8 +1469,8 @@ nl:
     failure_message: Toestemming mislukt, kan niet doorgaan.
     title: Gebruikers toestemming
     decline_warning_message: U heeft de toestemming geweigerd en bent uitgelogd.
-    user_has_consented: Gebruiker heeft ingestemd met de geconfigureerde instructie op het gegeven moment.
-    not_yet_consented: Gebruiker nog niet heeft toegestemd en zal worden herinnert bij de volgende login.
+    user_has_consented: The user gave their consent to your [configured consent information text](consent_settings).
+    not_yet_consented: The user has not yet given their consent to your [configured consent information text](consent_settings). They will be reminded the next time they log in.
     contact_mail_instructions: Definieer het mail-adres waar gebruikers een gegevensbeheerder op kunnen bereiken voor verzoeken om gegevens te wijzigen of te verwijderen.
     contact_your_administrator: Neem contact op met uw beheerder als u wilt dat uw account wordt verwijderd.
     contact_this_mail_address: Neem contact op met %{mail_address} als u wilt dat uw account wordt verwijderd.
@@ -1800,11 +1858,15 @@ nl:
       progress_mode_changed_to_status_based: "Voortgangsberekening bijgewerkt"
       status_changed: "Status '%{status_name}'"
       system_update: "OpenProject systeemupdate:"
+      work_package_duplicate_closed: "Duplicate work package updated:"
+      total_percent_complete_mode_changed_to_work_weighted_average: "Calculation of % Complete totals now weighted by Work."
+      total_percent_complete_mode_changed_to_simple_average: "Calculation of % Complete totals now based on a simple average of only % Complete values."
     cause_descriptions:
       work_package_predecessor_changed_times: by changes to predecessor %{link}
       work_package_parent_changed_times: by changes to parent %{link}
       work_package_children_changed_times: by changes to child %{link}
       work_package_related_changed_times: door wijzigingen in verwante %{link}
+      work_package_duplicate_closed: The status was automatically updated by the duplicated work package %{link}
       unaccessable_work_package_changed: door wijzigingen in een gerelateerd werkpakket
       working_days_changed:
         changed: "by changes to working days (%{changes})"
@@ -1827,6 +1889,10 @@ nl:
           Progress calculation automatically <a href="%{href}" target="_blank">adjusted with version update</a>.
         totals_removed_from_childless_work_packages: >-
           Work and progress totals automatically removed for non-parent work packages with <a href="%{href}" target="_blank">version update</a>. This is a maintenance task and can be safely ignored.
+      total_percent_complete_mode_changed_to_work_weighted_average: >-
+        Child work packages without Work are ignored.
+      total_percent_complete_mode_changed_to_simple_average: >-
+        Work values of child work packages are ignored.
   links:
     configuration_guide: "Configuratiegids"
     get_in_touch: "Heb je vragen? Neem contact met ons op."
@@ -1946,6 +2012,7 @@ nl:
   label_ical_access_key_generation_hint: "Automatisch gegenereerd bij het abonneren op een kalender."
   label_ical_access_key_latest: "laatste"
   label_ical_access_key_revoke: "Intrekken"
+  label_add_column: "Add column"
   label_applied_status: "Toegepaste status"
   label_archive_project: "Project archiveren"
   label_ascending: "Oplopend"
@@ -1972,6 +2039,7 @@ nl:
   label_api_doc: "API documentatie"
   label_backup: "Back-up"
   label_backup_code: "Back-up code"
+  label_basic_details: "Basic details"
   label_between: "tussen"
   label_blocked_by: "vergrendeld door"
   label_blocks: "vergrendelingen"
@@ -1990,6 +2058,7 @@ nl:
   label_calendars_and_dates: "Kalenders en datums"
   label_calendar_show: "Agenda weergeven"
   label_category: "Categorie"
+  label_completed: Completed
   label_consent_settings: "Gebruikers toestemming"
   label_wiki_menu_item: Wiki menu-item
   label_select_main_menu_item: Selecteer nieuwe hoofdmenu-item
@@ -2009,7 +2078,6 @@ nl:
   label_check_uncheck_all_in_row: "Selecteer/Deselecteer alles in rij"
   label_child_element: "Onderliggend element"
   label_choices: "Choices"
-  label_chronological_order: "Oudste eerst"
   label_close_versions: "Voltooide versies sluiten"
   label_closed_work_packages: "gesloten"
   label_collapse: "Samenvouwen"
@@ -2114,8 +2182,9 @@ nl:
   label_feeds_access_key_created_on: "RSS toegangssleutel %{value} geleden gemaakt"
   label_feeds_access_key_type: "RSS"
   label_file_plural: "Bestanden"
-  label_filter_add: "Filter toevoegen"
   label_filter: "Filters"
+  label_filter_add: "Filter toevoegen"
+  label_filter_by: "Filter by"
   label_filter_plural: "Filters"
   label_filters_toggle: "Filter tonen/verbergen"
   label_float: "Zwevend"
@@ -2138,6 +2207,7 @@ nl:
   label_here: hier
   label_hide: "Verberg"
   label_history: "Geschiedenis"
+  label_hierarchy: "Hierarchy"
   label_hierarchy_leaf: "Hiërarchie blad"
   label_home: "Home"
   label_subject_or_id: "Onderwerp of ID"
@@ -2149,6 +2219,7 @@ nl:
   label_inactive: "Inactief"
   label_incoming_emails: "Inkomende e-mails"
   label_includes: "bevat"
+  label_incomplete: Incomplete
   label_include_sub_projects: Inclusief subprojecten
   label_index_by_date: "indexeren op datum"
   label_index_by_title: "indexeren op titel"
@@ -2159,6 +2230,8 @@ nl:
   label_internal: "Intern"
   label_introduction_video: "Introductie video"
   label_invite_user: "Gebruiker uitnodigen"
+  label_item: "Item"
+  label_item_plural: "Items"
   label_share: "Deel"
   label_share_project_list: "Projectlijst delen"
   label_share_work_package: "Werkpakket delen"
@@ -2200,6 +2273,7 @@ nl:
   label_custom_favicon: "Aangepaste favicon"
   label_custom_touch_icon: "Aangepaste touch-pictogram"
   label_logout: "Afmelden"
+  label_mapping_for: "Mapping for: %{attribute}"
   label_main_menu: "Submenu"
   label_manage: "Beheren"
   label_manage_groups: "Groepen beheren"
@@ -2234,8 +2308,10 @@ nl:
   label_months_from: "maanden vanaf"
   label_more: "Meer"
   label_more_than_ago: "meer dan dagen geleden"
+  label_move_column_left: "Move column left"
+  label_move_column_right: "Move column right"
   label_move_work_package: "Verplaatsen werkpakket"
-  label_my_account: "Mijn gegevens"
+  label_my_account: "Account settings"
   label_my_activity: "Mijn activiteit"
   label_my_account_data: "Mijn accountgegevens"
   label_my_avatar: "Mijn avatar"
@@ -2262,6 +2338,7 @@ nl:
   label_no_parent_page: "Geen bovenliggende pagina"
   label_nothing_display: "Niets om weer te geven"
   label_nobody: "niemand"
+  label_not_configured: "Not configured"
   label_not_found: "niet gevonden"
   label_none: "geen"
   label_none_parentheses: "(geen)"
@@ -2324,7 +2401,7 @@ nl:
   label_project_latest: "Meest recente projecten"
   label_project_default_type: "Lege type toestaan"
   label_project_hierarchy: "Projecthiërarchie"
-  label_project_mappings: "Enabled in projects"
+  label_project_mappings: "Projects"
   label_project_new: "Nieuw project"
   label_project_plural: "Projecten"
   label_project_list_plural: "Projectlijsten"
@@ -2355,6 +2432,7 @@ nl:
   label_relation_new: "Nieuwe relatie"
   label_release_notes: "Release notes"
   label_remaining_work: "Resterend werk"
+  label_remove_column: "Remove column"
   label_remove_columns: "Verwijder geselecteerde kolommen"
   label_renamed: "hernoemd"
   label_reply_plural: "Reacties"
@@ -2370,7 +2448,6 @@ nl:
   label_required: "vereist"
   label_requires: "vereist"
   label_result_plural: "Resultaten"
-  label_reverse_chronological_order: "Nieuwste eerst"
   label_revision: "Revisie"
   label_revision_id: "Revisie %{value}"
   label_revision_plural: "Revisies"
@@ -2396,8 +2473,10 @@ nl:
   label_show_completed_versions: "Toon voltooide versies"
   label_columns: "Kolommen"
   label_sort: "Sorteren"
+  label_sort_ascending: "Sort ascending"
   label_sort_by: "Sorteren op %{value}"
   label_sorted_by: "gesorteerd op %{value}"
+  label_sort_descending: "Sort descending"
   label_sort_higher: "Omhoog"
   label_sort_highest: "Verplaats naar boven"
   label_sort_lower: "Omlaag"
@@ -2766,9 +2845,6 @@ nl:
   notice_successful_update_custom_fields_added_to_project: |
     Succesvolle update. Aangepaste velden van de geactiveerde types worden automatisch geactiveerd
     op het werkpakket formulier. <a href="%{url}" target="_blank">Meer</a>.
-  notice_successful_update_custom_fields_added_to_type: |
-    Update geslaagd. De actieve aangepaste velden worden automatisch geactiveerd voor
-    de bijbehorende projecten van dit type.
   notice_to_many_principals_to_display: "Er zijn te veel resultaten. Beperk het zoekbereik door een naam in te geven van een nieuw lid (of groep)."
   notice_user_missing_authentication_method: Gebruiker dient nog een wachtwoord te kiezen of een andere manier om in te loggen te bepalen.
   notice_user_invitation_resent: Een nieuwe uitnodiging is verstuurd naar %{email}.
@@ -2887,6 +2963,7 @@ nl:
   permission_view_shared_work_packages: "View work package shares"
   permission_view_time_entries: "Verbruikte tijd weergeven"
   permission_view_timelines: "Weergave tijdlijnen"
+  permission_view_user_email: "View users' mail addresses"
   permission_view_wiki_edits: "Wiki weergavegeschiedenis"
   permission_view_wiki_pages: "Weergave wiki"
   permission_work_package_assigned: "Toewijzer/verantwoordelijk worden"
@@ -3117,7 +3194,9 @@ nl:
   setting_default_language: "Standaard taal"
   setting_default_projects_modules: "Standaard actieve modules voor nieuwe projecten"
   setting_default_projects_public: "Nieuwe projecten zijn standaard publiek"
+  setting_disable_password_login: "Disable password authentication"
   setting_diff_max_lines_displayed: "Maximaal aantal afwijkende regels getoond"
+  setting_omniauth_direct_login_provider: "Direct login SSO provider"
   setting_display_subprojects_work_packages: "Toon standaard de werkpakketten van onderliggende projecten bij hoofdprojecten"
   setting_duration_format: "Duration format"
   setting_duration_format_hours_only: "Alleen uren"
@@ -3179,7 +3258,6 @@ nl:
   setting_registration_footer: "Registratie voettekst"
   setting_repositories_automatic_managed_vendor: "Automatisch repostiroy leveranciers type"
   setting_repositories_encodings: "Repositories coderingen"
-  setting_repository_authentication_caching_enabled: "Voor de verificatieaanvraag van versiebeheersoftware caching inschakelen"
   setting_repository_storage_cache_minutes: "De schijfcache grootte van de repository"
   setting_repository_checkout_display: "Geef checkout instructies weer"
   setting_repository_checkout_base_url: "Checkout URL"
@@ -3195,6 +3273,13 @@ nl:
   setting_sys_api_enabled: "Repository beheer web-service inschakelen"
   setting_sys_api_description: "De repository beheer web-service biedt integratie en autorisatie van gebruikers voor toegang tot de archieven."
   setting_time_format: "Tijd"
+  setting_total_percent_complete_mode: "Calculation of % Complete hierarchy totals"
+  setting_total_percent_complete_mode_work_weighted_average: "Weighted by work"
+  setting_total_percent_complete_mode_work_weighted_average_caption_html: >-
+    The <i>total % Complete</i> will be weighted against the <i>Work</i> of each work package in the hierarchy. Work packages without <i>Work</i> will be ignored.
+  setting_total_percent_complete_mode_simple_average: "Simple average"
+  setting_total_percent_complete_mode_simple_average_caption_html: >-
+    <i>Work</i> is ignored and the <i>total % Complete</i> will be a simple average of <i>% Complete</i> values of work packages in the hierarchy.
   setting_accessibility_mode_for_anonymous: "Toegankelijkheid modus voor anonieme gebruikers inschakelen"
   setting_user_format: "Users name format"
   setting_user_default_timezone: "Standaardtijdzone voor gebruikers"
@@ -3207,6 +3292,10 @@ nl:
   setting_work_package_list_default_highlighted_attributes: "Inline gemarkeerd standaardkenmerken"
   setting_working_days: "Werkdagen"
   settings:
+    authentication:
+      single_sign_on: "Single Sign-On"
+      omniauth_direct_login_hint_html: >
+        If this option is active, login requests will redirect to the configured omniauth provider. The login dropdown and sign-in page will be disabled. <br/> <strong>Note:</strong> Unless you also disable password logins, with this option enabled, users can still log in internally by visiting the <code>%{internal_path}</code> login page.
     attachments:
       whitelist_text_html: >
         Definieer een lijst met geldige bestandsextensies en/of MIME-types voor geüploade bestanden. <br/> Vul de bestandsextensies in (bijv. <code>%{ext_example}</code>) of MIME-types (bijv. ., <code>%{mime_example}</code>). <br/> Laat leeg om elk bestandstype te kunnen uploaden. Meerdere waarden toegestaan (één regel voor elke waarde).

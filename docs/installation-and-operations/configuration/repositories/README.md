@@ -162,10 +162,6 @@ The total required disk space for a project's its repository and attachments are
 
 This information is refreshed in the same manner that changesets are retrieved: By default, the repository is refreshed when a user visits the repository page. This information is cached for the time configured under the global `administration settings → repositories`.
 
-It could also externally be refreshed by using a cron job using the Sys API. Executing a GET against `/sys/projects/:identifier/repository/update_storage` will cause a refresh when the maximum cache time is expired. If you pass the query `?force=1` to the request above, it will ignore the cache.
-
-For a future release, we are hoping to provide a webhook to update changesets and storage immediately after a change has been committed to the repository.
-
 ## Accessing repositories through Apache
 
 With managed repositories, OpenProject takes care of the lifetime of repositories and their association with projects, however we still need to serve the repositories to the client.

@@ -27,9 +27,6 @@ hi:
         project_description:
           title: 'प्रोजेक्ट विवरण'
           no_results: "No description has been written yet. One can be provided in the 'Project settings'."
-        project_details:
-          title: 'परियोजना विवरण'
-          no_results: 'No custom fields have been defined for projects.'
         project_status:
           title: 'प्रोजेक्ट स्थिति'
           not_started: 'Not started'

@@ -33,7 +33,7 @@ module Pages
     class Index < ::Pages::Page
       include ::Components::Autocompleter::NgSelectAutocompleteHelpers
 
-      def path
+      def path(*)
         "/projects"
       end
 
@@ -127,6 +127,39 @@ module Pages
         end
       end
 
+      def expect_page_links(model:, current_page: 1)
+        within ".op-pagination--pages" do
+          pagination_links = page.all(".op-pagination--item-link")
+          expect(pagination_links.size).to be_positive
+
+          page_number_links = pagination_links.reject { |link| link.text =~ /previous|next/i }
+          page_number_links.each.with_index(1) do |pagination_link, page_number|
+            uri = URI.parse(pagination_link["href"])
+            expect(uri.path).to eq(path(model))
+            expect(uri.query).to include("page=#{page_number}")
+          end
+
+          if current_page > 1
+            expect(page).to have_link("Previous", href: "#{path(model)}?#{{ page: current_page - 1 }.to_query}")
+          else
+            expect(page).to have_link("Next", href: "#{path(model)}?#{{ page: current_page + 1 }.to_query}")
+          end
+        end
+      end
+
+      def expect_page_sizes(model:)
+        within ".op-pagination--options" do
+          pagination_links = page.all(".op-pagination--item-link")
+          expect(pagination_links.size).to be_positive
+          expect(page).to have_css(".op-pagination--item_current")
+
+          pagination_links.each do |pagination_link|
+            uri = URI.parse(pagination_link["href"])
+            expect(uri.path).to eq(path(model))
+          end
+        end
+      end
+
       def expect_filters_container_toggled
         expect(page).to have_css(".op-filters-form")
       end
@@ -163,6 +196,11 @@ module Pages
         column_names.each do |column_name|
           expect(page).to have_css("th", text: column_name.upcase)
         end
+      end
+
+      def expect_columns_in_order(*column_names)
+        columns = page.find_all("#project-table th .Button-label")
+        expect(column_names.map(&:upcase)).to eq(columns.map { |c| c.text.upcase })
       end
 
       def expect_no_columns(*column_names)
@@ -439,14 +477,52 @@ module Pages
         end
       end
 
-      def sort_by_via_table_header(column_name)
-        find(".generic-table--sort-header a", text: column_name.upcase).click
+      def click_table_header_to_open_action_menu(column_name)
+        find(".generic-table--sort-header #menu-#{column_name.downcase}-button").click
+      end
+
+      def sort_via_action_menu(column_name, direction:)
+        raise ArgumentError, "direction should be :asc or :desc" unless %i[asc desc].include?(direction)
+
+        find(".generic-table--sort-header a[data-test-selector='#{column_name.downcase}-sort-#{direction}']").click
+      end
+
+      def expect_no_sorting_option_in_action_menu(column_name)
+        expect(page).to have_no_css("[data-test-selector='#{column_name.downcase}-sort-asc']")
+        expect(page).to have_no_css("[data-test-selector='#{column_name.downcase}-sort-desc']")
+      end
+
+      def move_column_via_action_menu(column_name, direction:)
+        raise ArgumentError, "direction should be :left or :right" unless %i[left right].include?(direction)
+
+        find(".generic-table--sort-header a[data-test-selector='#{column_name.downcase}-move-col-#{direction}']").click
+      end
+
+      def remove_column_via_action_menu(column_name)
+        find(".generic-table--sort-header a[data-test-selector='#{column_name.downcase}-remove-column']").click
+      end
+
+      def click_add_column_in_action_menu(column_name)
+        find(".generic-table--sort-header a[data-test-selector='#{column_name.downcase}-add-column']").click
+      end
+
+      def expect_filter_option_in_action_menu(column_name)
+        expect(page).to have_css("[data-test-selector='#{column_name.downcase}-filter-by']",
+                                 text: I18n.t(:label_filter_by))
+      end
+
+      def expect_no_filter_option_in_action_menu(column_name)
+        expect(page).to have_no_css("[data-test-selector='#{column_name.downcase}-filter-by']")
+      end
+
+      def filter_by_column_via_action_menu(column_name)
+        page.find("[data-test-selector='#{column_name.downcase}-filter-by']", text: I18n.t(:label_filter_by)).click
       end
 
       def expect_sort_order_via_table_header(column_name, direction:)
         raise ArgumentError, "direction should be :asc or :desc" unless %i[asc desc].include?(direction)
 
-        find(".generic-table--sort-header .#{direction} a", text: column_name.upcase)
+        find(".generic-table--sort-header .#{direction} .Button-label", text: column_name.upcase)
       end
 
       def set_page_size(size)
@@ -529,6 +605,11 @@ module Pages
 
       def within_table(&)
         within "#project-table", &
+      end
+
+      def project_in_first_row(column_text_separator: "\n")
+        first_row = within("#projects-table") { find(".op-project-row-component", match: :first) }
+        Project.find_by!(name: first_row.text.split(column_text_separator).first)
       end
 
       def within_row(project)

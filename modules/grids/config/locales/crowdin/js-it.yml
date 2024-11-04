@@ -27,9 +27,6 @@ it:
         project_description:
           title: 'Descrizione del progetto'
           no_results: "Nessuna descrizione ancora scritta. Una può essere fornita nelle \"Impostazioni di progetto\"."
-        project_details:
-          title: 'Dettagli del progetto'
-          no_results: 'Nessun campo personalizzato è stato definito per i progetti.'
         project_status:
           title: 'Stato del progetto'
           not_started: 'Non iniziato'

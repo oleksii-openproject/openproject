@@ -265,7 +265,7 @@ RSpec.describe API::V3::ParseQueryParamsService,
 
           it "returns the error" do
             message = "unexpected token at " +
-                      "'faulty[{\"status\":{\"operator\":\"=\",\"values\":[\"1\",\"2\"]}}]'"
+                      "'faulty[{\"status\":{\"operator\":\"=\"'"
 
             expect(subject.errors.messages[:base].length)
               .to be(1)

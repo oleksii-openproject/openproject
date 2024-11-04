@@ -9,9 +9,15 @@
     [hideName]="true"
     size="mini"
   ></op-principal>
-  <span [opSearchHighlight]="search">
+  <span [opSearchHighlight]="search"
+        class="op-user-autocompleter--name">
       {{ item.name }}
     </span>
+  <span
+    class="op-autocompleter__option-principal-email"
+    *ngIf="item.email"
+    [opSearchHighlight]="search"
+  >{{ item.email }}</span>
 </ng-template>
 <ng-template #footerTemplate *ngIf="inviteUserToProject">
   <op-invite-user-button

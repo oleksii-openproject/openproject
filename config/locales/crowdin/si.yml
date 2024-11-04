@@ -24,6 +24,22 @@ si:
   activities:
     index:
       no_results_title_text: මෙම කාල රාමුව තුළ ව්යාපෘතිය සඳහා කිසිදු ක්රියාකාරකමක් සිදු වී නොමැත.
+    work_packages:
+      activity_tab:
+        no_results_title_text: No activity to display
+        no_results_description_text: "Choose \"Show everything\" to show all activity and comments"
+        label_activity_show_all: "Show everything"
+        label_activity_show_only_comments: "Show comments only"
+        label_activity_show_only_changes: "Show changes only"
+        label_sort_asc: "Newest at the bottom"
+        label_sort_desc: "Newest on top"
+        label_type_to_comment: "Type here to comment"
+        label_submit_comment: "Submit comment"
+        changed_on: "changed on"
+        created_on: "created this on"
+        changed: "changed"
+        created: "created"
+        commented: "commented"
   admin:
     plugins:
       no_results_title_text: There are currently no plugins installed.
@@ -39,16 +55,9 @@ si:
         accent-color: "Accent"
         header-bg-color: "පසුබිම ශීර්ෂකය"
         header-item-bg-hover-color: "හැවර් මත ශීර්ෂකය පසුබිම"
-        header-item-font-color: "අකුරු ශීර්ෂකය"
-        header-item-font-hover-color: "හෝවර් මත ශීර්ෂකය අකුරු"
-        header-border-bottom-color: "දේශ සීමා ශීර්ෂකය"
         main-menu-bg-color: "ප්රධාන මෙනු පසුබිම"
         main-menu-bg-selected-background: "තෝරාගත් විට ප්රධාන මෙනුව"
         main-menu-bg-hover-background: "හැවර් මත ප්රධාන මෙනුව"
-        main-menu-font-color: "ප්රධාන මෙනු අකුරු"
-        main-menu-selected-font-color: "තෝරාගත් විට ප්රධාන මෙනු අකුරු"
-        main-menu-hover-font-color: "හැවර් මත ප්රධාන මෙනු අකුරු"
-        main-menu-border-color: "ප්රධාන මෙනු දේශ"
       custom_colors: "අභිරුචි වර්ණ"
       customize: "Customize your OpenProject installation with your own logo and colors."
       enterprise_notice: "As a special 'Thank you!' for their financial contribution to develop OpenProject, this tiny add-on is only available for Enterprise edition support subscribers."
@@ -211,6 +220,25 @@ si:
         is_for_all_blank_slate:
           heading: For all projects
           description: This custom field is enabled in all projects since the "For all projects" option is checked. It cannot be deactivated for individual projects.
+      items:
+        actions: "Item actions"
+        blankslate:
+          root:
+            title: "Your list of items is empty"
+            description: "Start by adding items to the custom field of type hierarchy. Each item can be used to create a hierarchy bellow it. To navigate and create sub-items inside a hierarchy click on the created item."
+          item:
+            title: This item doesn't have any hierarchy level below
+            description: Add items to this list to create sub-items inside another one
+        placeholder:
+          label: "Item label"
+          short: "Short name"
+      notice:
+        remember_items_and_projects: "Remember to set items and projects in the respective tabs for this custom field."
+      hierarchy:
+        subitems:
+          zero: no sub-items
+          one: 1 sub-item
+          other: "%{count} sub-items"
     text_add_new_custom_field: >
       ව්යාපෘතියකට නව අභිරුචි ක්ෂේත්ර එකතු කිරීම සඳහා ඔබ මුලින්ම මෙම ව්යාපෘතියට එකතු කිරීමට පෙර ඒවා නිර්මාණය කළ යුතුය.
     is_enabled_globally: "ගෝලීයව සබල කර ඇත"
@@ -223,6 +251,7 @@ si:
       is_required: "Mark the custom field as required. This will make it mandatory to fill in the field when creating new or updating existing resources."
       is_required_for_project: "Check to enable this attribute and make it required in all projects. It cannot be deactived for individual projects."
       is_for_all: "Mark the custom field as available in all existing and new projects."
+      multi_select: "Allows the user to assign multiple values to this custom field."
       searchable: "Include the field values when using the global search functionality."
       searchable_for_project: "Check to make this attribute available as a filter in project lists."
       editable: "Allow the field to be editable by users themselves."
@@ -234,6 +263,14 @@ si:
       no_results_content_text: නව අභිරුචි ක්ෂේත්‍රයක් සාදන්න
   concatenation:
     single: "හෝ"
+  dry_validation:
+    errors:
+      rules:
+        label:
+          filled?: "must be filled"
+          not_unique: "must be unique within the same hierarchy level"
+    rules:
+      label: "Label"
   global_search:
     placeholder: "Search in %{app_title}"
     overwritten_tabs:
@@ -467,23 +504,38 @@ si:
       priority_color_text: |
         මෙම ප්රමුඛතාවයේ වර්ණය පැවරීම හෝ වෙනස් කිරීම සඳහා ක්ලික් කරන්න.
         වගුවේ වැඩ පැකේජ අවධාරණය කිරීම සඳහා එය භාවිතා කළ හැකිය.
+  reactions:
+    action_title: "React"
+    add_reaction: "Add reaction"
+    react_with: "React with %{reaction}"
+    and_user: "and %{user}"
+    and_others:
+      one: and 1 other
+      other: and %{count} others
+    reaction_by: "%{reaction} by"
   reportings:
     index:
       no_results_title_text: දැනට තත්ව වාර්තා නොමැත.
       no_results_content_text: තත්ව වාර්තාකරණය එක් කරන්න
   statuses:
     edit:
+      status_color_text: |
+        මෙම තත්වයේ වර්ණය පැවරීම හෝ වෙනස් කිරීම සඳහා ක්ලික් කරන්න.
+        එය තත්ව බොත්තමෙහි පෙන්වා ඇති අතර වගුවේ වැඩ පැකේජ ඉස්මතු කිරීම සඳහා භාවිතා කළ හැකිය.
+      status_default_text: |-
+        New work packages are by default set to this type. They cannot be read-only.
+      status_excluded_from_totals_text: |-
+        Check this option to exclude work packages with this status from totals of Work,
+        Remaining work, and % Complete in a hierarchy.
+      status_percent_complete_text: |-
+        In <a href="%{href}">status-based progress calculation mode</a>, the % Complete of a work
+        package is automatically set to this value when this status is selected.
+        Ignored in work-based mode.
       status_readonly_html: |
         මෙම තත්වය සමඟ වැඩ පැකේජ කියවීමට පමණක් සලකුණු කිරීමට මෙම විකල්පය පරීක්ෂා කරන්න.
         තත්ත්වය හැරුණු විට කිසිදු ගුණාංගයක් වෙනස් කළ නොහැක.
         <br/>
         <strong>සටහන</strong>: උරුම වූ වටිනාකම් (උදා: දරුවන් හෝ සබඳතා වලින්) තවමත් අදාළ වේ.
-      status_excluded_from_totals_text: |-
-        Check this option to exclude work packages with this status from totals of Work,
-        Remaining work, and % Complete in a hierarchy.
-      status_color_text: |
-        මෙම තත්වයේ වර්ණය පැවරීම හෝ වෙනස් කිරීම සඳහා ක්ලික් කරන්න.
-        එය තත්ව බොත්තමෙහි පෙන්වා ඇති අතර වගුවේ වැඩ පැකේජ ඉස්මතු කිරීම සඳහා භාවිතා කළ හැකිය.
     index:
       no_results_title_text: දැනට වැඩ පැකේජ තත්වයන් නොමැත.
       no_results_content_text: නව තත්වයක් එකතුකරන්න
@@ -493,7 +545,7 @@ si:
         is_readonly: "කියවීමට-පමණි"
         excluded_from_totals: "Excluded from totals"
   themes:
-    dark: "Dark (Beta)"
+    dark: "Dark"
     light: "Light"
     light_high_contrast: "Light high contrast"
   types:
@@ -536,7 +588,7 @@ si:
       could_not_be_saved: "පහත සඳහන් වැඩ පැකේජ සුරැකිය නොහැකි විය:"
       none_could_be_saved: "None of the %{total} work packages could be updated."
       x_out_of_y_could_be_saved: "%{failing} out of the %{total} work packages could not be updated while %{success} could."
-      selected_because_descendants: "While %{selected} work packages where selected, in total %{total} work packages are affected which includes descendants."
+      selected_because_descendants: "While %{selected} work packages were selected, in total %{total} work packages are affected which includes descendants."
       descendant: "descendant of selected"
     move:
       no_common_statuses_exists: "තෝරාගත් සියලුම වැඩ පැකේජ සඳහා කිසිදු තත්වයක් නොමැත. ඔවුන්ගේ තත්වය වෙනස් කළ නොහැක."
@@ -626,6 +678,7 @@ si:
         editable: "සංස්කරණය කළ හැකිය"
         field_format: "ආකෘතිය"
         is_filter: "පෙරනයක් ලෙස භාවිතා"
+        is_for_all: "For all projects"
         is_required: "අවශ්‍යයි"
         max_length: "උපරිම දිග"
         min_length: "අවම දිග"
@@ -754,7 +807,6 @@ si:
         consented_at: "එකඟ විය"
       user_preference:
         comments_sorting: "අදහස් පෙන්වන්න"
-        hide_mail: "මෙම වි-නිස්-නිස්න"
         impaired: "ප්රවේශ්යතා ප්රකාරය"
         time_zone: "වේලා කලාපය"
         auto_hide_popups: "ස්වයං සඟවන්න සාර්ථකත්වය දැනුම්දීම්"
@@ -813,7 +865,7 @@ si:
         blank: "හිස් විය නොහැක."
         blank_nested: "needs to have the property '%{property}' set."
         cannot_delete_mapping: "is required. Cannot be deleted."
-        is_for_all_cannot_modify: "is for all. Cannot be modified."
+        is_for_all_cannot_modify: "is for all projects and can therefore not be modified."
         cant_link_a_work_package_with_a_descendant: "වැඩ පැකේජයක් එහි එක් උප කර්තව්යයකට සම්බන්ධ කළ නොහැක."
         circular_dependency: "මෙම සම්බන්ධතාවය චක්රලේඛය යැපීමක් නිර්මාණය කරනු ඇත."
         confirmation: "%{attribute}නොගැලපේ."
@@ -844,10 +896,12 @@ si:
         not_available: "is not available due to a system configuration."
         not_deletable: "cannot be deleted."
         not_current_user: "is not the current user."
+        not_found: "not found."
         not_a_date: "වලංගු දිනයක් නොවේ."
         not_a_datetime: "වලංගු දිනය කාලය නොවේ."
         not_a_number: "අංකයක් නොවේ."
         not_allowed: "අතුරුදහන් අවසරයන් නිසා අවලංගු වේ."
+        not_json: "is not a valid JSON object."
         not_an_integer: "පූර්ණ සංඛ්යාලයක් නොවේ."
         not_an_iso_date: "වලංගු දිනයක් නොවේ. අවශ්ය ආකෘතිය: YYY-MM-DD."
         not_same_project: "එකම ව්යාපෘතියට අයත් නොවේ."
@@ -1329,6 +1383,9 @@ si:
   button_actions: "ක්‍රියාමාර්ග"
   button_add: "එකතු කරන්න"
   button_add_comment: "අදහස් එක් කරන්න"
+  button_add_item_above: "Add item above"
+  button_add_item_below: "Add item below"
+  button_add_sub_item: "Add sub-item"
   button_add_member: සාමාජිකයෙක් එකතු කරන්න
   button_add_watcher: "මුරකරු එකතු කරන්න"
   button_annotate: "ඇනෝටේට්"
@@ -1362,6 +1419,7 @@ si:
   button_expand_all: "සියල්ල පුළුල්"
   button_favorite: "Add to favorites"
   button_filter: "පෙරහන්"
+  button_finish_setup: "Finish setup"
   button_generate: "උත්පාදනය"
   button_list: "ලැයිස්තුව"
   button_lock: "අගුල"
@@ -1414,8 +1472,8 @@ si:
     failure_message: කැමැත්ත අසාර්ථකයි, ඉදිරියට යා නොහැක.
     title: පරිශීලක කැමැත්ත
     decline_warning_message: ඔබ කැමැත්ත ප්රතික්ෂේප කර ඇති අතර ලොගින් වී ඇත.
-    user_has_consented: පරිශීලකයා විසින් ඔබගේ වින්යාසගත කළ ප්රකාශයට එකඟ වී ඇත.
-    not_yet_consented: පරිශීලකයා තවමත් එකඟ වී නැත, ඊළඟ පිවිසුම මත ඉල්ලා සිටිනු ඇත.
+    user_has_consented: The user gave their consent to your [configured consent information text](consent_settings).
+    not_yet_consented: The user has not yet given their consent to your [configured consent information text](consent_settings). They will be reminded the next time they log in.
     contact_mail_instructions: දත්ත වෙනස් කිරීම හෝ ඉවත් කිරීමේ ඉල්ලීම් ඉටු කිරීම සඳහා පරිශීලකයින්ට දත්ත පාලකය වෙත ළඟා විය හැකි තැපැල් ලිපිනය නිර්වචනය කරන්න.
     contact_your_administrator: ඔබට ඔබගේ ගිණුම මකා දැමීමට අවශ්ය නම් කරුණාකර ඔබේ පරිපාලක අමතන්න.
     contact_this_mail_address: ඔබගේ ගිණුම මකා දැමීමට අවශ්ය නම් කරුණාකර %{mail_address} අමතන්න.
@@ -1803,11 +1861,15 @@ si:
       progress_mode_changed_to_status_based: "Progress calculation updated"
       status_changed: "Status '%{status_name}'"
       system_update: "OpenProject system update:"
+      work_package_duplicate_closed: "Duplicate work package updated:"
+      total_percent_complete_mode_changed_to_work_weighted_average: "Calculation of % Complete totals now weighted by Work."
+      total_percent_complete_mode_changed_to_simple_average: "Calculation of % Complete totals now based on a simple average of only % Complete values."
     cause_descriptions:
       work_package_predecessor_changed_times: by changes to predecessor %{link}
       work_package_parent_changed_times: by changes to parent %{link}
       work_package_children_changed_times: by changes to child %{link}
       work_package_related_changed_times: by changes to related %{link}
+      work_package_duplicate_closed: The status was automatically updated by the duplicated work package %{link}
       unaccessable_work_package_changed: by changes to a related work package
       working_days_changed:
         changed: "by changes to working days (%{changes})"
@@ -1830,6 +1892,10 @@ si:
           Progress calculation automatically <a href="%{href}" target="_blank">adjusted with version update</a>.
         totals_removed_from_childless_work_packages: >-
           Work and progress totals automatically removed for non-parent work packages with <a href="%{href}" target="_blank">version update</a>. This is a maintenance task and can be safely ignored.
+      total_percent_complete_mode_changed_to_work_weighted_average: >-
+        Child work packages without Work are ignored.
+      total_percent_complete_mode_changed_to_simple_average: >-
+        Work values of child work packages are ignored.
   links:
     configuration_guide: "වින්යාස මාර්ගෝපදේශය"
     get_in_touch: "You have questions? Get in touch with us."
@@ -1949,6 +2015,7 @@ si:
   label_ical_access_key_generation_hint: "Automatically generated when subscribing to a calendar."
   label_ical_access_key_latest: "latest"
   label_ical_access_key_revoke: "අවලංගු"
+  label_add_column: "Add column"
   label_applied_status: "ව්යවහාරික තත්ත්වය"
   label_archive_project: "සංරක්ෂිත ව්යාපෘතිය"
   label_ascending: "නැගීම"
@@ -1975,6 +2042,7 @@ si:
   label_api_doc: "API ප්රලේඛනය"
   label_backup: "Backup"
   label_backup_code: "Backup code"
+  label_basic_details: "Basic details"
   label_between: "අතර"
   label_blocked_by: "විසින් අවහිර"
   label_blocks: "කුට්ටි"
@@ -1993,6 +2061,7 @@ si:
   label_calendars_and_dates: "Calendars and dates"
   label_calendar_show: "දින දර්ශනය පෙන්වන්න"
   label_category: "ප්රවර්ගය"
+  label_completed: Completed
   label_consent_settings: "පරිශීලක කැමැත්ත"
   label_wiki_menu_item: විකි මෙනු අයිතමය
   label_select_main_menu_item: නව ප්රධාන මෙනු අයිතමය තෝරන්න
@@ -2012,7 +2081,6 @@ si:
   label_check_uncheck_all_in_row: "පේළියේ සියලු පරීක්ෂා කරන්න/ඉවත් කරන්න"
   label_child_element: "ළමා අංගයක්"
   label_choices: "Choices"
-  label_chronological_order: "Oldest first"
   label_close_versions: "අවසන් කරන ලද අනුවාද"
   label_closed_work_packages: "වසා"
   label_collapse: "බිඳවැටීම"
@@ -2117,8 +2185,9 @@ si:
   label_feeds_access_key_created_on: "%{value} පෙර නිර්මාණය කරන ලද RSS ප්රවේශ යතුර"
   label_feeds_access_key_type: "RSS"
   label_file_plural: "ගොනු"
-  label_filter_add: "පෙරහන් එකතු කරන්න"
   label_filter: "පෙරහන්"
+  label_filter_add: "පෙරහන් එකතු කරන්න"
+  label_filter_by: "Filter by"
   label_filter_plural: "පෙරහන්"
   label_filters_toggle: "පෙරහන් පෙන්වන්න/සඟවන්න"
   label_float: "පාවෙන"
@@ -2141,6 +2210,7 @@ si:
   label_here: මෙන්න
   label_hide: "සඟවන්න"
   label_history: "ඉතිහාසය"
+  label_hierarchy: "Hierarchy"
   label_hierarchy_leaf: "ධූරාවලිය කොළ"
   label_home: "නිවස"
   label_subject_or_id: "විෂය හෝ හැඳුනුම්පත"
@@ -2152,6 +2222,7 @@ si:
   label_inactive: "අක්රිය"
   label_incoming_emails: "ලැබෙන විද්යුත් තැපැල්"
   label_includes: "ඇතුළත් වේ"
+  label_incomplete: Incomplete
   label_include_sub_projects: Include sub-projects
   label_index_by_date: "දිනය අනුව දර්ශකය"
   label_index_by_title: "මාතෘකාව අනුව දර්ශකය"
@@ -2162,6 +2233,8 @@ si:
   label_internal: "අභ්යන්තර"
   label_introduction_video: "හැඳින්වීම වීඩියෝ"
   label_invite_user: "පරිශීලකයාට ආරාධනා කරන්න"
+  label_item: "Item"
+  label_item_plural: "Items"
   label_share: "Share"
   label_share_project_list: "Share project list"
   label_share_work_package: "Share work package"
@@ -2203,6 +2276,7 @@ si:
   label_custom_favicon: "අභිරුචි ප්රියතම"
   label_custom_touch_icon: "අභිරුචි ස්පර්ශ අයිකනය"
   label_logout: "ලියාපදිංචි වන්න"
+  label_mapping_for: "Mapping for: %{attribute}"
   label_main_menu: "පැති මෙනුව"
   label_manage: "Manage"
   label_manage_groups: "කණ්ඩායම් කළමනාකරණය කරන්න"
@@ -2237,8 +2311,10 @@ si:
   label_months_from: "මාස සිට"
   label_more: "තවත්"
   label_more_than_ago: "දින කිහිපයකට පෙර"
+  label_move_column_left: "Move column left"
+  label_move_column_right: "Move column right"
   label_move_work_package: "වැඩ පැකේජය ගෙනයාම"
-  label_my_account: "මගේ ගිණුම"
+  label_my_account: "Account settings"
   label_my_activity: "My activity"
   label_my_account_data: "මගේ ගිණුම් දත්ත"
   label_my_avatar: "My avatar"
@@ -2265,6 +2341,7 @@ si:
   label_no_parent_page: "මව් පිටුවක් නැත"
   label_nothing_display: "ප්රදර්ශනය කිරීමට කිසිවක් නැත"
   label_nobody: "කිසිවෙක් නැත"
+  label_not_configured: "Not configured"
   label_not_found: "සොයාගත නොහැකි විය"
   label_none: "කිසිවක් නැත"
   label_none_parentheses: "(කිසිවක් නැත)"
@@ -2327,7 +2404,7 @@ si:
   label_project_latest: "නවතම ව්යාපෘති"
   label_project_default_type: "හිස් වර්ගය ඉඩ"
   label_project_hierarchy: "ව්යාපෘති ධූරාවලිය"
-  label_project_mappings: "Enabled in projects"
+  label_project_mappings: "Projects"
   label_project_new: "නව ව්යාපෘතිය"
   label_project_plural: "ව්‍යාපෘති"
   label_project_list_plural: "Project lists"
@@ -2358,6 +2435,7 @@ si:
   label_relation_new: "නව සම්බන්ධතාවය"
   label_release_notes: "සටහන් නිකුත් කිරීම"
   label_remaining_work: "Remaining work"
+  label_remove_column: "Remove column"
   label_remove_columns: "තෝරාගත් තීරු ඉවත් කරන්න"
   label_renamed: "නම් කරන ලද"
   label_reply_plural: "පිළිතුරු"
@@ -2373,7 +2451,6 @@ si:
   label_required: "අවශ්ය"
   label_requires: "අවශ්ය"
   label_result_plural: "ප්රතිඵල"
-  label_reverse_chronological_order: "Newest first"
   label_revision: "සංශෝධනය"
   label_revision_id: "සංශෝධනය %{value}"
   label_revision_plural: "සංශෝධන"
@@ -2399,8 +2476,10 @@ si:
   label_show_completed_versions: "සම්පූර්ණ කළ අනුවාද පෙන්වන්න"
   label_columns: "තීරු"
   label_sort: "වර්ග"
+  label_sort_ascending: "Sort ascending"
   label_sort_by: "%{value}විසින් වර්ග කරන්න"
   label_sorted_by: "%{value}විසින් වර්ග කර ඇත"
+  label_sort_descending: "Sort descending"
   label_sort_higher: "ඉහළට ගෙනයන්න"
   label_sort_highest: "ඉහළට ගෙනයන්න"
   label_sort_lower: "පහළට ගෙනයන්න"
@@ -2770,9 +2849,6 @@ si:
   notice_successful_update_custom_fields_added_to_project: |
     Successful update. The custom fields of the activated types are automatically activated
     on the work package form. <a href="%{url}" target="_blank">See more</a>.
-  notice_successful_update_custom_fields_added_to_type: |
-    Successful update. The active custom fields are automatically activated for
-    the associated projects of this type.
   notice_to_many_principals_to_display: "බොහෝ ප්රතිඵල ඇත.\nනව සාමාජිකයාගේ (හෝ කණ්ඩායමේ) නමින් ටයිප් කිරීමෙන් සෙවුම අඩු කරන්න."
   notice_user_missing_authentication_method: පරිශීලකයාට මුරපදයක් හෝ පුරනය වීමට වෙනත් ක්රමයක් තෝරා ගැනීමට තවමත් නොමැත.
   notice_user_invitation_resent: '%{email}වෙත ආරාධනයක් යවා ඇත.'
@@ -2891,6 +2967,7 @@ si:
   permission_view_shared_work_packages: "View work package shares"
   permission_view_time_entries: "ගත කළ කාලය බලන්න"
   permission_view_timelines: "කාල නියමයන් බලන්න"
+  permission_view_user_email: "View users' mail addresses"
   permission_view_wiki_edits: "විකි ඉතිහාසය බලන්න"
   permission_view_wiki_pages: "විකි දැක්ම"
   permission_work_package_assigned: "Become assignee/responsible"
@@ -3121,7 +3198,9 @@ si:
   setting_default_language: "පෙරනිමි භාෂාව"
   setting_default_projects_modules: "නව ව්යාපෘති සඳහා පෙරනිමි සක්රීය මොඩියුල"
   setting_default_projects_public: "නව ව්යාපෘති පෙරනිමියෙන් පොදු වේ"
+  setting_disable_password_login: "Disable password authentication"
   setting_diff_max_lines_displayed: "ප්රදර්ශනය diff රේඛා උපරිම සංඛ්යාව"
+  setting_omniauth_direct_login_provider: "Direct login SSO provider"
   setting_display_subprojects_work_packages: "පෙරනිමියෙන් ප්රධාන ව්යාපෘතිවල උප ව්යාපෘති වැඩ පැකේජ ප්රදර්ශනය කරන්න"
   setting_duration_format: "Duration format"
   setting_duration_format_hours_only: "Hours only"
@@ -3183,7 +3262,6 @@ si:
   setting_registration_footer: "ලියාපදිංචි පාදකය"
   setting_repositories_automatic_managed_vendor: "ස්වයංක්රීය ගබඩාව විකුණුම්කරුගේ වර්ගය"
   setting_repositories_encodings: "එන්කෝඩින් ගබඩාවලදී"
-  setting_repository_authentication_caching_enabled: "අනුවාද පාලන මෘදුකාංගයේ සත්යාපන ඉල්ලීම සඳහා හැච් කිරීම සක්රීය කරන්න"
   setting_repository_storage_cache_minutes: "ගබඩා තැටි ප්රමාණය හැඹිලි"
   setting_repository_checkout_display: "පිරික්සුම් උපදෙස් පෙන්වන්න"
   setting_repository_checkout_base_url: "පිරික්සුම් පදනම URL"
@@ -3199,6 +3277,13 @@ si:
   setting_sys_api_enabled: "නිධි කළමනාකරණ වෙබ් සේවාව සක්රීය කරන්න"
   setting_sys_api_description: "ගබඩා කළමනාකරණ වෙබ් සේවාව මඟින් ගබඩාවට ප්රවේශ වීම සඳහා ඒකාබද්ධ කිරීම සහ පරිශීලක අවසරය ලබා දේ."
   setting_time_format: "Time"
+  setting_total_percent_complete_mode: "Calculation of % Complete hierarchy totals"
+  setting_total_percent_complete_mode_work_weighted_average: "Weighted by work"
+  setting_total_percent_complete_mode_work_weighted_average_caption_html: >-
+    The <i>total % Complete</i> will be weighted against the <i>Work</i> of each work package in the hierarchy. Work packages without <i>Work</i> will be ignored.
+  setting_total_percent_complete_mode_simple_average: "Simple average"
+  setting_total_percent_complete_mode_simple_average_caption_html: >-
+    <i>Work</i> is ignored and the <i>total % Complete</i> will be a simple average of <i>% Complete</i> values of work packages in the hierarchy.
   setting_accessibility_mode_for_anonymous: "නිර්නාමික පරිශීලකයින් සඳහා ප්රවේශ්යතා ප්රකාරය සක්රීය කරන්න"
   setting_user_format: "Users name format"
   setting_user_default_timezone: "පරිශීලකයන් පෙරනිමි කාල කලාපය"
@@ -3211,6 +3296,10 @@ si:
   setting_work_package_list_default_highlighted_attributes: "පෙරනිමි පේළිගත උද්දීපිත ගුණාංග"
   setting_working_days: "Working days"
   settings:
+    authentication:
+      single_sign_on: "Single Sign-On"
+      omniauth_direct_login_hint_html: >
+        If this option is active, login requests will redirect to the configured omniauth provider. The login dropdown and sign-in page will be disabled. <br/> <strong>Note:</strong> Unless you also disable password logins, with this option enabled, users can still log in internally by visiting the <code>%{internal_path}</code> login page.
     attachments:
       whitelist_text_html: >
         Define a list of valid file extensions and/or mime types for uploaded files. <br/> Enter file extensions (e.g., <code>%{ext_example}</code>) or mime types (e.g., <code>%{mime_example}</code>). <br/> Leave empty to allow any file type to be uploaded. Multiple values allowed (one line for each value).

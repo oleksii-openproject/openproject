@@ -37,7 +37,7 @@ ro:
           copy_success: Copiat
           copy_error: Copiere eşuată
       tab_prs:
-        empty: 'Nu există încă nicio cerere de extragere legată. Conectați un PR existent folosind codul <code>OP#%{wp_id}</code> în descrierea PR sau creați un nou PR.'
+        empty: 'Nu există încă nicio cerere de tragere legată. Conectează un PR existent folosind codul <code>OP#%{wp_id}</code> în descrierea PR sau creează un nou PR.'
       github_actions: Acțiuni
       pull_requests:
         message: "Pull request #%{pr_number} %{pr_link} for %{repository_link} authored by %{github_user_link} has been %{pr_state}."

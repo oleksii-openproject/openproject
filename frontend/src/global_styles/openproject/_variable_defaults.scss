@@ -78,6 +78,8 @@
   --header-item-font-hover-color: #FFFFFF;
   --header-item-bg-hover-color: #175A8E;
   --main-menu-width: 230px;
+  --main-menu-x-spacing: 16px;
+  --main-menu-x-spacing-small: 12px;
   --main-menu-folded-width: 0px;
   --main-menu-border-color: #EAEAEA;
   --main-menu-border-width: 0px;
@@ -112,6 +114,7 @@
   --button--active-border-color: #cacaca;
   --button--primary-background-color: var(--primary-button-color);
   --button--primary-background-hover-color: var(--primary-button-color--major1);
+  --button--primary-background-active-color: var(--primary-button-color--major1);
   --button--primary-background-disabled-color: var(--primary-button-color--minor2);
   --button--primary-border-color: var(--button--primary-background-color);
   --button--primary-border-disabled-color: var(--primary-button-color--minor2);

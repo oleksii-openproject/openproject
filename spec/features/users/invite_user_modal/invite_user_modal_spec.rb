@@ -29,8 +29,9 @@
 require "spec_helper"
 
 RSpec.describe "Invite user modal", :js, :with_cuprite do
-  shared_let(:project) { create(:project) }
-  shared_let(:work_package) { create(:work_package, project:) }
+  let!(:standard) { create(:standard_global_role) }
+  let!(:project) { create(:project) }
+  let!(:work_package) { create(:work_package, project:) }
 
   let(:permissions) { %i[view_work_packages edit_work_packages manage_members work_package_assigned] }
   let(:global_permissions) { %i[] }
@@ -96,6 +97,51 @@ RSpec.describe "Invite user modal", :js, :with_cuprite do
     end
   end
 
+  describe "searching for users in the auto completer" do
+    let!(:principal) do
+      create(:user,
+             firstname: "Nonproject firstname",
+             lastname: "nonproject lastname")
+    end
+
+    let(:wp_page) { Pages::FullWorkPackage.new(work_package, project) }
+
+    before do
+      wp_page.visit!
+
+      find(".op-app-menu--item-action.op-quick-add-menu--button").click
+      find(".invite-user-menu-item.op-menu--item-action", text: "Invite user", wait: 5).click
+    end
+
+    it "does show you all users email address" do
+      modal.expect_open
+      modal.project_step
+      select = modal.open_select_in_step "op-ium-principal-search", ""
+
+      # Mail address of other users is visible to us
+      expect(select).to have_text(principal.firstname)
+      expect(select).to have_text(principal.mail)
+    end
+
+    context "without permission" do
+      let!(:standard) { create(:empty_global_role) }
+
+      it "does not show you the email address of other users" do
+        modal.expect_open
+        modal.project_step
+        select = modal.open_select_in_step "op-ium-principal-search", ""
+
+        # Our own mail address is visible
+        expect(select).to have_text(current_user.firstname)
+        expect(select).to have_text(current_user.mail)
+
+        # But the mail address of another user is not visible to us
+        expect(select).to have_text(principal.firstname)
+        expect(select).to have_no_text(principal.mail)
+      end
+    end
+  end
+
   describe "inviting a placeholder on a WP create", with_ee: %i[placeholder_users] do
     let!(:principal) { create(:placeholder_user, name: "EXISTING PLACEHOLDER") }
     let(:wp_page) { Pages::FullWorkPackageCreate.new(project:) }
@@ -155,6 +201,27 @@ RSpec.describe "Invite user modal", :js, :with_cuprite do
 
         context "when keeping the default project selection" do
           it_behaves_like "invites the principal to the project", skip_project_autocomplete: true do
+            let(:added_principal) { principal }
+            let(:mail_membership_recipients) { [principal] }
+          end
+        end
+
+        context "with a required list user CF (regression #58429)" do
+          let(:current_user) { create(:admin) }
+          let(:list_cf) do
+            create(:user_custom_field,
+                   :list,
+                   name: "List",
+                   is_required: true,
+                   editable: false,
+                   default_option: "A")
+          end
+
+          before do
+            list_cf
+          end
+
+          it_behaves_like "invites the principal to the project" do
             let(:added_principal) { principal }
             let(:mail_membership_recipients) { [principal] }
           end

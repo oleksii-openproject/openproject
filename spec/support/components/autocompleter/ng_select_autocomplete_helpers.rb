@@ -33,10 +33,10 @@ module Components::Autocompleter
       retry_block do
         if results_selector
           results_selector = "#{results_selector} .ng-dropdown-panel" if results_selector == "body"
-          page.find(results_selector)
+          page.find(results_selector, wait: 5)
         else
           within(element) do
-            page.find("ng-select .ng-dropdown-panel")
+            page.find("ng-select .ng-dropdown-panel", wait: 5)
           end
         end
       rescue StandardError => e
@@ -117,6 +117,32 @@ module Components::Autocompleter
 
       # click the element to select it
       target_dropdown.find(".ng-option", text:, match: :first, wait: 15).click
+    end
+
+    # Finds the currently visible, expanded user auto completer and returns its dropdown menu options.
+    # A user always has a name, but their email is only visible in certain circumstances, so that value
+    # might be nil.
+    #
+    # The options are returned as an Array of Hashes, like this example with two users:
+    #
+    #   [
+    #     { name: "Bob", email: nil },
+    #     { name: "Alice", email: "alice@example.com" }
+    #   ]
+    #
+    # The order of elements in the Array is equal to the visible order on the website.
+    def visible_user_auto_completer_options
+      find(".ng-dropdown-panel [role='listbox']").all(".ng-option[role='option']").filter_map do |opt|
+        name = opt.find(".op-user-autocompleter--name").text
+        email_element = opt.all(".op-autocompleter__option-principal-email").first
+        email = email_element&.text
+
+        { name:, email: }
+      rescue Capybara::ElementNotFound
+        # In rare cases, the auto completer result body includes additional elements that do not contain all of the
+        # expected information. For example in the share modal. We will omit these entries.
+        nil
+      end
     end
   end
 end

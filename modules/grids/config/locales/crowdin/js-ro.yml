@@ -1,7 +1,7 @@
 ro:
   js:
     grid:
-      add_widget: 'Adăugați widget'
+      add_widget: 'Adaugă widget'
       remove: 'Eliminați widget-ul'
       configure: 'Configurați widget-ul'
       upsale:
@@ -25,11 +25,8 @@ ro:
           at: 'la'
           no_results: 'Nimic nou de raportat.'
         project_description:
-          title: 'Descrierea proiectului'
-          no_results: "Nu a fost scrisă încă nicio descriere. Aceasta poate fi furnizată în \"Setări proiect\"."
-        project_details:
-          title: 'Arată detaliile proietului'
-          no_results: 'Nu au fost definite câmpuri personalizate pentru proiecte.'
+          title: 'Descriere proiect'
+          no_results: "Nu a fost scrisă încă nicio descriere. Aceasta poate fi adăugată în \"Setări proiect\"."
         project_status:
           title: 'Stare proiect'
           not_started: 'Neînceput'

@@ -27,9 +27,6 @@ lt:
         project_description:
           title: 'Projekto aprašymas'
           no_results: "Dar neįrašytas aprašymas. Jį galima nurodyti „Projekto nustatymuose“."
-        project_details:
-          title: 'Projekto ypatybės'
-          no_results: 'Projektui nenurodyti savi laukai.'
         project_status:
           title: 'Projekto būsena'
           not_started: 'Nepradėta'

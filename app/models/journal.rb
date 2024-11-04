@@ -34,6 +34,7 @@ class Journal < ApplicationRecord
   include ::JournalFormatter
   include ::Acts::Journalized::FormatHooks
   include Journal::Timestamps
+  include Reactable
 
   register_journal_formatter OpenProject::JournalFormatter::ActiveStatus
   register_journal_formatter OpenProject::JournalFormatter::AgendaItemDiff
@@ -82,6 +83,7 @@ class Journal < ApplicationRecord
     work_package_parent_changed_times
     work_package_predecessor_changed_times
     work_package_related_changed_times
+    work_package_duplicate_closed
     working_days_changed
   ].freeze
 

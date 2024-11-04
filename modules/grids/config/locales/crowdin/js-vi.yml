@@ -27,9 +27,6 @@ vi:
         project_description:
           title: 'Mô tả dự án'
           no_results: "Chưa có mô tả nào được viết. Có thể cung cấp trong 'Cài đặt dự án'."
-        project_details:
-          title: 'Chi tiết dự án'
-          no_results: 'Chưa có trường tùy chỉnh nào được định nghĩa cho các dự án.'
         project_status:
           title: 'Tình trạng dự án'
           not_started: 'Chưa bắt đầu'

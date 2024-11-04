@@ -149,29 +149,15 @@ RSpec.shared_examples_for "type service" do
         expect(type).to have_received(:custom_field_ids=)
       end
 
-      context "when all the projects are associated with the type" do
+      context "when all the projects are already associated with the type" do
         before do
           type.projects = create_list :project, 2
         end
 
-        it "enables the custom fields in the projects" do
+        it "does not enable the custom fields in the projects (used to be different until OP 15.0)" do
           expect { service_call }
-            .to change { Project.where(id: type.project_ids).map(&:work_package_custom_fields) }
+            .not_to change { Project.where(id: type.project_ids).map(&:work_package_custom_field_ids) }
             .from([[], []])
-            .to([[cf1, cf2], [cf1, cf2]])
-        end
-
-        context "when a custom field is already associated with the type" do
-          before do
-            type.custom_field_ids = [cf1.id]
-          end
-
-          it "enables the new custom field only" do
-            expect { service_call }
-              .to change { Project.where(id: type.project_ids).map(&:work_package_custom_fields) }
-              .from([[], []])
-              .to([[cf2], [cf2]])
-          end
         end
 
         context "when all custom fields are already associated with the type" do
@@ -189,8 +175,9 @@ RSpec.shared_examples_for "type service" do
 
       context "when a project is being set on the type" do
         let(:projects) { create_list(:project, 2) }
-        let(:active_project) { projects.first }
-        let(:project_ids) { { project_ids: [*projects.map { |p| p.id.to_s }, ""] } }
+        let(:active_project) { create(:project) }
+        let(:new_project) { create(:project) }
+        let(:project_ids) { { project_ids: [*[active_project, new_project].map { |p| p.id.to_s }, ""] } }
         let(:params) do
           attribute_groups.merge(project_ids)
         end
@@ -199,11 +186,17 @@ RSpec.shared_examples_for "type service" do
           type.projects << active_project
         end
 
-        it "enables the custom fields for all the projects" do
+        it "enables the custom field on the newly added project" do
           expect { service_call }
-            .to change { Project.where(id: type.project_ids).map(&:work_package_custom_fields) }
-            .from([[]])
-            .to([[cf1, cf2], [cf1, cf2]])
+            .to change { Project.find(new_project.id).work_package_custom_field_ids }
+                      .from([])
+                      .to([cf1.id, cf2.id])
+        end
+
+        it "does not enable the custom fields on the project the type was already active in" do
+          expect { service_call }
+            .not_to change { Project.find(active_project.id).work_package_custom_field_ids }
+                      .from([])
         end
 
         context "when a custom field is already associated with the type" do
@@ -211,11 +204,17 @@ RSpec.shared_examples_for "type service" do
             type.custom_field_ids = [cf1.id]
           end
 
-          it "enables the new cf for the existing project and enables both cfs for the new project" do
+          it "enables the custom field on the newly added project" do
             expect { service_call }
-              .to change { Project.where(id: type.project_ids).map(&:work_package_custom_fields) }
-              .from([[]])
-              .to([[cf2], [cf1, cf2]])
+              .to change { Project.find(new_project.id).work_package_custom_field_ids }
+                        .from([])
+                        .to([cf1.id, cf2.id])
+          end
+
+          it "does not enable the custom fields on the project the type was already active in" do
+            expect { service_call }
+              .not_to change { Project.find(active_project.id).work_package_custom_field_ids }
+                        .from([])
           end
         end
 
@@ -226,11 +225,17 @@ RSpec.shared_examples_for "type service" do
             type.custom_field_ids = [cf1.id, cf2.id]
           end
 
-          it "enables the custom fields in the new project only" do
+          it "enables the custom field on the newly added project" do
             expect { service_call }
-              .to change { Project.where(id: type.project_ids).map(&:work_package_custom_fields) }
-              .from([[]])
-              .to([[], [cf1, cf2]])
+              .to change { Project.find(new_project.id).work_package_custom_field_ids }
+                        .from([])
+                        .to([cf1.id, cf2.id])
+          end
+
+          it "does not enable the custom fields on the project the type was already active in" do
+            expect { service_call }
+              .not_to change { Project.find(active_project.id).work_package_custom_field_ids }
+                        .from([])
           end
         end
       end
