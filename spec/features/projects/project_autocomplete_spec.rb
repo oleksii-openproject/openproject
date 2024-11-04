@@ -62,12 +62,12 @@ RSpec.describe "Projects autocomplete page", :js, :with_cuprite do
       "Very long project name with term at the END",
       "INK14 - Foo",
       "INK15 - Bar",
-      "INK16 - Baz"
+      "INK16 - Baz",
+      "Prójéct with accents ligatures ﬀ and supertexts ²"
     ]
 
     names.map do |name|
-      identifier = name.gsub(/[ -]+/, "-").downcase
-
+      identifier = name.gsub(/[ -]+/, "-").downcase.unicode_normalize(:nfkd).gsub(/\p{M}/, "")
       create(:project, name:, identifier:)
     end
   end
@@ -149,6 +149,15 @@ RSpec.describe "Projects autocomplete page", :js, :with_cuprite do
     top_menu.expect_result "INK15 - Bar"
     top_menu.expect_no_result "INK14 - Foo"
     top_menu.expect_no_result "INK16 - Baz"
+
+    top_menu.search "Project with"
+    top_menu.expect_result "Prójéct with accents ligatures ﬀ and supertexts ²"
+
+    top_menu.search "ff" # Searching for ff should return the ligature ﬀ
+    top_menu.expect_result "Prójéct with accents ligatures ﬀ and supertexts ²"
+
+    top_menu.search "²"
+    top_menu.expect_result "Prójéct with accents ligatures ﬀ and supertexts ²"
 
     # Visit a project
     top_menu.search_and_select "<strong"

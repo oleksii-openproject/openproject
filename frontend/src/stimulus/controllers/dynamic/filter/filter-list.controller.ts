@@ -60,11 +60,10 @@ export default class FilterListController extends Controller {
   }
 
   filterLists() {
-    const query = this.filterTarget.value.toLowerCase();
+    const query = this.filterTarget.value.normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
     let showNoResultsText = true;
-
     this.searchItemTargets.forEach((item) => {
-      const text = item.textContent?.toLowerCase();
+      const text = item.textContent?.normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
 
       if (text?.includes(query)) {
         this.setVisibility(item, true);

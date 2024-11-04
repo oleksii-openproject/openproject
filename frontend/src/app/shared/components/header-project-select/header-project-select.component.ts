@@ -46,7 +46,6 @@ import { ApiV3Filter } from 'core-app/shared/helpers/api-v3/api-v3-filter-builde
 import { IHALCollection } from 'core-app/core/apiv3/types/hal-collection.type';
 import { ConfigurationService } from 'core-app/core/config/configuration.service';
 
-
 @Component({
   selector: 'opce-header-project-select',
   templateUrl: './header-project-select.component.html',
@@ -75,7 +74,11 @@ export class OpHeaderProjectSelectComponent extends UntilDestroyedMixin {
         .filter(
           (project) => {
             if (searchText.length) {
-              const matches = project.name.toLowerCase().includes(searchText.toLowerCase());
+              // Decompose accented letters such as é or ligatures ﬀ or supertexts ² into basic letters
+              // and their accents, additionally remove the accents to make the search accent insensitive.
+              const normalizedProjectName = project.name.normalize('NFKD').replace(/[\u0300-\u036f]/g, '');
+              const normalizedSearchText = searchText.normalize('NFKD').replace(/[\u0300-\u036f]/g, '');
+              const matches = normalizedProjectName.toLowerCase().includes(normalizedSearchText.toLowerCase());
 
               if (!matches) {
                 return false;

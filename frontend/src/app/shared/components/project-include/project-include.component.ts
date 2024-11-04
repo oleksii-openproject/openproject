@@ -176,8 +176,12 @@ export class OpProjectIncludeComponent extends UntilDestroyedMixin implements On
           .filter(
             (project) => {
               if (searchText.length) {
-                const matches = project.name.toLowerCase().includes(searchText.toLowerCase());
-
+                // Decompose accented letters such as é or ligatures ﬀ or supertexts ² into basic letters
+                // and their accents, additionally remove the accents to make the search accent insensitive.
+                // Where is this being rendered? TODO: Make highlighting work
+                const normalizedProjectName = project.name.normalize('NFKD').replace(/[\u0300-\u036f]/g, '');
+                const normalizedSearchText = searchText.normalize('NFKD').replace(/[\u0300-\u036f]/g, '');
+                const matches = normalizedProjectName.toLowerCase().includes(normalizedSearchText.toLowerCase());
                 if (!matches) {
                   return false;
                 }
