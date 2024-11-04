@@ -36,7 +36,7 @@ class WorkPackageRelationsTab::RelationComponent < ApplicationComponent
 
   def edit_path
     if parent_child_relationship?
-      "#" # TODO: Implement work package child edit path
+      raise NotImplementedError, "Children relationships are not editable"
     else
       edit_work_package_relation_path(@work_package, @relation)
     end

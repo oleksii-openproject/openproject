@@ -30,14 +30,18 @@
                               'aria-label': I18n.t(:label_agenda_item_actions),
                               scheme: :invisible,
                               ml: 2)
-        menu.with_item(label: "Edit relation",
-          href: edit_path,
-          test_selector: edit_button_test_selector,
-          content_arguments: {
-            data: { turbo_stream: true }
-          }) do |item|
-          item.with_leading_visual_icon(icon: :pencil)
+        # Children have nothing to edit as it's not a relation.
+        unless parent_child_relationship?
+          menu.with_item(label: "Edit relation",
+            href: edit_path,
+            test_selector: edit_button_test_selector,
+            content_arguments: {
+              data: { turbo_stream: true }
+            }) do |item|
+            item.with_leading_visual_icon(icon: :pencil)
+          end
         end
+
         menu.with_item(label: "Delete relation",
                       scheme: :danger,
                       href: destroy_path,

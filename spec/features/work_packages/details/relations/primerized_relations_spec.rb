@@ -227,5 +227,16 @@ RSpec.describe "Primerized work package relations tab",
         expect(page).to have_text("And they can be edited!")
       end
     end
+
+    it "does not have an edit action for children" do
+      scroll_to_element relations_panel
+
+      child_row = relations_panel.find("[data-test-selector='op-relation-row-#{child_wp.id}']")
+
+      within(child_row) do
+        page.find("[data-test-selector='op-relation-row-#{child_wp.id}-action-menu']").click
+        expect(page).to have_no_css("[data-test-selector='op-relation-row-#{child_wp.id}-edit-button']")
+      end
+    end
   end
 end
