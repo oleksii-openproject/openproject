@@ -99,7 +99,7 @@ After pressing **CREATE** you will get a pop-up window like the following
    5. Enable **Limit self registration** option
 3. Press **Create**
 
-![Add a new OpenID Gogole provider in OpenProject administration](openproject_system-admin-guide_authentication_openid_provider_new_google.png)
+![Add a new OpenID Google provider in OpenProject administration](openproject_system-admin-guide_authentication_openid_provider_new_google.png)
 
 4. The following green notification **Successful creation** should appear
 
