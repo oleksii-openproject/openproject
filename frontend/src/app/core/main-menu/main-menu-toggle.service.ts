@@ -26,7 +26,7 @@
 // See COPYRIGHT and LICENSE files for more details.
 //++
 
-import { Injectable, Injector } from '@angular/core';
+import { Injectable, Injector, OnInit } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { I18nService } from 'core-app/core/i18n/i18n.service';
 import { CurrentProjectService } from 'core-app/core/current-project/current-project.service';
@@ -34,7 +34,7 @@ import { DeviceService } from 'core-app/core/browser/device.service';
 import { InjectField } from 'core-app/shared/helpers/angular/inject-field.decorator';
 
 @Injectable({ providedIn: 'root' })
-export class MainMenuToggleService {
+export class MainMenuToggleService implements OnInit {
   public toggleTitle:string;
 
   private elementWidth:number;
@@ -67,6 +67,8 @@ export class MainMenuToggleService {
 
   public changeData$ = this.changeData.asObservable();
 
+  private wasCollapsedByUser = false;
+
   constructor(
     protected I18n:I18nService,
     public injector:Injector,
@@ -76,28 +78,29 @@ export class MainMenuToggleService {
     window.addEventListener('resize', this.onWindowResize.bind(this));
   }
 
+  public ngOnInit():void {
+    this.initializeMenu();
+  }
+
   public initializeMenu():void {
     if (!this.mainMenu) {
       return;
     }
 
     this.elementWidth = parseInt(window.OpenProject.guardedLocalStorage(this.localStorageKey) as string);
-    const menuCollapsed = window.OpenProject.guardedLocalStorage(this.localStorageStateKey) as string;
+    const menuCollapsed = window.OpenProject.guardedLocalStorage(this.localStorageStateKey) === 'true';
+
+    // Set the initial value of the collapse tracking flag
+    this.wasCollapsedByUser = menuCollapsed;
 
     if (!this.elementWidth) {
       this.saveWidth(this.mainMenu.offsetWidth);
-    } else if (menuCollapsed && JSON.parse(menuCollapsed)) {
+    } else if (menuCollapsed) {
       this.closeMenu();
     } else {
       this.setWidth();
     }
 
-    const currentProject:CurrentProjectService = this.injector.get(CurrentProjectService);
-    if (jQuery(document.body).hasClass('controller-my') && this.elementWidth === 0 || currentProject.id === null) {
-      this.saveWidth(this.defaultWidth);
-    }
-
-    // small desktop version default: hide menu on initialization
     this.adjustMenuVisibility();
   }
 
@@ -107,44 +110,67 @@ export class MainMenuToggleService {
 
   private adjustMenuVisibility():void {
     if (window.innerWidth >= 1012) {
-      this.setWidth(this.defaultWidth); // Open menu if the screen is wider than 1012px
+      // If wide screen, only open if it wasn't manually collapsed
+      if (!this.wasCollapsedByUser) {
+        this.setWidth(this.defaultWidth);
+      }
     } else {
-      this.closeMenu(); // Close menu if the screen is narrower
+      // Narrow screen: always close the menu and reset the collapse flag
+      this.closeMenu();
+      this.wasCollapsedByUser = false;
     }
   }
 
-  // click on arrow or hamburger icon
   public toggleNavigation(event?:JQuery.TriggeredEvent|Event):void {
     if (event) {
       event.stopPropagation();
       event.preventDefault();
     }
 
-    if (!this.showNavigation) { // sidebar is hidden -> show menu
-      if (this.deviceService.isSmallDesktop) { // small desktop version
-        this.setWidth(window.innerWidth);
-      } else { // desktop version
-        const savedWidth = parseInt(window.OpenProject.guardedLocalStorage(this.localStorageKey) as string);
-        const widthToSave = savedWidth >= this.elementMinWidth ? savedWidth : this.defaultWidth;
+    // Update the flag based on whether the menu is currently visible
+    this.wasCollapsedByUser = this.showNavigation;
 
-        this.saveWidth(widthToSave);
-      }
-    } else { // sidebar is expanded -> close menu
+    if (this.showNavigation) {
       this.closeMenu();
+    } else {
+      this.openMenu();
     }
 
-    // Set focus on first visible main menu item.
-    // This needs to be called after AngularJS has rendered the menu, which happens some when after(!) we leave this
-    // method here. So we need to set the focus after a timeout.
-    setTimeout(() => {
-      jQuery('#main-menu [class*="-menu-item"]:visible').first().focus();
-    }, 500);
+    // Save the collapsed state in localStorage
+    window.OpenProject.guardedLocalStorage(this.localStorageStateKey, String(!this.showNavigation));
   }
 
   public closeMenu():void {
     this.setWidth(0);
+    this.wasCollapsedByUser = true;
     window.OpenProject.guardedLocalStorage(this.localStorageStateKey, 'true');
     jQuery('.searchable-menu--search-input').blur();
+  }
+
+  public openMenu(): void {
+    this.setWidth(this.defaultWidth);
+    this.wasCollapsedByUser = false;
+    window.OpenProject.guardedLocalStorage(this.localStorageStateKey, 'false');
+  }
+
+  public setWidth(width?:number):void {
+    if (width !== undefined) {
+      this.elementWidth = width;
+    }
+
+    // Apply the width directly to the main menu
+    this.mainMenu.style.width = `${this.elementWidth}px`;
+
+    // Apply to root CSS variable for any related layout adjustments
+    this.htmlNode.style.setProperty('--main-menu-width', `${this.elementWidth}px`);
+
+    // Check if menu is open or closed and apply CSS class if needed
+    this.toggleClassHidden();
+
+    // Save the width if it's open
+    if (this.elementWidth > 0) {
+      window.OpenProject.guardedLocalStorage(this.localStorageKey, String(this.elementWidth));
+    }
   }
 
   public saveWidth(width?:number):void {
@@ -153,27 +179,8 @@ export class MainMenuToggleService {
     window.OpenProject.guardedLocalStorage(this.localStorageStateKey, String(this.elementWidth === 0));
   }
 
-  public setWidth(width?:any):void {
-    if (width !== undefined) {
-      // Leave a minimum amount of space for space for the content
-      const maxMenuWidth = this.deviceService.isSmallDesktop ? window.innerWidth - 120 : window.innerWidth - 520;
-      this.elementWidth = Math.min(width as number, maxMenuWidth);
-    }
-
-    this.snapBack();
-    this.setToggleTitle();
-    this.toggleClassHidden();
-
-    this.global.showNavigation = this.showNavigation;
-    this.htmlNode.style.setProperty('--main-menu-width', `${this.elementWidth}px`);
-
-    // Send change event when size of menu is changing (menu toggled or resized)
-    const changeEvent = jQuery.Event('change');
-    this.changeData.next(changeEvent);
-  }
-
   public get showNavigation():boolean {
-    return (this.elementWidth >= this.elementMinWidth);
+    return this.elementWidth >= this.elementMinWidth;
   }
 
   private snapBack():void {
@@ -192,6 +199,7 @@ export class MainMenuToggleService {
   }
 
   private toggleClassHidden():void {
-    this.hideElements.toggleClass('hidden-navigation', !this.showNavigation);
+    const isHidden = this.elementWidth < this.elementMinWidth;
+    this.hideElements.toggleClass('hidden-navigation', isHidden);
   }
 }
