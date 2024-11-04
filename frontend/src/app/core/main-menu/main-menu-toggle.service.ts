@@ -26,7 +26,7 @@
 // See COPYRIGHT and LICENSE files for more details.
 //++
 
-import { Injectable, Injector, OnInit } from '@angular/core';
+import { Injectable, Injector } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { I18nService } from 'core-app/core/i18n/i18n.service';
 import { CurrentProjectService } from 'core-app/core/current-project/current-project.service';
@@ -34,7 +34,7 @@ import { DeviceService } from 'core-app/core/browser/device.service';
 import { InjectField } from 'core-app/shared/helpers/angular/inject-field.decorator';
 
 @Injectable({ providedIn: 'root' })
-export class MainMenuToggleService implements OnInit {
+export class MainMenuToggleService {
   public toggleTitle:string;
 
   private elementWidth:number;
@@ -74,12 +74,9 @@ export class MainMenuToggleService implements OnInit {
     public injector:Injector,
     readonly deviceService:DeviceService,
   ) {
+    this.initializeMenu();
     // Add resize event listener
     window.addEventListener('resize', this.onWindowResize.bind(this));
-  }
-
-  public ngOnInit():void {
-    this.initializeMenu();
   }
 
   public initializeMenu():void {
@@ -147,7 +144,7 @@ export class MainMenuToggleService implements OnInit {
     jQuery('.searchable-menu--search-input').blur();
   }
 
-  public openMenu(): void {
+  public openMenu():void {
     this.setWidth(this.defaultWidth);
     this.wasCollapsedByUser = false;
     window.OpenProject.guardedLocalStorage(this.localStorageStateKey, 'false');
