@@ -391,8 +391,6 @@ en:
         format:
           date: "%{attribute} is no valid date - YYYY-MM-DD expected."
         general: "An error has occurred."
-      warning:
-        potential_update_conflict: "The resource you're about to update was edited by another user."
 
     homescreen:
       blocks:

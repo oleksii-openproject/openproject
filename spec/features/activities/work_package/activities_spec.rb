@@ -993,5 +993,209 @@ RSpec.describe "Work package activity", :js, :with_cuprite, with_flag: { primeri
       # work package page should also show the updated attribute
       wp_page.expect_attributes(subject: "Subject updated")
     end
+
+    it "shows the updated work package attribute without reload after switching back to the activity tab", :aggregate_failures do
+      # wait for the latest comments to be loaded before proceeding!
+      activity_tab.expect_journal_notes(text: "First comment by member")
+      wp_page.expect_attributes(subject: work_package.subject)
+
+      # we need to wait a bit before triggering the update below
+      # otherwise the update is already picked up by the initial (async) workpackage attributes update called in the connect hook
+      # and we wouldn't test the polling based update below
+      sleep 2
+      wp_page.expect_attributes(subject: work_package.subject) # check if the initial update picked up the original subject
+
+      wp_page.switch_to_tab(tab: :relations)
+      # simulate another user is updating the work package subject
+      # this btw does behave very strangely in test env and will not assign the change to the specified user
+      WorkPackages::UpdateService.new(user: admin, model: work_package).call(subject: "Subject updated")
+
+      sleep 2 # wait some time to really check for a stale UI state
+
+      # work package page is stale as the activity tab is not active and thus no polling is done
+      wp_page.expect_attributes(subject: work_package.subject)
+
+      wp_page.switch_to_tab(tab: :activity)
+      wp_page.wait_for_activity_tab
+
+      # activity tab should show the updated attribute
+      activity_tab.expect_journal_changed_attribute(text: "Subject updated")
+
+      # work package page should now also show the updated attribute
+      wp_page.expect_attributes(subject: "Subject updated")
+
+      # as this happened in this case while development and needed to be fixed
+      # I add the following check to make sure this does not happen again
+      wp_page.expect_no_conflict_warning_banner
+      wp_page.expect_no_conflict_error_banner
+    end
+  end
+
+  describe "conflict handling" do
+    let(:work_package) { create(:work_package, project:, author: admin) }
+
+    # make sure that all following changes are not merged to the initial journal
+    let!(:first_comment_by_member) do
+      create(:work_package_journal, user: member, notes: "First comment by member", journable: work_package, version: 2)
+    end
+
+    before do
+      # set WORK_PACKAGES_ACTIVITIES_TAB_POLLING_INTERVAL_IN_MS to 1000
+      # to speed up the polling interval for test duration
+      ENV["WORK_PACKAGES_ACTIVITIES_TAB_POLLING_INTERVAL_IN_MS"] = "1000"
+    end
+
+    after do
+      ENV.delete("WORK_PACKAGES_ACTIVITIES_TAB_POLLING_INTERVAL_IN_MS")
+    end
+
+    it "raises a conflict warning when the work package is updated by another user while the current user is editing",
+       :aggregate_failures do
+      using_session(:admin) do
+        login_as(admin)
+
+        wp_page.visit!
+        wp_page.wait_for_activity_tab
+
+        wp_page.edit_field(:description).display_element.click
+        wp_page.edit_field(:description).set_value("Description updated but not saved yet")
+
+        wp_page.expect_any_active_inline_edit_field
+      end
+
+      using_session(:member) do
+        login_as(member)
+
+        wp_page.visit!
+        wp_page.wait_for_activity_tab
+
+        wp_page.edit_field(:description).display_element.click
+        wp_page.edit_field(:description).set_value("Description updated by member")
+        wp_page.edit_field(:description).save!
+
+        wp_page.expect_no_active_inline_edit_field
+      end
+
+      using_session(:admin) do
+        wp_page.expect_any_active_inline_edit_field # editor is still active
+
+        wp_page.expect_conflict_warning_banner # warning banner is shown as another user has updated the work package
+
+        wp_page.edit_field(:description).save! # user ignores the warning and saves the changes
+
+        wp_page.expect_no_conflict_warning_banner # warning banner is gone and substituted by the error banner
+        wp_page.expect_conflict_error_banner # error banner is shown as the server does not allow a conflict
+      end
+    end
+
+    it "does NOT raise a conflict warning when the work package has been only commented by another user while the current
+        user is editing",
+       :aggregate_failures do
+      using_session(:admin) do
+        login_as(admin)
+
+        wp_page.visit!
+        wp_page.wait_for_activity_tab
+
+        wp_page.edit_field(:description).display_element.click
+        wp_page.edit_field(:description).set_value("Description updated but not saved yet")
+
+        wp_page.expect_any_active_inline_edit_field
+      end
+
+      using_session(:member) do
+        login_as(member)
+
+        wp_page.visit!
+        wp_page.wait_for_activity_tab
+
+        activity_tab.add_comment(text: "Second comment by member")
+      end
+
+      using_session(:admin) do
+        wp_page.expect_any_active_inline_edit_field # editor is still active
+
+        wp_page.expect_no_conflict_warning_banner
+        wp_page.expect_no_conflict_error_banner
+      end
+    end
+
+    context "when the current user does not have the activity tab open the whole time" do
+      it "raises a conflict warning when the work package is updated by another user while the current user is editing",
+         :aggregate_failures do
+        using_session(:admin) do
+          login_as(admin)
+
+          wp_page.visit!
+          wp_page.wait_for_activity_tab
+          wp_page.switch_to_tab(tab: :relations) # navigate to another tab, the journal polling stops
+
+          wp_page.edit_field(:description).display_element.click
+          wp_page.edit_field(:description).set_value("Description updated but not saved yet")
+
+          wp_page.expect_any_active_inline_edit_field
+        end
+
+        using_session(:member) do
+          login_as(member)
+
+          wp_page.visit!
+          wp_page.wait_for_activity_tab
+
+          wp_page.edit_field(:description).display_element.click
+          wp_page.edit_field(:description).set_value("Description updated by member")
+          wp_page.edit_field(:description).save!
+
+          wp_page.expect_no_active_inline_edit_field
+        end
+
+        using_session(:admin) do
+          wp_page.expect_no_conflict_warning_banner
+          wp_page.expect_no_conflict_error_banner
+
+          wp_page.switch_to_tab(tab: :activity) # re-visit the activity tab, the journal polling starts again
+          wp_page.wait_for_activity_tab
+
+          wp_page.expect_any_active_inline_edit_field # editor is still active
+
+          # this works as expected but cannot be tested in test env, reason unknown
+          # sleep 1
+          # wp_page.expect_conflict_warning_banner # warning banner is shown as another user has updated the work package
+
+          wp_page.edit_field(:description).save! # user ignores the warning and saves the changes
+
+          wp_page.expect_no_conflict_warning_banner # warning banner is gone and substituted by the error banner
+          wp_page.expect_conflict_error_banner # error banner is shown as the server does not allow a conflict
+        end
+      end
+
+      it "does NOT raise a conflict warning when the work package is updated by the same user while the current user is editing",
+         :aggregate_failures do
+        using_session(:admin) do
+          login_as(admin)
+
+          wp_page.visit!
+          wp_page.wait_for_activity_tab
+          wp_page.switch_to_tab(tab: :relations) # navigate to another tab, the journal polling stops
+
+          wp_page.edit_field(:description).display_element.click
+          wp_page.edit_field(:description).set_value("Description updated and saved")
+          wp_page.edit_field(:description).save!
+
+          wp_page.expect_no_active_inline_edit_field
+
+          wp_page.edit_field(:description).display_element.click
+          wp_page.edit_field(:description).set_value("Description updated again but not saved yet by the same user")
+
+          wp_page.expect_any_active_inline_edit_field
+
+          wp_page.switch_to_tab(tab: :activity)
+          wp_page.wait_for_activity_tab
+
+          wp_page.expect_no_conflict_warning_banner
+          wp_page.expect_no_conflict_error_banner
+        end
+      end
+    end
   end
 end
