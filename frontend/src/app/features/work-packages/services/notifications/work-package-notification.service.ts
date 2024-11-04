@@ -33,15 +33,20 @@ import { WorkPackageResource } from 'core-app/features/hal/resources/work-packag
 import { ApiV3Service } from 'core-app/core/apiv3/api-v3.service';
 import { HalResource } from 'core-app/features/hal/resources/hal-resource';
 import { TurboRequestsService } from 'core-app/core/turbo/turbo-requests.service';
-
+import { ConfigurationService } from 'core-app/core/config/configuration.service';
 @Injectable()
 export class WorkPackageNotificationService extends HalResourceNotificationService {
+  primerizedActivitiesEnabled:boolean;
+
   constructor(
     readonly injector:Injector,
     readonly apiV3Service:ApiV3Service,
     readonly turboRequests:TurboRequestsService,
+    readonly configurationService:ConfigurationService,
   ) {
     super(injector);
+
+    this.primerizedActivitiesEnabled = this.configurationService.activeFeatureFlags.includes('primerizedWorkPackageActivities');
   }
 
   public showSave(resource:HalResource, isCreate = false) {
@@ -55,12 +60,26 @@ export class WorkPackageNotificationService extends HalResourceNotificationServi
 
   protected showCustomError(errorResource:any, resource:WorkPackageResource):boolean {
     if (errorResource.errorIdentifier === 'urn:openproject-org:api:v3:errors:UpdateConflict') {
-      // currently we do not have a programmatic way to show the primer flash messages
-      // so we just do a request to the server to show it
-      // should be refactored once we have a programmatic way to show the primer flash messages!
-      void this.turboRequests.request('/work_packages/show_conflict_flash_message?scheme=danger', {
-        method: 'GET',
-      });
+      if (this.primerizedActivitiesEnabled) {
+        // currently we do not have a programmatic way to show the primer flash messages
+        // so we just do a request to the server to show it
+        // should be refactored once we have a programmatic way to show the primer flash messages!
+        void this.turboRequests.request('/work_packages/show_conflict_flash_message?scheme=danger', {
+          method: 'GET',
+        });
+      } else {
+        // code from before:
+        this.ToastService.addError({
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+          message: errorResource.message,
+          type: 'error',
+          link: {
+            text: this.I18n.t('js.hal.error.update_conflict_refresh'),
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises
+            target: () => this.apiV3Service.work_packages.id(resource).refresh(),
+          },
+        });
+      }
 
       return true;
     }

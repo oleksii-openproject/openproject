@@ -115,10 +115,12 @@ module Pages
 
     def ensure_page_loaded
       expect_angular_frontend_initialized
-      expect(page).to have_css(".op-user-activity--user-name",
-                               text: work_package.journals.last.user.name,
-                               minimum: 1,
-                               wait: 10)
+      unless OpenProject::FeatureDecisions.primerized_work_package_activities_active?
+        expect(page).to have_css(".op-user-activity--user-name",
+                                 text: work_package.journals.last.user.name,
+                                 minimum: 1,
+                                 wait: 10)
+      end
     end
 
     def disable_ajax_requests

@@ -980,12 +980,13 @@ RSpec.describe "Work package activity", :js, :with_cuprite, with_flag: { primeri
       # we need to wait a bit before triggering the update below
       # otherwise the update is already picked up by the initial (async) workpackage attributes update called in the connect hook
       # and we wouldn't test the polling based update below
-      sleep 2
+      sleep 2 # rubocop:disable OpenProject/NoSleepInFeatureSpecs
       wp_page.expect_attributes(subject: work_package.subject) # check if the initial update picked up the original subject
 
       # simulate another user is updating the work package subject
       # this btw does behave very strangely in test env and will not assign the change to the specified user
-      WorkPackages::UpdateService.new(user: admin, model: work_package).call(subject: "Subject updated")
+      WorkPackages::UpdateService.new(user: member, model: work_package).call(subject: "Subject updated")
+      work_package.journals.reload.last.update!(user: member) # manually set the user to member
 
       # activity tab should show the updated attribute
       activity_tab.expect_journal_changed_attribute(text: "Subject updated")
@@ -1002,15 +1003,16 @@ RSpec.describe "Work package activity", :js, :with_cuprite, with_flag: { primeri
       # we need to wait a bit before triggering the update below
       # otherwise the update is already picked up by the initial (async) workpackage attributes update called in the connect hook
       # and we wouldn't test the polling based update below
-      sleep 2
+      sleep 2 # rubocop:disable OpenProject/NoSleepInFeatureSpecs
       wp_page.expect_attributes(subject: work_package.subject) # check if the initial update picked up the original subject
 
       wp_page.switch_to_tab(tab: :relations)
       # simulate another user is updating the work package subject
       # this btw does behave very strangely in test env and will not assign the change to the specified user
-      WorkPackages::UpdateService.new(user: admin, model: work_package).call(subject: "Subject updated")
+      WorkPackages::UpdateService.new(user: member, model: work_package).call(subject: "Subject updated")
+      work_package.journals.reload.last.update!(user: member) # manually set the user to member
 
-      sleep 2 # wait some time to really check for a stale UI state
+      sleep 2 # rubocop:disable OpenProject/NoSleepInFeatureSpecs # wait some time to really check for a stale UI state
 
       # work package page is stale as the activity tab is not active and thus no polling is done
       wp_page.expect_attributes(subject: work_package.subject)
