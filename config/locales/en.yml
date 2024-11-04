@@ -714,9 +714,12 @@ en:
     label_edit_x: "Edit %{x}"
     label_add_description: "Add description"
     relations:
-      label_relates_singular: "related to"
+      label_relates_to_plural: "related to"
       label_relates_plural: "related to"
+      label_relates_to_singular: "related to"
+      label_relates_to_plural: "related to"
       relates_description: "Creates a visible link between the two work packages with no additional effect"
+      relates_to_description: "Creates a visible link between the two work packages with no additional effect"
       label_precedes_singular: "precedessor (before)"
       label_precedes_plural: "precedessors (before)"
       precedes_description: "The related work package necessarily needs to finish before this one can start"
