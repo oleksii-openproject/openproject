@@ -43,6 +43,9 @@ export class ApiV3ResourcePath<T = HalResource> extends SimpleResource {
     cls:Constructor<R> = ApiV3GettableResource as unknown as Constructor<R>,
   ):R {
     // eslint-disable-next-line new-cap
+    // if (segment === "form"){
+    //   debugger;
+    // }
     return new cls(this.apiRoot, this.path, segment, this);
   }
 }

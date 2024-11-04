@@ -34,9 +34,15 @@ module API
       module Copy
         class CopyAPI < ::API::OpenProjectAPI
           resource :copy do
+            after_validation do
+              # binding.pry
+              # authorize_in_project(:copy_work_packages, project: @project)
+            end
+
             post &::API::V3::Utilities::Endpoints::Create.new(model: WorkPackage,
                                                               parse_service: WorkPackages::ParseParamsService,
                                                               process_contract: ::WorkPackages::CopyContract,
+                                                              # parse_representer: WorkPackageCopyPayloadRepresenter,
                                                               render_representer: CreateFormRepresenter,
                                                               params_modifier: ->(attributes) {
                                                                 attributes[:send_notifications] = notify_according_to_params

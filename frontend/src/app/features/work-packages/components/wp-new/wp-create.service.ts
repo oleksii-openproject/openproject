@@ -146,10 +146,11 @@ export class WorkPackageCreateService extends UntilDestroyedMixin {
     // Ideally we would make an empty request before to get the create schema (cannot use the update schema of the source changeset)
     // to get all the writable attributes and only send those.
     // But as this would require an additional request, we don't.
+
     return this
       .apiV3Service
       .work_packages
-      .form
+      .copy_form
       .post(request)
       .toPromise()
       .then((form:FormResource) => {

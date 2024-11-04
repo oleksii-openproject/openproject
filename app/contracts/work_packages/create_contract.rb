@@ -30,7 +30,8 @@ require "work_packages/base_contract"
 
 module WorkPackages
   class CreateContract < BaseContract
-    REQUIRED_PERMISSION = :add_work_packages
+    # Temporary for testing the permission
+    REQUIRED_PERMISSION = :copy_work_packages
 
     include AdminWritableTimestamps
     allow_writable_timestamps :created_at

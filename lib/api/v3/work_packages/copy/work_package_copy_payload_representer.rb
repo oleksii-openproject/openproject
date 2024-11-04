@@ -32,8 +32,13 @@ module API
       module Copy
         class WorkPackageCopyPayloadRepresenter < ::API::V3::WorkPackages::WorkPackageRepresenter
           include ::API::Utilities::PayloadRepresenter
+          # include ::API::Utilities::MetaProperty
 
           cached_representer disabled: true
+          # This might be required but not sure where yet!
+          # def meta_representer_class
+          #   ProjectCopyMetaRepresenter
+          # end
 
           def writable_attributes
             super + %w[status]
