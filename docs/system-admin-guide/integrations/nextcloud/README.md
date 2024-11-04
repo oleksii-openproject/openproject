@@ -180,7 +180,7 @@ To add a Nextcloud to a specific project on a project level, navigate to any exi
 
 To add a Nextcloud storage to one or multiple projects on an instance level, click on a file storage under *Administration -> Files -> External file storages* and select **Enabled in projects** tab. If the file storage setup was not completed properly, you will see a respective message. 
 
-![Storage setup incomplete message in OprnProject file storages administration](openproject_system_guide_nextcloud_integration_setup_incomplete_message.png)
+![Storage setup incomplete message in OpenProject file storages administration](openproject_system_guide_nextcloud_integration_setup_incomplete_message.png)
 
 If the storage was set up correctly, you will be able activate the file storage for one or multiple projects. To do that click the **+Add projects** button.
 
