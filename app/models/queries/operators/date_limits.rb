@@ -29,11 +29,13 @@
 module Queries::Operators
   module DateLimits
     # Technically dates in PostgreSQL can be up to 5874897 AD, but limit to
-    # timestamp range, as dates are used to query for timestamps too
+    # timestamp range, as dates are used to query for timestamps too.
+    # Date.new BCE years are counted astronomically, so 0 is 1 BC.
+    # Minimal allowed date is Date.new(-4713, 11, 24), but specification says 4713 BC (-4712).
     #
     # https://www.postgresql.org/docs/current/datatype-datetime.html
-    PG_DATE_FROM = ::Date.new(-4713, 1, 1)
-    PG_DATE_TO_EXCLUSIVE = ::Date.new(294276 + 1, 1, 1)
+    PG_DATE_FROM = Date.new(-4712, 1, 1)
+    PG_DATE_TO_EXCLUSIVE = Date.new(294276 + 1, 1, 1)
 
     def date_too_small?(date)
       date < PG_DATE_FROM

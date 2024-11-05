@@ -47,29 +47,25 @@ module Queries::Operators
       s = []
 
       if from
-        s << case
-             when date_too_small?(from)
-               "1 = 1"
-             when date_too_big?(from)
-               "1 <> 1"
-             else
-               "#{table}.#{field} > '#{quoted_date_from_utc(from.yesterday)}'"
-             end
+        return "1 <> 1" if date_too_big?(from)
+
+        unless date_too_small?(from)
+          s << "#{table}.#{field} > '#{quoted_date_from_utc(from.yesterday)}'"
+        end
       end
 
       if to
-        s << case
-             when date_too_small?(to)
-               "1 <> 1"
-             when date_too_big?(to)
-               "1 = 1"
-             else
-               "#{table}.#{field} <= '#{quoted_date_from_utc(to)}'"
-             end
+        return "1 <> 1" if date_too_small?(to)
+
+        unless date_too_big?(to)
+          s << "#{table}.#{field} <= '#{quoted_date_from_utc(to)}'"
+        end
       end
 
-      s.join(" AND ")
+      s.join(" AND ").presence || "1 = 1"
     end
+
+    private
 
     def quoted_date_from_utc(value)
       connection.quoted_date(value.to_time(:utc).end_of_day)

@@ -34,28 +34,22 @@ module Queries::Operators
       s = []
 
       if from
-        s << case
-             when date_too_small?(from)
-               "1 = 1"
-             when date_too_big?(from)
-               "1 <> 1"
-             else
-               "#{table}.#{field} >= '#{connection.quoted_date(from)}'"
-             end
+        return "1 <> 1" if date_too_big?(from)
+
+        unless date_too_small?(from)
+          s << "#{table}.#{field} >= '#{connection.quoted_date(from)}'"
+        end
       end
 
       if to
-        s << case
-             when date_too_small?(to)
-               "1 <> 1"
-             when date_too_big?(to)
-               "1 = 1"
-             else
-               "#{table}.#{field} <= '#{connection.quoted_date(to)}'"
-             end
+        return "1 <> 1" if date_too_small?(to)
+
+        unless date_too_big?(to)
+          s << "#{table}.#{field} <= '#{connection.quoted_date(to)}'"
+        end
       end
 
-      s.join(" AND ")
+      s.join(" AND ").presence || "1 = 1"
     end
   end
 end
