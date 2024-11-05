@@ -69,6 +69,18 @@ colors:
   - reference: :default_color_black
     t_name: Black
     hexcode: "#000000"
+  - reference: :default_color_orange_dark
+    t_name: Orange (dark)
+    hexcode: "#F7983A"
+  - reference: :default_color_red_dark
+    t_name: Red (dark)
+    hexcode: "#F05823"
+  - reference: :default_color_magenta_light
+    t_name: Magenta (light)
+    hexcode: "#EC038A"
+  - reference: :default_color_green_yellow
+    t_name: Green Yellow
+    hexcode: "#B1D13A"
 
 document_categories:
   - t_name: Documentation

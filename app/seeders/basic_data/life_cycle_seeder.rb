@@ -25,24 +25,22 @@
 #
 # See COPYRIGHT and LICENSE files for more details.
 #++
-module Standard
-  class BasicDataSeeder < ::BasicDataSeeder
-    def data_seeder_classes
-      [
-        ::BasicData::BuiltinUsersSeeder,
-        ::BasicData::ProjectRoleSeeder,
-        ::BasicData::WorkPackageRoleSeeder,
-        ::BasicData::ProjectQueryRoleSeeder,
-        ::BasicData::GlobalRoleSeeder,
-        ::BasicData::TimeEntryActivitySeeder,
-        ::BasicData::ColorSeeder,
-        ::BasicData::ColorSchemeSeeder,
-        ::BasicData::LifeCycleSeeder,
-        ::BasicData::WorkflowSeeder,
-        ::BasicData::PrioritySeeder,
-        ::BasicData::SettingSeeder,
-        ::BasicData::ProjectCustomFieldSectionSeeder
-      ]
+module BasicData
+  class LifeCycleSeeder < ModelSeeder
+    self.model_class = LifeCycle
+    self.seed_data_model_key = "life_cycles"
+    self.needs = [
+      BasicData::ColorSeeder,
+      BasicData::ColorSchemeSeeder
+    ]
+    self.attribute_names_for_lookups = %i[name type]
+
+    def model_attributes(life_cyle_data)
+      {
+        name: life_cyle_data["name"],
+        type: life_cyle_data["type"],
+        color_id: color_id(life_cyle_data["color_name"])
+      }
     end
   end
 end
