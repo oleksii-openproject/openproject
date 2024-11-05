@@ -28,7 +28,17 @@ See COPYRIGHT and LICENSE files for more details.
 ++#%>
 
 <% html_title t('boards.label_create_new_board') %>
-<%= toolbar title: t('boards.label_create_new_board') %>
+
+<%=
+  render Primer::OpenProject::PageHeader.new do |header|
+    header.with_title {  t('boards.label_create_new_board') }
+    header.with_breadcrumbs( [{ href: project_overview_path(@project.id), text: @project.name },
+                              { href: project_work_package_boards_path(@project.id), text: t("boards.label_boards") },
+                              t('boards.label_create_new_board')
+                             ])
+  end
+%>
+
 <%= labelled_tabular_form_for @board_grid, url: { controller: '/boards/boards', action: 'create', project_id: @project }, :html => {:id => 'board-form'} do |f| -%>
   <%= render :partial => 'form', :locals => {:f => f} %>
   <%= styled_button_tag t(:button_create), class: '-primary' %>
