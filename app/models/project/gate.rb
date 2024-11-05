@@ -26,13 +26,13 @@
 # See COPYRIGHT and LICENSE files for more details.
 #++
 
-class Projects::Stage < ProjectLifeCycle
-  validates :start_date, :end_date, presence: true
+class Project::Gate < Project::LifeCycle
+  validates :date, presence: true
   validate :validate_restricted_attributes
 
   def validate_restricted_attributes
-    if date.present?
-      errors.add(:base, :date_not_allowed)
+    if start_date.present? || end_date.present?
+      errors.add(:base, :date_range_not_allowed)
     end
   end
 end

@@ -27,16 +27,16 @@
 #++
 
 FactoryBot.define do
-  factory :project_life_cycle do
+  factory :project_life_cycle, class: "Project::LifeCycle" do
     project
     life_cycle
 
-    factory :project_stage, class: "::Projects::Stage" do
+    factory :project_stage, class: "Project::Stage" do
       start_date { Date.current - 2.days }
       end_date { Date.current + 2.days }
     end
 
-    factory :project_gate, class: "::Projects::Gate" do
+    factory :project_gate, class: "Project::Gate" do
       date { Date.current + 2.days }
     end
   end

@@ -26,13 +26,26 @@
 # See COPYRIGHT and LICENSE files for more details.
 #++
 
-class Projects::Gate < ProjectLifeCycle
-  validates :date, presence: true
-  validate :validate_restricted_attributes
+require "rails_helper"
+require "support/shared/project_life_cycle_helpers"
 
-  def validate_restricted_attributes
-    if start_date.present? || end_date.present?
-      errors.add(:base, :date_range_not_allowed)
+RSpec.describe Project::Stage do
+  it_behaves_like "a Project::LifeCycle event"
+
+  describe "validations" do
+    it { is_expected.to validate_presence_of(:start_date) }
+    it { is_expected.to validate_presence_of(:end_date) }
+
+    it "is valid when `start_date` and `end_date` are present" do
+      valid_stage = build(:project_stage)
+      expect(valid_stage).to be_valid
+    end
+
+    it "adds an error when `date` is set" do
+      stage_with_date = build(:project_stage, date: Time.zone.today)
+
+      expect(stage_with_date).not_to be_valid
+      expect(stage_with_date.errors[:base]).to include("Cannot assign `date` to a Stage")
     end
   end
 end

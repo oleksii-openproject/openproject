@@ -26,9 +26,9 @@
 # See COPYRIGHT and LICENSE files for more details.
 #++
 
-RSpec.shared_examples_for "a ProjectLifeCycle event" do
-  it "inherits from ProjectLifeCycle" do
-    expect(described_class < ProjectLifeCycle).to be true
+RSpec.shared_examples_for "a Project::LifeCycle event" do
+  it "inherits from Project::LifeCycle" do
+    expect(described_class < Project::LifeCycle).to be true
   end
 
   describe "associations" do

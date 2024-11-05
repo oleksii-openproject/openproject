@@ -382,14 +382,8 @@ RSpec.describe Project do
   end
 
   describe "life_cycles" do
-    it { is_expected.to have_many(:project_life_cycles).dependent(:destroy) }
-
-    it do
-      expect(subject)
-        .to have_many(:life_cycles)
-        .through(:project_life_cycles)
-        .class_name("Projects::LifeCycle")
-    end
+    it { is_expected.to have_many(:project_life_cycles).class_name("Project::LifeCycle").dependent(:destroy) }
+    it { is_expected.to have_many(:life_cycles).through(:project_life_cycles) }
   end
 
   describe "#enabled_module_names=", with_settings: { default_projects_modules: %w(work_package_tracking repository) } do

@@ -26,32 +26,20 @@
 # See COPYRIGHT and LICENSE files for more details.
 #++
 
-require "rails_helper"
-require "support/shared/project_life_cycle_helpers"
+class Project::LifeCycle < ApplicationRecord
+  belongs_to :project, optional: false
+  belongs_to :life_cycle, optional: false
+  has_many :work_packages, foreign_key: :project_life_cycle_id, dependent: :nullify
 
-RSpec.describe Projects::Gate do
-  it_behaves_like "a ProjectLifeCycle event"
+  validates :type, inclusion: { in: %w[Project::Stage Project::Gate], message: :must_be_a_stage_or_gate }
 
-  describe "validations" do
-    it { is_expected.to validate_presence_of(:date) }
-
-    it "is invalid if `start_date` is present" do
-      gate_with_start_date = build(:project_gate, start_date: Time.zone.today)
-
-      expect(gate_with_start_date).not_to be_valid
-      expect(gate_with_start_date.errors[:base]).to include("Cannot assign `start_date` or `end_date` to a Gate")
+  def initialize(*args)
+    if instance_of? Project::LifeCycle
+      # Do not allow directly instantiating this class
+      raise NotImplementedError, "Cannot instantiate the base Project::LifeCycle class directly. " \
+                                 "Use Project::Stage or Project::Gate instead."
     end
 
-    it "is invalid if `end_date` is present" do
-      gate_with_end_date = build(:project_gate, end_date: Time.zone.today)
-
-      expect(gate_with_end_date).not_to be_valid
-      expect(gate_with_end_date.errors[:base]).to include("Cannot assign `start_date` or `end_date` to a Gate")
-    end
-
-    it "is valid if neither `start_date` nor `end_date` are present" do
-      valid_gate = build(:project_gate)
-      expect(valid_gate).to be_valid
-    end
+    super
   end
 end

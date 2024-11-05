@@ -1110,15 +1110,15 @@ en:
           attributes:
             project_ids:
               blank: "Please select a project."
-        project_life_cycle:
+        project/life_cycle:
           attributes:
             type:
               must_be_a_stage_or_gate: "must be either Stage or Gate"
-        projects/gate:
+        project/gate:
           attributes:
             base:
               date_range_not_allowed: "Cannot assign `start_date` or `end_date` to a Gate"
-        projects/stage:
+        project/stage:
           attributes:
             base:
               date_not_allowed: "Cannot assign `date` to a Stage"

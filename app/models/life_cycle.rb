@@ -27,7 +27,7 @@
 #++
 
 class LifeCycle < ApplicationRecord
-  has_many :project_life_cycles, dependent: :destroy
+  has_many :project_life_cycles, class_name: "Project::LifeCycle", dependent: :destroy
   has_many :projects, through: :project_life_cycles
 
   belongs_to :color, optional: false

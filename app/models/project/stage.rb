@@ -26,23 +26,13 @@
 # See COPYRIGHT and LICENSE files for more details.
 #++
 
-require "rails_helper"
+class Project::Stage < Project::LifeCycle
+  validates :start_date, :end_date, presence: true
+  validate :validate_restricted_attributes
 
-RSpec.describe ProjectLifeCycle do
-  it "cannot be instantiated" do
-    expect { described_class.new }.to raise_error(NotImplementedError)
+  def validate_restricted_attributes
+    if date.present?
+      errors.add(:base, :date_not_allowed)
+    end
   end
-
-  it "cannot be instantiated with an invalid type" do
-    expect { described_class.new(type: "InvalidType") }.to raise_error(ActiveRecord::SubclassNotFound)
-  end
-
-  it "can be instantiated with a valid type" do
-    expect { described_class.new(type: "Projects::Gate") }.not_to raise_error
-  end
-
-  # For more specs see:
-  # - spec/support/shared/project_life_cycle_helpers.rb
-  # - spec/models/projects/gate_spec.rb
-  # - spec/models/projects/stage_spec.rb
 end

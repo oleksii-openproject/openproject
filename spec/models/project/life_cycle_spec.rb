@@ -26,20 +26,23 @@
 # See COPYRIGHT and LICENSE files for more details.
 #++
 
-class ProjectLifeCycle < ApplicationRecord
-  belongs_to :project, optional: false
-  belongs_to :life_cycle, optional: false
-  has_many :work_packages, dependent: :nullify
+require "rails_helper"
 
-  validates :type, inclusion: { in: %w[Projects::Stage Projects::Gate], message: :must_be_a_stage_or_gate }
-
-  def initialize(*args)
-    if instance_of? ProjectLifeCycle
-      # Do not allow directly instantiating this class
-      raise NotImplementedError, "Cannot instantiate the base ProjectLifeCycle class directly. " \
-                                 "Use Projects::Stage or Projects::Gate instead."
-    end
-
-    super
+RSpec.describe Project::LifeCycle do
+  it "cannot be instantiated" do
+    expect { described_class.new }.to raise_error(NotImplementedError)
   end
+
+  it "cannot be instantiated with an invalid type" do
+    expect { described_class.new(type: "InvalidType") }.to raise_error(ActiveRecord::SubclassNotFound)
+  end
+
+  it "can be instantiated with a valid type" do
+    expect { described_class.new(type: "Project::Gate") }.not_to raise_error
+  end
+
+  # For more specs see:
+  # - spec/support/shared/project_life_cycle_helpers.rb
+  # - spec/models/projects/gate_spec.rb
+  # - spec/models/projects/stage_spec.rb
 end
