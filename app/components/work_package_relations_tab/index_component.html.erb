@@ -27,6 +27,17 @@
               item.with_description.with_content(t("#{I18N_NAMESPACE}.relations.#{relation_type}_description"))
             end
           end
+
+          menu.with_item(
+            label: t("#{I18N_NAMESPACE}.relations.label_child_singular").capitalize,
+            href: new_work_package_child_path(@work_package),
+            test_selector: new_button_test_selector(relation_type: :child),
+            content_arguments: {
+              data: { turbo_stream: true }
+            }
+          ) do |item|
+            item.with_description.with_content(t("#{I18N_NAMESPACE}.relations.child_description"))
+          end
         end
       end
     end

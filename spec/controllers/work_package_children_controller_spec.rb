@@ -35,13 +35,27 @@ RSpec.describe WorkPackageChildrenController do
   shared_let(:project) { create(:project) }
   shared_let(:work_package) { create(:work_package, project:) }
   shared_let(:child_work_package) { create(:work_package, parent: work_package, project:) }
-  shared_let(:children) do
-    create_list(:work_package, 2, parent: work_package, project:)
-  end
 
   current_user { user }
 
-  describe "DELETE /work_package_children/:id" do
+  describe "GET /work_packages/:work_package_id/children/new" do
+    before do
+      allow(WorkPackageRelationsTab::AddWorkPackageChildDialogComponent)
+        .to receive(:new)
+        .with(work_package:)
+        .and_call_original
+    end
+
+    it "renders the new template" do
+      get("new", params: { work_package_id: work_package.id }, as: :turbo_stream)
+      expect(response).to be_successful
+      expect(WorkPackageRelationsTab::AddWorkPackageChildDialogComponent)
+        .to have_received(:new)
+        .with(work_package:)
+    end
+  end
+
+  describe "DELETE /work_packages/:work_package_id/children/:id" do
     before do
       allow(WorkPackageRelationsTab::IndexComponent).to receive(:new).and_call_original
       allow(controller).to receive(:replace_via_turbo_stream).and_call_original
@@ -56,7 +70,7 @@ RSpec.describe WorkPackageChildrenController do
       expect(response).to be_successful
 
       expect(WorkPackageRelationsTab::IndexComponent).to have_received(:new)
-        .with(work_package:, relations: [], children:)
+        .with(work_package:, relations: [], children: [])
       expect(controller).to have_received(:replace_via_turbo_stream)
         .with(component: an_instance_of(WorkPackageRelationsTab::IndexComponent))
       expect(child_work_package.reload.parent).to be_nil

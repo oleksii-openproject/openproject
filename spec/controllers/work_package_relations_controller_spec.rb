@@ -57,7 +57,7 @@ RSpec.describe WorkPackageRelationsController do
     end
 
     before do
-      allow(WorkPackageRelationsTab::EditWorkPackageRelationDialogComponent)
+      allow(WorkPackageRelationsTab::WorkPackageRelationDialogComponent)
         .to receive(:new)
         .and_call_original
       allow(controller).to receive(:respond_with_dialog).and_call_original
@@ -69,7 +69,7 @@ RSpec.describe WorkPackageRelationsController do
                     relation_type: Relation::TYPE_RELATES },
           as: :turbo_stream)
 
-      expect(WorkPackageRelationsTab::EditWorkPackageRelationDialogComponent)
+      expect(WorkPackageRelationsTab::WorkPackageRelationDialogComponent)
         .to have_received(:new)
       expect(controller).to have_received(:respond_with_dialog)
     end
@@ -77,7 +77,7 @@ RSpec.describe WorkPackageRelationsController do
 
   describe "GET /work_packages/:work_package_id/relations/:id/edit" do
     before do
-      allow(WorkPackageRelationsTab::EditWorkPackageRelationDialogComponent)
+      allow(WorkPackageRelationsTab::WorkPackageRelationDialogComponent)
         .to receive(:new)
         .and_call_original
       allow(controller).to receive(:respond_with_dialog).and_call_original
@@ -88,12 +88,12 @@ RSpec.describe WorkPackageRelationsController do
           params: { work_package_id: work_package.id, id: relation.id },
           as: :turbo_stream)
 
-      expect(WorkPackageRelationsTab::EditWorkPackageRelationDialogComponent)
+      expect(WorkPackageRelationsTab::WorkPackageRelationDialogComponent)
         .to have_received(:new)
         .with(work_package:, relation:)
 
       expect(controller).to have_received(:respond_with_dialog)
-        .with(an_instance_of(WorkPackageRelationsTab::EditWorkPackageRelationDialogComponent))
+        .with(an_instance_of(WorkPackageRelationsTab::WorkPackageRelationDialogComponent))
 
       expect(response).to be_successful
     end

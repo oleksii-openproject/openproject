@@ -30,18 +30,46 @@
 
 class WorkPackageChildrenController < ApplicationController
   include OpTurbo::ComponentStream
+  include OpTurbo::DialogStreamHelper
 
-  before_action :set_child
   before_action :set_work_package
 
   before_action :authorize # Short-circuit early if not authorized
 
-  before_action :set_relations
+  before_action :set_child, except: %i[new create]
+  before_action :set_relations, except: %i[new create]
+
+  def new
+    component = WorkPackageRelationsTab::AddWorkPackageChildDialogComponent
+      .new(work_package: @work_package)
+    respond_with_dialog(component)
+  end
+
+  def create
+    target_work_package_id = params[:work_package][:id]
+    target_child_work_package = WorkPackage.find(target_work_package_id)
+
+    target_child_work_package.parent = @work_package
+
+    if target_child_work_package.save
+      @children = @work_package.children.visible
+      @relations = @work_package.relations.visible
+
+      component = WorkPackageRelationsTab::IndexComponent.new(
+        work_package: @work_package,
+        relations: @relations,
+        children: @children
+      )
+      replace_via_turbo_stream(component:)
+      respond_with_turbo_streams
+    end
+  end
 
   def destroy
     @child.parent = nil
 
     if @child.save
+      @work_package.reload
       @children = @work_package.children.visible
       component = WorkPackageRelationsTab::IndexComponent.new(
         work_package: @work_package,
@@ -56,12 +84,13 @@ class WorkPackageChildrenController < ApplicationController
 
   private
 
-  def set_child
-    @child = WorkPackage.find(params[:id])
+  def set_work_package
+    @work_package = WorkPackage.find(params[:work_package_id])
+    @project = @work_package.project
   end
 
-  def set_work_package
-    @work_package = @child.parent
+  def set_child
+    @child = WorkPackage.find(params[:id])
   end
 
   def set_relations

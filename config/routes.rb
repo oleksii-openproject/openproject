@@ -595,6 +595,8 @@ Rails.application.routes.draw do
       end
     end
 
+    resources :children, only: %i[new create destroy], controller: "work_package_children"
+
     resource :progress, only: %i[new edit update], controller: "work_packages/progress"
     collection do
       resource :progress,
@@ -620,8 +622,6 @@ Rails.application.routes.draw do
     get "/share_upsale" => "work_packages#index", on: :collection, as: "share_upsale"
     get "/edit" => "work_packages#show", on: :member, as: "edit"
   end
-
-  resources :work_package_children, only: %i[destroy]
 
   resources :versions, only: %i[show edit update destroy] do
     member do

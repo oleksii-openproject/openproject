@@ -44,7 +44,7 @@ class WorkPackageRelationsTab::RelationComponent < ApplicationComponent
 
   def destroy_path
     if parent_child_relationship?
-      work_package_child_path(@child)
+      work_package_child_path(@work_package, @child)
     else
       work_package_relation_path(@work_package, @relation)
     end

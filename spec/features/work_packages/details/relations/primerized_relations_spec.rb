@@ -186,7 +186,7 @@ RSpec.describe "Primerized work package relations tab",
         page.find("[data-test-selector='op-relation-row-#{relation1.id}-edit-button']").click
       end
 
-      within "##{WorkPackageRelationsTab::EditWorkPackageRelationDialogComponent::DIALOG_ID}" do
+      within "##{WorkPackageRelationsTab::WorkPackageRelationDialogComponent::DIALOG_ID}" do
         wait_for_network_idle
         expect(page).to have_text("Edit successor (after)")
         expect(page).to have_field("Work package", readonly: true)
@@ -214,7 +214,7 @@ RSpec.describe "Primerized work package relations tab",
         page.find("[data-test-selector='op-relation-row-#{relation1.id}-edit-button']").click
       end
 
-      within "##{WorkPackageRelationsTab::EditWorkPackageRelationDialogComponent::DIALOG_ID}" do
+      within "##{WorkPackageRelationsTab::WorkPackageRelationDialogComponent::DIALOG_ID}" do
         wait_for_network_idle
         expect(page).to have_text("Edit successor (after)")
         expect(page).to have_field("Work package", readonly: true)
@@ -257,7 +257,7 @@ RSpec.describe "Primerized work package relations tab",
 
       wait_for_reload
 
-      within "##{WorkPackageRelationsTab::EditWorkPackageRelationFormComponent::DIALOG_ID}" do
+      within "##{WorkPackageRelationsTab::WorkPackageRelationFormComponent::DIALOG_ID}" do
         expect(page).to have_text("Add successor (after)")
         expect(page).to have_button("Add description")
 

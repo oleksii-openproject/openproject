@@ -43,14 +43,14 @@ class WorkPackageRelationsController < ApplicationController
     )
 
     respond_with_dialog(
-      WorkPackageRelationsTab::EditWorkPackageRelationDialogComponent
+      WorkPackageRelationsTab::WorkPackageRelationDialogComponent
         .new(work_package: @work_package, relation: @relation)
     )
   end
 
   def edit
     respond_with_dialog(
-      WorkPackageRelationsTab::EditWorkPackageRelationDialogComponent
+      WorkPackageRelationsTab::WorkPackageRelationDialogComponent
         .new(work_package: @work_package, relation: @relation)
     )
   end

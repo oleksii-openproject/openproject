@@ -15,12 +15,13 @@
           end
         end
         flex.with_row do
+          # These are not available inside the render_inline_form block
+          # so we need to re-define them here. Figure out solution for this.
           relation = @relation
           target_work_package = related_work_package
           stimulus_controller = STIMULUS_CONTROLLER
           i18n_namespace = I18N_NAMESPACE
           dialog_id = DIALOG_ID
-          not_parent_child_relation = not_parent_child_relation?
           to_id_field_test_selector = TO_ID_FIELD_TEST_SELECTOR
           to_id_field_value = relation.to.present? ? "#{target_work_package.type.name.upcase} ##{target_work_package.id} - #{target_work_package.subject}" : nil
           render_inline_form(f) do |my_form|
@@ -54,21 +55,19 @@
               )
             end
 
-            if not_parent_child_relation
-              my_form.text_field(
-                name: :description,
-                label: Relation.human_attribute_name(:description),
-                hidden: relation.description.blank?,
-                data: { "#{stimulus_controller}-target": "descriptionField" }
-              )
-            end
+            my_form.text_field(
+              name: :description,
+              label: Relation.human_attribute_name(:description),
+              hidden: relation.description.blank?,
+              data: { "#{stimulus_controller}-target": "descriptionField" }
+            )
           end
         end
       end %>
     <%# Actions section %>
     <%= flex_layout(my: 3) do |flex|
         flex.with_row do
-          if not_parent_child_relation? && @relation.description.blank?
+          if @relation.description.blank?
             render(Primer::Beta::Button.new(
               scheme: :secondary,
               title: I18n.t("#{I18N_NAMESPACE}.label_add_description"),

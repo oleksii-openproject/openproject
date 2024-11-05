@@ -28,32 +28,36 @@
 # See COPYRIGHT and LICENSE files for more details.
 #++
 
-class WorkPackageRelationsTab::EditWorkPackageRelationDialogComponent < ApplicationComponent
+class WorkPackageRelationsTab::WorkPackageRelationFormComponent < ApplicationComponent
   include ApplicationHelper
   include OpTurbo::Streamable
   include OpPrimer::ComponentHelpers
 
+  DIALOG_ID = "work-package-relation-dialog"
+  FORM_ID = "work-package-relation-form"
+  TO_ID_FIELD_TEST_SELECTOR = "work-package-relation-form-to-id"
+  STIMULUS_CONTROLLER = "work-packages--relations-tab--relation-form"
   I18N_NAMESPACE = "work_package_relations_tab"
-  DIALOG_ID = "edit-work-package-relation-dialog"
-  FORM_ID = "edit-work-package-relation-form"
 
-  attr_reader :relation, :work_package
-
-  def initialize(work_package:, relation:)
+  def initialize(work_package:, relation:, base_errors: nil)
     super()
 
-    @relation = relation
     @work_package = work_package
+    @relation = relation
+    @base_errors = base_errors
   end
 
-  private
+  def related_work_package
+    @related_work_package ||= @relation.to
+  end
 
-  def dialog_title
-    relation_label = t("#{I18N_NAMESPACE}.relations.#{relation.label_for(work_package)}_singular")
-    if relation.persisted?
-      t("#{I18N_NAMESPACE}.label_edit_x", x: relation_label)
+  def submit_url_options
+    if @relation.persisted?
+      { method: :patch,
+        url: work_package_relation_path(@work_package, @relation) }
     else
-      t("#{I18N_NAMESPACE}.label_add_x", x: relation_label)
+      { method: :post,
+        url: work_package_relations_path(@work_package) }
     end
   end
 end

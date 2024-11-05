@@ -28,45 +28,27 @@
 # See COPYRIGHT and LICENSE files for more details.
 #++
 
-class WorkPackageRelationsTab::EditWorkPackageRelationFormComponent < ApplicationComponent
+class WorkPackageRelationsTab::AddWorkPackageChildDialogComponent < ApplicationComponent
   include ApplicationHelper
   include OpTurbo::Streamable
   include OpPrimer::ComponentHelpers
 
-  DIALOG_ID = "edit-work-package-relation-dialog"
-  FORM_ID = "edit-work-package-relation-form"
-  TO_ID_FIELD_TEST_SELECTOR = "work-package-relation-form-to-id"
-  STIMULUS_CONTROLLER = "work-packages--relations-tab--relation-form"
   I18N_NAMESPACE = "work_package_relations_tab"
+  DIALOG_ID = "add-work-package-child-dialog"
+  FORM_ID = "add-work-package-child-form"
 
-  def initialize(work_package:, relation:, base_errors: nil)
+  attr_reader :work_package
+
+  def initialize(work_package:)
     super()
 
     @work_package = work_package
-    @relation = relation
-    @base_errors = base_errors
   end
 
-  def not_parent_child_relation?
-    @relation.is_a?(Relation)
-  end
+  private
 
-  def related_work_package
-    @related_work_package ||= case @relation
-                              when Relation
-                                @relation.to
-                              when WorkPackage
-                                @relation
-                              end
-  end
-
-  def submit_url_options
-    if @relation.persisted?
-      { method: :patch,
-        url: work_package_relation_path(@work_package, @relation) }
-    else
-      { method: :post,
-        url: work_package_relations_path(@work_package) }
-    end
+  def dialog_title
+    child_label = t("#{I18N_NAMESPACE}.relations.label_child_singular")
+    t("#{I18N_NAMESPACE}.label_add_x", x: child_label)
   end
 end
