@@ -132,9 +132,14 @@ export class MainMenuToggleService {
     } else {
       this.openMenu();
     }
-
     // Save the collapsed state in localStorage
     window.OpenProject.guardedLocalStorage(this.localStorageStateKey, String(!this.showNavigation));
+    // Set focus on first visible main menu item.
+    // This needs to be called after AngularJS has rendered the menu, which happens some when after(!) we leave this
+    // method here. So we need to set the focus after a timeout.
+    setTimeout(() => {
+      jQuery('#main-menu [class*="-menu-item"]:visible').first().focus();
+    }, 500);
   }
 
   public closeMenu():void {
