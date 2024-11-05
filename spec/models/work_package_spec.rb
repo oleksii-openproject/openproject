@@ -70,7 +70,7 @@ RSpec.describe WorkPackage do
     it { is_expected.to belong_to(:assigned_to).class_name("Principal").optional }
     it { is_expected.to belong_to(:responsible).class_name("Principal").optional }
     it { is_expected.to belong_to(:version).optional }
-    it { is_expected.to belong_to(:life_cycle).class_name("Projects::LifeCycle").optional }
+    it { is_expected.to belong_to(:life_cycle).optional }
     it { is_expected.to belong_to(:priority).class_name("IssuePriority") }
     it { is_expected.to belong_to(:category).optional }
     it { is_expected.to have_many(:time_entries).dependent(:delete_all) }

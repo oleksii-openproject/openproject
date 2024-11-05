@@ -32,7 +32,9 @@ RSpec.shared_examples_for "a Projects::LifeCycle event" do
   end
 
   describe "validations" do
-    it { is_expected.to belong_to(:project) }
+    it { is_expected.to have_many(:project_life_cycles).dependent(:destroy) }
+    it { is_expected.to have_many(:projects).through(:project_life_cycles) }
+    it { is_expected.to belong_to(:color).required(true) }
     it { is_expected.to have_many(:work_packages) }
     it { is_expected.to validate_presence_of(:name) }
 

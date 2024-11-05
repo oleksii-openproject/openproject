@@ -26,16 +26,15 @@
 # See COPYRIGHT and LICENSE files for more details.
 #++
 
-class CreateProjectsLifeCycles < ActiveRecord::Migration[7.1]
+class CreateLifeCycles < ActiveRecord::Migration[7.1]
   def change
-    create_table :projects_life_cycles do |t|
+    create_table :life_cycles do |t|
       t.string :type
       t.string :name
       t.date :start_date
       t.date :end_date
       t.date :date
       t.belongs_to :color, type: :int
-      t.references :project, foreign_key: true
 
       t.timestamps
     end
