@@ -28,5 +28,18 @@
 
 class ProjectLifeCycle < ApplicationRecord
   belongs_to :project, optional: false
-  belongs_to :life_cycle, class_name: "Projects::LifeCycle", optional: false
+  belongs_to :life_cycle, optional: false
+  has_many :work_packages, dependent: :nullify
+
+  validates :type, inclusion: { in: %w[Projects::Stage Projects::Gate], message: :must_be_a_stage_or_gate }
+
+  def initialize(*args)
+    if instance_of? ProjectLifeCycle
+      # Do not allow directly instantiating this class
+      raise NotImplementedError, "Cannot instantiate the base ProjectLifeCycle class directly. " \
+                                 "Use Projects::Stage or Projects::Gate instead."
+    end
+
+    super
+  end
 end

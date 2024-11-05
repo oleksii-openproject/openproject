@@ -26,23 +26,11 @@
 # See COPYRIGHT and LICENSE files for more details.
 #++
 
-class Projects::LifeCycle < ApplicationRecord
-  self.table_name = :life_cycles
-
+class LifeCycle < ApplicationRecord
   has_many :project_life_cycles, dependent: :destroy
   has_many :projects, through: :project_life_cycles
-  has_many :work_packages, dependent: :nullify
+
   belongs_to :color, optional: false
 
   validates :name, presence: true
-  validates :type, inclusion: { in: %w[Projects::Stage Projects::Gate], message: :must_be_a_stage_or_gate }
-
-  def initialize(*args)
-    if instance_of? Projects::LifeCycle
-      # Do not allow directly instantiating this class
-      raise NotImplementedError, "Cannot instantiate the base Projects::LifeCycle class directly."
-    end
-
-    super
-  end
 end

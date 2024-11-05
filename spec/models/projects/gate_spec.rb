@@ -27,10 +27,10 @@
 #++
 
 require "rails_helper"
-require "support/shared/projects_life_cycle_helpers"
+require "support/shared/project_life_cycle_helpers"
 
 RSpec.describe Projects::Gate do
-  it_behaves_like "a Projects::LifeCycle event"
+  it_behaves_like "a ProjectLifeCycle event"
 
   describe "validations" do
     it { is_expected.to validate_presence_of(:date) }

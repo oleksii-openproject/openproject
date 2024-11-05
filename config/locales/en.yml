@@ -1106,22 +1106,22 @@ en:
             enabled_modules:
               dependency_missing: "The module '%{dependency}' needs to be enabled as well since the module '%{module}' depends on it."
               format: "%{message}"
-        projects/gate:
-          attributes:
-            base:
-              date_range_not_allowed: "Cannot assign `start_date` or `end_date` to a Gate"
-        projects/life_cycle:
-          attributes:
-            type:
-              must_be_a_stage_or_gate: "must be either Stage or Gate"
-        projects/stage:
-          attributes:
-            base:
-              date_not_allowed: "Cannot assign `date` to a Stage"
         project_custom_field_project_mapping:
           attributes:
             project_ids:
               blank: "Please select a project."
+        project_life_cycle:
+          attributes:
+            type:
+              must_be_a_stage_or_gate: "must be either Stage or Gate"
+        projects/gate:
+          attributes:
+            base:
+              date_range_not_allowed: "Cannot assign `start_date` or `end_date` to a Gate"
+        projects/stage:
+          attributes:
+            base:
+              date_not_allowed: "Cannot assign `date` to a Stage"
         query:
           attributes:
             project:

@@ -26,13 +26,23 @@
 # See COPYRIGHT and LICENSE files for more details.
 #++
 
-class Projects::Stage < ProjectLifeCycle
-  validates :start_date, :end_date, presence: true
-  validate :validate_restricted_attributes
+RSpec.shared_examples_for "a ProjectLifeCycle event" do
+  it "inherits from ProjectLifeCycle" do
+    expect(described_class < ProjectLifeCycle).to be true
+  end
 
-  def validate_restricted_attributes
-    if date.present?
-      errors.add(:base, :date_not_allowed)
+  describe "associations" do
+    it { is_expected.to belong_to(:project).required(true) }
+    it { is_expected.to belong_to(:life_cycle).required(true) }
+    it { is_expected.to have_many(:work_packages) }
+  end
+
+  describe "validations" do
+    it "is invalid if type is not Stage or Gate" do
+      life_cycle = described_class.new
+      life_cycle.type = "InvalidType"
+      expect(life_cycle).not_to be_valid
+      expect(life_cycle.errors[:type]).to include("must be either Stage or Gate")
     end
   end
 end

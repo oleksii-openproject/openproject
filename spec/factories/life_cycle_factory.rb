@@ -26,23 +26,9 @@
 # See COPYRIGHT and LICENSE files for more details.
 #++
 
-RSpec.shared_examples_for "a Projects::LifeCycle event" do
-  it "inherits from Projects::LifeCycle" do
-    expect(described_class < Projects::LifeCycle).to be true
-  end
-
-  describe "validations" do
-    it { is_expected.to have_many(:project_life_cycles).dependent(:destroy) }
-    it { is_expected.to have_many(:projects).through(:project_life_cycles) }
-    it { is_expected.to belong_to(:color).required(true) }
-    it { is_expected.to have_many(:work_packages) }
-    it { is_expected.to validate_presence_of(:name) }
-
-    it "is invalid if type is not Stage or Gate" do
-      life_cycle = described_class.new
-      life_cycle.type = "InvalidType"
-      expect(life_cycle).not_to be_valid
-      expect(life_cycle.errors[:type]).to include("must be either Stage or Gate")
-    end
+FactoryBot.define do
+  factory :life_cycle do
+    sequence(:name) { |n| "Life cycle No. #{n}" }
+    color
   end
 end

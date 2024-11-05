@@ -26,7 +26,7 @@
 # See COPYRIGHT and LICENSE files for more details.
 #++
 
-class Projects::Gate < Projects::LifeCycle
+class Projects::Gate < ProjectLifeCycle
   validates :date, presence: true
   validate :validate_restricted_attributes
 
