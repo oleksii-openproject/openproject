@@ -70,11 +70,17 @@
   if should_display_start_and_end_dates?
     flex.with_row(flex_layout: true, justify_content: :flex_start, align_items: :center, style: "gap: 0.25rem;") do |start_and_end_dates_row|
       start_and_end_dates_row.with_column do
-        render(Primer::Beta::Octicon.new(icon: :calendar, color: :muted))
+        icon = if follows?
+                 :calendar
+               elsif precedes?
+                 :pin
+               end
+
+        render(Primer::Beta::Octicon.new(icon:, color: :muted))
       end
       start_and_end_dates_row.with_column do
         render(Primer::Beta::Text.new(color: :muted)) do
-          format_date(related_work_package.start_date) + " - " + format_date(related_work_package.due_date)
+          "#{format_date(related_work_package.start_date)} - #{format_date(related_work_package.due_date)}"
         end
       end
     end

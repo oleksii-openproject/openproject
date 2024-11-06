@@ -46,6 +46,14 @@ class WorkPackageRelationsTab::RelationComponent < ApplicationComponent
     relation.follows? || relation.precedes?
   end
 
+  def follows?
+    relation.relation_type_for(work_package) == Relation::TYPE_FOLLOWS
+  end
+
+  def precedes?
+    relation.relation_type_for(work_package) == Relation::TYPE_PRECEDES
+  end
+
   def edit_path
     if parent_child_relationship?
       raise NotImplementedError, "Children relationships are not editable"

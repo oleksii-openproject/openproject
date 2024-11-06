@@ -45,7 +45,7 @@ RSpec.describe "Primerized work package relations tab",
   let(:type1) { create(:type) }
   let(:type2) { create(:type) }
 
-  let(:to1) { create(:work_package, type: type1, project:) }
+  let(:to1) { create(:work_package, type: type1, project:, start_date: Date.current, due_date: Date.current + 1.week) }
   let(:to2) { create(:work_package, type: type2, project:) }
   let(:to3) { create(:work_package, type: type1, project:) }
   let(:from1) { create(:work_package, type: type1, project:) }
@@ -104,35 +104,61 @@ RSpec.describe "Primerized work package relations tab",
       scroll_to_element relations_panel
       expect(page).to have_css(relations_panel_selector)
 
-      [relation1, relation2].each do |relation|
-        target = relation.to == work_package ? "from" : "to"
-        target_relation_type = target == "from" ? relation.reverse_type : relation.relation_type
+      target = relation1.to == work_package ? "from" : "to"
+      target_relation_type = target == "from" ? relation1.reverse_type : relation1.relation_type
 
-        within(relations_panel) do
-          expect(page).to have_text(relation.to.type.name.upcase)
-          expect(page).to have_text(relation.to.id)
-          expect(page).to have_text(relation.to.status.name)
-          expect(page).to have_text(relation.to.subject)
-          # We reference the reverse type as the "from" node of the relation
-          # is the currently visited work package, and the "to" node is the
-          # relation target. From the current user's perspective on the work package's
-          # page, this is the "reverse" relation.
-          expect(page).to have_text(label_for_relation_type(target_relation_type))
-        end
+      relation_row = relations_panel.find("[data-test-selector='op-relation-row-#{relation1.id}']")
+
+      within(relations_panel) do
+        # We reference the reverse type as the "from" node of the relation
+        # is the currently visited work package, and the "to" node is the
+        # relation target. From the current user's perspective on the work package's
+        # page, this is the "reverse" relation.
+        expect(page).to have_text(label_for_relation_type(target_relation_type))
+      end
+      within(relation_row) do
+        expect(page).to have_text(relation1.to.type.name.upcase)
+        expect(page).to have_text(relation1.to.id)
+        expect(page).to have_text(relation1.to.status.name)
+        expect(page).to have_text(relation1.to.subject)
+        expect(page).to have_text(I18n.l(relation1.to.start_date))
+        expect(page).to have_text(I18n.l(relation1.to.due_date))
+      end
+
+      relation_row = relations_panel.find("[data-test-selector='op-relation-row-#{relation2.id}']")
+
+      within(relations_panel) do
+        # We reference the reverse type as the "from" node of the relation
+        # is the currently visited work package, and the "to" node is the
+        # relation target. From the current user's perspective on the work package's
+        # page, this is the "reverse" relation.
+        expect(page).to have_text(label_for_relation_type(target_relation_type))
+      end
+
+      within(relation_row) do
+        expect(page).to have_text(relation2.to.type.name.upcase)
+        expect(page).to have_text(relation2.to.id)
+        expect(page).to have_text(relation2.to.status.name)
+        expect(page).to have_text(relation2.to.subject)
       end
 
       target = relation3.to == work_package ? "from" : "to"
       target_relation_type = target == "from" ? relation3.reverse_type : relation3.relation_type
 
+      relation_row = relations_panel.find("[data-test-selector='op-relation-row-#{relation3.id}']")
+
       within(relations_panel) do
-        expect(page).to have_text(relation3.to.type.name.upcase)
-        expect(page).to have_text(relation3.to.id)
-        expect(page).to have_text(relation3.to.status.name)
-        expect(page).to have_text(relation3.to.subject)
         # We reference the relation type as the "from" node of the relation
         # is not the currently visited work package. From the current user's
         # perspective on the work package's page, this is the "forward" relation.
         expect(page).to have_text(label_for_relation_type(target_relation_type))
+      end
+
+      within(relation_row) do
+        expect(page).to have_text(relation3.to.type.name.upcase)
+        expect(page).to have_text(relation3.to.id)
+        expect(page).to have_text(relation3.to.status.name)
+        expect(page).to have_text(relation3.to.subject)
       end
     end
   end
