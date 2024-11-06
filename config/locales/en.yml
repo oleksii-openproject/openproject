@@ -1071,6 +1071,10 @@ en:
             name:
               blank: "is mandatory. Please select a name."
               not_unique: "is already in use. Please select another name."
+        life_cycle:
+          attributes:
+            type:
+              must_be_a_stage_or_gate: "must be either Stage or Gate"
         meeting:
           error_conflict: "Unable to save because the meeting was updated by someone else in the meantime. Please reload the page."
         notifications:
@@ -1113,7 +1117,7 @@ en:
         project/life_cycle:
           attributes:
             type:
-              must_be_a_stage_or_gate: "must be either Stage or Gate"
+              must_be_a_stage_or_gate: "must be either Project::Stage or Project::Gate"
         project/gate:
           attributes:
             base:

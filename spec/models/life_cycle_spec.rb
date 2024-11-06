@@ -29,13 +29,20 @@
 require "rails_helper"
 
 RSpec.describe LifeCycle do
-  describe "associations" do
-    it { is_expected.to have_many(:project_life_cycles).dependent(:destroy) }
-    it { is_expected.to have_many(:projects).through(:project_life_cycles) }
-    it { is_expected.to belong_to(:color).required(true) }
+  it "cannot be instantiated" do
+    expect { described_class.new }.to raise_error(NotImplementedError)
   end
 
-  describe "validations" do
-    it { is_expected.to validate_presence_of(:name) }
+  it "cannot be instantiated with an invalid type" do
+    expect { described_class.new(type: "InvalidType") }.to raise_error(ActiveRecord::SubclassNotFound)
   end
+
+  it "can be instantiated with a valid type" do
+    expect { described_class.new(type: "Gate") }.not_to raise_error
+  end
+
+  # For more specs see:
+  # - spec/support/shared/life_cycle_helpers.rb
+  # - spec/models/gate_spec.rb
+  # - spec/models/stage_spec.rb
 end

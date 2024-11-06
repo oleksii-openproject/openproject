@@ -26,23 +26,5 @@
 # See COPYRIGHT and LICENSE files for more details.
 #++
 
-RSpec.shared_examples_for "a Project::LifeCycle event" do
-  it "inherits from Project::LifeCycle" do
-    expect(described_class < Project::LifeCycle).to be true
-  end
-
-  describe "associations" do
-    it { is_expected.to belong_to(:project).required(true) }
-    it { is_expected.to belong_to(:life_cycle).required(true) }
-    it { is_expected.to have_many(:work_packages) }
-  end
-
-  describe "validations" do
-    it "is invalid if type is not Stage or Gate" do
-      life_cycle = described_class.new
-      life_cycle.type = "InvalidType"
-      expect(life_cycle).not_to be_valid
-      expect(life_cycle.errors[:type]).to include("must be either Project::Stage or Project::Gate")
-    end
-  end
+class Gate < LifeCycle
 end

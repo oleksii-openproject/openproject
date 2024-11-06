@@ -41,6 +41,28 @@ RSpec.describe Project::LifeCycle do
     expect { described_class.new(type: "Project::Gate") }.not_to raise_error
   end
 
+  describe "with an instantiated Gate" do
+    subject { build :project_gate }
+
+    it "allows setting a life_cycle" do
+      expected_life_cycle = create :gate
+      subject.life_cycle = expected_life_cycle
+
+      expect(subject.save).to be(true)
+      expect(subject.reload.life_cycle).to eq(expected_life_cycle)
+    end
+
+    context "when the Gate is already saved" do
+      subject { create :project_gate }
+
+      it "does not allow updating the life_cycle" do
+        expect do
+          subject.life_cycle = build :gate
+        end.to raise_error ActiveRecord::ReadonlyAttributeError
+      end
+    end
+  end
+
   # For more specs see:
   # - spec/support/shared/project_life_cycle_helpers.rb
   # - spec/models/projects/gate_spec.rb

@@ -29,6 +29,7 @@
 class CreateLifeCycles < ActiveRecord::Migration[7.1]
   def change
     create_table :life_cycles do |t|
+      t.string :type
       t.string :name
       t.belongs_to :color, type: :int
 

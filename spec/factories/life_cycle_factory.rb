@@ -28,7 +28,14 @@
 
 FactoryBot.define do
   factory :life_cycle do
-    sequence(:name) { |n| "Life cycle No. #{n}" }
     color
+
+    factory :gate, class: "Gate" do
+      sequence(:name) { |n| "Gate No. #{n}" }
+    end
+
+    factory :stage, class: "Stage" do
+      sequence(:name) { |n| "Stage No. #{n}" }
+    end
   end
 end

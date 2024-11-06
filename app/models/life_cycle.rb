@@ -33,4 +33,15 @@ class LifeCycle < ApplicationRecord
   belongs_to :color, optional: false
 
   validates :name, presence: true
+  validates :type, inclusion: { in: %w[Stage Gate], message: :must_be_a_stage_or_gate }
+
+  def initialize(*args)
+    if instance_of? LifeCycle
+      # Do not allow directly instantiating this class
+      raise NotImplementedError, "Cannot instantiate the base LifeCycle class directly. " \
+                                 "Use Stage or Gate instead."
+    end
+
+    super
+  end
 end
