@@ -75,6 +75,14 @@ module OpenProject
     # set to true.
     config.active_record.belongs_to_required_by_default = false
 
+    ###
+    # Enable raising on assignment to attr_readonly attributes. The previous
+    # behavior would allow assignment but silently not persist changes to the
+    # database.
+    # This is a rails 7.1 behaviour.
+    #++
+    config.active_record.raise_on_assign_to_attr_readonly = true
+
     # Sets up logging for STDOUT and configures the default logger formatter
     # so that all environments receive level and timestamp information
     #
