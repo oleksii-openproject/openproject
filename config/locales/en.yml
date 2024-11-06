@@ -2658,6 +2658,7 @@ en:
   label_user_settings: "User settings"
   label_users_settings: "Users settings"
   label_version_new: "New version"
+  label_version_edit: "Edit version"
   label_version_plural: "Versions"
   label_version_sharing_descendants: "With subprojects"
   label_version_sharing_hierarchy: "With project hierarchy"

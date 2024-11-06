@@ -27,7 +27,7 @@ See COPYRIGHT and LICENSE files for more details.
 
 ++#%>
 
-<% html_title t("label_roadmap_edit", name: @version.name) %>
+<% html_title( @version.name, t(:label_version_edit)) %>
 
 <%=
   render Primer::OpenProject::PageHeader.new do |header|
