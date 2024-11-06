@@ -29,7 +29,7 @@
 class Project::LifeCycle < ApplicationRecord
   belongs_to :project, optional: false
   belongs_to :life_cycle, optional: false
-  has_many :work_packages, foreign_key: :project_life_cycle_id, dependent: :nullify
+  has_many :work_packages, inverse_of: :project_life_cycle, dependent: :nullify
 
   validates :type, inclusion: { in: %w[Project::Stage Project::Gate], message: :must_be_a_stage_or_gate }
 
