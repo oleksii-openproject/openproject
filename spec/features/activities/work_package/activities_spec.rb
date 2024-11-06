@@ -960,6 +960,7 @@ RSpec.describe "Work package activity", :js, :with_cuprite, with_flag: { primeri
     current_user { admin }
 
     before do
+      work_package.update!(subject: "Subject before update")
       # set WORK_PACKAGES_ACTIVITIES_TAB_POLLING_INTERVAL_IN_MS to 1000
       # to speed up the polling interval for test duration
       ENV["WORK_PACKAGES_ACTIVITIES_TAB_POLLING_INTERVAL_IN_MS"] = "1000"
@@ -998,13 +999,13 @@ RSpec.describe "Work package activity", :js, :with_cuprite, with_flag: { primeri
     it "shows the updated work package attribute without reload after switching back to the activity tab", :aggregate_failures do
       # wait for the latest comments to be loaded before proceeding!
       activity_tab.expect_journal_notes(text: "First comment by member")
-      wp_page.expect_attributes(subject: work_package.subject)
+      wp_page.expect_attributes(subject: "Subject before update")
 
       # we need to wait a bit before triggering the update below
       # otherwise the update is already picked up by the initial (async) workpackage attributes update called in the connect hook
       # and we wouldn't test the polling based update below
       sleep 2 # rubocop:disable OpenProject/NoSleepInFeatureSpecs
-      wp_page.expect_attributes(subject: work_package.subject) # check if the initial update picked up the original subject
+      wp_page.expect_attributes(subject: "Subject before update") # check if the initial update picked up the original subject
 
       wp_page.switch_to_tab(tab: :relations)
       # simulate another user is updating the work package subject
@@ -1013,9 +1014,8 @@ RSpec.describe "Work package activity", :js, :with_cuprite, with_flag: { primeri
       work_package.journals.reload.last.update!(user: member) # manually set the user to member
 
       sleep 2 # rubocop:disable OpenProject/NoSleepInFeatureSpecs # wait some time to really check for a stale UI state
-
       # work package page is stale as the activity tab is not active and thus no polling is done
-      wp_page.expect_attributes(subject: work_package.subject)
+      wp_page.expect_attributes(subject: "Subject before update")
 
       wp_page.switch_to_tab(tab: :activity)
       wp_page.wait_for_activity_tab
