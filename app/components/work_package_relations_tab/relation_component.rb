@@ -34,6 +34,18 @@ class WorkPackageRelationsTab::RelationComponent < ApplicationComponent
                                 end
   end
 
+  def should_display_description?
+    return false if parent_child_relationship?
+
+    relation.description.present?
+  end
+
+  def should_display_start_and_end_dates?
+    return false if parent_child_relationship?
+
+    relation.follows? || relation.precedes?
+  end
+
   def edit_path
     if parent_child_relationship?
       raise NotImplementedError, "Children relationships are not editable"

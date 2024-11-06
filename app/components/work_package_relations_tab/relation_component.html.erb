@@ -59,16 +59,23 @@
     end
   end
 
-  if parent_child_relationship? && child.description.present?
-    flex.with_row(flex_layout: true, justify_content: :flex_start) do |description_row|
-      description_row.with_column do
-        render(Primer::Beta::Text.new(font_size: :small, color: :muted)) { format_text(child, :description) }
-      end
-    end
-  elsif !parent_child_relationship? && relation.description.present?
+  if should_display_description? 
     flex.with_row(flex_layout: true, justify_content: :flex_start) do |description_row|
       description_row.with_column do
         render(Primer::Beta::Text.new(font_size: :small, color: :muted)) { format_text(relation, :description) }
+      end
+    end
+  end
+
+  if should_display_start_and_end_dates?
+    flex.with_row(flex_layout: true, justify_content: :flex_start, align_items: :center, style: "gap: 0.25rem;") do |start_and_end_dates_row|
+      start_and_end_dates_row.with_column do
+        render(Primer::Beta::Octicon.new(icon: :calendar, color: :muted))
+      end
+      start_and_end_dates_row.with_column do
+        render(Primer::Beta::Text.new(color: :muted)) do
+          format_date(related_work_package.start_date) + " - " + format_date(related_work_package.due_date)
+        end
       end
     end
   end
