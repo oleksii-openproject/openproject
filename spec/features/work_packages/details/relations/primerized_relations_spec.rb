@@ -80,6 +80,11 @@ RSpec.describe "Primerized work package relations tab",
            type: type1,
            project: project)
   end
+  let!(:not_yet_child_wp) do
+    create(:work_package,
+           type: type1,
+           project:)
+  end
 
   current_user { user }
 
@@ -281,6 +286,41 @@ RSpec.describe "Primerized work package relations tab",
         new_relation_row = page.find("[data-test-selector='op-relation-row-#{new_relation.id}']")
         expect(new_relation_row).to have_text(to3.subject)
         expect(new_relation_row).to have_text("Discovered relations have descriptions!")
+      end
+    end
+  end
+
+  describe "attaching a child" do
+    it "renders the new child form and creates the child relationship" do
+      scroll_to_element relations_panel
+
+      relations_panel.find("[data-test-selector='new-relation-action-menu']").click
+
+      within page.find_by_id("new-relation-action-menu-list") do # Primer appends "list" to the menu id automatically
+        click_link_or_button "Child"
+      end
+
+      wait_for_reload
+
+      within "##{WorkPackageRelationsTab::AddWorkPackageChildFormComponent::DIALOG_ID}" do
+        expect(page).to have_text("Add child")
+
+        autocomplete_field = page.find("[data-test-selector='work-package-child-form-id']")
+        select_autocomplete(autocomplete_field,
+                            query: not_yet_child_wp.subject,
+                            results_selector: "body")
+
+        click_link_or_button "Save"
+      end
+
+      wait_for_reload
+
+      within relations_panel do
+        not_yet_child_wp.reload
+        expect(not_yet_child_wp.parent).to eq(work_package)
+
+        child_row = page.find("[data-test-selector='op-relation-row-#{not_yet_child_wp.id}']")
+        expect(child_row).to have_text(not_yet_child_wp.subject)
       end
     end
   end
