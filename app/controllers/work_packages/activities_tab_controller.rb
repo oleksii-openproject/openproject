@@ -213,7 +213,9 @@ class WorkPackages::ActivitiesTabController < ApplicationController
   end
 
   def find_journal
-    @journal = Journal.find(params[:id])
+    @journal = Journal
+      .with_sequence_version
+      .find(params[:id])
   rescue ActiveRecord::RecordNotFound
     respond_with_error(I18n.t("label_not_found"))
   end
@@ -309,7 +311,9 @@ class WorkPackages::ActivitiesTabController < ApplicationController
   end
 
   def generate_time_based_update_streams(last_update_timestamp)
-    journals = @work_package.journals
+    journals = @work_package
+                 .journals
+                 .with_sequence_version
 
     if @filter == :only_comments
       journals = journals.where.not(notes: "")

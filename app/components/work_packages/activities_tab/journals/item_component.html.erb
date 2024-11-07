@@ -4,7 +4,7 @@
       if show_comment_container?
         journal_container.with_row do
           render(border_box_container(
-                  id: "activity-anchor-#{journal.version}",
+                  id: "activity-anchor-#{journal.sequence_version}",
                   padding: :condensed,
                   "aria-label": I18n.t("activities.work_packages.activity_tab.commented")
                 )) do |border_box_component|
@@ -52,10 +52,10 @@
                             data: {
                               turbo: false,
                               action: "click->work-packages--activities-tab--index#setAnchor:prevent",
-                              "work-packages--activities-tab--index-id-param": journal.version
+                              "work-packages--activities-tab--index-id-param": journal.sequence_version
                             }
                           )) do
-                      "##{journal.version}"
+                      "##{journal.sequence_version}"
                     end
                   end
                   header_end_container.with_column(ml: 1,

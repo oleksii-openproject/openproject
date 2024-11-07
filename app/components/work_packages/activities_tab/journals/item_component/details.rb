@@ -58,7 +58,7 @@ module WorkPackages
             flex_layout: true,
             justify_content: :space_between,
             classes: "work-packages-activities-tab-journals-item-component-details--journal-details-header-container",
-            id: "activity-anchor-#{journal.version}"
+            id: "activity-anchor-#{journal.sequence_version}"
           ) do |header_container|
             render_header_start(header_container)
             render_header_end(header_container)
@@ -192,9 +192,9 @@ module WorkPackages
                      underline: false,
                      font_size: :small,
                      data: { turbo: false, action: "click->work-packages--activities-tab--index#setAnchor:prevent",
-                             "work-packages--activities-tab--index-id-param": journal.version }
+                             "work-packages--activities-tab--index-id-param": journal.sequence_version }
                    )) do
-              "##{journal.version}"
+              "##{journal.sequence_version}"
             end
           end
         end

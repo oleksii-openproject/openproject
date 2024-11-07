@@ -73,7 +73,7 @@ module WorkPackages
         end
 
         def activity_anchor
-          "#activity-#{journal.version}"
+          "#activity-#{journal.sequence_version}"
         end
 
         def updated?
