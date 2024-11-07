@@ -65,7 +65,7 @@ See COPYRIGHT and LICENSE files for more details.
         <li class="op-activity-list--item-detail"><%= detail %></li>
       <% end -%>
       <% if time_entry_url.present? -%>
-        <li class="op-activity-list--item-detail"><%= link_to "Details", @event.event_url %></li>
+        <li class="op-activity-list--item-detail"><%= link_to I18n.t(:label_details), @event.event_url %></li>
       <% end -%>
     </ul>
   <% elsif noop? -%>
