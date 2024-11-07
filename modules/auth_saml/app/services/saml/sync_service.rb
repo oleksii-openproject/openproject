@@ -30,11 +30,12 @@ module Saml
   ##
   # Synchronize a configuration from ENV or legacy settings to a SAML provider record
   class SyncService
-    attr_reader :name, :configuration
+    attr_reader :name, :configuration, :contract_class
 
-    def initialize(name, configuration)
+    def initialize(name, configuration, contract_class: nil)
       @name = name
       @configuration = configuration
+      @contract_class = contract_class
     end
 
     def call
@@ -52,7 +53,7 @@ module Saml
 
     def create(name, params)
       ::Saml::Providers::CreateService
-        .new(user: User.system)
+        .new(user: User.system, contract_class:)
         .call(params)
         .on_success { |call| call.message = "Successfully saved SAML provider #{name}." }
         .on_failure { |call| call.message = "Failed to create SAML provider: #{call.message}" }
@@ -60,7 +61,7 @@ module Saml
 
     def update(name, provider, params)
       ::Saml::Providers::UpdateService
-        .new(model: provider, user: User.system)
+        .new(model: provider, user: User.system, contract_class:)
         .call(params)
         .on_success { |call| call.message = "Successfully updated SAML provider #{name}." }
         .on_failure { |call| call.message = "Failed to update SAML provider: #{call.message}" }
