@@ -283,7 +283,7 @@ bg:
       depth: "Depth"
       item: "Item"
       label: "Label"
-      short: "Short"
+      short: "Short name"
       parent: "Parent"
   global_search:
     placeholder: "Търсене в %{app_title}"

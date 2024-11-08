@@ -280,7 +280,7 @@ de:
       depth: "Depth"
       item: "Item"
       label: "Bezeichnung"
-      short: "Short"
+      short: "Short name"
       parent: "Parent"
   global_search:
     placeholder: "Suche in %{app_title}"

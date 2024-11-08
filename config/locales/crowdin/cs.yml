@@ -283,7 +283,7 @@ cs:
       depth: "Depth"
       item: "Item"
       label: "Label"
-      short: "Short"
+      short: "Short name"
       parent: "Parent"
   global_search:
     placeholder: "Hledat v %{app_title}"

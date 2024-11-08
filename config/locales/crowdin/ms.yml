@@ -282,7 +282,7 @@ ms:
       depth: "Depth"
       item: "Item"
       label: "Label"
-      short: "Short"
+      short: "Short name"
       parent: "Parent"
   global_search:
     placeholder: "Cari dalam %{app_title}"

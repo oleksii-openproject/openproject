@@ -30,7 +30,7 @@ ro:
       error_permission_missing: "Lipsește permisiunea de a crea interogări publice"
       error_cannot_move_into_self: "Nu puteți muta un pachet de lucru în coloana sa proprie."
       text_hidden_list_warning: "Nu toate listele sunt afișate deoarece nu aveți permisiunea. Contactați administratorul pentru mai multe informații."
-      click_to_remove_list: "Fă clic pentru a elimina această listă"
+      click_to_remove_list: "Clic pentru a elimina această listă"
       board_type:
         text: 'Tipul de placă'
         free: 'De baza'

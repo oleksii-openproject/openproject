@@ -285,7 +285,7 @@ vi:
       depth: "Depth"
       item: "Item"
       label: "Label"
-      short: "Short"
+      short: "Short name"
       parent: "Parent"
   global_search:
     placeholder: "Tìm kiếm trong %{app_title}"

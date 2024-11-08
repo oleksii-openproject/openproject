@@ -283,7 +283,7 @@ ko:
       depth: "Depth"
       item: "Item"
       label: "Label"
-      short: "Short"
+      short: "Short name"
       parent: "Parent"
   global_search:
     placeholder: "%{app_title}에서 검색"

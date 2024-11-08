@@ -282,7 +282,7 @@ ru:
       depth: "Depth"
       item: "Item"
       label: "Метка"
-      short: "Short"
+      short: "Short name"
       parent: "Parent"
   global_search:
     placeholder: "Поиск в %{app_title}"

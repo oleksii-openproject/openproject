@@ -280,7 +280,7 @@ ca:
       depth: "Depth"
       item: "Item"
       label: "Label"
-      short: "Short"
+      short: "Short name"
       parent: "Parent"
   global_search:
     placeholder: "Cerca a %{app_title}"

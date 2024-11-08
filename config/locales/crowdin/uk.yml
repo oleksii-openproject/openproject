@@ -278,7 +278,7 @@ uk:
       depth: "Depth"
       item: "Item"
       label: "Label"
-      short: "Short"
+      short: "Short name"
       parent: "Parent"
   global_search:
     placeholder: "Пошук у додатку %{app_title}"
