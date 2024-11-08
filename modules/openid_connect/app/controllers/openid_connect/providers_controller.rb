@@ -7,12 +7,14 @@ module OpenIDConnect
 
     before_action :require_admin
     before_action :check_ee
-    before_action :find_provider, only: %i[edit update confirm_destroy destroy]
+    before_action :find_provider, only: %i[edit show update confirm_destroy destroy]
     before_action :set_edit_state, only: %i[create edit update]
 
     def index
       @providers = ::OpenIDConnect::Provider.all
     end
+
+    def show; end
 
     def new
       oidc_provider = case params[:oidc_provider]
@@ -44,7 +46,20 @@ module OpenIDConnect
       end
     end
 
-    def edit; end
+    def edit
+      respond_to do |format|
+        format.turbo_stream do
+          component = OpenIDConnect::Providers::ViewComponent.new(@provider,
+                                                                  view_mode: :edit,
+                                                                  edit_mode: @edit_mode,
+                                                                  edit_state: @edit_state)
+          update_via_turbo_stream(component:)
+          scroll_into_view_via_turbo_stream("openid-connect-providers-edit-form", behavior: :instant)
+          render turbo_stream: turbo_streams
+        end
+        format.html
+      end
+    end
 
     def update
       update_params = params
@@ -59,7 +74,7 @@ module OpenIDConnect
         successful_save_response
       else
         @provider = call.result
-        failed_save_response(edit)
+        failed_save_response(:edit)
       end
     end
 

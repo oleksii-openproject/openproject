@@ -540,6 +540,30 @@ RSpec.describe "Work package activity", :js, :with_cuprite, with_flag: { primeri
     end
   end
 
+  describe "focus editor" do
+    current_user { admin }
+    let(:work_package) { create(:work_package, project:, author: admin) }
+
+    before do
+      wp_page.visit!
+      wp_page.wait_for_activity_tab
+    end
+
+    it "focuses the editor", :aggregate_failures do
+      activity_tab.set_journal_sorting(:desc)
+
+      activity_tab.open_new_comment_editor
+
+      activity_tab.expect_focus_on_editor
+
+      activity_tab.set_journal_sorting(:asc)
+
+      activity_tab.open_new_comment_editor
+
+      activity_tab.expect_focus_on_editor
+    end
+  end
+
   describe "sorting" do
     current_user { admin }
     let(:work_package) { create(:work_package, project:, author: admin) }

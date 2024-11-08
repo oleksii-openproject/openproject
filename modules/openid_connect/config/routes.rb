@@ -3,7 +3,7 @@ Rails.application.routes.draw do
 
   scope :admin do
     namespace :openid_connect do
-      resources :providers, except: %i[show] do
+      resources :providers do
         get :confirm_destroy, on: :member
       end
     end

@@ -1,5 +1,4 @@
-<% page_title = t('openid_connect.providers.label_edit', name: @provider.display_name) %>
-<% local_assigns[:additional_breadcrumb] = @provider.display_name %>
+<% html_title(t(:label_administration), t('openid_connect.providers.plural'), @provider.display_name) -%>
 
 <% html_title(t(:label_administration), page_title) -%>
 
@@ -29,18 +28,11 @@
 <%=
   render(Primer::Alpha::Layout.new(stacking_breakpoint: :md)) do |content|
     content.with_main do
-      render(OpenIDConnect::Providers::ViewComponent.new(@provider,
-                                                         view_mode: :edit,
-                                                         edit_mode: @edit_mode,
-                                                         edit_state: @edit_state))
+      render OpenIDConnect::Providers::ViewComponent.new(@provider, view_mode: :show)
     end
 
-    if @provider.persisted?
-      content.with_sidebar(row_placement: :start, col_placement: :end) do
-        render(OpenIDConnect::Providers::SidePanelComponent.new(@provider))
-      end
+    content.with_sidebar(row_placement: :start, col_placement: :end) do
+      render OpenIDConnect::Providers::SidePanelComponent.new(@provider)
     end
   end
 %>
-
-<%=  %>

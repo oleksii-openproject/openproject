@@ -58,18 +58,9 @@ class WorkPackages::ActivitiesTabController < ApplicationController
   end
 
   def update_filter
-    update_via_turbo_stream(
-      component: WorkPackages::ActivitiesTab::Journals::FilterAndSortingComponent.new(
-        work_package: @work_package,
-        filter: @filter
-      )
-    )
-    update_via_turbo_stream(
-      component: WorkPackages::ActivitiesTab::Journals::IndexComponent.new(
-        work_package: @work_package,
-        filter: @filter
-      )
-    )
+    # update the whole tab to reflect the new filtering in all components
+    # we need to call replace in order to properly re-init the index stimulus component
+    replace_whole_tab
 
     respond_with_turbo_streams
   end
@@ -217,7 +208,9 @@ class WorkPackages::ActivitiesTabController < ApplicationController
   end
 
   def find_journal
-    @journal = Journal.find(params[:id])
+    @journal = Journal
+      .with_sequence_version
+      .find(params[:id])
   rescue ActiveRecord::RecordNotFound
     respond_with_error(I18n.t("label_not_found"))
   end
@@ -314,7 +307,9 @@ class WorkPackages::ActivitiesTabController < ApplicationController
   end
 
   def generate_time_based_update_streams(last_update_timestamp)
-    journals = @work_package.journals
+    journals = @work_package
+                 .journals
+                 .with_sequence_version
 
     if @filter == :only_comments
       journals = journals.where.not(notes: "")

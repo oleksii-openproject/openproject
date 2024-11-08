@@ -144,11 +144,19 @@ module Components
         expect(page).not_to have_test_selector("op-work-package-journal-form")
       end
 
-      def add_comment(text: nil, save: true)
-        sleep 1 # otherwise the stimulus component is not mounted yet and the click does not work
+      def open_new_comment_editor
+        page.find_test_selector("op-open-work-package-journal-form-trigger").click
+      end
 
+      def expect_focus_on_editor
+        page.within_test_selector("op-work-package-journal-form-element") do
+          expect(page).to have_css(".ck-content:focus")
+        end
+      end
+
+      def add_comment(text: nil, save: true)
         if page.find_test_selector("op-open-work-package-journal-form-trigger")
-          page.find_test_selector("op-open-work-package-journal-form-trigger").click
+          open_new_comment_editor
         else
           expect(page).to have_test_selector("op-work-package-journal-form-element")
         end
@@ -182,8 +190,6 @@ module Components
       end
 
       def quote_comment(journal)
-        sleep 1 # otherwise the stimulus component is not mounted yet and the click does not work
-
         within_journal_entry(journal) do
           page.find_test_selector("op-wp-journal-#{journal.id}-action-menu").click
           page.find_test_selector("op-wp-journal-#{journal.id}-quote").click

@@ -172,7 +172,7 @@ Next, you need to create the OpenID Connect provider in OpenProject:
 
 Press **Finish setup** to save the client and complete. If you go back to the index page of OpenID connect providers, the new provider should be visible. There you will see the redirect URI on the right side in case you set a custom display name.
 
-![Saved Google authentication provider](azure-provider-index.png) Congratulations, your users can now authenticate using your Microsoft Entra ID provider using the button in the Login form.
+![Saved Google authentication provider](./oidc-index-page.png) Congratulations, your users can now authenticate using your Microsoft Entra ID provider using the button in the Login form.
 
 ## Custom OpenID Connect Provider
 
@@ -208,7 +208,7 @@ To start creating a custom provider, please follow these steps:
   -  **End session endpoint**, an URL where OpenProject should redirect to terminate a user's session.
   -  **JWKS URI**. This is the URL of the provider's  JSON Web Key Set document containing e.g., signing keys and certificates.
   - A custom icon by using a publicly available URL to fetch the logo from.
-- Click **Continue** to validate this form and move to the next step. If there are any errors in this form, they will turn red and inform you about what you need to change.
+- Click **Continue** to validate this form and move to the next step. If there are any errors in this form, they will turn red and inform you about what you need to change.
 
 ![Custom OpenID provider advanced configuration in OpenProject](custom-provider-advanced-config.png)
 
@@ -233,7 +233,7 @@ For example: Keycloak allows you to map custom properties of the user. This allo
 
 You can optionally request [claims](https://openid.net/specs/openid-connect-core-1_0-final.html#Claims) for both the id_token and userinfo endpoint. Keep in mind that currently only claims requested for the id_token returned with the authorize response are validated. That means that the authentication will fail if a requested essential claim is not returned.
 
-If you do not need Claims or are unaware of their use-cases, simply skip this step and click **Finish setup** .
+If you do not need Claims or are unaware of their use-cases, simply skip this step and click **Finish setup** .
 
 **Requesting MFA authentication via the ACR claim**
 
@@ -276,41 +276,13 @@ options["acr_values"] = "phr phrh Multi_Factor"
 
 The option takes a space-separated list of ACR values. This is functionally the same as using the more complicated `claims` option above but with `"essential": false`. For all other claims there is no such shorthand.
 
-After entering Claims information, click **Finish setup** to complete the provider creation form.
+After entering Claims information, click **Finish setup** to complete the provider creation form.
 
 ![Bildschirmfoto 2024-11-06 um 18.34.28](./custom-provider-claims.png)
 
 
 
-## Troubleshooting
-
-Q: After clicking on a provider badge, I am redirected to a signup form that says a user already exists with that login.
-
-A: This can happen if you previously created user accounts in OpenProject with the same email than what is stored in the OpenID provider. In this case, if you want to allow existing users to be automatically remapped to the OpenID provider, you should do the following:
-
-Spawn an interactive console in OpenProject. The following example shows the command for the packaged installation.
-See [our process control guide](../../../installation-and-operations/operation/control/) for information on other installation types.
-
-```shell
-sudo openproject run console
-# or if using docker:
-# docker-compose run --rm web bundle exec rails console
-```
-
-Once in the console you can then enter the following to enable the setting and leave the console.
-
-```shell
-Setting.oauth_allow_remapping_of_existing_users = true
-exit
-```
-
-Then, existing users should be able to log in using their Azure identity. Note that this works only if the user is using password-based authentication, and is not linked to any other authentication source (e.g. LDAP) or OpenID provider.
-
-Note that this setting is set to true by default for new installations already.
-
-
-
-### Configuration for Okta
+### Additional custom configuration instructions for Okta
 
 If you use Okta with OpenID Connect, use these configuration properties in the custom provider form:
 
@@ -323,7 +295,7 @@ If you use Okta with OpenID Connect, use these configuration properties in the c
 
 
 
-### Configuration for Keycloak
+### Additional custom configuration instructions for Keycloak
 
 In Keycloak, use the following steps to set up an OIDC integration for OpenProject:
 
@@ -371,3 +343,122 @@ In OpenProject, create a custom provider as shown above using these parameters
 - **Token endpoint**: `/oauth2/v1/token`
 - **End session endpoint**: `https://mypersonal.okta.com/oauth2/{authorizationServerId}/v1/logout`
 - **OpenProject Redirect URI**: `https://openproject.example.com/auth/oidc-keycloak/callback` (Note that this URL depends on the display name above. See the UI for the actual Redirect URI)
+
+
+
+
+
+## Configuration using environment variables
+
+For some deployment scenarios, it might be desirable to configure a provider through environment variables.
+
+> [!WARNING]
+> Only do this if you know what you are doing. Otherwise this may break your existing OpenID Connect authentication or cause other issues.
+
+The provider entries are defined dynamically based on the environment keys. All variables will start with the prefix
+`OPENPROJECT_OPENID__CONNECT_` followed by the provider name. For instance an Okta example would
+be defined via environment variables like this:
+
+```shell
+OPENPROJECT_OPENID__CONNECT_OKTA_DISPLAY__NAME="Okta"
+OPENPROJECT_OPENID__CONNECT_OKTA_HOST="mypersonal.okta.com"
+OPENPROJECT_OPENID__CONNECT_OKTA_IDENTIFIER="<identifier or client id>"
+# etc.
+```
+
+Underscores in option names must be escaped by doubling them. So make sure to really do use two consecutive underscores in `DISPLAY__NAME`, `TOKEN__ENDPOINT` and so forth
+
+Use the following configuration as a template for your configuration. 
+
+> [!NOTE]
+>
+> Replace `KEYCLOAK` in the environment name with an alphanumeric identifier. This will become the slug in the redirect URI like follows:
+>
+> `https://openproject.example.com/auth/keycloak/callback`
+>
+> You can also see the actual redirect URI in the user interface after the provider has been successfully created from these environment variables.
+
+
+
+```bash
+# The name of the login button in OpenProject, you can freely set this to anything you like
+OPENPROJECT_OPENID__CONNECT_KEYCLOAK_DISPLAY__NAME="Keycloak"
+
+# The Client ID of OpenProject, usually the client host in Keycloak
+OPENPROJECT_OPENID__CONNECT_KEYCLOAK_IDENTIFIER="https://<Your OpenProject hostname>"
+
+# The Client Secret used by OpenProject for your provider
+OPENPROJECT_OPENID__CONNECT_KEYCLOAK_SECRET="<The client secret you copied from keycloak>"
+
+# The Issuer configuration for your provider
+OPENPROJECT_OPENID__CONNECT_KEYCLOAK_ISSUER="https://keycloak.example.com/realms/<REALM>"
+
+# Endpoints for Authorization, Token, Userinfo
+OPENPROJECT_OPENID__CONNECT_KEYCLOAK_AUTHORIZATION__ENDPOINT="/realms/<REALM>/protocol/openid-connect/auth"
+OPENPROJECT_OPENID__CONNECT_KEYCLOAK_TOKEN__ENDPOINT="/realms/<REALM>/protocol/openid-connect/token"
+OPENPROJECT_OPENID__CONNECT_KEYCLOAK_USERINFO__ENDPOINT="/realms/<REALM>/protocol/openid-connect/userinfo"
+
+# Optional: endpoint to redirect users for logout
+OPENPROJECT_OPENID__CONNECT_KEYCLOAK_END__SESSION__ENDPOINT="http://keycloak.example.com/realms/<REALM>/protocol/openid-connect/logout"
+
+# Host name of Keycloak, required if endpoint information are not absolute URLs
+OPENPROJECT_OPENID__CONNECT_KEYCLOAK_HOST="<Hostname of the keycloak server>"
+
+# Optional: Specify if non-standard port
+OPENPROJECT_OPENID__CONNECT_KEYCLOAK_PORT="443"
+
+# Optional: Specify if not using https (only for development/testing purposes)
+OPENPROJECT_OPENID__CONNECT_KEYCLOAK_SCHEME="https"
+
+# Optional: Where to redirect the user after a completed logout flow
+OPENPROJECT_OPENID__CONNECT_LOCALKEYCLOAK_POST__LOGOUT__REDIRECT__URI="http://example.com"
+
+# Optional: if you have created the client scope mapper as shown above
+OPENPROJECT_OPENID__CONNECT_KEYCLOAK_ATTRIBUTE__MAP_LOGIN="preferred_username"
+
+# Optional: Claim mapping using acr_value syntax
+OPENPROJECT_OPENID__CONNECT_KEYCLOAK_ACR__VALUES="phr phrh Multi_Factor"
+
+# Optional: Claim mapping using JSON, see Step 7 above for more information on syntax
+OPENPROJECT_OPENID__CONNECT_KEYCLOAK_CLAIMS="{\"id_token\":{\"acr\":{\"essential\":true,\"values\":[\"phr\",\"phrh\",\"Multi_Factor\"]}}}"
+```
+
+
+
+### Applying the configuration
+
+To apply the configuration after changes, you need to run the `db:seed` rake task. In all installations, this command is run automatically when you upgrade or install your application. Use the following commands based on your installation method:
+
+- **Packaged installation**: `sudo openproject run bundle exec rake db:seed`
+- **Docker**: `docker exec -it <container of all-in-one or web> bundle exec rake db:seed`.
+
+
+
+## Troubleshooting
+
+Q: After clicking on a provider badge, I am redirected to a signup form that says a user already exists with that login.
+
+A: This can happen if you previously created user accounts in OpenProject with the same email than what is stored in the OpenID provider. In this case, if you want to allow existing users to be automatically remapped to the OpenID provider, you should do the following:
+
+Spawn an interactive console in OpenProject. The following example shows the command for the packaged installation. See [our process control guide](https://github.com/opf/openproject/blob/dev/docs/installation-and-operations/operation/control) for information on other installation types.
+
+```
+sudo openproject run console
+# or if using docker:
+# docker-compose run --rm web bundle exec rails console
+```
+
+
+
+Once in the console you can then enter the following to enable the setting and leave the console.
+
+```
+Setting.oauth_allow_remapping_of_existing_users = true
+exit
+```
+
+
+
+Then, existing users should be able to log in using their Azure identity. Note that this works only if the user is using password-based authentication, and is not linked to any other authentication source (e.g. LDAP) or OpenID provider.
+
+Note that this setting is set to true by default for new installations already.

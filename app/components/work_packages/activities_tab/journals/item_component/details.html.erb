@@ -5,8 +5,9 @@
       border: :left,
       classes: "work-packages-activities-tab-journals-item-component-details--journal-details-container",
       data: {
-        "journal-with-changeset-updated-at": journal.updated_at.to_i, # used for the stimulus controller to maintain state
-        "journal-with-changeset-user-id": journal.user_id
+        "journal-with-changeset-updated-at": journal.updated_at.to_i, # used by the stimulus controller to maintain state
+        "journal-with-changeset-user-id": journal.user_id, # used by the stimulus controller to maintain state
+        initial: journal.initial? # used by the stimulus controller to render correctly
       }
     ) do |details_container|
       case filter
