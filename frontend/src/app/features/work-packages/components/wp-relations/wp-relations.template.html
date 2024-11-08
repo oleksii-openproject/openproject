@@ -1,4 +1,8 @@
-<turbo-frame [src]="turboFrameSrc" id="work-package-relations-tab-content">
+<turbo-frame
+  #frameElement
+  [attr.src]="this.turboFrameSrc"
+  id="work-package-relations-tab-content"
+>
   <op-content-loader viewBox="0 0 100 100">
     <svg:rect x="0" y="0" width="70" height="5" rx="1" />
 

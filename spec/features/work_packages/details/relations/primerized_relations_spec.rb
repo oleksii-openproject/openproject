@@ -104,6 +104,8 @@ RSpec.describe "Primerized work package relations tab",
       scroll_to_element relations_panel
       expect(page).to have_css(relations_panel_selector)
 
+      tabs.expect_counter("relations", 4)
+
       target = relation1.to == work_package ? "from" : "to"
       target_relation_type = target == "from" ? relation1.reverse_type : relation1.relation_type
 
@@ -183,6 +185,8 @@ RSpec.describe "Primerized work package relations tab",
       end
 
       expect { relation1.reload }.to raise_error(ActiveRecord::RecordNotFound)
+
+      tabs.expect_counter("relations", 3)
     end
 
     it "can delete children" do
@@ -203,6 +207,8 @@ RSpec.describe "Primerized work package relations tab",
       end
 
       expect(child_wp.reload.parent).to be_nil
+
+      tabs.expect_counter("relations", 3)
     end
   end
 
@@ -239,6 +245,9 @@ RSpec.describe "Primerized work package relations tab",
         expect(page).to have_text("Discovered relations have descriptions!")
       end
 
+      # Unchanged
+      tabs.expect_counter("relations", 4)
+
       # Edit again
       within(relation_row) do
         page.find("[data-test-selector='op-relation-row-#{relation1.id}-action-menu']").click
@@ -262,6 +271,9 @@ RSpec.describe "Primerized work package relations tab",
       within(relation_row) do
         expect(page).to have_text("And they can be edited!")
       end
+
+      # Unchanged
+      tabs.expect_counter("relations", 4)
     end
 
     it "does not have an edit action for children" do
@@ -281,6 +293,8 @@ RSpec.describe "Primerized work package relations tab",
       scroll_to_element relations_panel
 
       relations_panel.find("[data-test-selector='new-relation-action-menu']").click
+
+      tabs.expect_counter("relations", 4)
 
       within page.find_by_id("new-relation-action-menu-list") do # Primer appends "list" to the menu id automatically
         click_link_or_button "Successor (after)"
@@ -313,6 +327,9 @@ RSpec.describe "Primerized work package relations tab",
         expect(new_relation_row).to have_text(to3.subject)
         expect(new_relation_row).to have_text("Discovered relations have descriptions!")
       end
+
+      # Bumped by one
+      tabs.expect_counter("relations", 5)
     end
   end
 
@@ -321,6 +338,8 @@ RSpec.describe "Primerized work package relations tab",
       scroll_to_element relations_panel
 
       relations_panel.find("[data-test-selector='new-relation-action-menu']").click
+
+      tabs.expect_counter("relations", 4)
 
       within page.find_by_id("new-relation-action-menu-list") do # Primer appends "list" to the menu id automatically
         click_link_or_button "Child"
@@ -348,6 +367,9 @@ RSpec.describe "Primerized work package relations tab",
         child_row = page.find("[data-test-selector='op-relation-row-#{not_yet_child_wp.id}']")
         expect(child_row).to have_text(not_yet_child_wp.subject)
       end
+
+      # Bumped by one
+      tabs.expect_counter("relations", 5)
     end
   end
 end

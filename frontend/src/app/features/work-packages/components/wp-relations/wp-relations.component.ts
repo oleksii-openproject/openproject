@@ -27,7 +27,7 @@
 //++
 
 import {
-  ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewChild, ElementRef,
+  ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewChild, ElementRef, AfterViewInit,
 } from '@angular/core';
 import { I18nService } from 'core-app/core/i18n/i18n.service';
 import { WorkPackageResource } from 'core-app/features/hal/resources/work-package-resource';
@@ -42,22 +42,19 @@ import { RelatedWorkPackagesGroup } from './wp-relations.interfaces';
 import { PathHelperService } from 'core-app/core/path-helper/path-helper.service';
 import { TurboRequestsService } from 'core-app/core/turbo/turbo-requests.service';
 import { renderStreamMessage } from '@hotwired/turbo';
-
-interface TurboFrameElement extends HTMLElement {
-  src:string;
-}
+import { HalEventsService } from 'core-app/features/hal/services/hal-events.service';
 
 @Component({
   selector: 'wp-relations',
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './wp-relations.template.html',
 })
-export class WorkPackageRelationsComponent extends UntilDestroyedMixin implements OnInit {
+export class WorkPackageRelationsComponent extends UntilDestroyedMixin implements OnInit, AfterViewInit {
   @Input() public workPackage:WorkPackageResource;
 
   public relationGroups:RelatedWorkPackagesGroup = {};
 
-  @ViewChild('#work-package-relations-tab-content') readonly relationTurboFrame:TurboFrameElement;
+  @ViewChild('frameElement') readonly relationTurboFrame:ElementRef<HTMLIFrameElement>;
 
   public relationGroupKeys:string[] = [];
 
@@ -81,6 +78,7 @@ export class WorkPackageRelationsComponent extends UntilDestroyedMixin implement
     private wpRelations:WorkPackageRelationsService,
     private cdRef:ChangeDetectorRef,
     private apiV3Service:ApiV3Service,
+    private halEvents:HalEventsService,
     private PathHelper:PathHelperService,
     private turboRequests:TurboRequestsService,
 ) {
@@ -89,6 +87,7 @@ export class WorkPackageRelationsComponent extends UntilDestroyedMixin implement
 
   ngOnInit() {
     this.turboFrameSrc = `${this.PathHelper.staticBase}/work_packages/${this.workPackage.id}/relations_tab`;
+
     this.canAddRelation = !!this.workPackage.addRelation;
 
     this.wpRelations
@@ -100,8 +99,6 @@ export class WorkPackageRelationsComponent extends UntilDestroyedMixin implement
       .subscribe((relations:RelationsStateValue) => {
         this.loadedRelations(relations);
         // Refresh the turbo frame
-        // eslint-disable-next-line no-self-assign
-        this.relationTurboFrame.src = this.relationTurboFrame.src;
         void this.turboRequests.requestStream(this.turboFrameSrc)
           .then((html) => {
             // eslint-disable-next-line no-self-assign
@@ -128,6 +125,43 @@ export class WorkPackageRelationsComponent extends UntilDestroyedMixin implement
             renderStreamMessage(html);
           });
       });
+  }
+
+  ngAfterViewInit() {
+    /*
+    We globally listen for turbo:submit-end events to know when a form submission ends.
+    If the form action URL contains 'relation' or 'child', we know it is a relation or child creation/update.
+    In this case, we reload the relations state and push an updated event to the Hal resource
+    and the wpRelations service.
+
+    The reason for this workaround is that the form submissions occur in top layer
+    as they originate from dialog elements or turbo confirm elements. Because of this, we
+    cannot listen to the submit end event on the relationTurboFrame element and have
+    to rely on the form action URL.
+    */
+    document.addEventListener('turbo:submit-end', (event:CustomEvent) => {
+      const form = event.target as HTMLFormElement;
+      const requestIsWithinFrame = form.action?.includes('relation') || form.action?.includes('child');
+
+      if (requestIsWithinFrame) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        const { fetchResponse } = event.detail;
+
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        if (fetchResponse?.succeeded) {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+
+          // Update the work package
+          void this.apiV3Service
+            .work_packages
+            .id(this.workPackage.id!)
+            .refresh();
+          this.halEvents.push(this.workPackage, { eventType: 'updated' });
+          // Refetch relations
+          void this.wpRelations.require(this.workPackage.id!, true);
+        }
+      }
+    });
   }
 
   private getRelatedWorkPackages(workPackageIds:string[]):Observable<WorkPackageResource[]> {
