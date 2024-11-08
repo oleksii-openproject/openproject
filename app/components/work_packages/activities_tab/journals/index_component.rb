@@ -64,7 +64,11 @@ module WorkPackages
         end
 
         def journals
-          work_package.journals.includes(:user, :notifications).reorder(version: journal_sorting)
+          work_package
+            .journals
+            .includes(:user, :notifications)
+            .reorder(version: journal_sorting)
+            .with_sequence_version
         end
 
         def journal_with_notes
