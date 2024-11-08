@@ -155,8 +155,6 @@ module Components
       end
 
       def add_comment(text: nil, save: true)
-        sleep 1 # otherwise the stimulus component is not mounted yet and the click does not work
-
         if page.find_test_selector("op-open-work-package-journal-form-trigger")
           open_new_comment_editor
         else
@@ -192,8 +190,6 @@ module Components
       end
 
       def quote_comment(journal)
-        sleep 1 # otherwise the stimulus component is not mounted yet and the click does not work
-
         within_journal_entry(journal) do
           page.find_test_selector("op-wp-journal-#{journal.id}-action-menu").click
           page.find_test_selector("op-wp-journal-#{journal.id}-quote").click
