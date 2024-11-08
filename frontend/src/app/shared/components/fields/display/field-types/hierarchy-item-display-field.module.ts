@@ -38,17 +38,22 @@ import { renderHierarchyItem } from 'core-app/shared/components/fields/display/f
 
 export class HierarchyItemDisplayField extends ResourceDisplayField {
   public render(element:HTMLElement, _displayText:string) {
+    const item = this.attribute as HalResource;
+    if (item === null || item.name === this.texts.placeholder) {
+      this.renderEmpty(element);
+      return;
+    }
+
     element.innerHTML = '';
     element.classList.add('hierarchy-items');
 
-    this.branch().subscribe((path) => {
+    this.branch(item).subscribe((path) => {
       element.appendChild(path);
     });
   }
 
-  private branch():Observable<HTMLDivElement> {
-    const attribute = this.attribute as HalResource;
-    const itemLink = attribute.$link as HalLink;
+  private branch(item:HalResource):Observable<HTMLDivElement> {
+    const itemLink = item.$link as HalLink;
 
     return from(itemLink.$fetch())
       .pipe(

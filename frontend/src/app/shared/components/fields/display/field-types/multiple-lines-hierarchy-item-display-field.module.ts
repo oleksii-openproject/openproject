@@ -38,10 +38,15 @@ import { renderHierarchyItem } from 'core-app/shared/components/fields/display/f
 
 export class MultipleLinesHierarchyItemDisplayField extends ResourcesDisplayField {
   public render(element:HTMLElement, _displayText:string) {
+    const items = this.attribute as HalResource[];
+    if (items.length === 0) {
+      this.renderEmpty(element);
+      return;
+    }
+
     element.innerHTML = '';
     element.classList.add('hierarchy-items');
-
-    this.branches().subscribe((elements) => {
+    this.branches(items).subscribe((elements) => {
       elements.forEach((el) => {
         element.appendChild(el);
       });
@@ -52,10 +57,8 @@ export class MultipleLinesHierarchyItemDisplayField extends ResourcesDisplayFiel
     return this.stringValue.join(', ');
   }
 
-  private branches():Observable<HTMLDivElement[]> {
-    const attribute = this.attribute as HalResource[];
-
-    return combineLatest(attribute.map((value:HalResource) => {
+  private branches(items:HalResource[]):Observable<HTMLDivElement[]> {
+    return combineLatest(items.map((value:HalResource) => {
       const itemLink = value.$link as HalLink;
 
       return from(itemLink.$fetch())
