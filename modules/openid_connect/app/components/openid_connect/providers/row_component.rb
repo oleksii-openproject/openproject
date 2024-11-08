@@ -21,22 +21,13 @@ module OpenIDConnect
       end
 
       def provider_name
-        render(Primer::OpenProject::FlexLayout.new) do |layout|
-          layout.with_row do
-            render(
-              Primer::Beta::Link.new(
-                href: url_for(action: :edit, id: provider.id),
-                font_weight: :bold,
-                mr: 1
-              )
-            ) { provider.display_name }
-          end
-          layout.with_row do
-            render(Primer::Beta::Text.new(font_size: :small, color: :subtle)) do
-              provider.callback_url
-            end
-          end
-        end
+        render(
+          Primer::Beta::Link.new(
+            href: url_for(action: :show, id: provider.id),
+            font_weight: :bold,
+            mr: 1
+          )
+        ) { provider.display_name }
       end
 
       def incomplete_label
