@@ -428,6 +428,8 @@ export default class IndexController extends Controller {
       // scroll to (new) bottom if sorting is ascending and journals container was already at bottom before showing the form
       this.scrollJournalContainer(true);
       this.focusEditor();
+    } else {
+      this.focusEditor();
     }
   }
 
