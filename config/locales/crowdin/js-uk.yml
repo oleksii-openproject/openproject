@@ -356,10 +356,10 @@ uk:
           learn_about: "Дізнатися більше про нові функції"
           #Include the version to invalidate outdated translations in other locales.
           #Otherwise, e.g. chinese might still have the translations for 10.0 in the 12.0 release.
-          "14_6":
+          "15_0":
             standard:
               new_features_html: >
-                Цей випуск включає багато нових функцій і покращень. <br> <ul class="%{list_styling_class}"> <li>Використовуйте гнучкіші звіти про прогрес завдяки відгукам користувачів.</li> <li>Отримуйте сповіщення про оновлення з можливістю перезавантаження для нарад.</li> <li>Увімкніть користувацьке поле для кількох проектів одночасно.</li> <li>Використовуйте макроси атрибутів пов’язаних пакетів робіт.</li> <li>Відображайте порожні рядки в збереженому форматованому тексті.</li> <li>Переглядайте завершені наради, натиснувши число біля вкладки «Наради».</li> </ul>
+                The release brings various features and improvements for you, e.g. <br> <ul class="%{list_styling_class}"> <li>Boost your communication with a better structured Activity tab, real-time loading messages and notifications, emoji reactions, and more.</li> <li>Benefit from easy Single Sign-On authentication settings with SAML and OIDC in your Enterprise Cloud administration.</li> <li>Use the new 'Standard global role' and enable permissions to view email addresses.</li> <li>Enjoy easier navigation in project lists with quick action table headers.</li> <li>Experience simplified design settings with fewer sidebar design variables needed.</li> <li>Reduce manual cleanup when adding a custom field to a type – no more auto-applying to all projects.</li> <li>Benefit from improved navigation clarity – 'My account' is renamed to 'Account settings'.</li> </ul>
     ical_sharing_modal:
       title: "Підписатися на календар"
       inital_setup_error_message: "Під час отримання даних сталася помилка."
