@@ -15,7 +15,7 @@
       )
 
       overlay.with_body(pt: 2, test_selector: "emoji-reactions-overlay") do
-        flex_layout do |add_reactions_container|
+        flex_layout(flex_wrap: :wrap, classes: "op-add-reactions-overlay") do |add_reactions_container|
           EmojiReaction.available_emoji_reactions.each do |emoji, reaction|
             add_reactions_container.with_column(mr: 2) do
               render(Primer::Beta::Button.new(
