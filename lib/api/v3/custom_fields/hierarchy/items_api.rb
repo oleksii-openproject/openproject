@@ -30,25 +30,44 @@ module API
   module V3
     module CustomFields
       module Hierarchy
+        class HierarchicalItemAggregate
+          attr_accessor :depth
+
+          delegate :id, :label, :short, :parent, :children, :root?, to: :item
+
+          def initialize(item:, depth:)
+            @item = item
+            @depth = depth
+          end
+
+          private
+
+          attr_accessor :item
+        end
+
         class ItemsAPI < ::API::OpenProjectAPI
           include Dry::Monads[:result]
 
           helpers do
             def flatten_tree_hash(hash)
               flat_list = []
-              queue = [hash]
+              queue = [hash.merge({ depth: 0 })]
 
               # From the service we get a hashed tree like this:
               # {:a => {:b => {:c1 => {:d1 => {}}, :c2 => {:d2 => {}}}, :b2 => {}}}
+              #
               # We flatten it depth first to this result list:
               # [:a, :b, :c1, :d1, :c2, :d2, :b2]
 
               while queue.any?
                 current = queue.shift
+                depth = current[:depth]
                 item, children = current.shift
-                flat_list << item
-                queue.unshift(current) unless current.empty?
-                queue.unshift(children) unless children.empty?
+
+                flat_list << HierarchicalItemAggregate.new(item:, depth:)
+
+                queue.unshift(current) unless current.keys == [:depth]
+                queue.unshift(children.merge({ depth: depth + 1 })) unless children.empty?
               end
 
               flat_list
