@@ -20,6 +20,7 @@ export default class IndexController extends Controller {
     userId: Number,
     workPackageId: Number,
     notificationCenterPathName: String,
+    lastServerTimestamp: String,
   };
 
   static targets = ['journalsContainer', 'buttonRow', 'formRow', 'form', 'reactionButton'];
@@ -32,7 +33,7 @@ export default class IndexController extends Controller {
 
   declare updateStreamsUrlValue:string;
   declare sortingValue:string;
-  declare lastUpdateTimestamp:string;
+  declare lastServerTimestampValue:string;
   declare intervallId:number;
   declare pollingIntervalInMsValue:number;
   declare notificationCenterPathNameValue:string;
@@ -62,7 +63,6 @@ export default class IndexController extends Controller {
     this.apiV3Service = context.services.apiV3Service;
 
     this.setLocalStorageKey();
-    this.setLastUpdateTimestamp();
     this.setupEventListeners();
     this.handleInitialScroll();
     this.startPolling();
@@ -166,8 +166,8 @@ export default class IndexController extends Controller {
     const journalsContainerAtBottom = this.isJournalsContainerScrolledToBottom();
 
     void this.performUpdateStreamsRequest(this.prepareUpdateStreamsUrl())
-    .then((html) => {
-      this.handleUpdateStreamsResponse(html as string, journalsContainerAtBottom);
+    .then(({ html, headers }) => {
+      this.handleUpdateStreamsResponse(html, headers, journalsContainerAtBottom);
     }).catch((error) => {
       console.error('Error updating activities list:', error);
     }).finally(() => {
@@ -183,11 +183,11 @@ export default class IndexController extends Controller {
     const url = new URL(this.updateStreamsUrlValue);
     url.searchParams.set('sortBy', this.sortingValue);
     url.searchParams.set('filter', this.filterValue);
-    url.searchParams.set('last_update_timestamp', this.lastUpdateTimestamp);
+    url.searchParams.set('last_update_timestamp', this.lastServerTimestampValue);
     return url.toString();
   }
 
-  private performUpdateStreamsRequest(url:string):Promise<unknown> {
+  private performUpdateStreamsRequest(url:string):Promise<{ html:string, headers:Headers }> {
     return this.turboRequests.request(url, {
       method: 'GET',
       headers: {
@@ -196,8 +196,10 @@ export default class IndexController extends Controller {
     });
   }
 
-  private handleUpdateStreamsResponse(html:string, journalsContainerAtBottom:boolean) {
-    this.setLastUpdateTimestamp();
+  private handleUpdateStreamsResponse(html:string, lastResponseHeaders:Headers, journalsContainerAtBottom:boolean) {
+    // extract server timestamp from response headers in order to be in sync with the server
+    this.setLastServerTimestampViaHeaders(lastResponseHeaders);
+
     this.checkForAndHandleWorkPackageUpdate(html);
     this.checkForNewNotifications(html);
     this.performAutoScrolling(html, journalsContainerAtBottom);
@@ -515,8 +517,8 @@ export default class IndexController extends Controller {
 
     const formData = this.prepareFormData();
     void this.submitForm(formData)
-      .then(() => {
-        this.handleSuccessfulSubmission();
+      .then(({ html, headers }) => {
+        this.handleSuccessfulSubmission(html, headers);
       })
       .catch((error) => {
         console.error('Error saving activity:', error);
@@ -531,14 +533,14 @@ export default class IndexController extends Controller {
     const data = ckEditorInstance ? ckEditorInstance.getData({ trim: false }) : '';
 
     const formData = new FormData(this.formTarget);
-    formData.append('last_update_timestamp', this.lastUpdateTimestamp);
+    formData.append('last_update_timestamp', this.lastServerTimestampValue);
     formData.append('filter', this.filterValue);
     formData.append('journal[notes]', data);
 
     return formData;
   }
 
-  private async submitForm(formData:FormData):Promise<unknown> {
+  private async submitForm(formData:FormData):Promise<{ html:string, headers:Headers }> {
     return this.turboRequests.request(this.formTarget.action, {
       method: 'POST',
       body: formData,
@@ -548,8 +550,9 @@ export default class IndexController extends Controller {
     });
   }
 
-  private handleSuccessfulSubmission() {
-    this.setLastUpdateTimestamp();
+  private handleSuccessfulSubmission(html:string, headers:Headers) {
+    // extract server timestamp from response headers in order to be in sync with the server
+    this.setLastServerTimestampViaHeaders(headers);
 
     if (!this.journalsContainerTarget) return;
 
@@ -588,7 +591,9 @@ export default class IndexController extends Controller {
     this.journalsContainerTarget.classList.add('work-packages-activities-tab-index-component--journals-container_with-input-compensation');
   }
 
-  setLastUpdateTimestamp() {
-    this.lastUpdateTimestamp = new Date().toISOString();
+  private setLastServerTimestampViaHeaders(headers:Headers) {
+    if (headers.has('X-Server-Timestamp')) {
+      this.lastServerTimestampValue = headers.get('X-Server-Timestamp') as string;
+    }
   }
 }

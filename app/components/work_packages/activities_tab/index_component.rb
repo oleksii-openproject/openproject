@@ -35,16 +35,17 @@ module WorkPackages
       include OpPrimer::ComponentHelpers
       include OpTurbo::Streamable
 
-      def initialize(work_package:, filter: :all)
+      def initialize(work_package:, last_server_timestamp:, filter: :all)
         super
 
         @work_package = work_package
         @filter = filter
+        @last_server_timestamp = last_server_timestamp
       end
 
       private
 
-      attr_reader :work_package, :filter
+      attr_reader :work_package, :filter, :last_server_timestamp
 
       def wrapper_data_attributes
         {
@@ -59,7 +60,8 @@ module WorkPackages
           "work-packages--activities-tab--index-user-id-value": User.current.id,
           "work-packages--activities-tab--index-work-package-id-value": work_package.id,
           "work-packages--activities-tab--index-polling-interval-in-ms-value": polling_interval,
-          "work-packages--activities-tab--index-notification-center-path-name-value": notifications_path
+          "work-packages--activities-tab--index-notification-center-path-name-value": notifications_path,
+          "work-packages--activities-tab--index-last-server-timestamp-value": last_server_timestamp
         }
       end
 
