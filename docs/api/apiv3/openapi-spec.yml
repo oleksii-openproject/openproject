@@ -186,6 +186,12 @@ paths:
     "$ref": "./paths/custom_action.yml"
   "/api/v3/custom_actions/{id}/execute":
     "$ref": "./paths/custom_action_execute.yml"
+  "/api/v3/custom_fields/{id}/items":
+    "$ref": "./paths/custom_field_items.yml"
+  "/api/v3/custom_field_items/{id}":
+    "$ref": "./paths/custom_field_item.yml"
+  "/api/v3/custom_field_items/{id}/branch":
+    "$ref": "./paths/custom_field_item_branch.yml"
   "/api/v3/custom_options/{id}":
     "$ref": "./paths/custom_option.yml"
   "/api/v3/days/non_working":
@@ -489,6 +495,12 @@ components:
       $ref: "./components/examples/grid-simple-response.yml"
     GroupResponse:
       $ref: "./components/examples/group-response.yml"
+    HierarchyItemCollectionFilteredResponse:
+      $ref: "./components/examples/hierarchy_item_collection_filtered_response.yml"
+    HierarchyItemCollectionResponse:
+      $ref: "./components/examples/hierarchy_item_collection_response.yml"
+    HierarchyItemResponse:
+      $ref: "./components/examples/hierarchy_item_response.yml"
     MembershipCreateRequestCustomMessage:
       $ref: "./components/examples/membership-create-request-custom-message.yml"
     MembershipCreateRequestGlobalRole:
@@ -673,6 +685,10 @@ components:
       "$ref": "./components/schemas/help_text_collection_model.yml"
     HelpTextModel:
       "$ref": "./components/schemas/help_text_model.yml"
+    HierarchyItemCollectionModel:
+      "$ref": "./components/schemas/hierarchy_item_collection_model.yml"
+    HierarchyItemReadModel:
+      "$ref": "./components/schemas/hierarchy_item_read_model.yml"
     Link:
       "$ref": "./components/schemas/link.yml"
     List_actionsModel:

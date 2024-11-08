@@ -1,12 +1,13 @@
 <% unless EnterpriseToken.allows_to?(ee_feature) %>
-  <span class="form--field -indented">
+  <div class="form--field-extra-actions">
     <%=
-    angular_component_tag 'opce-enterprise-banner',
-                          inputs: {
-                            collapsible: true,
-                            textMessage: explanation,
-                            moreInfoLink: OpenProject::Static::Links.links[:enterprise_docs][:attribute_highlighting][:href],
-                          }
+      angular_component_tag 'opce-enterprise-banner',
+                            inputs: {
+                              collapsible: true,
+                              textMessage: explanation,
+                              topMargin: true,
+                              moreInfoLink: OpenProject::Static::Links.links[:enterprise_docs][:attribute_highlighting][:href],
+                            }
     %>
-  </span>
+  </div>
 <% end %>

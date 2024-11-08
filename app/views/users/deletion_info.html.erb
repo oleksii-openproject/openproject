@@ -36,7 +36,7 @@ See COPYRIGHT and LICENSE files for more details.
         :user,
         url: user_path(@user),
         html: {
-            method: :delete, class: 'confirm_required request-for-confirmation form danger-zone',
+            method: :delete, class: 'confirm_required form danger-zone',
             data: password_confirmation_data_attribute
         }) do %>
   <div class='wiki'>

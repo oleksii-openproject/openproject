@@ -1,5 +1,5 @@
 require "spec_helper"
-require "support/pages/custom_fields"
+require "support/pages/custom_fields/index_page"
 
 def get_possible_values(amount)
   (1..amount).to_a.map { |x| "PREFIX #{x}" }
@@ -15,7 +15,7 @@ end
 
 RSpec.describe "Reordering custom options of a list custom field", :js do
   let(:user) { create(:admin) }
-  let(:cf_page) { Pages::CustomFields.new }
+  let(:cf_page) { Pages::CustomFields::IndexPage.new }
 
   let!(:custom_field) do
     create(
@@ -38,7 +38,7 @@ RSpec.describe "Reordering custom options of a list custom field", :js do
 
     click_link "Reorder values alphabetically"
     cf_page.accept_alert_dialog!
-    expect(page).to have_css(".op-toast.-success", text: I18n.t(:notice_successful_update))
+    expect_flash(message: I18n.t(:notice_successful_update))
     expect(custom_field.custom_options.order(:position).pluck(:value))
       .to eq get_possible_values_reordered(200)
   end

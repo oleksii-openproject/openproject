@@ -172,12 +172,6 @@ module ApplicationHelper
     end.join.html_safe
   end
 
-  def html_hours(text)
-    html_safe_gsub(text,
-                   %r{(\d+)\.(\d+)},
-                   '<span class="hours hours-int">\1</span><span class="hours hours-dec">.\2</span>')
-  end
-
   def html_safe_gsub(string, *gsub_args, &)
     html_safe = string.html_safe?
     result = string.gsub(*gsub_args, &)
@@ -297,9 +291,23 @@ module ApplicationHelper
     ]
   end
 
+  def body_data_attributes(local_assigns)
+    {
+      controller: "application",
+      relative_url_root: root_path,
+      overflowing_identifier: ".__overflowing_body",
+      rendered_at: Time.zone.now.iso8601,
+      turbo: local_assigns[:turbo_opt_out] ? "false" : nil
+    }.merge(user_theme_data_attributes)
+     .compact
+  end
+
   def user_theme_data_attributes
     mode, _theme_suffix = User.current.pref.theme.split("_", 2)
-    "data-color-mode=#{mode} data-#{mode}-theme=#{User.current.pref.theme}"
+    {
+      color_mode: mode,
+      "#{mode}_theme": User.current.pref.theme
+    }
   end
 
   def highlight_default_language(lang_options)
@@ -457,7 +465,7 @@ module ApplicationHelper
   end
 
   def link_to_content_update(text, url_params = {}, html_options = {})
-    link_to(text, url_params, html_options)
+    link_to(text, url_params, html_options.reverse_merge(target: "_top"))
   end
 
   def password_complexity_requirements

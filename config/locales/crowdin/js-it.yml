@@ -356,10 +356,10 @@ it:
           learn_about: "Scopri di più sulle nuove funzionalità"
           #Include the version to invalidate outdated translations in other locales.
           #Otherwise, e.g. chinese might still have the translations for 10.0 in the 12.0 release.
-          "14_5":
+          "15_0":
             standard:
               new_features_html: >
-                Questa versione include varie nuove funzionalità e miglioramenti, come: <br> <ul class="%{list_styling_class}"> <li>Conservazione e ripristino delle versioni locali delle modifiche ai contenuti WYSIWYG.</li> <li>Abilitazione di un archivio per più progetti contemporaneamente.</li> <li>Esportazione di macro-attività in una nuova modalità con impostazioni aggiuntive.</li> <li>Visualizzazione di colonne/filtri di campi personalizzati negli elenchi di progetti anche nella Community Edition.</li> <li>Supporto a CloudFlare Turnstile come Captcha.</li> </ul>
+                The release brings various features and improvements for you, e.g. <br> <ul class="%{list_styling_class}"> <li>Boost your communication with a better structured Activity tab, real-time loading messages and notifications, emoji reactions, and more.</li> <li>Benefit from easy Single Sign-On authentication settings with SAML and OIDC in your Enterprise Cloud administration.</li> <li>Use the new 'Standard global role' and enable permissions to view email addresses.</li> <li>Enjoy easier navigation in project lists with quick action table headers.</li> <li>Experience simplified design settings with fewer sidebar design variables needed.</li> <li>Reduce manual cleanup when adding a custom field to a type – no more auto-applying to all projects.</li> <li>Benefit from improved navigation clarity – 'My account' is renamed to 'Account settings'.</li> </ul>
     ical_sharing_modal:
       title: "Iscriviti al calendario"
       inital_setup_error_message: "Si è verificato un errore recuperando i dati."
@@ -612,7 +612,7 @@ it:
         assigned: "Assegnatario"
         #The enum value is named 'responsible' in the database and that is what is transported through the API
         #up to the frontend.
-        responsible: "Accountable"
+        responsible: "Responsabile"
         created: "Creato"
         scheduled: "Programmato"
         commented: "Commentato"
@@ -716,7 +716,6 @@ it:
     project:
       required_outside_context: >
         Scegli un progetto per creare una macro-attività e vederne tutti gli attributi. Puoi selezionare solo progetti che hanno il tipo sopra indicato attivato.
-      details_activity: "Attività dei dettagli del progetto"
       context: "Contesto del progetto"
       click_to_switch_to_project: "Progetto: %{projectname}"
       confirm_template_load: "Cambiare il modello ricaricherà la pagina e perderai tutti gli input in questo modulo. Continuare?"

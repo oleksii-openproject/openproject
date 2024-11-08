@@ -1,15 +1,5 @@
-import {
-  ApplicationRef,
-  ComponentFactoryResolver,
-  Injectable,
-  Injector,
-} from '@angular/core';
-import {
-  ComponentPortal,
-  ComponentType,
-  DomPortalOutlet,
-  PortalInjector,
-} from '@angular/cdk/portal';
+import { ApplicationRef, ComponentFactoryResolver, Injectable, Injector } from '@angular/core';
+import { ComponentPortal, ComponentType, DomPortalOutlet, PortalInjector } from '@angular/cdk/portal';
 import { TransitionService } from '@uirouter/core';
 import { OpContextMenuHandler } from 'core-app/shared/components/op-context-menu/op-context-menu-handler';
 import {
@@ -40,6 +30,12 @@ export class OPContextMenuService {
     private $transitions:TransitionService,
     private injector:Injector,
   ) {
+  }
+
+  public register() {
+    const existing = document.querySelector('.op-context-menu--overlay');
+    existing?.remove();
+
     const hostElement = this.portalHostElement = document.createElement('div');
     hostElement.classList.add('op-context-menu--overlay');
     document.body.appendChild(hostElement);
@@ -52,7 +48,7 @@ export class OPContextMenuService {
     );
 
     // Close context menus on state change
-    $transitions.onStart({}, () => this.close());
+    this.$transitions.onStart({}, () => this.close());
 
     // Listen to keyups on window to close context menus
     jQuery(window).on('keydown', (evt:JQuery.TriggeredEvent) => {

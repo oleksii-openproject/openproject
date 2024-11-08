@@ -27,9 +27,6 @@ nl:
         project_description:
           title: 'Projectbeschrijving'
           no_results: "Er is nog geen beschrijving geschreven. Er kan een vermelding worden verstrekt in de 'Projectinstellingen'."
-        project_details:
-          title: 'Projectdetails'
-          no_results: 'Er zijn geen aangepaste velden gedefinieerd voor projecten.'
         project_status:
           title: 'Projectstatus'
           not_started: 'Nog niet gestart'

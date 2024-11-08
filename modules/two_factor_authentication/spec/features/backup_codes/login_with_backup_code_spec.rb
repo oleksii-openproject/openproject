@@ -1,9 +1,12 @@
 require_relative "../../spec_helper"
 require_relative "../shared_2fa_examples"
 
-RSpec.describe "Login with 2FA backup code", :js, with_settings: {
-  plugin_openproject_two_factor_authentication: { "active_strategies" => [:developer] }
-} do
+RSpec.describe "Login with 2FA backup code",
+               :js,
+               :with_cuprite,
+               with_settings: {
+                 plugin_openproject_two_factor_authentication: { "active_strategies" => [:developer] }
+               } do
   let(:user_password) { "bob!" * 4 }
   let(:user) do
     create(:user,
@@ -30,12 +33,7 @@ RSpec.describe "Login with 2FA backup code", :js, with_settings: {
       expect(valid_backup_codes.length).to eq(10)
 
       first_login_step
-
       expect(page).to have_css("#toggle_resend_form", wait: 10)
-
-      # Wait for the frontend to be loaded and initialized
-      # On downstream configurations, this might take longer than marionette selecting the element
-      expect_angular_frontend_initialized
 
       # Open other options
       # This may fail on the first request when the assets aren't ready yet
@@ -50,7 +48,7 @@ RSpec.describe "Login with 2FA backup code", :js, with_settings: {
       click_on "Submit"
 
       # Expect failure
-      expect(page).to have_css(".op-toast.-error", text: I18n.t("two_factor_authentication.error_invalid_backup_code"))
+      expect_flash(type: :error, message: I18n.t("two_factor_authentication.error_invalid_backup_code"))
       expect(page).to have_current_path signin_path
 
       # Try again!

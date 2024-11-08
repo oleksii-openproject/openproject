@@ -16,6 +16,8 @@ import { pricingUrl } from 'core-app/core/setup/globals/constants.const';
 export class EnterpriseBannerComponent implements OnInit {
   @Input() public leftMargin = false;
 
+  @Input() public topMargin = false;
+
   @Input() public textMessage:string;
 
   @Input() public linkMessage:string;

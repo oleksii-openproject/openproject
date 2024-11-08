@@ -91,6 +91,7 @@ module Pages
       subject.send_keys :enter
 
       sleep 1
+      wait_for_network_idle
 
       expect_card(list_name, card_title)
     end
@@ -284,7 +285,7 @@ module Pages
       click_dropdown_entry "Delete"
 
       accept_alert_dialog!
-      expect_and_dismiss_toaster message: I18n.t("js.notice_successful_delete")
+      expect_and_dismiss_flash message: I18n.t("js.notice_successful_delete")
     end
 
     def back_to_index

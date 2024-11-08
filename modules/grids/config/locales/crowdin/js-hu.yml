@@ -27,9 +27,6 @@ hu:
         project_description:
           title: 'Projekt leírása'
           no_results: "Még nem írt leírást. Az egyik megtalálható a 'Projekt beállításai' részben."
-        project_details:
-          title: 'Projekt részletei'
-          no_results: 'A projektekhez nem definiáltak egyedi mezőket.'
         project_status:
           title: 'Projekt állapot'
           not_started: 'El nem kezdett'

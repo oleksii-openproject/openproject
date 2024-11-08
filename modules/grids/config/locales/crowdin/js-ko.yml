@@ -27,9 +27,6 @@ ko:
         project_description:
           title: '프로젝트 설명'
           no_results: "설명이 아직 작성되지 않았습니다. '프로젝트 설정'에서 입력할 수 있습니다."
-        project_details:
-          title: '프로젝트 세부 정보'
-          no_results: '프로젝트에 대한 사용자 지정 필드가 정의되지 않았습니다.'
         project_status:
           title: '프로젝트 상태'
           not_started: '시작되지 않음'

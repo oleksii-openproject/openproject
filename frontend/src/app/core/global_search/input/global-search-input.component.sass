@@ -26,6 +26,8 @@ $search-input-height: 30px
     font-size: var(--header-item-font-size)
     color: var(--header-item-font-color)
 
+    &.-input-focused
+      color: var(--body-font-color) !important
     &:hover
       text-decoration: none
 
@@ -48,6 +50,8 @@ $search-input-height: 30px
     font-size: 0.9rem
     -webkit-transition: width 0.2s ease-in-out
     transition: width 0.2s ease-in-out
+    .ng-input input.global-search--input
+      color: var(--header-item-font-color) !important
     &::-ms-clear
       margin-right: 5px
       width: 20px
@@ -75,10 +79,6 @@ $search-input-height: 30px
         // We should probably remove the default theme altogether at some point
         top: 0 !important
 
-      input
-        height: $search-input-height
-        cursor: text
-
     .ng-placeholder
       // The ng-select default theme is overly specific
       // We might want to replace it with our own BEM theme definition
@@ -90,7 +90,8 @@ $search-input-height: 30px
       width: $search-input-width-expanded
       background: var(--overlay-bgColor)
       border-radius: 4px
-
+      .ng-input input.global-search--input, .ng-clear-wrapper
+        color: var(--body-font-color) !important
     .ng-dropdown-header
       border-bottom: none
       color: var(--fgColor-muted)

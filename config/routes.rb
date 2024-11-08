@@ -172,12 +172,16 @@ Rails.application.routes.draw do
 
     scope module: :admin do
       scope module: :custom_fields do
-        resources :projects,
-                  controller: "/admin/custom_fields/custom_field_projects",
-                  only: %i[index new create]
-        resource :project,
-                 controller: "/admin/custom_fields/custom_field_projects",
-                 only: :destroy
+        resources :projects, controller: "/admin/custom_fields/custom_field_projects", only: %i[index new create]
+        resource :project, controller: "/admin/custom_fields/custom_field_projects", only: :destroy
+        resources :items, controller: "/admin/custom_fields/hierarchy/items" do
+          member do
+            get :deletion_dialog
+            get :new_child, action: :new
+            post :new_child, action: :create
+            post :move
+          end
+        end
       end
     end
   end
@@ -530,7 +534,7 @@ Rails.application.routes.draw do
       get "/", to: redirect("/admin/settings/general")
 
       # Plugin settings
-      get "plugin/:id", action: :show_plugin
+      get "plugin/:id", action: :show_plugin, as: :show_plugin
       post "plugin/:id", action: :update_plugin
     end
 
@@ -568,6 +572,8 @@ Rails.application.routes.draw do
   resources :work_packages, only: [:index] do
     concerns :shareable
 
+    get "hover_card" => "work_packages/hover_card#show", on: :member
+
     # move bulk of wps
     get "move/new" => "work_packages/moves#new", on: :collection, as: "new_move"
     post "move" => "work_packages/moves#create", on: :collection, as: "move"
@@ -576,6 +582,18 @@ Rails.application.routes.draw do
 
     # states managed by client-side routing on work_package#index
     get "details/*state" => "work_packages#index", on: :collection, as: :details
+
+    resources :activities, controller: "work_packages/activities_tab", only: %i[index create edit update] do
+      member do
+        get :cancel_edit
+        put :toggle_reaction
+      end
+      collection do
+        get :update_streams
+        get :update_filter # filter not persisted
+        put :update_sorting # sorting is persisted
+      end
+    end
 
     resource :progress, only: %i[new edit update], controller: "work_packages/progress"
     collection do
@@ -676,9 +694,9 @@ Rails.application.routes.draw do
 
   scope controller: "sys" do
     match "/sys/repo_auth", action: "repo_auth", via: %i[get post]
-    get "/sys/projects", action: "projects"
-    get "/sys/fetch_changesets", action: "fetch_changesets"
-    get "/sys/projects/:id/repository/update_storage", action: "update_required_storage"
+    match "/sys/projects", to: proc { [410, {}, [""]] }, via: :all
+    match "/sys/fetch_changesets", to: proc { [410, {}, [""]] }, via: :all
+    match "/sys/projects/:id/repository/update_storage", to: proc { [410, {}, [""]] }, via: :all
   end
 
   # alternate routes for the current user

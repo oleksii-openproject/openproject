@@ -33,6 +33,8 @@ module Pages
     attr_reader :project, :work_package
 
     def initialize(work_package, project = nil)
+      super()
+
       @work_package = work_package
       @project = project
     end
@@ -104,7 +106,7 @@ module Pages
     end
 
     def ensure_page_loaded
-      expect_angular_frontend_initialized
+      wait_for_network_idle
       expect(page).to have_css(".op-user-activity--user-name",
                                text: work_package.journals.last.user.name,
                                minimum: 1,

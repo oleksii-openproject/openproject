@@ -60,7 +60,7 @@ RSpec.describe "random password generation", :js, :with_cuprite do
 
       click_on "Save"
 
-      expect(page).to have_css(".op-toast", text: I18n.t(:notice_successful_update))
+      expect_flash(message: "Successful update.")
       expect(password).to be_present
 
       # Logout
@@ -90,19 +90,23 @@ RSpec.describe "random password generation", :js, :with_cuprite do
       expect(Sessions::UserSession.for_user(user.id).count).to be >= 1
 
       click_on "Save"
-      expect(page).to have_css(".op-toast.-info", text: I18n.t(:notice_account_password_updated))
+      wait_for_network_idle
+      expect_flash(type: :info, message: I18n.t(:notice_account_password_updated))
 
       # The old session is removed
       expect(Sessions::UserSession.find_by(session_id: "other")).to be_nil
 
       # Logout and sign in with outdated password
       visit signout_path
+
       login_with user.login, password
+      wait_for_network_idle
       expect(page).to have_content "Invalid user or password"
 
       # Logout and sign in with new_passworwd
       visit signout_path
       login_with user.login, new_password
+      wait_for_network_idle
 
       visit my_account_path
       expect(page).to have_css(".account-menu-item.selected")
@@ -126,7 +130,7 @@ RSpec.describe "random password generation", :js, :with_cuprite do
       find_by_id("settings_password_min_adhered_rules").set 3
 
       scroll_to_and_click(find(".button", text: "Save"))
-      expect(page).to have_css(".op-toast.-success", text: I18n.t(:notice_successful_update))
+      expect_flash(message: "Successful update.")
 
       Setting.clear_cache
 
@@ -144,19 +148,19 @@ RSpec.describe "random password generation", :js, :with_cuprite do
       fill_in "user_password", with: "adminADMIN"
       fill_in "user_password_confirmation", with: "adminADMIN"
       scroll_to_and_click(find(".button", text: "Save"))
-      expect(page).to have_css(".errorExplanation", text: "Password Must contain characters of the following classes")
+      expect_flash(type: :error, message: "Password Must contain characters of the following classes")
 
       # 2 of 3 classes
       fill_in "user_password", with: "adminADMIN123"
       fill_in "user_password_confirmation", with: "adminADMIN123"
       scroll_to_and_click(find(".button", text: "Save"))
-      expect(page).to have_css(".errorExplanation", text: "Password Must contain characters of the following classes")
+      expect_flash(type: :error, message: "Password Must contain characters of the following classes")
 
       # All classes
       fill_in "user_password", with: "adminADMIN!"
       fill_in "user_password_confirmation", with: "adminADMIN!"
       scroll_to_and_click(find(".button", text: "Save"))
-      expect(page).to have_css(".op-toast.-success", text: I18n.t(:notice_successful_update))
+      expect_flash(message: I18n.t(:notice_successful_update))
     end
   end
 

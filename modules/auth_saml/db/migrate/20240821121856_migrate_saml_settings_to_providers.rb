@@ -1,6 +1,9 @@
 class MigrateSamlSettingsToProviders < ActiveRecord::Migration[7.1]
   def up
-    providers = Hash(Setting.plugin_openproject_auth_saml).with_indifferent_access[:providers]
+    settings = Setting.plugin_openproject_auth_saml
+    return if settings.blank?
+
+    providers = Hash(settings).with_indifferent_access[:providers]
     return if providers.blank?
 
     providers.each do |name, options|
@@ -17,7 +20,7 @@ class MigrateSamlSettingsToProviders < ActiveRecord::Migration[7.1]
 
   def migrate_provider!(name, options)
     puts "Trying to migrate SAML provider #{name} from previous settings format..."
-    call = ::Saml::SyncService.new(name, options).call
+    call = ::Saml::SyncService.new(name, options, contract_class: EmptyContract).call
 
     if call.success
       puts <<~SUCCESS

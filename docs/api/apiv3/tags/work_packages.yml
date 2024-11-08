@@ -16,6 +16,7 @@ description: |-
   | update              | Form endpoint that aids in preparing and performing edits on a WP        | **Permission**: edit work package      |
   | updateImmediately   | Directly perform edits on a work package                                 | **Permission**: edit work package      |
   | watch               | Add current user to WP watchers                                          | logged in; not watching                |
+  | delete              | Delete this work package                                                 | **Permission**: delete work package    |
 
   ## Linked Properties
 

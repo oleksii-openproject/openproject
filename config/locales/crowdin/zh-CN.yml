@@ -24,6 +24,22 @@ zh-CN:
   activities:
     index:
       no_results_title_text: 在这个时间范围内没有任何项目的活动。
+    work_packages:
+      activity_tab:
+        no_results_title_text: 没有显示的活动
+        no_results_description_text: "选择 \"显示所有 \"可以显示所有活动和评论"
+        label_activity_show_all: "显示所有"
+        label_activity_show_only_comments: "仅显示评论"
+        label_activity_show_only_changes: "仅显示更改"
+        label_sort_asc: "时间升序"
+        label_sort_desc: "时间降序"
+        label_type_to_comment: "在此输入评论"
+        label_submit_comment: "提交评论"
+        changed_on: "更改于"
+        created_on: "创建于"
+        changed: "已更改"
+        created: "已创建"
+        commented: "已评论"
   admin:
     plugins:
       no_results_title_text: 目前没有安装插件。
@@ -39,16 +55,9 @@ zh-CN:
         accent-color: "强调色"
         header-bg-color: "标题背景"
         header-item-bg-hover-color: "悬停时的标题背景"
-        header-item-font-color: "标题字体"
-        header-item-font-hover-color: "悬停时的标题字体"
-        header-border-bottom-color: "标题边框"
         main-menu-bg-color: "主菜单背景"
         main-menu-bg-selected-background: "选择时的主菜单"
         main-menu-bg-hover-background: "悬停时的主菜单"
-        main-menu-font-color: "主菜单字体"
-        main-menu-selected-font-color: "选择时的主菜单字体"
-        main-menu-hover-font-color: "悬停时的主菜单字体"
-        main-menu-border-color: "主菜单边框"
       custom_colors: "自定义颜色"
       customize: "使用您自己的徽标和颜色自定义 OpenProject 安装。"
       enterprise_notice: "这个插件仅对企业版支持订阅者开放，以感谢他们对开发 OpenProject 的赞助。"
@@ -208,6 +217,25 @@ zh-CN:
         is_for_all_blank_slate:
           heading: 适用于所有项目
           description: 由于选中了 "适用于所有项目 "选项，因此所有项目都启用了该自定义字段。单个项目无法停用。
+      items:
+        actions: "项目操作"
+        blankslate:
+          root:
+            title: "您的条目列表为空"
+            description: "首先，将条目添加到类型层次结构的自定义字段中。每个条目都可以用于在其下方创建一个层次结构。要在层次结构中创建子条目，请点击已创建的条目。"
+          item:
+            title: 该项目下面没有任何层级
+            description: 在此列表中添加条目，以便在另一个列表中创建子条目
+        placeholder:
+          label: "项目标签"
+          short: "短名"
+      notice:
+        remember_items_and_projects: "请记住，在相应的选项卡中为此自定义字段设置条目和项目。"
+      hierarchy:
+        subitems:
+          zero: 无子项目
+          one: 1个子项目
+          other: "%{count} 个子项目"
     text_add_new_custom_field: >
       要向项目添加新的自定义字段，您需要先创建字段，然后才能将其添加到此项目中。
     is_enabled_globally: "已全局启用"
@@ -220,6 +248,7 @@ zh-CN:
       is_required: "将自定义字段标记为必填项。这将使在创建新资源或更新现有资源时，填写该字段成为强制要求。"
       is_required_for_project: "选中可启用此属性，并使其成为所有项目的必选项。单个项目不能停用该属性。"
       is_for_all: "将自定义字段标记为在所有现有项目和新项目中可用。"
+      multi_select: "允许用户为该自定义字段赋予多个值。"
       searchable: "使用全局搜索功能时包含字段值。"
       searchable_for_project: "选中可将此属性作为项目列表中的过滤器。"
       editable: "允许用户自行编辑该字段。"
@@ -231,6 +260,28 @@ zh-CN:
       no_results_content_text: 创建新的自定义字段
   concatenation:
     single: "或"
+  dry_validation:
+    errors:
+      integer?: "必须是整数"
+      filled?: "必须填写"
+      greater_or_equal_zero: "必须大于或等于 0"
+      not_found: "未找到"
+      rules:
+        item:
+          root_item: "不能为根项目"
+          not_persisted: "必须是已存在的项目"
+        label:
+          not_unique: "在同一层级内必须是唯一的"
+        short:
+          not_unique: "在同一层级内必须是唯一的"
+        parent:
+          not_descendant: "必须是层次结构根的后代"
+    rules:
+      depth: "深"
+      item: "条目"
+      label: "标签"
+      short: "Short name"
+      parent: "父级"
   global_search:
     placeholder: "在%{app_title}中搜索"
     overwritten_tabs:
@@ -458,23 +509,36 @@ zh-CN:
       priority_color_text: |
         单击可以分配或更改此优先级的颜色。
         颜色可用于突出显示表中的工作包。
+  reactions:
+    action_title: "回应"
+    add_reaction: "添加回应"
+    react_with: "使用 %{reaction} 进行回应"
+    and_user: "和 %{user}"
+    and_others:
+      other: 和 %{count} 其他
+    reaction_by: "由 %{reaction}"
   reportings:
     index:
       no_results_title_text: 目前没有状态报告。
       no_results_content_text: 添加状态报告
   statuses:
     edit:
+      status_color_text: |
+        单击可以分配或更改此状态的颜色。
+        颜色显示在状态按钮中，可用于突出显示表中的工作包。
+      status_default_text: |-
+        新工作包默认状态不能为只读。
+      status_excluded_from_totals_text: |-
+        选中此选项可将具有此状态的工作包排除在层次结构中的 "工时"、"
+        剩余工时 "和 "完成百分比 "总数之外。
+      status_percent_complete_text: |-
+        在<a href="%{href}">基于状态的进度计算模式</a>下，当选择该状态时，工作包的 完成% 会自动设置为该值。
+        在基于工作的模式下忽略。
       status_readonly_html: |
         选中此选项可将此状态的工作包标记为只读。
         除状态外，不能更改任何属性。
         <br/>
         <strong>注</strong>：继承值（例如，来自子级或关系的值）仍然适用。
-      status_excluded_from_totals_text: |-
-        选中此选项可将具有此状态的工作包排除在层次结构中的 "工时"、"
-        剩余工时 "和 "完成百分比 "总数之外。
-      status_color_text: |
-        单击可以分配或更改此状态的颜色。
-        颜色显示在状态按钮中，可用于突出显示表中的工作包。
     index:
       no_results_title_text: 目前没有工作包状态。
       no_results_content_text: 添加新的状态
@@ -484,7 +548,7 @@ zh-CN:
         is_readonly: "只读"
         excluded_from_totals: "不包括在总计中"
   themes:
-    dark: "黑暗（测试版）"
+    dark: "暗黑"
     light: "浅色模式"
     light_high_contrast: "高对比度模式"
   types:
@@ -615,6 +679,7 @@ zh-CN:
         editable: "可编辑"
         field_format: "格式"
         is_filter: "用作筛选器"
+        is_for_all: "适用于所有项目"
         is_required: "必填"
         max_length: "最大长度"
         min_length: "最小长度"
@@ -743,7 +808,6 @@ zh-CN:
         consented_at: "同意在"
       user_preference:
         comments_sorting: "显示评论"
-        hide_mail: "隐藏我的电子邮件地址"
         impaired: "辅助功能模式"
         time_zone: "时区"
         auto_hide_popups: "自动隐藏成功通知"
@@ -802,7 +866,7 @@ zh-CN:
         blank: "不能为空。"
         blank_nested: "需要设置属性“%{property}”。"
         cannot_delete_mapping: "必需项，不能删除"
-        is_for_all_cannot_modify: "适用于全部。不可修改。"
+        is_for_all_cannot_modify: "适用于所有项目，因此不能修改。"
         cant_link_a_work_package_with_a_descendant: "工作包无法链接到它的子任务之一。"
         circular_dependency: "这种关系将创建循环依赖项。"
         confirmation: "不匹配 %{attribute}。"
@@ -833,10 +897,12 @@ zh-CN:
         not_available: "因系统配置而不可用。"
         not_deletable: "无法删除。"
         not_current_user: "不是当前用户。"
+        not_found: "未找到"
         not_a_date: "不是有效的日期。"
         not_a_datetime: "不是有效的日期时间。"
         not_a_number: "不是一个数字。"
         not_allowed: "没有权限使用。"
+        not_json: "不是一个有效的 JSON 对象。"
         not_an_integer: "不是一个整数。"
         not_an_iso_date: "不是有效日期。所需格式：YYYY-MM-DD。"
         not_same_project: "不属于同一个项目。"
@@ -1308,6 +1374,9 @@ zh-CN:
   button_actions: "操作"
   button_add: "添加"
   button_add_comment: "添加评论"
+  button_add_item_above: "在上方添加条目"
+  button_add_item_below: "在下方添加条目"
+  button_add_sub_item: "添加子项目"
   button_add_member: 添加成员
   button_add_watcher: "添加关注者"
   button_annotate: "批注"
@@ -1765,6 +1834,7 @@ zh-CN:
       progress_mode_changed_to_status_based: "更新进度计算"
       status_changed: "状态 '%{status_name}'"
       system_update: "OpenProject 系统更新："
+      work_package_duplicate_closed: "重复的工作包已更新："
       total_percent_complete_mode_changed_to_work_weighted_average: "现在按工作加权计算的 完成% 总数。"
       total_percent_complete_mode_changed_to_simple_average: "完成% 总数的计算现在仅基于完成% 值的简单平均值。"
     cause_descriptions:
@@ -1772,6 +1842,7 @@ zh-CN:
       work_package_parent_changed_times: 通过对父级的更改 %{link}
       work_package_children_changed_times: 通过对子级的更改 %{link}
       work_package_related_changed_times: 通过对相关内容的更改 %{link}
+      work_package_duplicate_closed: 重复的工作包自动更新了状态 %{link}
       unaccessable_work_package_changed: 通过对相关工作包的更改
       working_days_changed:
         changed: "通过更改工作日（%{changes}）"
@@ -1917,6 +1988,7 @@ zh-CN:
   label_ical_access_key_generation_hint: "订阅日历时自动生成的。"
   label_ical_access_key_latest: "最近"
   label_ical_access_key_revoke: "撤消"
+  label_add_column: "添加列"
   label_applied_status: "应用的状态"
   label_archive_project: "归档项目"
   label_ascending: "升序"
@@ -1943,6 +2015,7 @@ zh-CN:
   label_api_doc: "API 文档"
   label_backup: "备份"
   label_backup_code: "备份代码"
+  label_basic_details: "基本详细信息"
   label_between: "介于"
   label_blocked_by: "阻止于"
   label_blocks: "阻止"
@@ -1981,7 +2054,6 @@ zh-CN:
   label_check_uncheck_all_in_row: "选中/取消选中所有行"
   label_child_element: "子元素"
   label_choices: "选择"
-  label_chronological_order: "最早的优先"
   label_close_versions: "关闭已完成版本"
   label_closed_work_packages: "关闭"
   label_collapse: "折叠"
@@ -2086,8 +2158,9 @@ zh-CN:
   label_feeds_access_key_created_on: "RSS 访问密钥创建于 %{value} 前"
   label_feeds_access_key_type: "RSS 订阅"
   label_file_plural: "文件"
-  label_filter_add: "添加筛选器"
   label_filter: "筛选器"
+  label_filter_add: "添加筛选器"
+  label_filter_by: "筛选条件："
   label_filter_plural: "筛选器"
   label_filters_toggle: "显示/隐藏筛选器"
   label_float: "浮点数"
@@ -2133,6 +2206,8 @@ zh-CN:
   label_internal: "内部"
   label_introduction_video: "自我介绍视频"
   label_invite_user: "邀请用户"
+  label_item: "条目"
+  label_item_plural: "条目"
   label_share: "共享"
   label_share_project_list: "共享项目列表"
   label_share_work_package: "共享工作包"
@@ -2174,6 +2249,7 @@ zh-CN:
   label_custom_favicon: "自定义图标"
   label_custom_touch_icon: "自定义触摸图标"
   label_logout: "注销"
+  label_mapping_for: "映射： %{attribute}"
   label_main_menu: "侧边菜单"
   label_manage: "管理"
   label_manage_groups: "组管理"
@@ -2208,8 +2284,10 @@ zh-CN:
   label_months_from: "月份从"
   label_more: "更多"
   label_more_than_ago: "更多天前"
+  label_move_column_left: "左移列"
+  label_move_column_right: "右移列"
   label_move_work_package: "移动工作包"
-  label_my_account: "我的账户"
+  label_my_account: "帐户设置"
   label_my_activity: "我的活动"
   label_my_account_data: "我的账户数据"
   label_my_avatar: "我的头像"
@@ -2299,7 +2377,7 @@ zh-CN:
   label_project_latest: "最新的项目"
   label_project_default_type: "允许为空类型"
   label_project_hierarchy: "项目层次结构"
-  label_project_mappings: "已在项目中启用"
+  label_project_mappings: "项目"
   label_project_new: "新的项目"
   label_project_plural: "项目"
   label_project_list_plural: "项目列表"
@@ -2330,6 +2408,7 @@ zh-CN:
   label_relation_new: "新的关系"
   label_release_notes: "更新日志"
   label_remaining_work: "剩余工时"
+  label_remove_column: "移除列"
   label_remove_columns: "删除选定的列"
   label_renamed: "重命名"
   label_reply_plural: "答复"
@@ -2345,7 +2424,6 @@ zh-CN:
   label_required: "必填"
   label_requires: "要求"
   label_result_plural: "结果"
-  label_reverse_chronological_order: "最新的优先"
   label_revision: "修订"
   label_revision_id: "修订版本 %{value}"
   label_revision_plural: "修订"
@@ -2371,8 +2449,10 @@ zh-CN:
   label_show_completed_versions: "显示已完成的版本"
   label_columns: "列"
   label_sort: "排序"
+  label_sort_ascending: "升序排列"
   label_sort_by: "排序按 %{value}"
   label_sorted_by: "排序按 %{value}"
+  label_sort_descending: "降序排列"
   label_sort_higher: "向上移动"
   label_sort_highest: "移至顶部"
   label_sort_lower: "向下移动"
@@ -2738,8 +2818,6 @@ zh-CN:
   notice_successful_update: "成功更新。"
   notice_successful_update_custom_fields_added_to_project: |
     更新成功。已激活类型的自定义字段在工作包表单上自动激活。<a href="%{url}" target="_blank">了解详情</a>。
-  notice_successful_update_custom_fields_added_to_type: |
-    更新成功。会为此类型的关联项目自动激活有效的自定义字段。
   notice_to_many_principals_to_display: "搜索结果数量过多。\n请键入新成员 (或组) 的名字来缩小搜索范围。"
   notice_user_missing_authentication_method: 用户尚未选择密码或另一种方式登录。
   notice_user_invitation_resent: 邀请已发送到 %{email}。
@@ -2857,6 +2935,7 @@ zh-CN:
   permission_view_shared_work_packages: "查看工作包共享"
   permission_view_time_entries: "查看消耗时间"
   permission_view_timelines: "查看时间线"
+  permission_view_user_email: "查看用户的邮件地址"
   permission_view_wiki_edits: "查看维基历史记录"
   permission_view_wiki_pages: "查看维基"
   permission_work_package_assigned: "成为受理人/责任人"
@@ -3085,7 +3164,9 @@ zh-CN:
   setting_default_language: "默认语言"
   setting_default_projects_modules: "新项目的默认启用模块"
   setting_default_projects_public: "新项目默认公开"
+  setting_disable_password_login: "禁用密码验证"
   setting_diff_max_lines_displayed: "最大差异显示行数"
+  setting_omniauth_direct_login_provider: "直接登录 SSO 提供商"
   setting_display_subprojects_work_packages: "默认在主项目上显示子项目工作包"
   setting_duration_format: "持续时间格式"
   setting_duration_format_hours_only: "仅限小时"
@@ -3147,7 +3228,6 @@ zh-CN:
   setting_registration_footer: "注册页脚"
   setting_repositories_automatic_managed_vendor: "自动存储库提供商类型"
   setting_repositories_encodings: "存储库编码"
-  setting_repository_authentication_caching_enabled: "启用版本控制软件的身份验证请求缓存"
   setting_repository_storage_cache_minutes: "存储库磁盘大小缓存"
   setting_repository_checkout_display: "显示检出说明"
   setting_repository_checkout_base_url: "检出根 URL"
@@ -3182,6 +3262,10 @@ zh-CN:
   setting_work_package_list_default_highlighted_attributes: "默认内联突出显示属性"
   setting_working_days: "工作日"
   settings:
+    authentication:
+      single_sign_on: "单点登录"
+      omniauth_direct_login_hint_html: >
+        如果激活该选项，登录请求将重定向到已配置的 omniauth 提供商。登录下拉菜单和登录页面将被禁用。 <br/> <strong>注意：</strong>除非同时禁用密码登录，否则启用此选项后，用户仍可通过访问 <code>%{internal_path}</code>登录页面。
     attachments:
       whitelist_text_html: >
         为上传的文件定义有效文件扩展名和/或 MIME 类型列表。<br/>输入文件扩展名（例如 <code>%{ext_example}</code>）或 MIME 类型（例如 <code>%{mime_example}</code>）。<br/>留空以允许上传任何文件类型。允许输入多个值（每个值一行）。

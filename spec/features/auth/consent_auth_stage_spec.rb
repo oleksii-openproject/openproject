@@ -50,11 +50,13 @@ RSpec.describe "Authentication Stages" do
   def expect_logged_in(path = my_page_path)
     expect(page).to have_current_path(path)
     visit my_account_path
+    wait_for_network_idle
     expect(page).to have_css(".form--field-container", text: user.login)
   end
 
   def expect_not_logged_in
     visit my_account_path
+    wait_for_netowrk_idle
     expect(page).to have_no_css(".form--field-container", text: user.login)
   end
 
@@ -168,7 +170,7 @@ RSpec.describe "Authentication Stages" do
       find_by_id("toggle_consent_time").set(true)
 
       click_on "Save"
-      expect(page).to have_css(".op-toast.-success")
+      expect_flash(message: "Successful update.")
 
       Setting.clear_cache
       expect(Setting.consent_time).to be_present
@@ -215,7 +217,7 @@ RSpec.describe "Authentication Stages" do
       check "consent_check"
       click_on I18n.t(:button_create)
 
-      expect(page).to have_css(".op-toast.-success")
+      expect_flash(message: I18n.t(:notice_account_registered_and_logged_in))
       expect_logged_in("/?first_time_user=true")
     end
 
@@ -256,7 +258,7 @@ RSpec.describe "Authentication Stages" do
         # Decline the consent
         click_on I18n.t(:button_decline)
 
-        expect(page).to have_css(".op-toast.-error", text: "foo@example.org")
+        expect_flash(type: :error, message: "foo@example.org")
       end
     end
   end

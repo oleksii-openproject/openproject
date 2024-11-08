@@ -27,9 +27,6 @@ ca:
         project_description:
           title: 'Descripció del projecte'
           no_results: "No s'ha escrit cap descripció encara. Aquesta pot ser afegida en la configuració del projecte."
-        project_details:
-          title: 'Detalls del projecte'
-          no_results: 'No s''ha definit cap camp personalitzat per projectes.'
         project_status:
           title: 'Estat del projecte'
           not_started: 'No començat'

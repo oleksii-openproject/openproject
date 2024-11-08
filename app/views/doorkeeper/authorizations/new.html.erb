@@ -26,7 +26,7 @@
   <% end %>
 
   <div class="actions">
-    <%= form_tag oauth_authorization_path, method: :post do %>
+    <%= form_tag oauth_authorization_path, method: :post, data: { turbo: false } do %>
       <%= hidden_field_tag :client_id, @pre_auth.client.uid %>
       <%= hidden_field_tag :redirect_uri, @pre_auth.redirect_uri %>
       <%= hidden_field_tag :state, @pre_auth.state %>
@@ -37,7 +37,7 @@
       <%= submit_tag t('oauth.authorization_dialog.authorize'), class: "button -primary -expand" %>
     <% end %>
     <br/>
-    <%= form_tag oauth_authorization_path, method: :delete do %>
+    <%= form_tag oauth_authorization_path, method: :delete, data: { turbo: false } do %>
       <%= hidden_field_tag :client_id, @pre_auth.client.uid %>
       <%= hidden_field_tag :redirect_uri, @pre_auth.redirect_uri %>
       <%= hidden_field_tag :state, @pre_auth.state %>

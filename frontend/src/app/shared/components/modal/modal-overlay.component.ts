@@ -42,6 +42,7 @@ import { I18nService } from 'core-app/core/i18n/i18n.service';
 import { OpModalComponent } from 'core-app/shared/components/modal/modal.component';
 import { ModalData, OpModalService } from 'core-app/shared/components/modal/modal.service';
 import { PortalOutletTarget } from 'core-app/shared/components/modal/portal-outlet-target.enum';
+import { UntilDestroyedMixin } from 'core-app/shared/helpers/angular/until-destroyed.mixin';
 
 
 @Component({
@@ -49,7 +50,7 @@ import { PortalOutletTarget } from 'core-app/shared/components/modal/portal-outl
   templateUrl: './modal-overlay.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class OpModalOverlayComponent {
+export class OpModalOverlayComponent extends UntilDestroyedMixin {
   public notFullscreen = false;
 
   mobileTopPosition = false;
@@ -76,6 +77,7 @@ export class OpModalOverlayComponent {
     readonly I18n:I18nService,
     readonly cdRef:ChangeDetectorRef,
   ) {
+    super();
   }
 
   setupListener():void {
@@ -84,6 +86,7 @@ export class OpModalOverlayComponent {
       // multiple 'closing' events in a row are squashed
       this.activeModalData$.pipe(distinctUntilChanged(), filter(this.isDefaultTarget.bind(this))),
     ])
+      .pipe(this.untilDestroyed())
       .subscribe(([instance, data]) => {
         if (instance === null && data === null) {
           // do nothing

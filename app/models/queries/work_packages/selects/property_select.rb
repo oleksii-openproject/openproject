@@ -53,7 +53,6 @@ class Queries::WorkPackages::Selects::PropertySelect < Queries::WorkPackages::Se
     },
     parent: {
       association: "ancestors_relations",
-      default_order: "asc",
       sortable: false
     },
     status: {
@@ -95,19 +94,15 @@ class Queries::WorkPackages::Selects::PropertySelect < Queries::WorkPackages::Se
     },
     version: {
       association: "version",
-      sortable: [->(table_name = Version.table_name) { Version.semver_sql(table_name) }, "name"],
-      default_order: "ASC",
-      null_handling: "NULLS LAST",
+      sortable: "name",
       groupable: "#{WorkPackage.table_name}.version_id"
     },
     start_date: {
-      sortable: "#{WorkPackage.table_name}.start_date",
-      null_handling: "NULLS LAST"
+      sortable: "#{WorkPackage.table_name}.start_date"
     },
     due_date: {
       highlightable: true,
-      sortable: "#{WorkPackage.table_name}.due_date",
-      null_handling: "NULLS LAST"
+      sortable: "#{WorkPackage.table_name}.due_date"
     },
     estimated_hours: {
       sortable: "#{WorkPackage.table_name}.estimated_hours",

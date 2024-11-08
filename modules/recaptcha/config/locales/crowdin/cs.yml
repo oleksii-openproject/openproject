@@ -9,7 +9,7 @@ cs:
     verify_account: "Ověřte svůj účet"
     error_captcha: "Váš účet nemohl být ověřen. Kontaktujte prosím administrátora."
     settings:
-      website_key: 'Website key (May also be called "Site key")'
+      website_key: 'Klíč webových stránek (může se nazývat také "klíč webu")'
       response_limit: 'Limit odpovědi pro HCaptcha'
       response_limit_text: 'Maximální počet znaků, které chcete považovat HCaptcha za platný.'
       website_key_text: 'Zadejte webový klíč vytvořený v reCAPTCHA admin konzoli pro tuto doménu.'

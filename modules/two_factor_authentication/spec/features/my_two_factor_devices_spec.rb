@@ -1,8 +1,11 @@
 require_relative "../spec_helper"
 
-RSpec.describe "My Account 2FA configuration", :js, with_settings: {
-  plugin_openproject_two_factor_authentication: { "active_strategies" => %i[developer totp] }
-} do
+RSpec.describe "My Account 2FA configuration",
+               :js,
+               :with_cuprite,
+               with_settings: {
+                 plugin_openproject_two_factor_authentication: { "active_strategies" => %i[developer totp] }
+               } do
   let(:dialog) { Components::PasswordConfirmationDialog.new }
   let(:user_password) { "boB!4" * 4 }
   let(:user) do
@@ -35,7 +38,7 @@ RSpec.describe "My Account 2FA configuration", :js, with_settings: {
     click_button I18n.t(:button_continue)
 
     # Enter valid phone number
-    expect(page).to have_css("#errorExplanation", text: "Phone number must be of format +XX XXXXXXXXX")
+    expect_flash(type: :error, message: "Phone number must be of format +XX XXXXXXXXX")
     fill_in "device_phone_number", with: "+49 123456789"
     click_button I18n.t(:button_continue)
 
@@ -55,8 +58,8 @@ RSpec.describe "My Account 2FA configuration", :js, with_settings: {
 
     expect(page).to have_css("h2", text: I18n.t("two_factor_authentication.devices.confirm_device"))
     expect(page).to have_css("input#otp")
-    expect(page).to have_css(".op-toast.-error",
-                             text: I18n.t("two_factor_authentication.devices.registration_failed_token_invalid"))
+
+    expect_flash(type: :error, message: I18n.t("two_factor_authentication.devices.registration_failed_token_invalid"))
 
     # Fill in correct token
     fill_in "otp", with: sms_token

@@ -61,6 +61,7 @@ module Pages
     def search_for_name(name)
       fill_in "name", with: name
       find(".simple-filters--controls input[type=submit]").click
+      wait_for_network_idle
     end
 
     def expect_menu_item(text, selected: false)
@@ -188,6 +189,7 @@ module Pages
       Array(remove_roles).each { |role| uncheck role }
 
       click_on "Change"
+      wait_for_network_idle
     end
 
     def has_group_membership?(user_name)
@@ -270,6 +272,7 @@ module Pages
 
     def go_to_page!(number)
       find(".op-pagination--pages a", text: number.to_s).click
+      wait_for_network_idle
     end
   end
 end

@@ -27,9 +27,6 @@ zh-CN:
         project_description:
           title: '项目描述'
           no_results: "尚未写入任何描述。可以在“项目设置”中提供一个描述。"
-        project_details:
-          title: '项目详细信息'
-          no_results: '没有为项目定义自定义字段。'
         project_status:
           title: '项目状态'
           not_started: '未开始'

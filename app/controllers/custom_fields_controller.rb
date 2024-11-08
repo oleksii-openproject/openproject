@@ -71,7 +71,7 @@ class CustomFieldsController < ApplicationController
   end
 
   def check_custom_field
-    # ProjecCustomFields now managed in a different UI
+    # ProjectCustomFields now managed in a different UI
     if @custom_field.nil? || @custom_field.type == "ProjectCustomField"
       flash[:error] = "Invalid CF type"
       redirect_to action: :index

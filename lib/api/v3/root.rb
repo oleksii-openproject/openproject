@@ -46,11 +46,13 @@ module API
       mount ::API::V3::Actions::ActionsAPI
       mount ::API::V3::Activities::ActivitiesAPI
       mount ::API::V3::Attachments::AttachmentsAPI
-      mount ::API::V3::Capabilities::CapabilitiesAPI
       mount ::API::V3::Backups::BackupsAPI
+      mount ::API::V3::Capabilities::CapabilitiesAPI
       mount ::API::V3::Categories::CategoriesAPI
       mount ::API::V3::Configuration::ConfigurationAPI
       mount ::API::V3::CustomActions::CustomActionsAPI
+      mount ::API::V3::CustomFields::CustomFieldsAPI
+      mount ::API::V3::CustomFields::Hierarchy::ItemAPI
       mount ::API::V3::CustomOptions::CustomOptionsAPI
       mount ::API::V3::Days::DaysAPI
       mount ::API::V3::Grids::GridsAPI

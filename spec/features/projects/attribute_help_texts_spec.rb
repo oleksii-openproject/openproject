@@ -65,9 +65,10 @@ RSpec.describe "Project attribute help texts", :js, :with_cuprite do
       visit project_path(project)
 
       within "#menu-sidebar" do
-        click_link "Overview"
+        click_link_or_button "Overview"
       end
 
+      wait_for_network_idle
       expect(page).to have_css("#{test_selector('op-widget-box--header')} .help-text--entry", wait: 10)
 
       # Open help text modal

@@ -24,6 +24,22 @@ de:
   activities:
     index:
       no_results_title_text: Innerhalb dieses Zeitraums haben keine Aktivitäten in dem Projekt stattgefunden.
+    work_packages:
+      activity_tab:
+        no_results_title_text: Keine Aktivität anzuzeigen
+        no_results_description_text: "Wählen Sie \"Alles anzeigen\", um alle Aktivitäten und Kommentare anzuzeigen."
+        label_activity_show_all: "Alles anzeigen"
+        label_activity_show_only_comments: "Nur Kommentare anzeigen"
+        label_activity_show_only_changes: "Nur Änderungen anzeigen"
+        label_sort_asc: "Neueste unten"
+        label_sort_desc: "Neueste oben"
+        label_type_to_comment: "Tippen Sie hier, um zu kommentieren"
+        label_submit_comment: "Kommentar absenden"
+        changed_on: "geändert am"
+        created_on: "erstellte dies am"
+        changed: "geändert"
+        created: "erstellt"
+        commented: "kommentiert"
   admin:
     plugins:
       no_results_title_text: Es sind derzeit keine Plugins installiert.
@@ -39,16 +55,9 @@ de:
         accent-color: "Akzent"
         header-bg-color: "Hintergrund der Kopfzeile"
         header-item-bg-hover-color: "Hintergrund der Kopfzeile bei Hover"
-        header-item-font-color: "Textfarbe der Kopfzeile"
-        header-item-font-hover-color: "Textfarbe der Kopfzeile bei Hover"
-        header-border-bottom-color: "Rahmenfarbe der Kopfzeile"
         main-menu-bg-color: "Hintergrundfarbe des Hauptmenüs"
         main-menu-bg-selected-background: "Hintergrundfarbe des Hauptmenüs bei Auswahl"
         main-menu-bg-hover-background: "Hintergrundfarbe des Hauptmenüs bei Hover"
-        main-menu-font-color: "Schriftfarbe des Hauptmenüs"
-        main-menu-selected-font-color: "Schriftfarbe des Hauptmenüs bei Auswahl"
-        main-menu-hover-font-color: "Schriftfarbe des Hauptmenüs bei Hover"
-        main-menu-border-color: "Rahmenfarbe des Hauptmenüs"
       custom_colors: "Benutzerdefinierte Farben"
       customize: "Passen Sie Ihre OpenProject Installation mit Ihrem eigenen Logo und eigenen Farben an."
       enterprise_notice: "Diese kleine Erweiterung steht den Abonnenten der Enterprise edition ganz exklusiv als kleines Dankeschön für deren finanzielle Unterstützung zur Verfügung."
@@ -208,6 +217,25 @@ de:
         is_for_all_blank_slate:
           heading: Für alle Projekte
           description: Dieses Projekt-Attribut ist in allen Projekten aktiviert, da die Option "Für alle Projekte" aktiviert ist. Es kann nicht für einzelne Projekte deaktiviert werden.
+      items:
+        actions: "Element-Aktionen"
+        blankslate:
+          root:
+            title: "Ihre Liste der Elemente ist leer"
+            description: "Beginnen Sie mit dem Hinzufügen von Elementen in das benutzerdefinierte Feld der Typ-Hierarchie. Jedes Element kann verwendet werden, um eine Hierarchie darunter zu erstellen. Um Unterelemente innerhalb einer Hierarchie zu navigieren und zu erstellen, klicken Sie auf das erstellte Element."
+          item:
+            title: Dieses Element hat keine untergeordnete Hierarchieebene
+            description: Füge Elemente zu dieser Liste hinzu, um Unterelemente innerhalb eines anderen zu erstellen
+        placeholder:
+          label: "Elementbezeichnung"
+          short: "Kurzname"
+      notice:
+        remember_items_and_projects: "Denken Sie daran, Einträge und Projekte in den jeweiligen Registerkarten für dieses benutzerdefinierte Feld festzulegen."
+      hierarchy:
+        subitems:
+          zero: keine Unterelemente
+          one: 1 Unterelement
+          other: "%{count} Unterelemente"
     text_add_new_custom_field: >
       Um neue benutzerdefinierte Felder einem Projekt zuzuweisen, müssen Sie diese erst global erstellen, um Sie dann an dieser Stelle aktivieren zu können.
     is_enabled_globally: "Für alle Projekte aktiviert"
@@ -220,6 +248,7 @@ de:
       is_required: "Markieren Sie das benutzerdefinierte Feld als erforderlich. Dies macht es zwingend erforderlich, das Feld auszufüllen, wenn neue oder aktualisierte Ressourcen erstellt werden."
       is_required_for_project: "Das Attribut in allen Projekten erforderlich machen. Es kann dann nicht für einzelne Projekte deaktiviert werden."
       is_for_all: "Markieren Sie das benutzerdefinierte Feld als verfügbar in allen bestehenden und neuen Projekten."
+      multi_select: "Ermöglicht dem Benutzer, diesem benutzerdefinierten Feld mehrere Werte zuzuweisen."
       searchable: "Fügen Sie die Feldwerte hinzu, wenn Sie die globale Suchfunktion verwenden."
       searchable_for_project: "Das Attribut kann als Filter in Projektlisten ausgewählt werden."
       editable: "Feld darf von den Benutzern selbst bearbeitet werden."
@@ -231,6 +260,28 @@ de:
       no_results_content_text: Neues benutzerdefiniertes Feld anlegen
   concatenation:
     single: "oder"
+  dry_validation:
+    errors:
+      integer?: "must be an integer"
+      filled?: "must be filled"
+      greater_or_equal_zero: "must be greater or equal to 0"
+      not_found: "not found"
+      rules:
+        item:
+          root_item: "cannot be a root item"
+          not_persisted: "must be an already existing item"
+        label:
+          not_unique: "muss innerhalb der gleichen Hierarchieebene eindeutig sein"
+        short:
+          not_unique: "must be unique within the same hierarchy level"
+        parent:
+          not_descendant: "must be a descendant of the hierarchy root"
+    rules:
+      depth: "Depth"
+      item: "Item"
+      label: "Bezeichnung"
+      short: "Short name"
+      parent: "Parent"
   global_search:
     placeholder: "Suche in %{app_title}"
     overwritten_tabs:
@@ -463,21 +514,35 @@ de:
     edit:
       priority_color_text: |
         Klicken zum Zuweisen einer Farbe für diesen Prioritätswert. Diese wird für die Hervorhebung von Arbeitspaketen in Tabellen verwendet.
+  reactions:
+    action_title: "Reagieren"
+    add_reaction: "Reaktion hinzufügen"
+    react_with: "Mit %{reaction} reagieren"
+    and_user: "und %{user}"
+    and_others:
+      one: und ein weiterer
+      other: und %{count} weitere
+    reaction_by: "%{reaction} von"
   reportings:
     index:
       no_results_title_text: Derzeit gibt es keine Statusberichte.
       no_results_content_text: Statusbericht hinzufügen
   statuses:
     edit:
+      status_color_text: |
+        Klicken zum Zuweisen einer Farbe für diesen Status. Diese wird für die Hervorhebung von Arbeitspaketen in Tabellen verwendet.
+      status_default_text: |-
+        Neue Arbeitspakete werden standardmäßig auf diesen Typ gesetzt. Er kann nicht schreibgeschützt sein.
+      status_excluded_from_totals_text: |-
+        Aktivieren Sie diese Option, um Arbeitspakete mit diesem Status aus den Summen von Aufwand, Verbleibender Aufwand und % Abgeschlossen in Hierarchien auszuschließen.
+      status_percent_complete_text: |-
+        Im <a href="%{href}">statusbasierten Fortschrittsberechnungsmodus</a> wird der % abgeschlossen Wert eines Arbeitspakets automatisch auf diesen Wert gesetzt, wenn dieser Status ausgewählt wird.
+        Im aufwandsbezogenem Modus hat dieser Wert keine Relevanz.
       status_readonly_html: |
         Wählen Sie diese Option um Bearbeitung von Arbeitspaketen in diesem Status zu sperren.
         Außer dem Status selbst können dann keine Attribute verändert werden.
         <br/>
         <strong>Hinweis</strong>: Vererbte Attribute (z.B. von Kinderelementen oder Relationen) werden auch auf Arbeitspakete in diesen Status angewandt.
-      status_excluded_from_totals_text: |-
-        Aktivieren Sie diese Option, um Arbeitspakete mit diesem Status aus den Summen von Aufwand, Verbleibender Aufwand und % Abgeschlossen in Hierarchien auszuschließen.
-      status_color_text: |
-        Klicken zum Zuweisen einer Farbe für diesen Status. Diese wird für die Hervorhebung von Arbeitspaketen in Tabellen verwendet.
     index:
       no_results_title_text: Derzeit gibt es keine Arbeitspaket-Status.
       no_results_content_text: Neuen Status hinzufügen
@@ -487,7 +552,7 @@ de:
         is_readonly: "Schreibgeschützt"
         excluded_from_totals: "Von Gesamtsumme auschließen"
   themes:
-    dark: "Dunkel (Beta)"
+    dark: "Dunkel"
     light: "Hell"
     light_high_contrast: "Hell (hoher Kontrast)"
   types:
@@ -530,7 +595,7 @@ de:
       could_not_be_saved: "Die folgenden Arbeitspakete konnten nicht gespeichert werden:"
       none_could_be_saved: "Keines der %{total} Arbeitspakete konnte aktualisiert werden."
       x_out_of_y_could_be_saved: "%{failing} von %{total} Arbeitspaketen konnten nicht aktualisiert werden, aber %{success} wurden aktualisiert."
-      selected_because_descendants: "While %{selected} work packages were selected, in total %{total} work packages are affected which includes descendants."
+      selected_because_descendants: "Obwohl nur %{selected} Arbeitspakete ausgewählt wurden, sind inklusive untergeordneter Arbeitspakete insgesamt %{total} Arbeitspakete betroffen."
       descendant: "untergeordnetes Arbeitspaket eines ausgewählten Arbeitspaketes"
     move:
       no_common_statuses_exists: "Es gibt keine gemeinsamen Status für die ausgewählten Arbeitspakete. Ihr Status kann daher nicht verändert werden."
@@ -620,6 +685,7 @@ de:
         editable: "Bearbeitbar"
         field_format: "Format"
         is_filter: "Als Filter benutzen"
+        is_for_all: "Für alle Projekte"
         is_required: "Erforderlich"
         max_length: "Maximale Länge"
         min_length: "Minimale Länge"
@@ -748,7 +814,6 @@ de:
         consented_at: "Eingewilligt am"
       user_preference:
         comments_sorting: "Kommentare anzeigen"
-        hide_mail: "E-Mail-Adresse nicht anzeigen"
         impaired: "Für die barrierefreie Nutzung optimierte Oberfläche"
         time_zone: "Zeitzone"
         auto_hide_popups: "Benachrichtigungen erfolgreicher Aktionen automatisch ausblenden"
@@ -807,7 +872,7 @@ de:
         blank: "muss ausgefüllt werden."
         blank_nested: "muss die Eigenschaft '%{property}' gesetzt haben."
         cannot_delete_mapping: "ist erforderlich. Kann nicht gelöscht werden."
-        is_for_all_cannot_modify: "ist für alle. Kann nicht geändert werden."
+        is_for_all_cannot_modify: "gilt für alle Projekte und kann daher nicht geändert werden."
         cant_link_a_work_package_with_a_descendant: "Ein Arbeitspaket kann nicht mit einer seiner Unteraufgaben verlinkt werden."
         circular_dependency: "Diese Beziehung würde eine zyklische Abhängigkeit erzeugen."
         confirmation: "stimmt nicht mit %{attribute} überein."
@@ -838,10 +903,12 @@ de:
         not_available: "ist aufgrund einer Systemkonfiguration nicht verfügbar."
         not_deletable: "kann nicht entfernt werden."
         not_current_user: "ist nicht der aktuelle Benutzer."
+        not_found: "nicht gefunden."
         not_a_date: "ist kein gültiges Datum."
         not_a_datetime: "ist kein gültiges Datum."
         not_a_number: "ist keine Zahl."
         not_allowed: "ist ungültig aufgrund fehlender Berechtigungen."
+        not_json: "ist kein gültiges JSON-Objekt."
         not_an_integer: "ist keine ganzzahlige Zahl."
         not_an_iso_date: "ist kein gültiges Datum - Erwartetes Format: YYY-MM-DD."
         not_same_project: "gehört nicht zum selben Projekt."
@@ -1323,6 +1390,9 @@ de:
   button_actions: "Aktionen"
   button_add: "Hinzufügen"
   button_add_comment: "Kommentar hinzufügen"
+  button_add_item_above: "Element oben hinzufügen"
+  button_add_item_below: "Element unten hinzufügen"
+  button_add_sub_item: "Unterelement hinzufügen"
   button_add_member: Mitglied hinzufügen
   button_add_watcher: "Beobachter hinzufügen"
   button_annotate: "Kommentieren"
@@ -1356,7 +1426,7 @@ de:
   button_expand_all: "Alle ausklappen"
   button_favorite: "Zu Favoriten hinzufügen"
   button_filter: "Filter"
-  button_finish_setup: "Finish setup"
+  button_finish_setup: "Einrichtung abschließen"
   button_generate: "Generieren"
   button_list: "Liste"
   button_lock: "Sperren"
@@ -1798,13 +1868,15 @@ de:
       progress_mode_changed_to_status_based: "Fortschrittsberechnung aktualisiert"
       status_changed: "Status '%{status_name}'"
       system_update: "OpenProject-Systemaktualisierung:"
-      total_percent_complete_mode_changed_to_work_weighted_average: "Calculation of % Complete totals now weighted by Work."
-      total_percent_complete_mode_changed_to_simple_average: "Calculation of % Complete totals now based on a simple average of only % Complete values."
+      work_package_duplicate_closed: "Dupliziertes Arbeitspaket aktualisiert:"
+      total_percent_complete_mode_changed_to_work_weighted_average: "Die Berechnung der Gesamtwerte für % abgeschlossen wird jetzt nach Aufwand gewichtet."
+      total_percent_complete_mode_changed_to_simple_average: "Die Berechnung der Gesamtwerte für % abgeschlossen basiert jetzt auf dem einfachen Durchschnitt der % abgeschlossen-Werte."
     cause_descriptions:
       work_package_predecessor_changed_times: durch Änderungen am Vorgänger %{link}
       work_package_parent_changed_times: durch Änderungen am übergeordneten Arbeitspaket %{link}
       work_package_children_changed_times: durch Änderungen an Kind-Arbeitspaket %{link}
       work_package_related_changed_times: durch Änderungen an verwandtem Arbeitspaket %{link}
+      work_package_duplicate_closed: Der Status wurde automatisch durch das als Duplikat markierte Arbeitspaket %{link} aktualisiert
       unaccessable_work_package_changed: nach Änderungen an einem zugehörigen Arbeitspaket
       working_days_changed:
         changed: "Durch Änderungen an Werktagen (%{changes})"
@@ -1950,6 +2022,7 @@ de:
   label_ical_access_key_generation_hint: "Wird automatisch generiert, wenn ein Kalender abonniert wird."
   label_ical_access_key_latest: "neueste"
   label_ical_access_key_revoke: "Widerrufen"
+  label_add_column: "Spalte hinzufügen"
   label_applied_status: "Zugewiesener Status"
   label_archive_project: "Projekt archivieren"
   label_ascending: "Aufsteigend"
@@ -1976,6 +2049,7 @@ de:
   label_api_doc: "API-Dokumentation"
   label_backup: "Backup"
   label_backup_code: "Backupcode"
+  label_basic_details: "Allgemeine Informationen"
   label_between: "zwischen"
   label_blocked_by: "Blockiert durch"
   label_blocks: "Blockiert"
@@ -2014,7 +2088,6 @@ de:
   label_check_uncheck_all_in_row: "Alle in Zeile an/abwählen"
   label_child_element: "Kind-Element"
   label_choices: "Auswahlmöglichkeiten"
-  label_chronological_order: "Älteste zuerst"
   label_close_versions: "Abgeschlossene Versionen schließen"
   label_closed_work_packages: "Geschlossen"
   label_collapse: "Zuklappen"
@@ -2119,8 +2192,9 @@ de:
   label_feeds_access_key_created_on: "Atom-Zugriffsschlüssel vor %{value} erstellt"
   label_feeds_access_key_type: "RSS"
   label_file_plural: "Dateien"
-  label_filter_add: "Filter hinzufügen"
   label_filter: "Filter"
+  label_filter_add: "Filter hinzufügen"
+  label_filter_by: "Filtern nach"
   label_filter_plural: "Filter"
   label_filters_toggle: "Filter ein-/ausblenden"
   label_float: "Gleitkommazahl"
@@ -2166,6 +2240,8 @@ de:
   label_internal: "Intern"
   label_introduction_video: "Einführungsvideo"
   label_invite_user: "Nutzer einladen"
+  label_item: "Element"
+  label_item_plural: "Elemente"
   label_share: "Teilen"
   label_share_project_list: "Projektliste teilen"
   label_share_work_package: "Arbeitspaket teilen"
@@ -2207,6 +2283,7 @@ de:
   label_custom_favicon: "Benutzerdefiniertes Favicon"
   label_custom_touch_icon: "Benutzerdefiniertes Touch-Icon"
   label_logout: "Abmelden"
+  label_mapping_for: "Zuordnung für: %{attribute}"
   label_main_menu: "Nebenmenü"
   label_manage: "Verwalten"
   label_manage_groups: "Gruppen verwalten"
@@ -2241,8 +2318,10 @@ de:
   label_months_from: "Monate ab"
   label_more: "Mehr"
   label_more_than_ago: "vor mehr als (Tage)"
+  label_move_column_left: "Spalte nach links"
+  label_move_column_right: "Spalte nach rechts"
   label_move_work_package: "Arbeitspaket verschieben"
-  label_my_account: "Mein Konto"
+  label_my_account: "Kontoeinstellungen"
   label_my_activity: "Meine Aktivität"
   label_my_account_data: "Meine Kontodaten"
   label_my_avatar: "Mein Avatar"
@@ -2332,7 +2411,7 @@ de:
   label_project_latest: "Neueste Projekte"
   label_project_default_type: "Erlaube leere Typen"
   label_project_hierarchy: "Projekthierarchie"
-  label_project_mappings: "Verwendung in Projekten"
+  label_project_mappings: "Projekte"
   label_project_new: "Neues Projekt"
   label_project_plural: "Projekte"
   label_project_list_plural: "Projektlisten"
@@ -2363,6 +2442,7 @@ de:
   label_relation_new: "Neue Beziehung"
   label_release_notes: "Release Notes"
   label_remaining_work: "Verbleibender Aufwand"
+  label_remove_column: "Spalte entfernen"
   label_remove_columns: "Ausgewählte Spalten entfernen"
   label_renamed: "umbenannt"
   label_reply_plural: "Antworten"
@@ -2378,7 +2458,6 @@ de:
   label_required: "benötigt von"
   label_requires: "benötigt"
   label_result_plural: "Ergebnisse"
-  label_reverse_chronological_order: "Neueste zuerst"
   label_revision: "Revision"
   label_revision_id: "Revision %{value}"
   label_revision_plural: "Revisionen"
@@ -2404,8 +2483,10 @@ de:
   label_show_completed_versions: "Abgeschlossene Versionen anzeigen"
   label_columns: "Spalten"
   label_sort: "Sortierung"
+  label_sort_ascending: "Sortiere aufsteigend"
   label_sort_by: "Sortiere nach %{value}"
   label_sorted_by: "sortiert nach %{value}"
+  label_sort_descending: "Sortiere absteigend"
   label_sort_higher: "Eins höher"
   label_sort_highest: "An den Anfang"
   label_sort_lower: "Eins tiefer"
@@ -2775,9 +2856,6 @@ de:
   notice_successful_update_custom_fields_added_to_project: |
     Erfolgreich aktualisiert. Die benutzerdefinierten Felder der aktivierten Typen werden automatisch
     im Arbeitspaket-Formular aktiviert. <a href="%{url}" target="_blank">Siehe mehr</a>.
-  notice_successful_update_custom_fields_added_to_type: |
-    Erfolgreich aktualisiert. Die aktiven benutzerdefinierten Felder werden automatisch für
-    die zugehörigen Projekte dieses Typs aktiviert.
   notice_to_many_principals_to_display: "Es gibt zu viele Treffer.\nBitte engen Sie die Suche ein, indem sie den Namen der Person (oder der Gruppe) eingeben."
   notice_user_missing_authentication_method: Benutzer muss noch ein Passwort oder eine andere Authentifizierungsmethode wählen.
   notice_user_invitation_resent: Eine Einladung wurde an %{email} gesendet.
@@ -2896,6 +2974,7 @@ de:
   permission_view_shared_work_packages: "Arbeitspaket-Freigaben sehen"
   permission_view_time_entries: "Gebuchte Aufwände ansehen"
   permission_view_timelines: "Zeitplan-Reporte anzeigen"
+  permission_view_user_email: "E-Mail-Adressen der Benutzer anzeigen"
   permission_view_wiki_edits: "Wiki-Versionsgeschichte ansehen"
   permission_view_wiki_pages: "Wiki ansehen"
   permission_work_package_assigned: "Zugewiesener/Verantwortlicher werden"
@@ -3126,7 +3205,9 @@ de:
   setting_default_language: "Standard-Sprache"
   setting_default_projects_modules: "Standardmäßig aktivierte Module für neue Projekte"
   setting_default_projects_public: "Neue Projekte sind standardmäßig öffentlich"
+  setting_disable_password_login: "Passwort-Authentifizierung deaktivieren"
   setting_diff_max_lines_displayed: "Maximale Anzahl anzuzeigender Diff-Zeilen"
+  setting_omniauth_direct_login_provider: "SSO-Anbieter für direkte Anmeldung"
   setting_display_subprojects_work_packages: "Arbeitspakete von Unterprojekten im Hauptprojekt anzeigen"
   setting_duration_format: "Anzeige der Dauer"
   setting_duration_format_hours_only: "Nur Stunden"
@@ -3147,14 +3228,14 @@ de:
     Dies legt fest, was als "Tag" angesehen wird, wenn eine zeitliche Dauer angezeigt werden (zum Beispiel: Wenn die Länge eines Tages 8 Stunden beträgt, wird eine Eingabe von 32 Stunden als 4 Tage angezeigt).
   setting_invitation_expiration_days: "Aktivierungs-Mail läuft ab nach"
   setting_work_package_done_ratio: "Modus der Fortschrittsberechnung"
-  setting_work_package_done_ratio_field: "Arbeitsbezogen"
+  setting_work_package_done_ratio_field: "Aufwandsbezogen"
   setting_work_package_done_ratio_field_caption_html: >-
     <i>% abgeschlossen</i> kann auf jeden beliebigen Wert gesetzt werden. Wenn Sie optional einen Wert für <i>Aufwand</i> eingeben, wird <i>verbleibender Aufwand</i> automatisch abgeleitet.
   setting_work_package_done_ratio_status: "Statusbezogen"
   setting_work_package_done_ratio_status_caption_html: >-
     Jeder Status ist mit einem Wert für <i>% abgeschlossen</i> verbunden. Wenn Sie den Status ändern, ändert sich auch <i>% abgeschlossen</i>.
   setting_work_package_done_ratio_explanation_html: >
-    Im <b>arbeitsbezogenen</b> Modus ist % abgeschlossen frei wählbar. Falls Sie einen Wert für Aufwand angeben, wird Verbleibender Aufand automatisch abgeleitet. Im <b>statusbasierten</b> Modus ist jedem Status ein Wert für % abgeschlossen zugeordnet. Wenn Sie den Status ändern, ändert sich % abgeschlossen.
+    Im <b>aufwandsbezogenen</b> Modus ist % abgeschlossen frei wählbar. Falls Sie einen Wert für Aufwand angeben, wird Verbleibender Aufand automatisch abgeleitet. Im <b>statusbasierten</b> Modus ist jedem Status ein Wert für % abgeschlossen zugeordnet. Wenn Sie den Status ändern, ändert sich % abgeschlossen.
   setting_work_package_properties: "Arbeitspaket-Eigenschaften"
   setting_work_package_startdate_is_adddate: "Neue Arbeitspakete haben \"Heute\" als Anfangsdatum"
   setting_work_packages_projects_export_limit: "Arbeitspakete / Exportlimit für Projekte"
@@ -3188,7 +3269,6 @@ de:
   setting_registration_footer: "Fußzeile der Registrierung-Ansicht"
   setting_repositories_automatic_managed_vendor: "Automatisch genutzter Projektarchiv Anbieter-Typ"
   setting_repositories_encodings: "Codierungen der Projektarchive"
-  setting_repository_authentication_caching_enabled: "Aktiviere Cache für Authentifizierungsversuche von Versionskontrollsoftware"
   setting_repository_storage_cache_minutes: "Speicher-Dauer der abgerufenen Festplattengröße"
   setting_repository_checkout_display: "Zeige Checkout-Anweisungen"
   setting_repository_checkout_base_url: "Checkout URL-Präfix"
@@ -3204,13 +3284,13 @@ de:
   setting_sys_api_enabled: "Den Web-Service zur Projektarchiv-Verwaltung aktivieren"
   setting_sys_api_description: "Der Web-Service für Projektarchiv-Verwaltung erlaubt Integration und Nutzer-Autorisierung für den Zugriff auf Projektarchive."
   setting_time_format: "Zeit"
-  setting_total_percent_complete_mode: "Calculation of % Complete hierarchy totals"
-  setting_total_percent_complete_mode_work_weighted_average: "Nach Arbeit gewichtet"
+  setting_total_percent_complete_mode: "Berechnung des Gesamtwerts % abgeschlossen in Hierarchien"
+  setting_total_percent_complete_mode_work_weighted_average: "Nach Aufwand gewichtet"
   setting_total_percent_complete_mode_work_weighted_average_caption_html: >-
-    The <i>total % Complete</i> will be weighted against the <i>Work</i> of each work package in the hierarchy. Work packages without <i>Work</i> will be ignored.
+    Der <i>Gesamtwert % abgeschlossen</i> wird gegen den <i>Aufwand</i> der einzelnen Arbeitspakete in der Hierarchie gewichtet. Arbeitspakete ohne <i>Aufwand</i> werden ignoriert.
   setting_total_percent_complete_mode_simple_average: "Einfacher Durchschnitt"
   setting_total_percent_complete_mode_simple_average_caption_html: >-
-    <i>Work</i> is ignored and the <i>total % Complete</i> will be a simple average of <i>% Complete</i> values of work packages in the hierarchy.
+    Der <i>Aufwand</i> wird ignoriert und der <i>Gesamtwert % abgeschlossen</i> ist der einfache Durchschnitt der <i>% abgeschlossen</i> Werte der Arbeitspakete in der Hierarchie.
   setting_accessibility_mode_for_anonymous: "Barrierefreien Modus für nicht angemeldete Nutzer aktivieren"
   setting_user_format: "Format des Benutzernamens"
   setting_user_default_timezone: "Standard-Zeitzone für Benutzer"
@@ -3223,6 +3303,10 @@ de:
   setting_work_package_list_default_highlighted_attributes: "Voreinstellung Inline Hervorherbung"
   setting_working_days: "Arbeitstage"
   settings:
+    authentication:
+      single_sign_on: "Single-Sign-On"
+      omniauth_direct_login_hint_html: >
+        Wenn diese Option aktiviert ist, werden die Anmeldeanfragen an den konfigurierten SSO-Anbieter weitergeleitet. Das Login-Dropdown und die Anmeldeseite sind dann deaktiviert. <br/> <strong>Hinweis:</strong> Sofern Sie nicht auch die Passwortanmeldung deaktivieren, können sich Benutzer bei aktivierter Option immer noch intern anmelden, indem sie die interne Anmeldeseite <code>%{internal_path}</code> verwenden.
     attachments:
       whitelist_text_html: >
         Legen Sie eine Liste gültiger Dateierweiterungen und/oder Mime-Typen für hochgeladene Dateien fest. <br/> Dateierweiterungen (z. B. <code>%{ext_example}</code>) oder Mime-Typen (z. ., <code>%{mime_example}</code>). <br/> Lassen Sie diese Liste leer, um das Hochladen beliebiger Dateitypen zu erlauben. Mehrere Werte erlaubt (eine Zeile pro Wert).
