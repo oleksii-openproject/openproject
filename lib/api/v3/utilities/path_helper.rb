@@ -215,6 +215,10 @@ module API
             "#{root}/custom_field_items/#{id}"
           end
 
+          def self.custom_field_item_branch(id)
+            "#{custom_field_item(id)}/branch"
+          end
+
           def self.custom_field_items(id, parent = nil, depth = nil)
             query = { parent:, depth: }.compact_blank.to_query
 

@@ -65,6 +65,10 @@ module API
               }
             end
           end
+
+          link :branch do
+            { href: api_v3_paths.custom_field_item_branch(represented.id) }
+          end
         end
       end
     end
