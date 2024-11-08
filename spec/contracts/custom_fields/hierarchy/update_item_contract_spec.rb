@@ -58,7 +58,7 @@ RSpec.describe CustomFields::Hierarchy::UpdateItemContract do
       it("is invalid") do
         result = subject.call(params)
         expect(result).to be_failure
-        expect(result.errors.to_h).to include(item: ["cannot be a root item"])
+        expect(result.errors.to_h).to include(item: ["cannot be a root item."])
       end
     end
 
@@ -80,7 +80,7 @@ RSpec.describe CustomFields::Hierarchy::UpdateItemContract do
       it "is invalid" do
         result = subject.call(params)
         expect(result).to be_failure
-        expect(result.errors[:item]).to match_array("must be an already existing item")
+        expect(result.errors[:item]).to match_array("must be an already existing item.")
       end
     end
 
@@ -91,7 +91,7 @@ RSpec.describe CustomFields::Hierarchy::UpdateItemContract do
         result = subject.call(params)
         expect(result).to be_failure
 
-        expect(result.errors[:label]).to match_array("must be unique within the same hierarchy level")
+        expect(result.errors[:label]).to match_array("must be unique within the same hierarchy level.")
       end
     end
 
@@ -105,7 +105,7 @@ RSpec.describe CustomFields::Hierarchy::UpdateItemContract do
 
         p result
 
-        expect(result.errors[:short]).to match_array("must be unique within the same hierarchy level")
+        expect(result.errors[:short]).to match_array("must be unique within the same hierarchy level.")
       end
     end
 
