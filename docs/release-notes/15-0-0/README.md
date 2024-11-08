@@ -10,7 +10,7 @@ release_date: 2024-10-31
 
 Release date: 2024-11-13
 
-We released [OpenProject 15.0.0](https://community.openproject.org/versions/2076). The major release contains several bug fixes and we recommend updating to the newest version. In these Release Notes, we will give an overview of important feature changes. At the end, you will find a complete list of all changes and bug fixes.
+We released [OpenProject 15.0.0](https://community.openproject.org/versions/2076). This major release introduces a new timeline for work package activities with emoji reactions, adds a user interface for configuring SSO providers, and more improvements. With over 50 bugs fixed, we recommend you update OpenProject. In these Release Notes, we will give an overview of important feature changes. At the end, you will find a complete list of all changes and bug fixes.
 
 ## Important feature changes
 
@@ -50,9 +50,9 @@ Please note that emoji reactions don't trigger notifications. If you need your c
 
 Starting with version 15.0, the notification center will continuously update and new notifications will appear directly. This means no more blue flash message mentioning that there are updates and asking if you want to reload the page. The number shown next to the bell icon will also update immediately. This feature adds to our goal to enable smooth communication and information.
 
-### Admin interfaces for SAML and OIDC within the Enterprise Cloud version
+### Admin interfaces for SAML and OpenID Connect (Enterprise only)
 
-With OpenProject 15.0, SaaS customers will benefit from our new user interface for SAML and OIDC. This means they can now set up integrations between OpenProject and SAML or OpenID connect stacks independently and offer users options for Single Sign-On (SSO). Before 15.0, SaaS customers had to contact the OpenProject support if they wanted custom integrations with their SAML or OpenID connect stacks. Now, they cannot only set them up on their own, but also have tools for debugging them if needed.
+OpenProject has for a long time supported SAML and OpenID Connect configured through settings or environment variables. With OpenProject 15.0, all enterprise customers will benefit from our new user interface for SAML and OIDC. This means they can now set up integrations between OpenProject and SAML or OpenID connect stacks independently and offer users options for Single Sign-On (SSO). Before 15.0, SaaS customers had to contact the OpenProject support if they wanted custom integrations with their SAML or OpenID connect providers. These new interfaces greatly improve the user experience of adding these providers, which had been a hurdle at the beginning of your work with OpenProject.
 
 Related features in 15.0:
 
@@ -71,15 +71,17 @@ Once set up, users can log in with their existing account, for example like show
 
 ### A new 'Standard global role' with permissions to view email addresses
 
-With OpenProject 15.0, you get a new default 'Standard global role' that is automatically and permanently given to all users. If you are an administrator responsible for roles, please check this under *Administration > Users and permissions > Roles and permissions > Standard global role*. This role has several permissions to choose from, one being 'View users' mail addresses'.  Enable this permission to allow any user to see everyone's email address in autocomplete situations, such as when they select a work package assignee from a drop-down list.
+With OpenProject 15.0, a new default 'Standard global role' is automatically and permanently given to all users. If you are an administrator responsible for roles, please check this under *Administration > Users and permissions > Roles and permissions > Standard global role*. This role has several permissions to choose from, one being 'View users' mail addresses'.  Enable this permission to allow any user to see everyone's email address in autocomplete situations, such as when they select a work package assignee from a drop-down list.
 
-Before version 15.0, users could choose whether their email address was displayed. Now this is an administrative decision that applies to either everyone or no one.
+Before version 15.0, users could choose whether their email address was displayed. Now this is an administrative decision that applies to either everyone or no one. The reason behind this is that this privacy control should be decided at the organizational level rather than individually.
+
+As a default, this new role does not have any permissions selected, so there is no change in the granted permissions due to the update.
 
 ![Example screenshot of permissions view for the new Standard global role, with checkmark at 'View users' mail addresses](openproject-15-0-standard-global-role.png)
 
 ### Quick action table headers in project lists for easier navigation 
 
-With OpenProject 15.0, we are pleased to release another great feature for our project lists: Clicking on the table headers in a project list now gives you a quick action menu that not only allows you to sort in descending or ascending order, but also to filter or change, remove or add a column. While these features are not new and you can still find them in the top-right menu button, these actions are now much quicker to access.
+With OpenProject 15.0, we are pleased to release another great improvement for our project lists: Clicking on the table headers in a project list now gives you a quick action menu that not only allows you to sort in descending or ascending order, but also to filter or change, remove or add a column. You can still find the same actions in the top-right menu button, but now these actions are now much quicker to access.
 
 ![Example screenshot of a project list with dropdown menu on a table header](openproject-15-0-project-lists.png)
 
@@ -108,7 +110,7 @@ In the personal menu that can be accessed by clicking on your avatar, we renamed
 
 ### Change the basic work package hovercard to Primer design system
 
-If you hover over a linked work package, e.g. in a work package description or in a wiki entry, you will now see a new hovercard, following the Primer design system. This hovercard displays the most important information, like type, ID or status of the work package along with the assignee and their avatar. Here is an example of how this might look like now: 
+If you hover over a linked work package, e.g. in a work package description or in a wiki entry, you will now see a new hovercard, following the Primer design system. This card displays the most important information, like type, ID or status of the work package along with the assignee and their avatar. Here is an example of how this might look like now: 
 
 ![Example screenshot showing a work package hovercard](openproject-15-0-hovercard.png)
 
@@ -117,6 +119,23 @@ If you hover over a linked work package, e.g. in a work package description or i
 There have been some design improvements regarding meetings again. The work package title will now always be fully displayed, so you won't have to click on it anymore and follow the link to read the whole title. This works in desktop as well as mobile view.
 
 <!--more-->
+
+## Important technical updates
+
+### SAML and OpenID connect providers
+
+With the introduction of the user interface for SAML and OpenID connect providers, the previous settings-based configuration has been deprecated. All existing providers that you created with these settings have been automatically converted into the UI element.
+
+To modify or update your configuration, please visit *Administration* -> *Authentication* -> *SAML providers* or *OpenID providers*. If you experience issues with your configuration after your update, please step through the configuration in the administration and confirm the settings. If you experience new issues on the connection to your providers after upgrading, please do not hesitate to reach out to our support team.
+
+If you configured your provider using environment variables (e.g., in Docker-based or through the Helm-chart values), this configuration option remains. The configured provider will still appear in the user interface, but is marked read-only. If you need to modify the environment variables, you need to make sure the seed rake task has been run.
+
+For more information, please see our updated guides on these topics:
+
+- [Connecting your OpenID connect provider to OpenProject](../../system-admin-guide/authentication/openid-providers/)
+- [Connecting your SAML identity provider to OpenProject](../../system-admin-guide/authentication/saml/)
+
+
 
 ## Bug fixes and changes
 
