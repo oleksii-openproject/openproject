@@ -58,18 +58,9 @@ class WorkPackages::ActivitiesTabController < ApplicationController
   end
 
   def update_filter
-    update_via_turbo_stream(
-      component: WorkPackages::ActivitiesTab::Journals::FilterAndSortingComponent.new(
-        work_package: @work_package,
-        filter: @filter
-      )
-    )
-    update_via_turbo_stream(
-      component: WorkPackages::ActivitiesTab::Journals::IndexComponent.new(
-        work_package: @work_package,
-        filter: @filter
-      )
-    )
+    # update the whole tab to reflect the new filtering in all components
+    # we need to call replace in order to properly re-init the index stimulus component
+    replace_whole_tab
 
     respond_with_turbo_streams
   end
