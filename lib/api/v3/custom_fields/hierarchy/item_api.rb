@@ -42,7 +42,9 @@ module API
               get &::API::V3::Utilities::Endpoints::Show
                      .new(model: CustomField::Hierarchy::Item,
                           render_representer: HierarchyItemRepresenter,
-                          instance_generator: ->(*) { @custom_field_item })
+                          instance_generator: ->(*) do
+                            HierarchicalItemAggregate.new(item: @custom_field_item, depth: @custom_field_item.depth - 1)
+                          end)
                      .mount
 
               mount ItemBranchAPI

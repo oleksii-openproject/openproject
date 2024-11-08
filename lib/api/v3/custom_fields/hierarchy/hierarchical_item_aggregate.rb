@@ -30,44 +30,19 @@ module API
   module V3
     module CustomFields
       module Hierarchy
-        class HierarchyItemRepresenter < ::API::Decorators::Single
-          def _type
-            "HierarchyItem"
+        class HierarchicalItemAggregate
+          attr_accessor :depth
+
+          delegate :id, :label, :short, :parent, :children, :root?, to: :item
+
+          def initialize(item:, depth:)
+            @item = item
+            @depth = depth
           end
 
-          self_link path: :custom_field_item,
-                    title_getter: ->(*) { represented.label }
+          private
 
-          property :id
-
-          property :label, render_nil: true
-
-          property :short, render_nil: true
-
-          property :depth,
-                   render_nil: true,
-                   exec_context: :decorator,
-                   getter: ->(*) { represented.depth < 0 ? nil : represented.depth }
-
-          link :parent do
-            next if represented.root?
-
-            parent = represented.parent
-
-            {
-              href: api_v3_paths.custom_field_item(parent.id),
-              title: parent.label
-            }
-          end
-
-          links :children do
-            represented.children.map do |child|
-              {
-                href: api_v3_paths.custom_field_item(child.id),
-                title: child.label
-              }
-            end
-          end
+          attr_accessor :item
         end
       end
     end
