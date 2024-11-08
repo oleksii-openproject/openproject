@@ -32,6 +32,9 @@ class Meeting::ProjectAutocompleter < ApplicationForm
       name: "project_id",
       id: "project_id",
       label: Project.model_name.human,
+      data: {
+        "test-selector": "project_id"
+      },
       autocomplete_options: {
         with_search_icon: true,
         openDirectly: false,

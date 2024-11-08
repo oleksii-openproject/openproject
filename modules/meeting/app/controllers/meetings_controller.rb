@@ -356,10 +356,15 @@ class MeetingsController < ApplicationController
 
     @converted_params[:project] = @project
     @converted_params[:duration] = @converted_params[:duration].to_hours if @converted_params[:duration].present?
-    # Force defaults on participants
-    @converted_params[:participants_attributes] ||= {}
-    @converted_params[:participants_attributes].each { |p| p.reverse_merge! attended: false, invited: false }
     @converted_params[:send_notifications] = params[:send_notifications] == "1"
+
+    # Handle participants separately for each meeting type
+    @converted_params[:participants_attributes] ||= {}
+    if copy_structured_meeting_participants?
+      create_participants
+    else
+      force_defaults
+    end
   end
 
   def meeting_params
@@ -439,10 +444,9 @@ class MeetingsController < ApplicationController
 
   def copy_attributes
     {
-      copy_agenda: params[:copy_agenda] == "1" || params[:meeting][:copy_agenda] == "1",
-      copy_attachments: params[:copy_attachments] == "1" || params[:meeting][:copy_attachments] == "1",
-      send_notifications: params[:send_notifications] == "1" || params[:meeting][:send_notifications] == "1",
-      copy_participants: params[:meeting][:copy_participants] == "1"
+      copy_agenda: copy_param(:copy_agenda),
+      copy_attachments: copy_param(:copy_attachments),
+      send_notifications: copy_param(:send_notifications)
     }
   end
 end

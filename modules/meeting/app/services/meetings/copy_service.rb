@@ -42,10 +42,9 @@ module Meetings
       self.contract_class = contract_class
     end
 
-    def call(send_notifications: nil, save: true, copy_agenda: true, copy_attachments: false, copy_participants: true,
-             attributes: {})
+    def call(send_notifications: nil, save: true, copy_agenda: true, copy_attachments: false, attributes: {})
       if save
-        create(meeting, attributes, send_notifications:, copy_agenda:, copy_attachments:, copy_participants:)
+        create(meeting, attributes, send_notifications:, copy_agenda:, copy_attachments:)
       else
         build(meeting, attributes)
       end
@@ -53,14 +52,13 @@ module Meetings
 
     protected
 
-    def create(meeting, attribute_overrides, send_notifications:, copy_agenda:, copy_attachments:, copy_participants:)
+    def create(meeting, attribute_overrides, send_notifications:, copy_agenda:, copy_attachments:)
       Meetings::CreateService
         .new(user:, contract_class:)
         .call(**copied_attributes(meeting, attribute_overrides).merge(send_notifications:).symbolize_keys)
         .on_success do |call|
         copy_meeting_agenda(call.result) if copy_agenda
         copy_meeting_attachment(call.result) if copy_attachments
-        copy_structured_meeting_participants(call.result) if meeting.is_a?(StructuredMeeting) && copy_participants
       end
     end
 

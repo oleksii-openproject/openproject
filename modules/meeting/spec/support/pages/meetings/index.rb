@@ -30,6 +30,8 @@ require_relative "new"
 
 module Pages::Meetings
   class Index < Pages::Page
+    include Components::Autocompleter::NgSelectAutocompleteHelpers
+
     attr_accessor :project
 
     def initialize(project:)
@@ -40,8 +42,46 @@ module Pages::Meetings
 
     def click_create_new
       click_on("add-meeting-button")
+      click_on("Classic")
 
       New.new(project)
+    end
+
+    def set_title(text)
+      fill_in "Title", with: text
+    end
+
+    def set_start_date(date)
+      fill_in "Date", with: date, fill_options: { clear: :backspace }
+    end
+
+    def set_start_time(time)
+      input = page.find_by_id("meeting_start_time_hour")
+      page.execute_script("arguments[0].value = arguments[1]", input.native, time)
+    end
+
+    def set_project(project)
+      select_autocomplete find("[data-test-selector='project_id']"),
+                          query: project.name,
+                          results_selector: "body"
+    end
+
+    def set_duration(duration)
+      fill_in "Duration", with: duration
+    end
+
+    def click_create
+      click_on "Create meeting"
+
+      wait_for_network_idle
+
+      meeting = Meeting.last
+
+      if meeting
+        Pages::Meetings::Show.new(meeting)
+      else
+        self
+      end
     end
 
     def expect_no_main_menu
