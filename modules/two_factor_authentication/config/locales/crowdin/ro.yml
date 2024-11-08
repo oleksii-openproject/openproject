@@ -60,9 +60,9 @@ ro:
       text_configuration: |
         Notă: Aceste valori reprezintă configurația curentă la nivelul întregii aplicații. Nu puteți dezactiva setările impuse de configurație sau modifica strategiile active curente, deoarece acestea necesită o repornire a serverului.
       text_configuration_guide: Pentru mai multe informații, consultați ghidul de configurare.
-      text_enforced: "Activați această setare pentru a forța toți utilizatorii să înregistreze un dispozitiv 2FA la următoarea autentificare. Poate fi dezactivată numai atunci când nu este impusă prin configurare."
+      text_enforced: "Activează această setare pentru a forța toți utilizatorii să înregistreze un dispozitiv 2FA la următoarea autentificare. Poate fi dezactivată numai atunci când nu este impusă prin configurare."
       text_remember: |
-        Setați această valoare la mai mare decât zero pentru a permite utilizatorilor să își amintească autentificarea 2FA pentru numărul de zile dat.
+        Setează această valoare mai mare decât zero pentru a permite utilizatorilor să își amintească autentificarea 2FA pentru numărul de zile dat.
         Nu li se va cere să o introducă din nou în această perioadă. Poate fi setat numai atunci când nu este impus prin configurare.
       error_invalid_settings: "Strategiile 2FA pe care le-ați selectat nu sunt valide"
       failed_to_save_settings: "Nu s-a reușit actualizarea setărilor 2FA: %{message}"
@@ -161,7 +161,7 @@ ro:
         Contul dvs. are un modul cookie de memorare activ, valabil până la %{expires_on}. Acest modul cookie vă permite să vă conectați fără un al doilea factor la contul dvs. până la acel moment.
       other_active_session_notice: Contul dvs. are un modul cookie de reamintire activ într-o altă sesiune.
       label: "Reține autentificarea"
-      clear_cookie: "Faceți clic aici pentru a elimina toate sesiunile 2FA reținute."
+      clear_cookie: "Clic aici pentru a elimina toate sesiunile 2FA reținute."
       cookie_removed: "Toate sesiunile 2FA memorate au fost eliminate."
       dont_ask_again: "Creați un modul cookie pentru a reține autentificarea 2FA pe acest client timp de %{days} zile."
   field_phone: "Telefon mobil"
@@ -177,9 +177,9 @@ ro:
   button_continue: "Continuă"
   button_make_default: "Marcați ca implicit"
   label_unverified_phone: "Telefonul mobil nu a fost încă verificat"
-  notice_phone_number_format: "Vă rugăm să introduceți numărul în următorul format: +XX XXXXXXXX."
+  notice_phone_number_format: "Te rog să introduci numărul în următorul format: +XX XXXXXXXX."
   text_otp_not_receive: "Alte metode de verificare"
-  text_send_otp_again: "Reîntoarceți parola unică prin:"
+  text_send_otp_again: "Retrimite parola unică prin:"
   button_resend_otp_form: "Retrimitere"
   button_otp_by_voice: "Apel vocal"
   button_otp_by_sms: "SMS"

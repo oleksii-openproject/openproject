@@ -82,7 +82,7 @@ ro:
       order: "Comandați ediția Enterprise on-premise"
       paste: "Lipiți token-ul de suport pentru ediția Enterprise"
       required_for_feature: "Acest add-on este disponibil numai cu un token de asistență pentru ediția Enterprise activ."
-      enterprise_link: "Pentru mai multe informații, fă clic aici."
+      enterprise_link: "Pentru mai multe informații, clic aici."
       start_trial: "Începeți o încercare gratuită"
       book_now: "Rezervă acum"
       get_quote: "Obțineți o ofertă"
@@ -113,7 +113,7 @@ ro:
       error_cannot_act_self: "Cannot perform actions on your own uploaded files."
   attribute_help_texts:
     note_public: "Orice text și imagini pe care le adaugi în acest câmp sunt vizibile public pentru toți utilizatorii conectați!"
-    text_overview: "În această vizualizare, puteți crea texte de ajutor personalizate pentru vizualizarea atributelor. Atunci când sunt definite, aceste texte pot fi afișate făcând clic pe pictograma de ajutor de lângă atributul care îi aparține."
+    text_overview: "În această vizualizare, poți crea texte de ajutor personalizate pentru vizualizarea atributelor. Atunci când sunt definite, aceste texte pot fi afișate făcând clic pe pictograma de ajutor de lângă atributul care îi aparține."
     label_plural: "Texte de ajutor pentru atribute"
     show_preview: "Previzualizare text"
     add_new: "Adaugă text de ajutor"
@@ -376,7 +376,7 @@ ro:
     index:
       no_results_title_text: În acest moment nu există niciun participant la acest proiect.
       no_results_content_text: Adăugare participant la proiect
-    invite_by_mail: "Trimiteți invitația la %{mail}"
+    invite_by_mail: "Trimite invitația la %{mail}"
     send_invite_to: "Send invite to"
     columns:
       shared: "Partajate"
@@ -504,7 +504,7 @@ ro:
   prioritiies:
     edit:
       priority_color_text: |
-        Fă clic pentru a desemna sau schimba culoarea acestui nivel de prioritate.
+        Clic pentru a desemna sau schimba culoarea acestui nivel de prioritate.
         Poate fi utilizate pentru a evidenția pachetele de lucru dintr-un tabel.
   reactions:
     action_title: "React"
@@ -523,7 +523,7 @@ ro:
   statuses:
     edit:
       status_color_text: |
-        Fă click pentru a desemna sau schimba culoarea pentru acest flux de lucru.
+        Clic pentru a desemna sau schimba culoarea pentru acest flux de lucru.
         Acesta este afișat în butonul de statut și poate fi folosit pentru a evidenția pachetele de lucru din tabel.
       status_default_text: |-
         New work packages are by default set to this type. They cannot be read-only.
@@ -1279,11 +1279,11 @@ ro:
       updated_on: "actualizat în %{datetime}"
       updated_on_time_entry: "logged time updated on %{datetime}"
       deleted_on: "deleted on %{datetime}"
-      deleted_by_on: "deleted by %{user} on %{datetime}"
+      deleted_by_on: "șters de %{user} în %{datetime}"
       added_on: "added on %{datetime}"
-      added_by_on: "added by %{user} on %{datetime}"
+      added_by_on: "creat de %{user} în %{datetime}"
       removed_on: "removed on %{datetime}"
-      removed_by_on: "removed by %{user} on %{datetime}"
+      removed_by_on: "eliminat de %{user} în %{datetime}"
       parent_without_of: "Subproiect"
       parent_no_longer: "Nu mai sunt subproiecte ale"
       time_entry:
@@ -1409,7 +1409,7 @@ ro:
   button_change_password: "Modificare parolă"
   button_check_all: "Selectează tot"
   button_clear: "Inițializare"
-  button_click_to_reveal: "Fă clic pentru a dezvălui"
+  button_click_to_reveal: "Clic pentru a dezvălui"
   button_close: "Închide"
   button_collapse_all: "Restrângere totală"
   button_configure: "Configurare"
@@ -1458,7 +1458,7 @@ ro:
   button_uncheck_all: "Deselecteaza tot"
   button_unlock: "Deblocare"
   button_unfavorite: "Elimină din favorite"
-  button_unwatch: "Stop monitorizare"
+  button_unwatch: "Nu mai urmări"
   button_update: "Actualizare"
   button_upgrade: "Actualizare"
   button_upload: "Încarcă"
@@ -1725,7 +1725,7 @@ ro:
   error_scm_not_found: "Nu am găsit articolul sau revizia în repo."
   error_type_could_not_be_saved: "Tipul nu a putut fi salvat"
   error_unable_delete_status: "Starea pachetului de lucru nu poate fi ștearsă deoarece este folosită de cel puțin un pachet de lucru."
-  error_unable_delete_default_status: "Starea implicită pentru pachetele de lucru nu poate fi ștearsă. Setați o altă stare implicită pentru pachetele de lucru și apoi ștergeți-o pe cea actuală."
+  error_unable_delete_default_status: "Starea implicită pentru pachetele de lucru nu poate fi ștearsă. Setează o altă stare implicită pentru pachetele de lucru și apoi șterge-o pe cea actuală."
   error_unable_to_connect: "Nu a putut fi stabilită conexiunea (%{value})"
   error_unable_delete_wiki: "Pagina wiki nu poate fi ștearsă."
   error_unable_update_wiki: "Pagina wiki nu poate fi actualizată."
@@ -1929,8 +1929,8 @@ ro:
     configuration_guide: "Ghid de configurare"
     get_in_touch: "Aveți întrebări? Luați legătura cu noi."
   instructions_after_registration: "Vă puteţi autentifica de îndată ce contul a fost activat dând click pe %{signin}."
-  instructions_after_logout: "Vă puteţi autentifica din nou dând click pe %{signin}."
-  instructions_after_error: "Puteţi încerca să vă autentificați din nou dând click pe %{signin}. Dacă eroarea persistă, cereți ajutorul administratorului."
+  instructions_after_logout: "Te poți autentifica din nou dând click pe %{signin}."
+  instructions_after_error: "Poţi încerca să te autentifici din nou dând click pe %{signin}. Dacă eroarea persistă, cere ajutorul administratorului."
   menus:
     admin:
       mail_notification: "Notificări prin e-mail"
@@ -2019,7 +2019,7 @@ ro:
   label_add_related_work_packages: "Adăugare pachet de lucru asociat"
   label_add_subtask: "Adăugare sub-activitate"
   label_added: "adăugat"
-  label_added_by: "Added by %{author}"
+  label_added_by: "Adăugat de %{author}"
   label_added_time_by: "Adăugat de %{author} acum %{age}"
   label_additional_workflow_transitions_for_assignee: "Tranziții suplimentare permise când utilizatorul este executantul"
   label_additional_workflow_transitions_for_author: "Tranziții suplimentare permise când utilizatorul este autorul"
@@ -2113,7 +2113,7 @@ ro:
   label_close_versions: "Închidere versiuni complete"
   label_closed_work_packages: "închis"
   label_collapse: "Restrângere"
-  label_collapsed_click_to_show: "S-a restrâns. Fă clic pentru a afișa"
+  label_collapsed_click_to_show: "S-a restrâns. Clic pentru a afișa"
   label_configuration: configurație
   label_comment_add: "Adăugare comentariu"
   label_comment_added: "Comentariu adăugat"
@@ -2133,7 +2133,7 @@ ro:
   label_copy_project: "Copiere proiect"
   label_core_version: "Versiune de bază"
   label_core_build: "Core build"
-  label_created_by: "Created by %{user}"
+  label_created_by: "Creat de %{user}"
   label_current_status: "Stare actuală"
   label_current_version: "Versiune actuală"
   label_custom_field_add_no_type: "Adaugați acest câmp la un pachet de lucru"
@@ -2205,7 +2205,7 @@ ro:
   label_import: "Importă"
   label_export_to: "Disponibil și în:"
   label_expand: "Extindere"
-  label_expanded_click_to_collapse: "Extinse. Faceți clic pentru a restrânge"
+  label_expanded_click_to_collapse: "Extinse. Clic pentru a restrânge"
   label_f_hour: "%{value} oră"
   label_f_hour_plural: "%{value} ore"
   label_favorite: "Favorit"
@@ -2216,7 +2216,7 @@ ro:
   label_file_plural: "Fișiere"
   label_filter: "Filtre"
   label_filter_add: "Adăugare filtru"
-  label_filter_by: "Filter by"
+  label_filter_by: "Filtrează după"
   label_filter_plural: "Filtre"
   label_filters_toggle: "Arată/ascunde filtre"
   label_float: "Număr real"
@@ -2550,7 +2550,7 @@ ro:
   label_ui: "Interfaţa cu utilizatorul"
   label_updated_time: "Actualizat acum %{value}"
   label_updated_time_at: "%{author} %{age}"
-  label_updated_time_by: "Actualizat de către %{author} acum %{age}"
+  label_updated_time_by: "Actualizat de %{author} acum %{age}"
   label_upgrade_guides: "Ghiduri de actualizare"
   label_used_by: "Folosit de"
   label_used_by_types: "Folosit/ă/e de tipurile"
@@ -2694,7 +2694,7 @@ ro:
       created_at: "Creat la %{timestamp} de %{user} "
       login_to_see_all: "Autentifică-te pentru a vedea toate notificările."
       mentioned: "Ai fost <b>menționat într-un comentariu</b>"
-      mentioned_by: "%{user} v-a menţionat într-un comentariu"
+      mentioned_by: "%{user} v-a menționat într-un comentariu"
       more_to_see:
         one: "Mai există un pachet de lucru cu notificări."
         few: "Există %{count} mai multe pachete de lucru cu notificări."
@@ -2711,7 +2711,7 @@ ro:
         date_alert_start_date: "Alertă dată"
         date_alert_due_date: "Alertă de dată"
       see_all: "Vezi tot"
-      updated_at: "Actualizat la %{timestamp} de %{user}"
+      updated_at: "Actualizat în %{timestamp} de %{user}"
     sharing:
       work_packages:
         allowed_actions: "You may %{allowed_actions} this work package. This can change depending on your project role and permissions."
@@ -2759,7 +2759,7 @@ ro:
   mail_body_backup_token_reset_user_info: Token-ul backup a fost resetat.
   mail_body_backup_token_info: Token-ul anterior nu mai este valid.
   mail_body_backup_waiting_period: Noul token va fi activat în %{hours} ore.
-  mail_body_backup_token_warning: Dacă nu ați fost dvs., conectați-vă la OpenProject imediat și resetați-l din nou.
+  mail_body_backup_token_warning: Dacă nu ai fost tu, conectează-te la OpenProject imediat și resetează-l din nou.
   mail_body_incoming_email_error: E-mailul trimis la OpenProject nu a putut fi procesat.
   mail_body_incoming_email_error_in_reply_to: "La %{received_at} %{from_email} a scris"
   mail_body_incoming_email_error_logs: "Jurnale"
@@ -2768,7 +2768,7 @@ ro:
     title: "Password change not possible"
     body: "Your account at %{app_title} is connected to an external authentication provider (%{name})."
     subtext: "Passwords for external account cannot be changed in the application. Please use the lost password functionality of your authentication provider."
-  mail_body_register: "Bine ați venit la %{app_title}. Vă rugăm să vă activați contul făcând clic pe acest link:"
+  mail_body_register: "Bine ai venit la %{app_title}. Te rog să activezi contul făcând clic pe acest link:"
   mail_body_register_header_title: "E-mail de invitație pentru membrii proiectului"
   mail_body_register_user: "Dragă %{name},"
   mail_body_register_links_html: |
@@ -3637,7 +3637,7 @@ ro:
     https_mismatch:
       title: "Nepotrivire de configurare a modului HTTPS"
       text_html: >
-        Aplicația dumneavoastră rulează cu modul HTTPS setat la <code>%{set_protocol}</code>, dar solicitarea este o cerere <code>%{actual_protocol}</code> . Acest lucru va duce la erori! Va trebui să setați următoarea valoare de configurare: <code>%{setting_value}</code>. Vedeți <a href="%{more_info_path}">documentația de instalare</a> despre cum să setați această configurație.
+        Aplicația ta rulează cu modul HTTPS setat la <code>%{set_protocol}</code>, dar solicitarea este o cerere <code>%{actual_protocol}</code> . Acest lucru va duce la erori! Va trebui să setezi următoarea valoare de configurare: <code>%{setting_value}</code>. Vezi <a href="%{more_info_path}">documentația de instalare</a> despre cum să setezi această configurație.
     hostname_mismatch:
       title: "Nepotrivire de setare a numelui de gazdă"
       text_html: >
