@@ -512,8 +512,8 @@ ru:
         Щелкните, чтобы задать или изменить цвет этого приоритета.
         Этот цвет может использоваться для выделения пакетов работ в таблице.
   reactions:
-    action_title: "React"
-    add_reaction: "Add reaction"
+    action_title: "Реакция"
+    add_reaction: "Добавить реакцию"
     react_with: "React with %{reaction}"
     and_user: "and %{user}"
     and_others:
