@@ -280,7 +280,7 @@ zh-CN:
       depth: "深"
       item: "条目"
       label: "标签"
-      short: "Short name"
+      short: "短名"
       parent: "父级"
   global_search:
     placeholder: "在%{app_title}中搜索"
