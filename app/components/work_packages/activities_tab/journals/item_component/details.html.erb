@@ -1,6 +1,11 @@
 <%= 
   component_wrapper(class: "work-packages-activities-tab-journals-item-component-details") do
-    flex_layout(my: 0, border: :left, classes: "work-packages-activities-tab-journals-item-component-details--journal-details-container") do |details_container|
+    flex_layout(
+      my: 0,
+      border: :left,
+      classes: "work-packages-activities-tab-journals-item-component-details--journal-details-container",
+      data: { initial: journal.initial? }
+    ) do |details_container|
       case filter
       when :only_comments
         render_empty_line(details_container) unless journal.notes.blank? && !journal.noop?

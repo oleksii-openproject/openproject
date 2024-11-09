@@ -10,24 +10,28 @@ export class TurboRequestsService {
 
   }
 
-  public request(url:string, init:RequestInit = {}):Promise<unknown> {
+  public request(url:string, init:RequestInit = {}):Promise<{ html:string, headers:Headers }> {
     return fetch(url, init)
       .then((response) => {
         if (!response.ok) {
           throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         }
-
-        return response.text();
+        return response.text().then((html) => ({
+          html,
+          headers: response.headers,
+        }));
       })
-      .then((html) => {
-        renderStreamMessage(html);
-
-        return html; // enable further processing wherever this is called
-  })
-      .catch((error) => this.toast.addError(error as string));
+      .then((result) => {
+        renderStreamMessage(result.html);
+        return result;
+      })
+      .catch((error) => {
+        this.toast.addError(error as string);
+        throw error;
+      });
   }
 
-  public requestStream(url:string):Promise<unknown> {
+  public requestStream(url:string):Promise<{ html:string, headers:Headers }> {
     return this.request(url, {
       method: 'GET',
       headers: { Accept: 'text/vnd.turbo-stream.html' },

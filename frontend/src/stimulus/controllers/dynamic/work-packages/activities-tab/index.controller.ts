@@ -20,6 +20,7 @@ export default class IndexController extends Controller {
     userId: Number,
     workPackageId: Number,
     notificationCenterPathName: String,
+    lastServerTimestamp: String,
   };
 
   static targets = ['journalsContainer', 'buttonRow', 'formRow', 'form', 'reactionButton'];
@@ -32,7 +33,7 @@ export default class IndexController extends Controller {
 
   declare updateStreamsUrlValue:string;
   declare sortingValue:string;
-  declare lastUpdateTimestamp:string;
+  declare lastServerTimestampValue:string;
   declare intervallId:number;
   declare pollingIntervalInMsValue:number;
   declare notificationCenterPathNameValue:string;
@@ -61,8 +62,8 @@ export default class IndexController extends Controller {
     this.turboRequests = context.services.turboRequests;
     this.apiV3Service = context.services.apiV3Service;
 
+    this.handleStemVisibility();
     this.setLocalStorageKey();
-    this.setLastUpdateTimestamp();
     this.setupEventListeners();
     this.handleInitialScroll();
     this.startPolling();
@@ -166,8 +167,8 @@ export default class IndexController extends Controller {
     const journalsContainerAtBottom = this.isJournalsContainerScrolledToBottom();
 
     void this.performUpdateStreamsRequest(this.prepareUpdateStreamsUrl())
-    .then((html) => {
-      this.handleUpdateStreamsResponse(html as string, journalsContainerAtBottom);
+    .then(({ html, headers }) => {
+      this.handleUpdateStreamsResponse(html, headers, journalsContainerAtBottom);
     }).catch((error) => {
       console.error('Error updating activities list:', error);
     }).finally(() => {
@@ -183,11 +184,11 @@ export default class IndexController extends Controller {
     const url = new URL(this.updateStreamsUrlValue);
     url.searchParams.set('sortBy', this.sortingValue);
     url.searchParams.set('filter', this.filterValue);
-    url.searchParams.set('last_update_timestamp', this.lastUpdateTimestamp);
+    url.searchParams.set('last_update_timestamp', this.lastServerTimestampValue);
     return url.toString();
   }
 
-  private performUpdateStreamsRequest(url:string):Promise<unknown> {
+  private performUpdateStreamsRequest(url:string):Promise<{ html:string, headers:Headers }> {
     return this.turboRequests.request(url, {
       method: 'GET',
       headers: {
@@ -196,11 +197,14 @@ export default class IndexController extends Controller {
     });
   }
 
-  private handleUpdateStreamsResponse(html:string, journalsContainerAtBottom:boolean) {
-    this.setLastUpdateTimestamp();
-    this.checkForAndHandleWorkPackageUpdate(html);
-    this.checkForNewNotifications(html);
-    this.performAutoScrolling(html, journalsContainerAtBottom);
+  private handleUpdateStreamsResponse(html:string, headers:Headers, journalsContainerAtBottom:boolean) {
+    setTimeout(() => {
+      this.handleStemVisibility();
+      this.setLastServerTimestampViaHeaders(headers);
+      this.checkForAndHandleWorkPackageUpdate(html);
+      this.checkForNewNotifications(html);
+      this.performAutoScrolling(html, journalsContainerAtBottom);
+    }, 100);
   }
 
   private checkForAndHandleWorkPackageUpdate(html:string) {
@@ -426,6 +430,8 @@ export default class IndexController extends Controller {
       // scroll to (new) bottom if sorting is ascending and journals container was already at bottom before showing the form
       this.scrollJournalContainer(true);
       this.focusEditor();
+    } else {
+      this.focusEditor();
     }
   }
 
@@ -515,8 +521,8 @@ export default class IndexController extends Controller {
 
     const formData = this.prepareFormData();
     void this.submitForm(formData)
-      .then(() => {
-        this.handleSuccessfulSubmission();
+      .then(({ html, headers }) => {
+        this.handleSuccessfulSubmission(html, headers);
       })
       .catch((error) => {
         console.error('Error saving activity:', error);
@@ -531,14 +537,14 @@ export default class IndexController extends Controller {
     const data = ckEditorInstance ? ckEditorInstance.getData({ trim: false }) : '';
 
     const formData = new FormData(this.formTarget);
-    formData.append('last_update_timestamp', this.lastUpdateTimestamp);
+    formData.append('last_update_timestamp', this.lastServerTimestampValue);
     formData.append('filter', this.filterValue);
     formData.append('journal[notes]', data);
 
     return formData;
   }
 
-  private async submitForm(formData:FormData):Promise<unknown> {
+  private async submitForm(formData:FormData):Promise<{ html:string, headers:Headers }> {
     return this.turboRequests.request(this.formTarget.action, {
       method: 'POST',
       body: formData,
@@ -548,8 +554,9 @@ export default class IndexController extends Controller {
     });
   }
 
-  private handleSuccessfulSubmission() {
-    this.setLastUpdateTimestamp();
+  private handleSuccessfulSubmission(html:string, headers:Headers) {
+    // extract server timestamp from response headers in order to be in sync with the server
+    this.setLastServerTimestampViaHeaders(headers);
 
     if (!this.journalsContainerTarget) return;
 
@@ -568,6 +575,7 @@ export default class IndexController extends Controller {
           true,
         );
       }
+      this.handleStemVisibility();
     }, 10);
 
     this.saveInProgress = false;
@@ -588,7 +596,49 @@ export default class IndexController extends Controller {
     this.journalsContainerTarget.classList.add('work-packages-activities-tab-index-component--journals-container_with-input-compensation');
   }
 
-  setLastUpdateTimestamp() {
-    this.lastUpdateTimestamp = new Date().toISOString();
+  private setLastServerTimestampViaHeaders(headers:Headers) {
+    if (headers.has('X-Server-Timestamp')) {
+      this.lastServerTimestampValue = headers.get('X-Server-Timestamp') as string;
+    }
+  }
+
+  // Towards the code below:
+  // Ideally the stem rendering would be correctly rendered for all UI states from the server
+  // but as we push single elements into the DOM via turbo-streams, the server-side rendered collection state gets stale quickly
+  // I've decided to go with a client-side rendering-correction approach for now
+  // as I don't want to introduce more complexity and queries (n+1 for position checks etc.) to the server-side rendering
+  private handleStemVisibility() {
+    this.handleStemVisibilityForMobile();
+    this.handleLastStemPartVisibility();
+  }
+
+  private handleStemVisibilityForMobile() {
+    if (this.isMobile()) {
+      if (this.sortingValue === 'asc') return;
+
+      const initialJournalContainer = this.element.querySelector('.work-packages-activities-tab-journals-item-component-details--journal-details-container[data-initial="true"]') as HTMLElement;
+
+      if (initialJournalContainer) {
+        initialJournalContainer.classList.add('work-packages-activities-tab-journals-item-component-details--journal-details-container--border-removed');
+      }
+    }
+  }
+
+  private handleLastStemPartVisibility() {
+    const emptyLines = this.element.querySelectorAll('.empty-line');
+
+    // make sure all are visible first
+    emptyLines.forEach((container) => {
+      container.classList.remove('work-packages-activities-tab-journals-item-component-details--journal-details-container--hidden');
+    });
+
+    if (this.sortingValue === 'asc' || this.filterValue === 'only_changes') return;
+
+    // then hide the last one again
+    if (emptyLines.length > 0) {
+      // take the parent container of the last empty line
+      const lastEmptyLineContainer = emptyLines[emptyLines.length - 1].parentElement as HTMLElement;
+      lastEmptyLineContainer.classList.add('work-packages-activities-tab-journals-item-component-details--journal-details-container--hidden');
+    }
   }
 }
