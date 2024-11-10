@@ -30,7 +30,7 @@ class Meeting::CopyAttachments < ApplicationForm
   form do |meeting_form|
     meeting_form.check_box(
       name: "copy_attachments",
-      label: "Copy attachments",
+      label: I18n.t("meeting.copy.attachments"),
       checked: false
     )
   end

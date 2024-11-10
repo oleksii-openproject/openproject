@@ -30,9 +30,9 @@ class Meeting::EmailParticipants < ApplicationForm
   form do |meeting_form|
     meeting_form.check_box(
       name: "send_notificationss",
-      label: "Email participants",
+      label: I18n.t("meeting.email.send_emails"),
       checked: false,
-      caption: I18n.t("meeting.email.send_invitation_emails")
+      caption: I18n.t("meeting.email.send_invitation_emails_structured")
     )
   end
 end

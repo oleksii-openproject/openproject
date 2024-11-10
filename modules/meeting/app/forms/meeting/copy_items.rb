@@ -30,7 +30,7 @@ class Meeting::CopyItems < ApplicationForm
   form do |meeting_form|
     meeting_form.check_box(
       name: "copy_agenda",
-      label: "Copy agenda items",
+      label: I18n.t("meeting.copy.agenda_items"),
       checked: true
     )
   end

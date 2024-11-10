@@ -30,7 +30,7 @@ class Meeting::CopyParticipants < ApplicationForm
   form do |meeting_form|
     meeting_form.check_box(
       name: "copy_participants",
-      label: "Copy list of participants",
+      label: I18n.t("meeting.copy.participants"),
       checked: true
     )
   end
