@@ -32,7 +32,6 @@ require_relative "../../support/pages/meetings/new"
 require_relative "../../support/pages/structured_meeting/show"
 require_relative "../../support/pages/meetings/index"
 
-
 RSpec.describe "Structured meetings CRUD",
                :js,
                :with_cuprite do
@@ -79,7 +78,6 @@ RSpec.describe "Structured meetings CRUD",
     meetings_page.set_start_date "2013-03-28"
     meetings_page.set_start_time "13:30"
     meetings_page.set_duration "1.5"
-    # meetings_page.invite(other_user)
 
     if test.metadata[:checked]
       expect(page).to have_unchecked_field "send_notifications" # rubocop:disable RSpec/ExpectInHook
@@ -274,17 +272,23 @@ RSpec.describe "Structured meetings CRUD",
     expect(page).to have_css(".flash", text: I18n.t("activerecord.errors.messages.error_conflict"))
   end
 
-  it "can copy the meeting" do
+  it "can copy the meeting via the dialog form" do
     expect_flash(type: :success, message: "Successful creation")
 
-    # Can add and edit a single item
     show_page.add_agenda_item do
       fill_in "Title", with: "My agenda item"
       fill_in "min", with: "25"
     end
 
     show_page.expect_agenda_item title: "My agenda item"
-    item = MeetingAgendaItem.find_by!(title: "My agenda item")
+
+    show_page.open_participant_form
+    show_page.in_participant_form do
+      check(id: "checkbox_invited_#{other_user.id}")
+      check(id: "checkbox_attended_#{other_user.id}")
+
+      click_on("Save")
+    end
 
     click_on("op-meetings-header-action-trigger")
 
@@ -294,11 +298,30 @@ RSpec.describe "Structured meetings CRUD",
       expect(page).to have_text("Copy meeting")
     end
 
+    check "Email participants"
+    fill_in "Title", with: ""
     click_on "Create meeting"
 
-    show_page.expect_agenda_item title: "My agenda item"
+    # check for dialog form validations
+    expect(page).to have_content "Title can't be blank."
+    fill_in "Title", with: "Some title"
+    click_on "Create meeting"
+
     new_meeting = StructuredMeeting.reorder(id: :asc).last
     expect(page).to have_current_path "/projects/#{project.identifier}/meetings/#{new_meeting.id}"
+
+    # check for copied agenda items
+    expect(page).to have_content "My agenda item"
+
+    # check for copied participants with attended status reset
+    page.find_test_selector("manage-participants-button").click
+    expect(page).to have_css("#edit-participants-dialog")
+    expect(page).to have_field(id: "checkbox_invited_#{other_user.id}", checked: true)
+    expect(page).to have_field(id: "checkbox_attended_#{other_user.id}", checked: false)
+
+    # check for email notifications
+    perform_enqueued_jobs
+    expect(ActionMailer::Base.deliveries.size).to eq 1
   end
 
   context "with a work package reference to another" do
@@ -321,11 +344,6 @@ RSpec.describe "Structured meetings CRUD",
       show_page.expect_undisclosed_agenda_link agenda_item
       expect(page).to have_no_text "Private task"
     end
-  end
-
-  it "sends emails on creation when 'Send emails' is checked", :checked, pending: "TEMP" do
-    perform_enqueued_jobs
-    expect(ActionMailer::Base.deliveries.size).to eq 2
   end
 
   context "with sections" do
