@@ -129,7 +129,7 @@ RSpec.describe "Meetings new", :js, :with_cuprite do
         end
       end
 
-      context "without a project set", skip: "TEMP" do
+      context "without a project set" do
         before do
           new_page.visit!
           new_page.set_title "Some title"
@@ -181,7 +181,7 @@ RSpec.describe "Meetings new", :js, :with_cuprite do
         show_page.expect_invited(admin)
       end
 
-      context "without a project set", skip: "TEMP" do
+      context "without a project set" do
         before do
           new_page.visit!
           new_page.set_title "Some title"
@@ -190,15 +190,12 @@ RSpec.describe "Meetings new", :js, :with_cuprite do
         it "renders a validation error" do
           new_page.click_create
 
-          expect_flash(
-            message: "#{Project.model_name.human} #{I18n.t('activerecord.errors.messages.blank')}",
-            type: :error
-          )
+          expect(page).to have_text "#{Project.model_name.human} #{I18n.t('activerecord.errors.messages.blank')}"
           new_page.expect_project_dropdown
         end
       end
 
-      context "without a title set", skip: "TEMP" do
+      context "without a title set" do
         before do
           new_page.visit!
 
@@ -259,7 +256,7 @@ RSpec.describe "Meetings new", :js, :with_cuprite do
         end
       end
 
-      context "without a title set", skip: "TEMP" do
+      context "without a title set" do
         before do
           new_page.visit!
           new_page.set_start_date "2013-03-28"

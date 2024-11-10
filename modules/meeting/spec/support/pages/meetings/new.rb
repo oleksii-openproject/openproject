@@ -70,7 +70,11 @@ module Pages::Meetings
     end
 
     def set_start_date(date)
-      fill_in "Start date", with: date, fill_options: { clear: :backspace }
+      if using_cuprite?
+        fill_in "Start date", with: date
+      else
+        fill_in "Start date", with: date, fill_options: { clear: :backspace }
+      end
     end
 
     def set_start_time(time)
