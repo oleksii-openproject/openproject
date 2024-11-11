@@ -220,7 +220,10 @@ module Components
         end
 
         # Ensure the journals are reloaded
-        wait_for { page }.to have_test_selector("op-wp-journals-#{filter}-#{default_sorting}")
+        # wait_for { page }.to have_test_selector("op-wp-journals-#{filter}-#{default_sorting}")
+        # the wait_for will not work as the selector will be switched to the target filter before the page is updated
+        # so we still need to wait statically unfortuntately to avoid flakyness
+        sleep 1
       end
 
       def set_journal_sorting(sorting, default_filter: :all)
