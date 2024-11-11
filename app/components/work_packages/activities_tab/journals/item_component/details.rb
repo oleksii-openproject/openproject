@@ -265,10 +265,6 @@ module WorkPackages
         def render_empty_line(details_container)
           details_container.with_row(my: 1, font_size: :small, classes: "empty-line")
         end
-
-        def journal_sorting
-          User.current.preference&.comments_sorting || "desc"
-        end
       end
     end
   end

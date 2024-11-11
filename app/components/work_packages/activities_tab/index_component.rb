@@ -34,6 +34,7 @@ module WorkPackages
       include ApplicationHelper
       include OpPrimer::ComponentHelpers
       include OpTurbo::Streamable
+      include WorkPackages::ActivitiesTab::SharedHelpers
 
       def initialize(work_package:, last_server_timestamp:, filter: :all)
         super
@@ -63,10 +64,6 @@ module WorkPackages
           "work-packages--activities-tab--index-notification-center-path-name-value": notifications_path,
           "work-packages--activities-tab--index-last-server-timestamp-value": last_server_timestamp
         }
-      end
-
-      def journal_sorting
-        User.current.preference&.comments_sorting || "desc"
       end
 
       def polling_interval
