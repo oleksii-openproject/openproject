@@ -8,6 +8,7 @@ cs:
     attributes:
       openid_connect/provider:
         name: Jméno
+        slug: Unique identifier
         display_name: Zobrazovaný název
         client_id: ID klienta
         client_secret: Client secret
@@ -26,6 +27,7 @@ cs:
         icon: Vlastní ikona
         claims: Nároky
         acr_values: ACR hodnoty
+        redirect_url: Redirect URL
   activerecord:
     errors:
       models:
@@ -51,6 +53,7 @@ cs:
     menu_title: Poskytovatelé OpenID
     delete_title: "Odstranit OpenID Connect poskytovatele"
     instructions:
+      redirect_url: This is the redirect URL that the OpenID Connect provider should use to redirect back to OpenProject after a successful login.
       endpoint_url: The endpoint URL given to you by the OpenID Connect provider
       metadata_none: Tyto informace nemám
       metadata_url: Mám adresu URL koncového bodu zjišťování

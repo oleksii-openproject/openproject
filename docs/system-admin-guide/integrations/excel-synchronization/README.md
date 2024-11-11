@@ -88,7 +88,7 @@ terms instead, defined in the [relations model](https://github.com/opf/openproje
 ![Choose-project-900x479@2x](Choose-project-900x479@2x.png)
 
 **URL**: the URL of your OpenProject instance.
- **API-Token**: can be generated within your OpenProject installation ->*My Account* -> *Access token*. Generate a new API token and copy & paste it to this form.
+ **API-Token**: can be generated within your OpenProject installation ->*Account settings* -> *Access token*. Generate a new API token and copy & paste it to this form.
  **Project**: this is the project identifier which can be found within the project you want to synchronize -> *Project settings* -> *Information*. It is also shown in the URL if you open a project.
  Query ID (this field is optional): enter the ID of a work package query  within a project with that you want to synchronize your Excel list.
 

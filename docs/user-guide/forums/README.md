@@ -78,8 +78,7 @@ The **new forum message has been created**.
 
 ![New forum message in OpenProject](openproject_user_guide_forums_new_message_created.png)
 
-> [!TIP] 
->
+> [!TIP]
 > Changes you made are saved locally. If you navigated away from page or  could not save your changes due to a technical difficulty, you can  access latest changes via the editor toolbar.
 
 ![Locally saved draft in OpenProject forum message](openproject_user_guide_forums_draft_saved_locally.png)
@@ -108,7 +107,7 @@ You will get a list of all messages within this forum.
 
 Click the **Watch** icon in the top right corner of the forum.
 
-You will then be notified via e-mail according to your [e-mail notifications](../../user-guide/my-account/#notifications-settings) about new messages and replies in a forum.
+You will then be notified via e-mail according to your [e-mail notifications](../../user-guide/account-settings/#notifications-settings) about new messages and replies in a forum.
 
 ![Watch a forum in OpenProject](openproject_user_guide_forums_watch.png)
 

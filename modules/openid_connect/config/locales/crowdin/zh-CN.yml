@@ -8,6 +8,7 @@ zh-CN:
     attributes:
       openid_connect/provider:
         name: 名称
+        slug: Unique identifier
         display_name: 显示名称
         client_id: 客户端 ID
         client_secret: 客户端密钥
@@ -26,6 +27,7 @@ zh-CN:
         icon: 自定义图标
         claims: 声明
         acr_values: ACR 值
+        redirect_url: Redirect URL
   activerecord:
     errors:
       models:
@@ -51,6 +53,7 @@ zh-CN:
     menu_title: OpenID 提供商
     delete_title: "删除 OpenID Connect 提供商"
     instructions:
+      redirect_url: This is the redirect URL that the OpenID Connect provider should use to redirect back to OpenProject after a successful login.
       endpoint_url: OpenID Connect 提供商给您的端点 URL
       metadata_none: 我没有这个信息
       metadata_url: 我有一个发现端点网址
