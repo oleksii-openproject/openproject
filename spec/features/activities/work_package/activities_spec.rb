@@ -327,8 +327,7 @@ RSpec.describe "Work package activity", :js, :with_cuprite, with_flag: { primeri
         activity_tab.expect_journal_notes(text: "First comment")
       end
 
-      travel_to 1.hour.from_now
-
+      travel_to (Setting.journal_aggregation_time_minutes.to_i.minutes + 1.minute).from_now
       # the journals will not be merged due to the time difference
 
       wp_page.update_attributes(subject: "A new subject!!!") # rubocop:disable Rails/ActiveRecordAliases
