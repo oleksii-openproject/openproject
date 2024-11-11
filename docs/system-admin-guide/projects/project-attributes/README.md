@@ -47,8 +47,8 @@ This will display the "New attribute" form with these options:
 
 - **Format**: You can pick from nine different types of fields: text, long text, integer, float, list, date, boolean, user and version.
 
-  > [!TIP]
-  > You cannot change this once the project attribute is created.
+> [!TIP]
+> You cannot change this once the project attribute is created.
 
 - **Format options:** Depending on the type you choose, you might have additional options, such as minimum and maximum width, default value or regular expressions for validation.
 
@@ -56,8 +56,8 @@ This will display the "New attribute" form with these options:
 
 - **Admin-only**: If you enable this, the project attribute will only be visible to administrators. All other users will not see it, even if it is activated in a project.
 
-  > [!TIP]
-  > This is enabled by default. Only disable this if you want this field to be invisible to non-admin users.
+> [!TIP]
+> This is enabled by default. Only disable this if you want this field to be invisible to non-admin users.
 
 - **Searchable**: Checking this makes this project attribute (and its value) available as a filter in project lists.
 
