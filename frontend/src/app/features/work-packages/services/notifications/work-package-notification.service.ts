@@ -34,6 +34,7 @@ import { ApiV3Service } from 'core-app/core/apiv3/api-v3.service';
 import { HalResource } from 'core-app/features/hal/resources/hal-resource';
 import { TurboRequestsService } from 'core-app/core/turbo/turbo-requests.service';
 import { ConfigurationService } from 'core-app/core/config/configuration.service';
+
 @Injectable()
 export class WorkPackageNotificationService extends HalResourceNotificationService {
   primerizedActivitiesEnabled:boolean;
