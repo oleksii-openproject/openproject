@@ -642,6 +642,7 @@ Rails.application.routes.draw do
     resources :memberships, controller: "users/memberships", only: %i[update create destroy]
 
     member do
+      get "/hover_card" => "users/hover_card#show"
       get "/edit(/:tab)" => "users#edit", as: "edit"
       get "/change_status/:change_action" => "users#change_status_info", as: "change_status_info"
       post :change_status

@@ -1,0 +1,31 @@
+<%=
+    if @user.present?
+      grid_layout('op-user-hover-card', tag: :div) do |grid|
+        grid.with_area(:avatar, tag: :div) do
+          render(Users::AvatarComponent.new(user: @user, show_name: false, size: :large))
+        end
+
+        grid.with_area(:subject, tag: :div) do
+          concat(render(Primer::Beta::Text.new(font_weight: :semibold)) { @user.name })
+        end
+        grid.with_area(:email, tag: :div) do
+          concat(render(Primer::Beta::Text.new(color: :muted)) { @user.mail }) # TODO: only with permission
+        end
+
+        grid.with_area(:projects, tag: :div, font_size: :small, color: :muted) do
+          concat(render(Primer::Beta::Octicon.new(icon: :people)))
+          concat(render(Primer::Beta::Text.new) { "Member of ..., ... and 4 more" })
+        end
+
+        grid.with_area(:actions, tag: :div) do
+          render(Primer::Beta::Button.new) { "Open Profile" }
+        end
+      end
+    else
+      render Primer::Beta::Blankslate.new(border: false, narrow: true) do |component|
+        component.with_visual_icon(icon: "x-circle")
+        # TODO: fix 404 string
+        component.with_heading(tag: :h3).with_content(I18n.t("api_v3.errors.not_found.work_package"))
+      end
+    end
+%>

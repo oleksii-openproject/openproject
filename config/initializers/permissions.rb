@@ -71,6 +71,12 @@ Rails.application.reloader.to_prepare do
                      require: :loggedin,
                      contract_actions: { users: %i[read update] }
 
+      map.permission :view_user_hover_card,
+                     {
+                       "users/hover_card": %i[show]
+                     },
+                     permissible_on: :global
+
       map.permission :manage_placeholder_user,
                      {
                        placeholder_users: %i[index show new create edit update deletion_info destroy],

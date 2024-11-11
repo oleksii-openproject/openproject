@@ -108,7 +108,8 @@ module AvatarHelper
                             hideName: tag_options[:hide_name],
                             nameClasses: tag_options[:name_classes],
                             title: tag_options.fetch(:title, ""),
-                            hover_card_url: "work_packages/14/hover_card"
+                            # TODO: use path helper
+                            hover_card_url: "users/#{user.id}/hover_card"
                           }
   end
 
