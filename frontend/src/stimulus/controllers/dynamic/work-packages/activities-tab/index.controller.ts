@@ -21,6 +21,7 @@ export default class IndexController extends Controller {
     workPackageId: Number,
     notificationCenterPathName: String,
     lastServerTimestamp: String,
+    showConflictFlashMessageUrl: String,
   };
 
   static targets = ['journalsContainer', 'buttonRow', 'formRow', 'form', 'reactionButton'];
@@ -40,8 +41,9 @@ export default class IndexController extends Controller {
   declare filterValue:string;
   declare userIdValue:number;
   declare workPackageIdValue:number;
-  declare localStorageKey:string;
-
+  declare rescuedEditorDataKey:string;
+  declare latestKnownChangesetUpdatedAtKey:string;
+  declare showConflictFlashMessageUrlValue:string;
   private handleWorkPackageUpdateBound:EventListener;
   private handleVisibilityChangeBound:EventListener;
   private rescueEditorContentBound:EventListener;
@@ -62,32 +64,16 @@ export default class IndexController extends Controller {
     this.turboRequests = context.services.turboRequests;
     this.apiV3Service = context.services.apiV3Service;
 
+    this.setLocalStorageKeys();
     this.handleStemVisibility();
-    this.setLocalStorageKey();
     this.setupEventListeners();
     this.handleInitialScroll();
-    this.startPolling();
     this.populateRescuedEditorContent();
     this.markAsConnected();
+    this.safeUpdateWorkPackageFormsWithStateChecks(); // required if switching back to the activities tab from another tab
 
-    // Towards using updateDisplayedWorkPackageAttributes here:
-    //
-    // this ideally only is triggered when switched back to the activities tab from e.g. the "Files" tab
-    // in order to make sure that the state of the displayed work package attributes is aligned with the state of the refreshed journal entries
-    //
-    // this is necessary because the polling for updates (and related work package attribute updates) only happens when the activity tab is connected
-    //
-    // without any further checks, this update is currently triggered even after the very first rendering of the activity tab
-    //
-    // this is not ideal but I don't want to introduce another hacky "ui-state-check" for now
-    this.updateDisplayedWorkPackageAttributes();
-
-    // something like below could be used to check for the ui state in the disconnect method
-    // in order to identify if the activity tab was connected at least once
-    // and then call updateDisplayedWorkPackageAttributes accordingly after an "implicit" tab change:
-    //
-    // const workPackageContainer = document.getElementsByTagName('wp-full-view-entry')[0] as HTMLElement;
-    // workPackageContainer.dataset.activityTabWasConnected = 'true';
+    this.setLatestKnownChangesetUpdatedAt();
+    this.startPolling();
   }
 
   disconnect() {
@@ -107,10 +93,11 @@ export default class IndexController extends Controller {
     (this.element as HTMLElement).dataset.stimulusControllerConnected = 'false';
   }
 
-  private setLocalStorageKey() {
+  private setLocalStorageKeys() {
     // scoped by user id in order to avoid data leakage when a user logs out and another user logs in on the same browser
     // TODO: when a user logs out, the data should be removed anyways in order to avoid data leakage
-    this.localStorageKey = `work-package-${this.workPackageIdValue}-rescued-editor-data-${this.userIdValue}`;
+    this.rescuedEditorDataKey = `work-package-${this.workPackageIdValue}-rescued-editor-data-${this.userIdValue}`;
+    this.latestKnownChangesetUpdatedAtKey = `work-package-${this.workPackageIdValue}-latest-known-changeset-updated-at-${this.userIdValue}`;
   }
 
   private setupEventListeners() {
@@ -136,6 +123,28 @@ export default class IndexController extends Controller {
       void this.updateActivitiesList();
       this.startPolling();
     }
+  }
+
+  private safeUpdateWorkPackageFormsWithStateChecks() {
+    const latestKnownChangesetIsOutdated = this.latestKnownChangesetOutdated();
+    const latestChangesetIsFromOtherUser = this.latestChangesetFromOtherUser();
+
+    if (latestKnownChangesetIsOutdated && latestChangesetIsFromOtherUser) {
+      this.safeUpdateWorkPackageForms();
+    }
+  }
+
+  private latestKnownChangesetOutdated():boolean {
+    const latestKnownChangesetUpdatedAt = this.getLatestKnownChangesetUpdatedAt();
+    const latestChangesetUpdatedAt = this.parseLatestChangesetUpdatedAtFromDom();
+
+    return !!(latestKnownChangesetUpdatedAt && latestChangesetUpdatedAt && (latestKnownChangesetUpdatedAt < latestChangesetUpdatedAt));
+  }
+
+  private latestChangesetFromOtherUser():boolean {
+    const latestChangesetUserId = this.parseLatestChangesetUserIdFromDom();
+
+    return !!(latestChangesetUserId && (latestChangesetUserId !== this.userIdValue));
   }
 
   private startPolling() {
@@ -198,18 +207,72 @@ export default class IndexController extends Controller {
   }
 
   private handleUpdateStreamsResponse(html:string, headers:Headers, journalsContainerAtBottom:boolean) {
+    // the timeout is require in order to give the Turb.renderStream method enough time to render the new journals
+    // the methods below partially rely on the DOM to be updated
+    // a specific signal would be way better than a static timeout, but I couldn't find a suitable one
     setTimeout(() => {
       this.handleStemVisibility();
       this.setLastServerTimestampViaHeaders(headers);
       this.checkForAndHandleWorkPackageUpdate(html);
       this.checkForNewNotifications(html);
       this.performAutoScrolling(html, journalsContainerAtBottom);
+      this.setLatestKnownChangesetUpdatedAt();
     }, 100);
+  }
+
+  private getLatestKnownChangesetUpdatedAt():Date | null {
+    const latestKnownChangesetUpdatedAt = localStorage.getItem(this.latestKnownChangesetUpdatedAtKey);
+    return latestKnownChangesetUpdatedAt ? new Date(latestKnownChangesetUpdatedAt) : null;
+  }
+
+  private setLatestKnownChangesetUpdatedAt() {
+    const latestChangesetUpdatedAt = this.parseLatestChangesetUpdatedAtFromDom();
+
+    if (latestChangesetUpdatedAt) {
+      localStorage.setItem(this.latestKnownChangesetUpdatedAtKey, latestChangesetUpdatedAt.toString());
+    }
+  }
+
+  private parseLatestChangesetUpdatedAtFromDom():Date | null {
+    const elements = this.element.querySelectorAll('[data-journal-with-changeset-updated-at]');
+
+    const dates = Array.from(elements)
+      .map((element) => element.getAttribute('data-journal-with-changeset-updated-at'))
+      .filter((dateStr):dateStr is string => dateStr !== null)
+      .map((dateStr) => new Date(parseInt(dateStr, 10) * 1000))
+      .filter((date) => !Number.isNaN(date.getTime())); // filter out invalid dates
+
+    if (dates.length === 0) return null;
+
+    // find the latest date
+    return new Date(Math.max(...dates.map((date) => date.getTime())));
+  }
+
+  private parseLatestChangesetUserIdFromDom():number | null {
+    const latestChangesetUpdatedAt = this.parseLatestChangesetUpdatedAtFromDom();
+    if (!latestChangesetUpdatedAt) return null;
+
+    const railsTimestamp = latestChangesetUpdatedAt.getTime() / 1000;
+    const userId = this.element
+      .querySelector(`[data-journal-with-changeset-updated-at="${railsTimestamp}"]`)
+      ?.getAttribute('data-journal-with-changeset-user-id');
+
+    return userId ? parseInt(userId, 10) : null;
   }
 
   private checkForAndHandleWorkPackageUpdate(html:string) {
     if (html.includes('work-packages-activities-tab-journals-item-component-details--journal-detail-container')) {
-      this.updateDisplayedWorkPackageAttributes();
+      if (this.latestChangesetFromOtherUser()) {
+        this.safeUpdateWorkPackageForms();
+      }
+    }
+  }
+
+  private safeUpdateWorkPackageForms() {
+    if (this.anyInlineEditActiveInWpSingleView()) {
+      this.showConflictFlashMessage();
+    } else {
+      this.updateWorkPackageForms();
     }
   }
 
@@ -219,7 +282,24 @@ export default class IndexController extends Controller {
     }
   }
 
-  private updateDisplayedWorkPackageAttributes() {
+  private anyInlineEditActiveInWpSingleView():boolean {
+    const wpSingleViewElement = document.querySelector('wp-single-view');
+    if (wpSingleViewElement) {
+      return wpSingleViewElement.querySelector('.inline-edit--active-field') !== null;
+    }
+    return false;
+  }
+
+  private showConflictFlashMessage() {
+    // currently we do not have a programmatic way to show the primer flash messages
+    // so we just do a request to the server to show it
+    // should be refactored once we have a programmatic way to show the primer flash messages!
+    void this.turboRequests.request(`${this.showConflictFlashMessageUrlValue}?scheme=warning`, {
+      method: 'GET',
+    });
+  }
+
+  private updateWorkPackageForms() {
     const wp = this.apiV3Service.work_packages.id(this.workPackageIdValue);
     void wp.refresh();
   }
@@ -233,17 +313,15 @@ export default class IndexController extends Controller {
     if (!(html.includes('action="append"') || html.includes('action="prepend"') || html.includes('action="update"'))) {
       return;
     }
-    // the timeout is require in order to give the Turb.renderStream method enough time to render the new journals
-    setTimeout(() => {
-      if (this.sortingValue === 'asc' && journalsContainerAtBottom) {
-        // scroll to (new) bottom if sorting is ascending and journals container was already at bottom before a new activity was added
-        if (this.isMobile()) {
-          this.scrollInputContainerIntoView(300);
-        } else {
-          this.scrollJournalContainer(true, true);
-        }
+
+    if (this.sortingValue === 'asc' && journalsContainerAtBottom) {
+      // scroll to (new) bottom if sorting is ascending and journals container was already at bottom before a new activity was added
+      if (this.isMobile()) {
+        this.scrollInputContainerIntoView(300);
+      } else {
+        this.scrollJournalContainer(true, true);
       }
-    }, 100);
+    }
   }
 
   private rescueEditorContent() {
@@ -251,16 +329,16 @@ export default class IndexController extends Controller {
     if (ckEditorInstance) {
       const data = ckEditorInstance.getData({ trim: false });
       if (data.length > 0) {
-        localStorage.setItem(this.localStorageKey, data);
+        localStorage.setItem(this.rescuedEditorDataKey, data);
       }
     }
   }
 
   private populateRescuedEditorContent() {
-    const rescuedEditorContent = localStorage.getItem(this.localStorageKey);
+    const rescuedEditorContent = localStorage.getItem(this.rescuedEditorDataKey);
     if (rescuedEditorContent) {
       this.openEditorWithInitialData(rescuedEditorContent);
-      localStorage.removeItem(this.localStorageKey);
+      localStorage.removeItem(this.rescuedEditorDataKey);
     }
   }
 
