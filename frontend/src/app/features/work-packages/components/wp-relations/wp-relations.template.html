@@ -13,38 +13,3 @@
     <svg:rect x="0" y="25" width="100" height="12" rx="1" />
   </op-content-loader>
 </turbo-frame>
-
-<div style="margin-top: 30px; background-color: orangered; height: 10px;"></div>
-<div
-  class="loading-indicator--location"
-  data-indicator-name="relation-groups"
->
-  <div
-    *ngIf="!relationsPresent"
-    class="attributes-group--header"
-  >
-    <div class="attributes-group--header-container">
-      <h3
-        class="attributes-group--header-text"
-        [textContent]="text.relations_header"
-      ></h3>
-    </div>
-  </div>
-
-  <wp-relations-group
-    [header]="type"
-    *ngFor="let type of relationGroupKeys; let first = first"
-    [groupByWorkPackageType]="groupByWorkPackageType"
-    (onToggleGroupBy)="toggleGroupBy()"
-    [firstGroup]="first"
-    [relatedWorkPackages]="relationGroups[type]"
-    [workPackage]="workPackage"
-  ></wp-relations-group>
-
-  <wp-relations-create
-    *ngIf="canAddRelation"
-    [workPackage]="workPackage"
-  ></wp-relations-create>
-
-  <wp-relations-hierarchy [workPackage]="workPackage"></wp-relations-hierarchy>
-</div>

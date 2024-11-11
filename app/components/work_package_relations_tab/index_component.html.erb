@@ -44,7 +44,7 @@
   %>
   <%=
     if any_relations?
-      flex_layout(classes: "work-package-relations-tab--list-container") do |flex|
+      flex_layout(classes: "work-package-relations-tab--list-container", mb: 3) do |flex|
         key_namespace = "#{I18N_NAMESPACE}.relations"
 
         # Relations
