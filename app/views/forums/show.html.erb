@@ -51,7 +51,7 @@ See COPYRIGHT and LICENSE files for more details.
     header.with_title { @forum.name }
     header.with_description { @forum.description }
     header.with_breadcrumbs([{ href: project_overview_path(@project.id), text: @project.name },
-                             { href: project_forums_path, text: t(:label_forum_plural) },
+                             { href: project_forums_path(@project), text: t(:label_forum_plural) },
                              @forum.name])
   end
 %>
