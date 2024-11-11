@@ -32,9 +32,7 @@ A new window will open, where you will be able to specify the following:
 2. The %&nbsp;Complete value in [Status-based progress calculation mode](../work-package-settings/).
 
    > [!TIP]
-   >
    > The value for % Complete can be set from 0 to 100. 
-   >
    
 3. Define if the new work package status closes a work package (e.g. relevant when filtering for closed for packages), e.g. a work package status "rejected" will set a work package technically on closed and it will not appear in the default work package table with Open Work packages.
 
