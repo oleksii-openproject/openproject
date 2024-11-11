@@ -157,8 +157,8 @@ OpenProject offers two modes for calculating *% Complete* in hierarchy totals:
 
 - **Weighted by work**: The total %&nbsp;Complete value of a hierarchy is a weighted average tied to Work. For example, a feature with Work set to 50h that is 30% done will influence the total of %&nbsp;Complete of the parent more than a feature with Work set to 5h that is 70% done. 
 
-  > [!TIP]
-  > Work packages without *Work* will be ignored.
+> [!TIP]
+> Work packages without *Work* will be ignored.
 
 - **Simple average**: *Work* is ignored and the *total % Complete* is calculated as a simple average of the *% Complete* values from the direct work packages children in the hierarchy. The value used on each direct child for computing the average is its *total % Complete* value, or its *% Complete* value if it has no children, or 0% if its *% Complete* value is empty.
 

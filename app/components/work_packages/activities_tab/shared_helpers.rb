@@ -42,6 +42,10 @@ module WorkPackages
           user.name
         end
       end
+
+      def journal_sorting
+        User.current.preference&.comments_sorting || OpenProject::Configuration.default_comment_sort_order
+      end
     end
   end
 end

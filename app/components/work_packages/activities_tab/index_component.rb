@@ -34,6 +34,7 @@ module WorkPackages
       include ApplicationHelper
       include OpPrimer::ComponentHelpers
       include OpTurbo::Streamable
+      include WorkPackages::ActivitiesTab::SharedHelpers
 
       def initialize(work_package:, last_server_timestamp:, filter: :all)
         super
@@ -64,10 +65,6 @@ module WorkPackages
           "#{stimulus_controller}-show-conflict-flash-message-url-value": show_conflict_flash_message_work_packages_path,
           "#{stimulus_controller}-last-server-timestamp-value": last_server_timestamp
         }
-      end
-
-      def journal_sorting
-        User.current.preference&.comments_sorting || "desc"
       end
 
       def polling_interval
