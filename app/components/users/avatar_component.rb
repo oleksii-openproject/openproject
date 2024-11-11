@@ -32,7 +32,8 @@ module Users
     include AvatarHelper
     include OpPrimer::ComponentHelpers
 
-    def initialize(user:, show_name: true, link: true, size: "default", classes: "", title: nil, name_classes: "")
+    def initialize(user:, show_name: true, link: true, size: "default", classes: "", title: nil, name_classes: "",
+                   hover_card: false)
       super
 
       @user = user
@@ -40,7 +41,8 @@ module Users
       @link = link
       @size = size
       @title = title
-      @classes = [classes, "op-hover-card--preview-trigger"].compact.join(" ")
+      @hover_card = hover_card
+      @classes = [classes, hover_card ? "op-hover-card--preview-trigger" : nil].compact.join(" ")
       @name_classes = name_classes
     end
 
