@@ -49,27 +49,31 @@ export class HoverCardTriggerService {
       e.stopPropagation();
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const el = e.target as HTMLElement;
-      if (el) {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        const turboFrameUrl = el.getAttribute('data-hover-card-url');
-
-        if (!turboFrameUrl) {
-          return;
-        }
-
-        // When set in an angular component, the url attribute might be wrapped in additional quotes. Strip them.
-        const cleanedTurboFrameUrl = turboFrameUrl.replace(/^"(.*)"$/, '$1');
-
-        this.opModalService.show(
-          HoverCardComponent,
-          this.injector,
-          { turboFrameSrc: cleanedTurboFrameUrl, event: e },
-          true,
-        ).subscribe((previewModal) => {
-          this.modalElement = previewModal.elementRef.nativeElement as HTMLElement;
-          void previewModal.reposition(this.modalElement, el);
-        });
+      if (!el) {
+        return;
       }
+
+      // TODO: check if open is still open for some reason (parent element triggered it)
+      // TODO: do not show it again in this case, just leave it as is.
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const turboFrameUrl = el.getAttribute('data-hover-card-url');
+
+      if (!turboFrameUrl) {
+        return;
+      }
+
+      // When set in an angular component, the url attribute might be wrapped in additional quotes. Strip them.
+      const cleanedTurboFrameUrl = turboFrameUrl.replace(/^"(.*)"$/, '$1');
+
+      this.opModalService.show(
+        HoverCardComponent,
+        this.injector,
+        { turboFrameSrc: cleanedTurboFrameUrl, event: e },
+        true,
+      ).subscribe((previewModal) => {
+        this.modalElement = previewModal.elementRef.nativeElement as HTMLElement;
+        void previewModal.reposition(this.modalElement, e.target as HTMLElement || el);
+      });
     });
 
     jQuery(document.body).on('mouseleave', '.op-hover-card--preview-trigger', () => {
