@@ -279,6 +279,10 @@ OpenProject on-premises is a self-hosted version of OpenProject. As opposed to t
 - [Read how to activate the Enterprise on-premises edition](../enterprise-guide/enterprise-on-premises-guide/activate-enterprise-on-premises/)
 - [Read how to start a trial for Enterprise on-premises](../enterprise-guide/enterprise-on-premises-guide/enterprise-on-premises-trial/)
 
+### OpenID Connect (OIDC)
+
+OpenID Connect (OIDC) is an authentication protocol built on OAuth 2.0 that enables secure, simple, and standardized user identity verification. OpenProject Enterprise offers user interfaces for OIDC as well as for [SAML](#saml), so that administrators can set Single Sign-On (SSO) options for their users. [Read more about OpenID providers for OpenProject in our system admin guide](../system-admin-guide/authentication/openid-providers/).
+
 ## P
 
 ### Phase
@@ -373,6 +377,10 @@ In OpenProject, a role is defined as a set of permissions defined by a unique na
 In product management, the RICE score indicates the level of prioritization of a single element, e.g. a feature. With the RICE scoring model, you evaluate and compare requirements with each other to decide which products or features to prioritize on the roadmap – in an as objective manner as possible. The formula for the RICE score is the following: **R**each x **I**mpact x **C**onfidence / **E**ffort
 
 ## S
+
+### SAML
+
+SAML (Security Assertion Markup Language) is an open standard for exchanging authentication and authorization data between parties, typically an identity provider (IdP) and a service provider (SP). OpenProject Enterprise offers user interfaces for SAML as well as for [OpenID Connect](#openid-connect-oidc), so that administrators can set Single Sign-On (SSO) options for their users. [Read more about SAML providers for OpenProject in our system admin guide](../system-admin-guide/authentication/saml/).
 
 ### Share work packages
 
