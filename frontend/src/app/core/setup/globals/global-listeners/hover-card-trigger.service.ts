@@ -48,19 +48,14 @@ export class HoverCardTriggerService {
       e.preventDefault();
       e.stopPropagation();
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      const el = e.target as HTMLElement;
-      if (!el) {
-        return;
-      }
+      const el = e.currentTarget as HTMLElement;
+      if (!el) { return; }
 
       // TODO: check if open is still open for some reason (parent element triggered it)
       // TODO: do not show it again in this case, just leave it as is.
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const turboFrameUrl = el.getAttribute('data-hover-card-url');
-
-      if (!turboFrameUrl) {
-        return;
-      }
+      if (!turboFrameUrl) { return; }
 
       // When set in an angular component, the url attribute might be wrapped in additional quotes. Strip them.
       const cleanedTurboFrameUrl = turboFrameUrl.replace(/^"(.*)"$/, '$1');
@@ -94,7 +89,7 @@ export class HoverCardTriggerService {
     this.ngZone.runOutsideAngular(() => {
       setTimeout(() => {
         if (!this.mouseInModal) {
-          this.opModalService.close();
+          // this.opModalService.close();
         }
       }, 100);
     });
