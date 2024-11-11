@@ -33,6 +33,8 @@ See COPYRIGHT and LICENSE files for more details.
 
 <%= error_messages_for 'custom_field' %>
 
+<% content_controller "admin--custom-fields", dynamic: true %>
+
 <% if @custom_field.field_format_hierarchy? %>
   <%= render CustomFields::DetailsComponent.new(@custom_field) %>
 <% else %>
