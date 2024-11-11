@@ -78,8 +78,7 @@ The **new forum message has been created**.
 
 ![New forum message in OpenProject](openproject_user_guide_forums_new_message_created.png)
 
-> [!TIP] 
->
+> [!TIP]
 > Changes you made are saved locally. If you navigated away from page or  could not save your changes due to a technical difficulty, you can  access latest changes via the editor toolbar.
 
 ![Locally saved draft in OpenProject forum message](openproject_user_guide_forums_draft_saved_locally.png)

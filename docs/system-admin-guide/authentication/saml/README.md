@@ -130,8 +130,8 @@ Use the copy to clipboard buttons on each of these entries to copy the informat
 
 For some deployment scenarios, it might be desirable to configure a provider through environment variables.
 
->[!WARNING]
->Only do this if you know what you are doing. This may break your existing SAML authentication providers or cause other issues otherwise.
+> [!WARNING]
+> Only do this if you know what you are doing. This may break your existing SAML authentication providers or cause other issues otherwise.
 
 As with [all the rest of the OpenProject configuration settings](../../../installation-and-operations/configuration/environment/), the SAML configuration can be provided via environment variables.
 

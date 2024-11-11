@@ -64,8 +64,8 @@ You can [assign a custom field to a work package type](../manage-work-packages/w
 
 You can activate the custom field for specific projects under the respective [project settings](../../user-guide/projects/project-settings/custom-fields/). 
 
->[!TIP]
->This is not relevant if the setting **For all projects** has been configured for the custom field.
+> [!TIP]
+> This is not relevant if the setting **For all projects** has been configured for the custom field.
 
 You can active a custom field for multiple projects at once by opening the custom field in question and selecting the *Projects* tab. Click the **Add projects** button.
 ![Add a custom field to multiple projects at once in OpenProject administration](openproject_system_guide_new_custom_field_add_to_projects.png)
