@@ -66,6 +66,7 @@ export class MainMenuToggleService {
   private changeData = new BehaviorSubject<any>({});
 
   public changeData$ = this.changeData.asObservable();
+  private wasHiddenDueToResize = false;
 
   private wasCollapsedByUser = false;
 
@@ -107,31 +108,33 @@ export class MainMenuToggleService {
 
   private adjustMenuVisibility():void {
     if (window.innerWidth >= 1012) {
-      // If wide screen, only open if it wasn't manually collapsed
-      if (!this.wasCollapsedByUser) {
+      // On larger screens, reopen the menu if it was hidden only due to screen resizing
+      if (this.wasHiddenDueToResize && !this.wasCollapsedByUser) {
         this.setWidth(this.defaultWidth);
+        this.wasHiddenDueToResize = false; // Reset the flag since the menu is now shown
       }
-    } else {
-      // Narrow screen: always close the menu and reset the collapse flag
-      this.closeMenu();
-      this.wasCollapsedByUser = false;
+    } else if (this.showNavigation) {
+        this.closeMenu();
+        this.wasHiddenDueToResize = true; // Indicate that the menu was hidden due to resize
     }
   }
 
-  public toggleNavigation(event?:JQuery.TriggeredEvent|Event):void {
+  public toggleNavigation(event?:JQuery.TriggeredEvent | Event):void {
     if (event) {
       event.stopPropagation();
       event.preventDefault();
     }
 
-    // Update the flag based on whether the menu is currently visible
+    // Update the user collapse flag and clear `wasHiddenDueToResize`
     this.wasCollapsedByUser = this.showNavigation;
+    this.wasHiddenDueToResize = false; // Reset because a manual toggle overrides any resize behavior
 
     if (this.showNavigation) {
       this.closeMenu();
     } else {
       this.openMenu();
     }
+
     // Save the collapsed state in localStorage
     window.OpenProject.guardedLocalStorage(this.localStorageStateKey, String(!this.showNavigation));
     // Set focus on first visible main menu item.
@@ -144,15 +147,11 @@ export class MainMenuToggleService {
 
   public closeMenu():void {
     this.setWidth(0);
-    this.wasCollapsedByUser = true;
-    window.OpenProject.guardedLocalStorage(this.localStorageStateKey, 'true');
     jQuery('.searchable-menu--search-input').blur();
   }
 
   public openMenu():void {
     this.setWidth(this.defaultWidth);
-    this.wasCollapsedByUser = false;
-    window.OpenProject.guardedLocalStorage(this.localStorageStateKey, 'false');
   }
 
   public setWidth(width?:number):void {
