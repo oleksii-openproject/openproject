@@ -194,7 +194,7 @@ export default class IndexController extends Controller {
       headers: {
         'X-CSRF-Token': (document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement).content,
       },
-    });
+    }, true); // suppress error toast in polling to avoid spamming the user when having e.g. network issues
   }
 
   private handleUpdateStreamsResponse(html:string, headers:Headers, journalsContainerAtBottom:boolean) {
