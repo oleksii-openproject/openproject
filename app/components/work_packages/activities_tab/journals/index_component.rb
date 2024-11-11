@@ -35,6 +35,7 @@ module WorkPackages
         include ApplicationHelper
         include OpPrimer::ComponentHelpers
         include OpTurbo::Streamable
+        include WorkPackages::ActivitiesTab::SharedHelpers
 
         def initialize(work_package:, filter: :all)
           super
@@ -53,10 +54,6 @@ module WorkPackages
 
         def insert_target_modifier_id
           "work-package-journal-days"
-        end
-
-        def journal_sorting
-          User.current.preference&.comments_sorting || "desc"
         end
 
         def journal_sorting_desc?
