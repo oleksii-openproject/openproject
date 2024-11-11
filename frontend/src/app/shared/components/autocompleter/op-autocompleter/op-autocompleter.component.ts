@@ -24,7 +24,7 @@ import {
 } from '@angular/core';
 import { DropdownPosition, NgSelectComponent } from '@ng-select/ng-select';
 import { BehaviorSubject, merge, NEVER, Observable, of, Subject, timer } from 'rxjs';
-import { debounce, distinctUntilChanged, filter, switchMap, tap } from 'rxjs/operators';
+import { debounce, distinctUntilChanged, filter, switchMap, tap, map } from 'rxjs/operators';
 import { AddTagFn, GroupValueFn } from '@ng-select/ng-select/lib/ng-select.component';
 
 import { HalResource } from 'core-app/features/hal/resources/hal-resource';
@@ -49,6 +49,11 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { ID } from '@datorama/akita';
 import { HttpClient } from '@angular/common/http';
 import { ApiV3Service } from 'core-app/core/apiv3/api-v3.service';
+import { HalResourceService } from 'core-app/features/hal/services/hal-resource.service';
+import { CollectionResource } from 'core-app/features/hal/resources/collection-resource';
+import { ApiV3FilterBuilder } from 'core-app/shared/helpers/api-v3/api-v3-filter-builder';
+import { addFiltersToPath } from 'core-app/core/apiv3/helpers/add-filters-to-path';
+import { aR } from '@fullcalendar/core/internal-common';
 
 export interface IAutocompleteItem {
   id:ID;
@@ -291,6 +296,7 @@ export class OpAutocompleterComponent<T extends IAutocompleteItem = IAutocomplet
     readonly ngZone:NgZone,
     readonly vcRef:ViewContainerRef,
     readonly I18n:I18nService,
+    readonly halResourceService:HalResourceService,
   ) {
     super();
   }
@@ -459,9 +465,12 @@ export class OpAutocompleterComponent<T extends IAutocompleteItem = IAutocomplet
       filter(() => !!(this.defaultData || this.getOptionsFn)),
       distinctUntilChanged(),
       tap(() => this.loading$.next(true)),
-      // tap(() => console.log('Debounce is ', this.getDebounceTimeout())),
       debounce(() => timer(this.getDebounceTimeout())),
       switchMap((queryString:string) => {
+        if (this.url) {
+          return this.fetchFromUrl(queryString);
+        }
+
         if (this.defaultData) {
           return this.opAutocompleterService.loadData(queryString, this.resource, this.filters, this.searchKey);
         }
@@ -477,6 +486,39 @@ export class OpAutocompleterComponent<T extends IAutocompleteItem = IAutocomplet
         () => this.loading$.next(false),
       ),
     );
+  }
+
+  private fetchFromUrl(queryString:string):Observable<unknown> {
+    // Exit early if the query string is empty as there is no typeahead
+    if (queryString === null || queryString.length === 0) {
+      return of([]);
+    }
+
+    // Build filters if provided
+    const finalFilters = new ApiV3FilterBuilder();
+    this.filters?.forEach((currentFilter) => {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+      finalFilters.add(currentFilter.name, currentFilter.operator, currentFilter.values);
+    });
+
+    const urlWithFilters = addFiltersToPath(this.url, finalFilters);
+
+    // Add default sort parameters if resource is work packages
+    if (this.resource === 'work_packages') {
+      urlWithFilters.searchParams.set('sortBy', '[["updatedAt","desc"]]');
+    }
+
+    // Add query string to the url if provided
+    urlWithFilters.searchParams.set('query', queryString);
+
+    const stringifiedBuiltOutUrl = urlWithFilters.toString();
+
+    return this
+      .halResourceService
+      .get(stringifiedBuiltOutUrl)
+      .pipe(
+        map((collection:CollectionResource<T>) => collection.elements),
+      );
   }
 
   private getDebounceTimeout():number {

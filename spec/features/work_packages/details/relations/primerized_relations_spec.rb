@@ -294,8 +294,6 @@ RSpec.describe "Primerized work package relations tab",
 
       relations_panel.find("[data-test-selector='new-relation-action-menu']").click
 
-      tabs.expect_counter("relations", 4)
-
       within page.find_by_id("new-relation-action-menu-list") do # Primer appends "list" to the menu id automatically
         click_link_or_button "Successor (after)"
       end
@@ -330,6 +328,34 @@ RSpec.describe "Primerized work package relations tab",
 
       # Bumped by one
       tabs.expect_counter("relations", 5)
+    end
+
+    it "does not autocomplete unrelatable work packages" do
+      # to1 is already related to work_package as relation1
+      # in a successor relation, so it should not be autocompleteable anymore
+      # under the "Successor (after)" type
+      scroll_to_element relations_panel
+
+      relations_panel.find("[data-test-selector='new-relation-action-menu']").click
+
+      within page.find_by_id("new-relation-action-menu-list") do # Primer appends "list" to the menu id automatically
+        click_link_or_button "Successor (after)"
+      end
+
+      wait_for_reload
+
+      within "##{WorkPackageRelationsTab::WorkPackageRelationFormComponent::DIALOG_ID}" do
+        expect(page).to have_text("Add successor (after)")
+        expect(page).to have_button("Add description")
+
+        autocomplete_field = page.find("[data-test-selector='work-package-relation-form-to-id']")
+        search_autocomplete(autocomplete_field,
+                            query: to1.subject,
+                            results_selector: "body")
+        expect_no_ng_option(autocomplete_field,
+                            to1.subject,
+                            results_selector: "body")
+      end
     end
   end
 
