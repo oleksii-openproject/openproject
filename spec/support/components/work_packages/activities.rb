@@ -65,6 +65,7 @@ module Components
       # helpers for new primerized activities
 
       def within_journal_entry(journal, &)
+        wait_for { page }.to have_test_selector("op-wp-journal-entry-#{journal.id}") # avoid flakyness
         page.within_test_selector("op-wp-journal-entry-#{journal.id}", &)
       end
 
