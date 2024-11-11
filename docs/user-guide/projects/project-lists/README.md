@@ -51,7 +51,33 @@ With the horizontal **three dots** icon on the right side of the list you can op
 
 ## Configure project lists view
 
-You can choose the **columns displayed by default** in the [Project lists settings](../../../system-admin-guide/projects/project-lists) in the Administration.
+There are several ways to configure the project lists view. 
+
+You can choose the **columns displayed by default** in the [Project lists settings](../../../system-admin-guide/projects/project-lists) in the Administration or adjust the project lists view for specific projects.
+
+### Column headers 
+You can adjust the project lists by using the options directly in the table header. To do that click the dropdown icon next to the column name and select a respective option. 
+![Configure project lists view by using column header dropdown menu](openproject_project_list_column_header_dropdown.png)
+
+You can choose from the following options: 
+
+- Sort descending: this will only be shown when the column allows sorting
+
+- Sort ascending: this will only be shown when the column allows sorting
+
+- Filter by (opens the filter box with the filter for that value added and focused): this action is only visible when the column has an associated filter
+
+- Move column left: this action is only visible when the column is not the first (leftmost) one
+
+- Move column right: this action is only visible when the column is not the last (rightmost) one
+
+- Add column: this action opens the [configure view modal](#configure-view-modal)
+
+- Remove column
+
+  
+
+### Configure view modal
 
 You can add the columns, as well as define the order of the columns by using the **Configure view** modal. Navigate to it via the menu in the far right corner (three dots) and click **Configure view**.
 
@@ -61,13 +87,13 @@ A dialogue will open, allowing you to manage and reorder columns under the tab *
 
 ![Configuration form for project lists in OpenProject](configure-view-form-project-list.png)
 
-To change the order of the displayed [project attributes](../../../system-admin-guide/projects/project-lists) (columns) follow the instructions here: [Displaying a project attribute (formerly called custom field)](../../../system-admin-guide/projects/project-lists).
+To change the default order of the displayed [project attributes](../../../system-admin-guide/projects/project-lists) (columns) follow the instructions here: [Displaying a project attribute (formerly called custom field)](../../../system-admin-guide/projects/project-lists).
 
 Under the tab *Sort* you can select the sort order for the project lists. You can select up to three criteria and define the sorting order (ascending or descending). You will be able to change the sorting order later by clicking the column header.
 
 ![Define sort order for project lists in OpenProject](configure-view-form-project-list-sort-order.png)
 
- Click **Apply** to see the changes.
+Click **Apply** to see the changes.
 
 If the list that you were adjusting is a private list, you will then be able to save the changes to that list by clicking the *Save* link. Alternatively you can click the *More* icon and select the *Save as* option from the dropdown menu that will open and save it under a different name. 
 
