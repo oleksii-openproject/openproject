@@ -37,13 +37,19 @@ module BasicData
     # seeded database. Optional.
     class_attribute :attribute_names_for_lookups
 
+    delegate :store_reference, to: :seed_data
+
     def seed_data!
       model_class.transaction do
         models_data.each do |model_data|
-          model = model_class.create!(model_attributes(model_data))
-          seed_data.store_reference(model_data["reference"], model)
+          seed_model!(model_data)
         end
       end
+    end
+
+    def seed_model!(model_data)
+      model = model_class.create!(model_attributes(model_data))
+      store_reference(model_data["reference"], model)
     end
 
     def mapped_models_data
@@ -70,7 +76,7 @@ module BasicData
       models_data.each do |model_data|
         lookup_attributes = model_attributes(model_data).slice(*attribute_names_for_lookups)
         if model = model_class.find_by(lookup_attributes)
-          seed_data.store_reference(model_data["reference"], model)
+          store_reference(model_data["reference"], model)
         end
       end
     end

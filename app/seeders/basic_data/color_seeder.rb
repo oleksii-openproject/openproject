@@ -31,6 +31,16 @@ module BasicData
     self.seed_data_model_key = "colors"
     self.attribute_names_for_lookups = %i[name]
 
+    def seed_models!(colors)
+      model_class.transaction do
+        models_data
+          .select { |data| colors.include?(data["reference"]) }
+          .each do |model_data|
+            seed_model!(model_data)
+          end
+      end
+    end
+
     def model_attributes(color_data)
       {
         name: color_data["name"],
