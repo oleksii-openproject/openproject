@@ -41,7 +41,7 @@ en:
         label_activity_show_only_changes: "Show changes only"
         label_sort_asc: "Newest at the bottom"
         label_sort_desc: "Newest on top"
-        label_type_to_comment: "Type here to comment"
+        label_type_to_comment: "Add a comment. Type @ to notify people."
         label_submit_comment: "Submit comment"
         changed_on: "changed on"
         created_on: "created this on"
