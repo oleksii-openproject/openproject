@@ -52,7 +52,7 @@ RSpec.describe "Meetings", :js do
     it "can visit the meeting" do
       visit meetings_path(project)
 
-      find("td.title a", text: "Awesome meeting!", wait: 10).click
+      find("div.title a", text: "Awesome meeting!", wait: 10).click
       expect(page).to have_css("h2", text: "Meeting: Awesome meeting!")
 
       expect(page).to have_test_selector("op-meeting--meeting_agenda",

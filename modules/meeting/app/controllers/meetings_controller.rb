@@ -27,17 +27,18 @@
 #++
 
 class MeetingsController < ApplicationController
-  before_action :load_and_authorize_in_optional_project, only: %i[index new show create history]
+  before_action :load_and_authorize_in_optional_project, only: %i[index new new_dialog show create history]
   before_action :verify_activities_module_activated, only: %i[history]
   before_action :determine_date_range, only: %i[history]
   before_action :determine_author, only: %i[history]
-  before_action :build_meeting, only: %i[new]
-  before_action :find_meeting, except: %i[index new create]
+  before_action :build_meeting, only: %i[new new_dialog]
+  before_action :find_meeting, except: %i[index new create new_dialog]
   before_action :set_activity, only: %i[history]
   before_action :find_copy_from_meeting, only: %i[create]
   before_action :convert_params, only: %i[create update update_participants]
-  before_action :authorize, except: %i[index new create update_title update_details update_participants change_state]
-  before_action :authorize_global, only: %i[index new create update_title update_details update_participants change_state]
+  before_action :authorize, except: %i[index new create update_title update_details update_participants change_state new_dialog]
+  before_action :authorize_global,
+                only: %i[index new create update_title update_details update_participants change_state new_dialog]
 
   helper :watchers
   helper :meeting_contents
@@ -49,6 +50,7 @@ class MeetingsController < ApplicationController
 
   include OpTurbo::ComponentStream
   include OpTurbo::FlashStreamHelper
+  include OpTurbo::DialogStreamHelper
   include Meetings::AgendaComponentStreams
   include MetaTagsHelper
 
@@ -67,15 +69,15 @@ class MeetingsController < ApplicationController
   end
 
   def show
-    html_title "#{t(:label_meeting)}: #{@meeting.title}"
-    if @meeting.is_a?(StructuredMeeting)
-      respond_to do |format|
-        format.html do
+    respond_to do |format|
+      format.html do
+        html_title "#{t(:label_meeting)}: #{@meeting.title}"
+        if @meeting.is_a?(StructuredMeeting)
           render(Meetings::ShowComponent.new(meeting: @meeting, project: @project), layout: true)
+        elsif @meeting.agenda.present? && @meeting.agenda.locked?
+          params[:tab] ||= "minutes"
         end
       end
-    elsif @meeting.agenda.present? && @meeting.agenda.locked?
-      params[:tab] ||= "minutes"
     end
   end
 
@@ -99,6 +101,8 @@ class MeetingsController < ApplicationController
           .call(@converted_params)
       end
 
+    @meeting = call.result
+
     if call.success?
       text = I18n.t(:notice_successful_create)
       unless User.current.pref.time_zone?
@@ -108,10 +112,8 @@ class MeetingsController < ApplicationController
       end
       flash[:notice] = text.html_safe # rubocop:disable Rails/OutputSafety
 
-      redirect_to action: "show", id: call.result
+      redirect_to status: :see_other, action: "show", id: @meeting
     else
-      @meeting = call.result
-
       respond_to do |format|
         format.html do
           render action: :new,
@@ -119,8 +121,25 @@ class MeetingsController < ApplicationController
                  project_id: @project,
                  locals: { copy_from: @copy_from }
         end
+
+        format.turbo_stream do
+          update_via_turbo_stream(
+            component: Meetings::Index::FormComponent.new(
+              meeting: @meeting,
+              project: @project,
+              type: @copy_from || :new
+            ),
+            status: :bad_request
+          )
+
+          respond_with_turbo_streams
+        end
       end
     end
+  end
+
+  def new_dialog
+    respond_with_dialog Meetings::Index::DialogComponent.new(meeting: @meeting, project: @project, type: :new)
   end
 
   def new; end
@@ -136,7 +155,15 @@ class MeetingsController < ApplicationController
       .call(save: false)
 
     @meeting = call.result
-    render action: :new, status: :unprocessable_entity, project_id: @project, locals: { copy_from: }
+    respond_to do |format|
+      format.html do
+        render action: :new, status: :unprocessable_entity, project_id: @project, locals: { copy_from: }
+      end
+
+      format.turbo_stream do
+        respond_with_dialog Meetings::Index::DialogComponent.new(meeting: @meeting, project: @project, type: copy_from)
+      end
+    end
   end
 
   def destroy
@@ -329,10 +356,15 @@ class MeetingsController < ApplicationController
 
     @converted_params[:project] = @project
     @converted_params[:duration] = @converted_params[:duration].to_hours if @converted_params[:duration].present?
-    # Force defaults on participants
-    @converted_params[:participants_attributes] ||= {}
-    @converted_params[:participants_attributes].each { |p| p.reverse_merge! attended: false, invited: false }
     @converted_params[:send_notifications] = params[:send_notifications] == "1"
+
+    # Handle participants separately for each meeting type
+    @converted_params[:participants_attributes] ||= {}
+    if copy_structured_meeting_participants?
+      create_participants
+    else
+      force_defaults
+    end
   end
 
   def meeting_params
@@ -402,18 +434,19 @@ class MeetingsController < ApplicationController
   end
 
   def find_copy_from_meeting
-    return unless params[:copied_from_meeting_id]
+    copied_from_meeting_id = params[:copied_from_meeting_id] || params[:meeting][:copied_from_meeting_id]
+    return unless copied_from_meeting_id
 
-    @copy_from = Meeting.visible.find(params[:copied_from_meeting_id])
+    @copy_from = Meeting.visible.find(copied_from_meeting_id)
   rescue ActiveRecord::RecordNotFound
     render_404
   end
 
   def copy_attributes
     {
-      copy_agenda: params[:copy_agenda] == "1",
-      copy_attachments: params[:copy_attachments] == "1",
-      send_notifications: params[:send_notifications] == "1"
+      copy_agenda: copy_param(:copy_agenda),
+      copy_attachments: copy_param(:copy_attachments),
+      send_notifications: copy_param(:send_notifications)
     }
   end
 end
