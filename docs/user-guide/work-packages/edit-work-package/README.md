@@ -33,8 +33,7 @@ The green message on top of the work package indicates a successful update.
 
 ![Successful update message in OpenProject work package](openproject_user_guide_wp_update_message.png)
 
-> [!TIP] 
->
+> [!TIP]
 > Changes you made are saved locally. If you navigated away from page or could not save your changes due to a technical difficulty, you can access latest changes via the editor toolbar.
 
 ![Restore local backups in text editor in OpenProject](openproject_user_guide_wp_autosave_icon.png)
@@ -168,8 +167,7 @@ You have the following options:
 - **Indent hierarchy** - creates a child-parent relationship with the work package directly above. The work package you selected become the child work package. The work package directly above becomes the parent work package.
 - **Create new child** - opens a new work package on the right side of the screen. This new work package already has a child relationship to the work package you selected.  
 
-> [!TIP]  
->
+> [!TIP]
 > In OpenProject 14.5 the term *Copy a work package* was replaced by *Duplicate a work package*. *Change project* was replaced by *Move to another project*.
 
 If you have opened the quick context menu for a work package that has a parent work package, you will also see:
