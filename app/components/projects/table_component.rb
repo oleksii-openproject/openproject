@@ -151,10 +151,20 @@ module Projects
     end
 
     def projects(query)
-      query
-        .results
-        .with_required_storage
-        .with_latest_activity
+      scope = query.results
+
+      # The two columns associated with the
+      # * disk storage
+      # * latest activity
+      # information are only available to admins.
+      # For non admins, the performance penalty of fetching the information therefore needs never be paid.
+      if User.current.admin?
+        scope = scope
+                  .with_required_storage
+                  .with_latest_activity
+      end
+
+      scope
         .includes(:custom_values, :enabled_modules)
         .paginate(page: helpers.page_param(params), per_page: helpers.per_page_param(params))
     end
