@@ -67,6 +67,10 @@ See COPYRIGHT and LICENSE files for more details.
                                 size: :medium,
                                 href: url_for({ controller: 'budgets', action: 'destroy', id: @budget }),
                                 aria: { label: I18n.t(:button_delete) },
+                                data: {
+                                  confirm: I18n.t(:text_are_you_sure),
+                                  method: :delete
+                                },
                                 title: I18n.t(:button_delete)) do |button|
         button.with_leading_visual_icon(icon: :trash)
         t(:button_delete)
