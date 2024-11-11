@@ -46,6 +46,14 @@ module WorkPackages
       def journal_sorting
         User.current.preference&.comments_sorting || OpenProject::Configuration.default_comment_sort_order
       end
+
+      def activity_url(journal)
+        "#{project_work_package_url(journal.journable.project, journal.journable)}/activity#{activity_anchor(journal)}"
+      end
+
+      def activity_anchor(journal)
+        "#activity-#{journal.sequence_version}"
+      end
     end
   end
 end
