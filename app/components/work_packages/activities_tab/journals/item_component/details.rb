@@ -187,7 +187,7 @@ module WorkPackages
             classes: "work-packages-activities-tab-journals-item-component-details--activity-link-container"
           ) do
             render(Primer::Beta::Link.new(
-                     href: "#",
+                     href: activity_url(journal),
                      scheme: :secondary,
                      underline: false,
                      font_size: :small,
