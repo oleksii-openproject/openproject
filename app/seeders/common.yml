@@ -72,6 +72,9 @@ colors:
   - reference: :default_color_orange_dark
     t_name: Orange (dark)
     hexcode: "#F7983A"
+  - reference: :default_color_purple
+    t_name: Purple
+    hexcode: "#682D91"
   - reference: :default_color_red_dark
     t_name: Red (dark)
     hexcode: "#F05823"
