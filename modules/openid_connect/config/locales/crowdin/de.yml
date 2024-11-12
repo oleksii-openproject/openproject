@@ -8,7 +8,7 @@ de:
     attributes:
       openid_connect/provider:
         name: Name
-        slug: Unique identifier
+        slug: Eindeutige Kennung
         display_name: Angezeigter Name
         client_id: Client-ID
         client_secret: Clientschlüssel
@@ -53,7 +53,7 @@ de:
     menu_title: OpenID-Anbieter
     delete_title: "OpenID Connect Anbieter löschen"
     instructions:
-      redirect_url: This is the redirect URL that the OpenID Connect provider should use to redirect back to OpenProject after a successful login.
+      redirect_url: Dies ist die URL, die der OpenID Connect-Anbieter verwenden sollte, um nach einer erfolgreichen Anmeldung zurück zu OpenProject zu leiten.
       endpoint_url: Die Endpunkt-URL, die Sie vom OpenID Connect-Anbieter erhalten haben
       metadata_none: Ich habe diese Informationen nicht
       metadata_url: Ich habe eine Discovery-Endpunkt-URL

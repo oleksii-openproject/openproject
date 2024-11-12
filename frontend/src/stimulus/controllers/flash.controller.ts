@@ -15,6 +15,10 @@ export default class FlashController extends ApplicationController {
 
   declare readonly itemTargets:HTMLElement;
 
+  reloadPage() {
+    window.location.reload();
+  }
+
   itemTargetConnected(element:HTMLElement) {
     const autohide = element.dataset.autohide === 'true';
     if (this.autohideValue && autohide) {

@@ -2819,6 +2819,9 @@ es:
   notice_locking_conflict: "La información ha sido actualizada por al menos otro usuario mientras tanto."
   notice_locking_conflict_additional_information: "La(s) actualización(es) hecha(s) por %{users}."
   notice_locking_conflict_reload_page: "Por favor recargue la página, revise los cambios y re-aplique las actualizaciones."
+  notice_locking_conflict_warning: "This page has been updated by someone else. To not lose your edits, copy them locally and reload to view the updated version."
+  notice_locking_conflict_danger: "Could not save your changes because of conflicting modifications. To not lose your edits, copy them locally and reload to view the updated version."
+  notice_locking_conflict_action_button: "Discard changes and reload"
   notice_member_added: Se añadio a %{name} al proyecto.
   notice_members_added: Añadidos %{number} usuarios al proyecto.
   notice_member_removed: "Se ha eliminado a %{user} del proyecto."

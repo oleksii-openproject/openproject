@@ -5,12 +5,12 @@ sidebar_navigation:
 description: How to set up SAML integration for SSO with OpenProject.
 keywords: SAML, SSO, single sign-on, authentication
 ---
-# SAML
+# SAML (Enterprise add-on)
 
 > [!NOTE]
 > Single sign-on with SAML is an Enterprise add-on. [Click here for more information](https://www.openproject.org/enterprise-edition/) on the OpenProject Enterprise edition.
 
-You can integrate your active directory or other SAML compliant identity provider in your OpenProject Enterprise edition. To activate and configure OpenID providers in OpenProject, navigate to *Administration* -> *Authentication* and choose -> *SAML providers*.
+You can integrate your active directory or other SAML compliant identity provider in your OpenProject Enterprise edition. To activate and configure SAML providers in OpenProject, navigate to *Administration* -> *Authentication* and choose -> *SAML providers*.
 
 
 
@@ -130,8 +130,8 @@ Use the copy to clipboard buttons on each of these entries to copy the informat
 
 For some deployment scenarios, it might be desirable to configure a provider through environment variables.
 
->[!WARNING]
->Only do this if you know what you are doing. This may break your existing SAML authentication providers or cause other issues otherwise.
+> [!WARNING]
+> Only do this if you know what you are doing. This may break your existing SAML authentication providers or cause other issues otherwise.
 
 As with [all the rest of the OpenProject configuration settings](../../../installation-and-operations/configuration/environment/), the SAML configuration can be provided via environment variables.
 

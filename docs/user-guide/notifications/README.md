@@ -40,7 +40,6 @@ The work packages are listed in order of freshness. The work packages on top of 
 Click on a notification to open the Activity tab of this work package in split screen. If you double click on a notification, it will open the full view of a work package. 
 
 > [!TIP]
->
 > You can adjust the split screen by moving the resizer on the left side of the split screen, it will be stored locally and used for other split screen layouts.
 
 The Activity tab will auto-scroll to the last event that generated a notification. Badges next to the tabs  indicate number of content, e.g. number 1 next to the tab *Relations* indicates that current work package is related to one more work package. 

@@ -10,7 +10,7 @@ export class TurboRequestsService {
 
   }
 
-  public request(url:string, init:RequestInit = {}):Promise<{ html:string, headers:Headers }> {
+  public request(url:string, init:RequestInit = {}, suppressErrorToast = false):Promise<{ html:string, headers:Headers }> {
     return fetch(url, init)
       .then((response) => {
         if (!response.ok) {
@@ -26,7 +26,11 @@ export class TurboRequestsService {
         return result;
       })
       .catch((error) => {
-        this.toast.addError(error as string);
+        if (!suppressErrorToast) {
+          this.toast.addError(error as string);
+        } else {
+          console.error(error);
+        }
         throw error;
       });
   }

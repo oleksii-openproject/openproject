@@ -15,8 +15,8 @@ This guide is aimed at project administrators who want to enable or disable cert
 > [!NOTE]
 > Alongside the project administrators, other users can also be given the permission to enable/disable project attributes by enabling the **Select project attributes** permission for their roles.
 
->[!TIP]
->If you are an instance admin and would like to create, modify or add project attributes, please read our [admin guide to project attributes](../../../../system-admin-guide/projects/project-attributes).
+> [!TIP]
+> If you are an instance admin and would like to create, modify or add project attributes, please read our [admin guide to project attributes](../../../../system-admin-guide/projects/project-attributes).
 
 Navigate to **Project settings** → **Project attributes**.
 
@@ -30,5 +30,5 @@ You can also use the **Enable all** and **Disable all** buttons visible to the r
 
 If your instance has a particularly long list of project attributes, you can use the search bar at the top to find specific ones.
 
->[!TIP]
->The project settings page for project attributes only lets you enable or disable certain attributes. It does *not* let you set the values for each. To do this, go to the [Project Overview](../../../project-overview) page.
+> [!TIP]
+> The project settings page for project attributes only lets you enable or disable certain attributes. It does *not* let you set the values for each. To do this, go to the [Project Overview](../../../project-overview) page.

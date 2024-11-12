@@ -1,8 +1,6 @@
-# frozen_string_literal: true
-
-# -- copyright
+#-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2023 the OpenProject GmbH
+# Copyright (C) 2012-2024 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -26,33 +24,48 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
 # See COPYRIGHT and LICENSE files for more details.
-# ++
+#++
 
 module WorkPackages
-  module ActivitiesTab
-    module SharedHelpers
-      def truncated_user_name(user)
-        render(Primer::Beta::Link.new(
-                 href: user_url(user),
-                 target: "_blank",
-                 scheme: :primary,
-                 underline: false,
-                 font_weight: :bold
-               )) do
-          user.name
-        end
-      end
+  class UpdateConflictComponent < ApplicationComponent
+    include OpPrimer::ComponentHelpers
+    include OpTurbo::Streamable
 
-      def journal_sorting
-        User.current.preference&.comments_sorting || OpenProject::Configuration.default_comment_sort_order
-      end
+    def initialize(scheme: :warning, button_text: I18n.t("label_meeting_reload"))
+      super
 
-      def activity_url(journal)
-        "#{project_work_package_url(journal.journable.project, journal.journable)}/activity#{activity_anchor(journal)}"
-      end
+      @scheme = scheme
+      @button_text = button_text
 
-      def activity_anchor(journal)
-        "#activity-#{journal.sequence_version}"
+      if %i[warning danger].exclude?(@scheme)
+        raise ArgumentError, "Invalid scheme: #{@scheme}. Must be :warning or :danger."
+      end
+    end
+
+    def call
+      render(
+        ::OpPrimer::FlashComponent.new(
+          scheme: @scheme,
+          icon: @scheme == :danger ? :stop : :"alert-fill",
+          dismiss_scheme: :hide,
+          unique_key: "work-package-update-conflict",
+          data: {
+            "banner-scheme": @scheme.to_s # used for testing
+          }
+        )
+      ) do |banner|
+        banner.with_action_button(
+          tag: :a,
+          href: "#",
+          data: {
+            turbo: false,
+            action: "click->flash#reloadPage",
+            test_selector: "op-work-package-update-conflict-reload-button"
+          },
+          size: :medium
+        ) { @button_text }
+
+        content
       end
     end
   end
