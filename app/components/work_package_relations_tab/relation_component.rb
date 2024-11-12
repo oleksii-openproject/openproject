@@ -30,7 +30,7 @@ class WorkPackageRelationsTab::RelationComponent < ApplicationComponent
     @underlying_resource_id ||= if parent_child_relationship?
                                   @child.id
                                 else
-                                  @relation.id
+                                  @relation.other_work_package(work_package).id
                                 end
   end
 

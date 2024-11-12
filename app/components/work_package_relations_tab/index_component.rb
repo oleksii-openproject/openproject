@@ -28,15 +28,15 @@ class WorkPackageRelationsTab::IndexComponent < ApplicationComponent
 
   def group_relations_by_directional_context
     relations.group_by do |relation|
-      target = relation.to == work_package ? "from" : "to"
-      target == "from" ? relation.reverse_type : relation.relation_type
+      relation.relation_type_for(work_package)
     end
   end
 
   def any_relations? = relations.any? || children.any?
 
-  def render_relation_group(title:, items:, &_block)
-    render(border_box_container(padding: :condensed)) do |border_box|
+  def render_relation_group(title:, relation_type:, items:, &_block)
+    render(border_box_container(padding: :condensed,
+                                data: { test_selector: "op-relation-group-#{relation_type}" })) do |border_box|
       border_box.with_header(py: 3) do
         flex_layout(align_items: :center) do |flex|
           flex.with_column(mr: 2) do
@@ -71,6 +71,11 @@ class WorkPackageRelationsTab::IndexComponent < ApplicationComponent
   end
 
   def row_test_selector(item)
-    "op-relation-row-#{item.id}"
+    if item.is_a?(Relation)
+      target = item.to == work_package ? item.from : item.to
+      "op-relation-row-#{target.id}"
+    else # Work Package object
+      "op-relation-row-#{item.id}"
+    end
   end
 end

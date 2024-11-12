@@ -54,6 +54,7 @@
           flex.with_row do
             render_relation_group(
               title: t("#{base_key}_plural").capitalize,
+              relation_type:,
               items: relations_of_type
             ) do |relation|
               render(WorkPackageRelationsTab::RelationComponent.new(work_package:,
@@ -69,6 +70,7 @@
           flex.with_row do
             render_relation_group(
               title: t("#{base_key}_plural").capitalize,
+              relation_type: :children,
               items: children
             ) do |child|
               render(WorkPackageRelationsTab::RelationComponent.new(work_package:,

@@ -34,6 +34,7 @@ module Components
       include Capybara::DSL
       include Capybara::RSpecMatchers
       include RSpec::Matchers
+      include RSpec::Wait
       include ::Components::Autocompleter::NgSelectAutocompleteHelpers
 
       attr_reader :work_package
@@ -43,95 +44,77 @@ module Components
       end
 
       def find_row(relatable)
-        page.find(".relation-row-#{relatable.id}")
+        page.find("[data-test-selector='op-relation-row-#{relatable.id}']")
       end
 
-      def click_relation(relatable)
-        SeleniumHubWaiter.wait
-        page.find(".relation-row-#{relatable.id} [data-test-selector='op-relation--row-id']").click
+      def find_some_row(text:)
+        page.find("[data-test-selector^='op-relation-row']", text:)
       end
 
-      def edit_relation_type(relatable, to_type:)
-        row = find_row(relatable)
-        SeleniumHubWaiter.wait
-        row.find(".relation-row--type").click
-
-        expect(row).to have_css("select.inline-edit--field")
-        row.find(".inline-edit--field option", text: to_type).select_option
-      end
-
-      def hover_action(relatable, action)
-        retry_block do
-          # Focus type edit to expose buttons
-          span = page.find(".relation-row-#{relatable.id} [data-test-selector='op-relation--row-type']", wait: 20)
-          scroll_to_element(span)
-          page.driver.browser.action.move_to(span.native).perform
-
-          # Click the corresponding action button
-          SeleniumHubWaiter.wait
-          row = find_row(relatable)
-          case action
-          when :delete
-            row.find(".relation-row--remove-btn").click
-          when :info
-            row.find(".wp-relations--description-btn").click
-          end
+      def expect_no_row(relatable)
+        if relatable.is_a?(Relation)
+          expect(page).to have_no_css("[data-test-selector='op-relation-row-#{relatable.to.id}']")
+        else
+          expect(page).to have_no_css("[data-test-selector='op-relation-row-#{relatable.id}']")
         end
       end
 
       def remove_relation(relatable)
-        ## Delete relation
-        hover_action(relatable, :delete)
+        relatable_row = find_row(relatable)
+
+        within(relatable_row) do
+          page.find("[data-test-selector='op-relation-row-#{relatable.id}-action-menu']").click
+          page.find("[data-test-selector='op-relation-row-#{relatable.id}-delete-button']").click
+        end
 
         # Expect relation to be gone
-        expect_no_relation(relatable)
+        expect_no_row(relatable)
       end
 
       def add_relation(type:, to:)
+        i18n_namespace = "#{WorkPackageRelationsTab::IndexComponent::I18N_NAMESPACE}.relations"
         # Open create form
-        SeleniumHubWaiter.wait
-        find_by_id("relation--add-relation").click
 
-        # Select relation type
-        container = find(".wp-relations-create--form", wait: 10)
+        SeleniumHubWaiter.wait
+        page.find("[data-test-selector='new-relation-action-menu']").click
+
+        label_text_for_relation_type = I18n.t("#{i18n_namespace}.label_#{type}_singular")
+        within page.find_by_id("new-relation-action-menu-list") do # Primer appends "list" to the menu id automatically
+          click_link_or_button label_text_for_relation_type.capitalize
+        end
 
         # Labels to expect
-        relation_label = I18n.t("js.relation_labels.#{type}")
-
-        select relation_label, from: "relation-type--select"
+        modal_heading_label = "Add #{label_text_for_relation_type}"
+        expect(page).to have_text(modal_heading_label)
 
         # Enter the query and select the child
-        autocomplete = container.find("[data-test-selector='wp-relations-autocomplete']")
-        select_autocomplete autocomplete,
-                            results_selector: ".ng-dropdown-panel-items",
+        autocomplete_field = page.find("[data-test-selector='work-package-relation-form-to-id']")
+        select_autocomplete(autocomplete_field,
                             query: to.subject,
-                            select_text: to.subject
+                            results_selector: "body")
 
-        expect(page).to have_css(".relation-group--header",
-                                 text: relation_label.upcase,
-                                 wait: 10)
+        click_link_or_button "Save"
 
-        expect(page).to have_css("[data-test-selector='op-relation--row-type']", text: to.type.name.upcase)
+        label_text_for_relation_type_pluralized = I18n.t("#{i18n_namespace}.label_#{type}_plural").capitalize
 
-        expect(page).to have_css("[data-test-selector='op-relation--row-subject']", text: to.subject)
+        wait_for { page }.to have_no_text(modal_heading_label)
+        wait_for { page }.to have_text(label_text_for_relation_type_pluralized)
 
-        ## Test if relation exist
-        work_package.reload
-        relation = work_package.relations.last
-        expect(relation.label_for(work_package).to_s).to eq("label_#{type}")
-        expect(relation.other_work_package(work_package).id).to eq(to.id)
+        new_relation = work_package.reload.relations.last
+        target_wp = new_relation.other_work_package(work_package)
+        find_row(target_wp)
       end
 
       def expect_relation(relatable)
-        expect(relations_group).to have_css("[data-test-selector='op-relation--row-subject']", text: relatable.subject)
+        find_row(relatable)
       end
 
       def expect_relation_by_text(text)
-        expect(relations_group).to have_css("[data-test-selector='op-relation--row-subject']", text:)
+        find_some_row(text:)
       end
 
       def expect_no_relation(relatable)
-        expect(page).to have_no_css("[data-test-selector='op-relation--row-subject']", text: relatable.subject)
+        expect_no_row(relatable)
       end
 
       def add_parent(query, work_package)
@@ -163,15 +146,6 @@ module Components
         find(".wp-relation--parent-remove").click
       end
 
-      def inline_create_child(subject_text)
-        container = find(".wp-relations--children")
-        scroll_to_and_click(container.find('[data-test-selector="op-wp-inline-create"]'))
-
-        subject = ::EditField.new(container, "subject")
-        subject.expect_active!
-        subject.update subject_text
-      end
-
       def open_children_autocompleter
         retry_block do
           next if page.has_selector?(".wp-relations--children .ng-input input")
@@ -185,50 +159,48 @@ module Components
         end
       end
 
+      def children_table
+        page.find("[data-test-selector='op-relation-group-children']")
+      end
+
       def add_existing_child(work_package)
-        # Enter the query and select the child
-        autocomplete = page.find(".wp-relations--add-form [data-test-selector='wp-relations-autocomplete']")
-        select_autocomplete autocomplete,
-                            query: work_package.id,
-                            results_selector: ".ng-dropdown-panel-items",
-                            select_text: work_package.subject
+        page.find("[data-test-selector='new-relation-action-menu']").click
+
+        within page.find_by_id("new-relation-action-menu-list") do # Primer appends "list" to the menu id automatically
+          click_link_or_button "Child"
+        end
+
+        within "##{WorkPackageRelationsTab::AddWorkPackageChildFormComponent::DIALOG_ID}" do
+          autocomplete_field = page.find("[data-test-selector='work-package-child-form-id']")
+          select_autocomplete(autocomplete_field,
+                              query: work_package.subject,
+                              results_selector: "body")
+
+          click_link_or_button "Save"
+        end
       end
 
       def expect_child(work_package)
-        container = find("wp-relations-hierarchy wp-children-query")
-
-        within container do
-          expect(page)
-            .to have_css(".wp-table--cell-td.subject", text: work_package.subject, wait: 10)
-        end
+        expect_row(work_package)
       end
 
       def expect_not_child(work_package)
-        page.within("wp-relations-tab .work-packages-embedded-view--container") do
-          row = ".wp-row-#{work_package.id}-table"
-
-          expect(page).to have_no_selector(row)
-        end
-      end
-
-      def children_table
-        ::Pages::EmbeddedWorkPackagesTable.new find("wp-relations-tab .work-packages-embedded-view--container")
+        expect_no_row(work_package)
       end
 
       def relations_group
-        find("wp-relations-tab wp-relations-group")
+        page.find_by_id("work-package-relations-tab-content")
       end
 
       def remove_child(work_package)
-        page.within(".work-packages-embedded-view--container") do
-          row = ".wp-row-#{work_package.id}-table"
+        child_wp_row = find_row(work_package)
 
-          SeleniumHubWaiter.wait
-          retry_block do
-            find(row).hover
-            find("#{row} .wp-table-action--unlink").click
-          end
+        within(child_wp_row) do
+          page.find("[data-test-selector='op-relation-row-#{work_package.id}-action-menu']").click
+          page.find("[data-test-selector='op-relation-row-#{work_package.id}-delete-button']").click
         end
+
+        expect_no_row(work_package)
       end
     end
   end
