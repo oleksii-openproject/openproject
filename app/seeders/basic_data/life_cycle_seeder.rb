@@ -43,7 +43,7 @@ module BasicData
     self.attribute_names_for_lookups = %i[name type]
 
     def seed_data!
-      seed_missing_colors!
+      seed_missing_colors! if models_data.any?
       super
     end
 

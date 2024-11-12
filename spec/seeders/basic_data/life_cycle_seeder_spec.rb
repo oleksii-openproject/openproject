@@ -32,7 +32,9 @@ require "spec_helper"
 
 RSpec.describe BasicData::LifeCycleSeeder do
   subject(:seeder) { described_class.new(seed_data) }
-  let(:initial_seed_data) { {} }
+
+  let(:initial_seed_data) { Source::SeedData.new({}) }
+  let(:second_seed_initial_data) { initial_seed_data }
   let(:seed_data) { initial_seed_data.merge(Source::SeedData.new(data_hash)) }
 
   context "with some life cycles defined" do
@@ -76,7 +78,7 @@ RSpec.describe BasicData::LifeCycleSeeder do
       end
 
       it "references the life cycles in the seed data" do
-        Stage.all.each do |expected_stage|
+        Stage.find_each do |expected_stage|
           reference = :"default_life_cycle_#{expected_stage.name.downcase}"
           expect(seed_data.find_reference(reference)).to eq(expected_stage)
         end
@@ -85,7 +87,7 @@ RSpec.describe BasicData::LifeCycleSeeder do
       context "when seeding a second time" do
         subject(:second_seeder) { described_class.new(second_seed_data) }
 
-        let(:second_seed_data) { initial_seed_data.merge(Source::SeedData.new(data_hash)) }
+        let(:second_seed_data) { second_seed_initial_data.merge(Source::SeedData.new(data_hash)) }
 
         before do
           second_seeder.seed!
@@ -108,6 +110,45 @@ RSpec.describe BasicData::LifeCycleSeeder do
     context "and colors seeded" do
       include_context "with basic seed data"
       let(:initial_seed_data) { basic_seed_data }
+
+      before do
+        seeder.seed!
+      end
+
+      it_behaves_like "creates the life_cycles seeds"
+    end
+
+    context "with some colors seeded" do
+      let(:colors_data) do
+        YAML.load <<~SEEDING_DATA_YAML
+          colors:
+          - reference: :default_color_orange_dark
+            name: Orange (dark)
+            hexcode: "#F7983A"
+          - reference: :default_color_red_dark
+            name: Red (dark)
+            hexcode: "#F05823"
+          - reference: :default_color_magenta_light
+            name: Magenta (light)
+            hexcode: "#EC038A"
+          - reference: :default_color_green_yellow
+            name: Green Yellow
+            hexcode: "#B1D13A"
+        SEEDING_DATA_YAML
+      end
+      # Typical usecase for running the seeders after an upgrade: Some data exist from
+      # previous seed runs, and new seed data is added to the configuration YML.
+      let(:initial_seed_data) do
+        Color.create!(name: "Orange (dark)", hexcode: "#F7983A")
+        build_color_seeder_seed_data
+      end
+      let(:second_seed_initial_data) { build_color_seeder_seed_data }
+
+      def build_color_seeder_seed_data
+        color_seeder = BasicData::ColorSeeder.new(Source::SeedData.new(colors_data))
+        color_seeder.lookup_existing_references
+        color_seeder.seed_data
+      end
 
       before do
         seeder.seed!
