@@ -2,7 +2,7 @@
     if @user.present?
       flex_layout(classes: 'op-user-hover-card') do |flex|
         flex.with_row do
-          render(Users::AvatarComponent.new(user: @user, show_name: false, size: :large))
+          render(Users::AvatarComponent.new(user: @user, show_name: false, link: false))
         end
 
         flex.with_row do
