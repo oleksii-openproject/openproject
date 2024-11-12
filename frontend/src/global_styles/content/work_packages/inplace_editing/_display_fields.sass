@@ -79,6 +79,7 @@ display-field
         vertical-align: middle
         // Inherit from Parent, e.g. strikethrough for baseline comparison
         text-decoration: inherit
+
         &:first-of-type
           padding-right: 5px
 
@@ -93,6 +94,7 @@ display-field
     // Table specific styles
     .wp-table--cell-container &
       width: 100%
+
       .-actual-value,
       .-derived-value
         @include wp-table--time-values
@@ -109,6 +111,15 @@ display-field
 
   &.spentTime .time-logging--value
     padding: 0 2px
+
+  &.hierarchy-items
+    .path
+      & > span
+        margin-right: 0.25rem
+
+      & > span:last-child
+        margin-right: 0
+
 
 .wp-table--cell-container
   .inline-edit--display-field.-placeholder,

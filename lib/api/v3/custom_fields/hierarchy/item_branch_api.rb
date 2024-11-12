@@ -43,7 +43,7 @@ module API
                 .fmap { |items| items.map { |item| HierarchicalItemAggregate.new(item:, depth: item.depth - 1) } }
                 .either(
                   ->(items) do
-                    self_link = api_v3_paths.custom_field_item(@custom_field_item.id)
+                    self_link = api_v3_paths.custom_field_item_branch(@custom_field_item.id)
                     HierarchyItemCollectionRepresenter.new(items, self_link:, current_user:)
                   end,
                   ->(error) do
