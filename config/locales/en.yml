@@ -541,6 +541,8 @@ en:
       no_results_title_text: This user is currently not a member in any group.
     memberships:
       no_results_title_text: This user is currently not a member of a project.
+      summary_with_more: Member of %{names} and %{count} more
+      summary: Member of %{names}
   page:
     text: "Text"
   placeholder_users:

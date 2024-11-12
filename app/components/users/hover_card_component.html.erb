@@ -11,8 +11,10 @@
               render(Primer::Beta::Text.new(font_weight: :semibold)) { @user.name }
             end
 
-            f.with_column do
-              render(Primer::Beta::Text.new(color: :muted)) { @user.mail } # TODO: only with permission
+            if show_email?
+              f.with_column do
+                render(Primer::Beta::Text.new(color: :muted)) { @user.mail } # TODO: only with permission
+              end
             end
           end
         end
@@ -24,13 +26,16 @@
             end
 
             f.with_column do
-              render(Primer::Beta::Text.new(color: :muted)) { "Member of ..., ... and 4 more" }
+              render(Primer::Beta::Text.new(color: :muted)) { project_membership_summary }
             end
           end
         end
 
         flex.with_row do
-          render(Primer::Beta::Button.new) { "Open profile" }
+          # TODO: could also use helpers.allowed_management_user_profile_path here...
+          render(Primer::Beta::Button.new(tag: :a, href: user_path(@user))) do
+            "Open profile"
+          end
         end
       end
     else
