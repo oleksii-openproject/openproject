@@ -102,7 +102,7 @@ module Components
         page.find("[data-test-selector='op-relation-row-#{actual_relatable.id}-delete-button']")
       end
 
-      def add_relation(type:, to:)
+      def add_relation(type:, to:, description: nil)
         i18n_namespace = "#{WorkPackageRelationsTab::IndexComponent::I18N_NAMESPACE}.relations"
         # Open create form
 
@@ -114,6 +114,8 @@ module Components
           click_link_or_button label_text_for_relation_type.capitalize
         end
 
+        wait_for_reload if using_cuprite?
+
         # Labels to expect
         modal_heading_label = "Add #{label_text_for_relation_type}"
         expect(page).to have_text(modal_heading_label)
@@ -124,7 +126,15 @@ module Components
                             query: to.subject,
                             results_selector: "body")
 
+        if description.present?
+          click_link_or_button "Add description"
+
+          fill_in "Description", with: description
+        end
+
         click_link_or_button "Save"
+
+        wait_for_reload if using_cuprite?
 
         label_text_for_relation_type_pluralized = I18n.t("#{i18n_namespace}.label_#{type}_plural").capitalize
 
@@ -134,6 +144,53 @@ module Components
         new_relation = work_package.reload.relations.last
         target_wp = new_relation.other_work_package(work_package)
         find_row(target_wp)
+      end
+
+      def add_description_to_relation(relatable, description)
+        actual_relatable = find_relatable(relatable)
+        relation_row = find_row(actual_relatable)
+
+        relation_row.find("[data-test-selector='op-relation-row-#{actual_relatable.id}-action-menu']").click
+        relation_row.find("[data-test-selector='op-relation-row-#{actual_relatable.id}-edit-button']").click
+
+        wait_for_reload if using_cuprite?
+
+        within "##{WorkPackageRelationsTab::WorkPackageRelationDialogComponent::DIALOG_ID}" do
+          expect(page).to have_field("Work package", readonly: true)
+          expect(page).to have_button("Add description")
+          expect(page).to have_field("Description", visible: :hidden)
+
+          click_link_or_button "Add description"
+
+          expect(page).to have_field("Description")
+
+          fill_in "Description", with: description
+
+          click_link_or_button "Save"
+
+          wait_for_reload if using_cuprite?
+        end
+      end
+
+      def edit_relation_description(relatable, description)
+        actual_relatable = find_relatable(relatable)
+        relation_row = find_row(actual_relatable)
+
+        relation_row.find("[data-test-selector='op-relation-row-#{actual_relatable.id}-action-menu']").click
+        relation_row.find("[data-test-selector='op-relation-row-#{actual_relatable.id}-edit-button']").click
+
+        wait_for_reload if using_cuprite?
+
+        within "##{WorkPackageRelationsTab::WorkPackageRelationDialogComponent::DIALOG_ID}" do
+          expect(page).to have_field("Work package", readonly: true)
+          expect(page).to have_field("Description")
+
+          fill_in "Description", with: description
+
+          click_link_or_button "Save"
+
+          wait_for_reload if using_cuprite?
+        end
       end
 
       def expect_relation(relatable)
