@@ -42,7 +42,9 @@ module Users
       @size = size
       @title = title
       @hover_card = hover_card
-      @classes = [classes, hover_card ? "op-hover-card--preview-trigger" : nil].compact.join(" ")
+      @classes = classes
+      # The hover card will be triggered by hovering over the avatar (if enabled)
+      @avatar_classes = hover_card ? "op-hover-card--preview-trigger" : nil
       @name_classes = name_classes
     end
 
@@ -58,7 +60,8 @@ module Users
         hide_name: !@show_name,
         title: @title,
         class: @classes,
-        name_classes: @name_classes
+        name_classes: @name_classes,
+        avatar_classes: @avatar_classes
       )
     end
   end

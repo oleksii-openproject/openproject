@@ -76,6 +76,10 @@ export class OpPrincipalComponent implements OnInit {
 
   @Input() size:AvatarSize = 'default';
 
+  @Input() avatarClasses? = '';
+
+  @Input() hoverCardUrl? = '';
+
   @Input() title = '';
 
   public constructor(
@@ -104,6 +108,8 @@ export class OpPrincipalComponent implements OnInit {
         {
           hide: this.hideAvatar,
           size: this.size,
+          additionalClasses: this.avatarClasses,
+          hoverCardUrl: this.hoverCardUrl,
         },
         this.title === '' ? null : this.title,
       );

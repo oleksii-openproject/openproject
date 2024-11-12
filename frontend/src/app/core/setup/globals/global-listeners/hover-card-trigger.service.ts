@@ -48,7 +48,7 @@ export class HoverCardTriggerService {
       e.preventDefault();
       e.stopPropagation();
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      const el = e.currentTarget as HTMLElement;
+      const el = e.target as HTMLElement;
       if (!el) { return; }
 
       // TODO: check if open is still open for some reason (parent element triggered it)
@@ -67,7 +67,7 @@ export class HoverCardTriggerService {
         true,
       ).subscribe((previewModal) => {
         this.modalElement = previewModal.elementRef.nativeElement as HTMLElement;
-        void previewModal.reposition(this.modalElement, e.target as HTMLElement || el);
+        void previewModal.reposition(this.modalElement, el);
       });
     });
 
@@ -89,7 +89,7 @@ export class HoverCardTriggerService {
     this.ngZone.runOutsideAngular(() => {
       setTimeout(() => {
         if (!this.mouseInModal) {
-          // this.opModalService.close();
+          this.opModalService.close();
         }
       }, 100);
     });

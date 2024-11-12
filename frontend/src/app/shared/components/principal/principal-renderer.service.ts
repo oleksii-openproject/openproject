@@ -12,6 +12,8 @@ export type AvatarSize = 'default'|'medium'|'mini';
 export interface AvatarOptions {
   hide:boolean;
   size:AvatarSize;
+  additionalClasses?:string;
+  hoverCardUrl?:string;
 }
 
 export interface NameOptions {
@@ -155,6 +157,17 @@ export class PrincipalRendererService {
     image.classList.add('op-principal--avatar');
     image.classList.add('op-avatar');
     image.classList.add(`op-avatar_${options.size}`);
+
+    if (options.additionalClasses) {
+      options.additionalClasses.split(' ').forEach((c) => {
+        image.classList.add(c);
+      });
+    }
+
+    if (options.hoverCardUrl) {
+      image.setAttribute('data-hover-card-url', options.hoverCardUrl);
+    }
+
     image.src = url;
     image.title = principal.name;
     image.alt = principal.name;
