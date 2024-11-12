@@ -28,8 +28,7 @@
 
 require "spec_helper"
 
-RSpec.describe "Emoji reactions on work package activity", :js, :with_cuprite,
-               with_flag: { primerized_work_package_activities: true } do
+RSpec.describe "Emoji reactions on work package activity", :js, :with_cuprite do
   let(:project) { create(:project) }
   let(:admin) { create(:admin) }
   let(:member) { create_user_as_project_member }

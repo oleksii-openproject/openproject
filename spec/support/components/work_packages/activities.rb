@@ -74,39 +74,39 @@ module Components
       end
 
       def expect_no_journal_changed_attribute(text: nil)
-        expect(page).not_to have_test_selector("op-journal-detail-description", text:)
+        expect(page).not_to have_test_selector("op-journal-detail-description", text:, wait: 10)
       end
 
       def expect_no_journal_notes(text: nil)
-        expect(page).not_to have_test_selector("op-journal-notes-body", text:)
+        expect(page).not_to have_test_selector("op-journal-notes-body", text:, wait: 10)
       end
 
       def expect_journal_details_header(text: nil)
-        expect(page).to have_test_selector("op-journal-details-header", text:)
+        expect(page).to have_test_selector("op-journal-details-header", text:, wait: 10)
       end
 
       def expect_no_journal_details_header(text: nil)
-        expect(page).not_to have_test_selector("op-journal-details-header", text:)
+        expect(page).not_to have_test_selector("op-journal-details-header", text:, wait: 10)
       end
 
       def expect_journal_notes_header(text: nil)
-        expect(page).to have_test_selector("op-journal-notes-header", text:)
+        expect(page).to have_test_selector("op-journal-notes-header", text:, wait: 10)
       end
 
       def expect_no_journal_notes_header(text: nil)
-        expect(page).not_to have_test_selector("op-journal-notes-header", text:)
+        expect(page).not_to have_test_selector("op-journal-notes-header", text:, wait: 10)
       end
 
       def expect_journal_notes(text: nil)
-        expect(page).to have_test_selector("op-journal-notes-body", text:)
+        expect(page).to have_test_selector("op-journal-notes-body", text:, wait: 10)
       end
 
       def expect_notification_bubble
-        expect(page).to have_test_selector("op-journal-unread-notification")
+        expect(page).to have_test_selector("op-journal-unread-notification", wait: 10)
       end
 
       def expect_no_notification_bubble
-        expect(page).not_to have_test_selector("op-journal-unread-notification")
+        expect(page).not_to have_test_selector("op-journal-unread-notification", wait: 10)
       end
 
       def expect_journal_container_at_bottom
@@ -130,19 +130,19 @@ module Components
       end
 
       def expect_empty_state
-        expect(page).to have_test_selector("op-wp-journals-container-empty")
+        expect(page).to have_test_selector("op-wp-journals-container-empty", wait: 10)
       end
 
       def expect_no_empty_state
-        expect(page).not_to have_test_selector("op-wp-journals-container-empty")
+        expect(page).not_to have_test_selector("op-wp-journals-container-empty", wait: 10)
       end
 
       def expect_input_field
-        expect(page).to have_test_selector("op-work-package-journal-form")
+        expect(page).to have_test_selector("op-work-package-journal-form", wait: 10)
       end
 
       def expect_no_input_field
-        expect(page).not_to have_test_selector("op-work-package-journal-form")
+        expect(page).not_to have_test_selector("op-work-package-journal-form", wait: 10)
       end
 
       def open_new_comment_editor

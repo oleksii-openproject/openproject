@@ -129,6 +129,7 @@ RSpec.describe "Custom actions", :js, :with_cuprite,
     cf
   end
   let(:index_ca_page) { Pages::Admin::CustomActions::Index.new }
+  let(:activity_tab) { Components::WorkPackages::Activities.new(work_package) }
 
   before do
     login_as admin
@@ -137,7 +138,7 @@ RSpec.describe "Custom actions", :js, :with_cuprite,
   # this big spec just has a different expectation when primerized_work_package_activities is enabled for the very last part
   # where the a different expectation banner would be expected
   # IMO not worth the extra computation time for the intermediate state when the feature flag is active
-  it "viewing workflow buttons", with_flag: { primerized_work_package_activities: false } do
+  it "viewing workflow buttons" do
     # create custom action 'Unassign'
     index_ca_page.visit!
 
@@ -319,24 +320,26 @@ RSpec.describe "Custom actions", :js, :with_cuprite,
 
     wp_page.click_custom_action("Unassign")
     wp_page.expect_attributes assignee: "-"
-    within ".work-package-details-activities-list" do
-      expect(page)
-        .to have_css(".op-user-activity .op-user-activity--user-name",
-                     text: user.name,
-                     wait: 10)
-    end
+    activity_tab.expect_journal_details_header(text: user.name)
+    # within ".work-package-details-activities-list" do
+    #   expect(page)
+    #     .to have_css(".op-user-activity .op-user-activity--user-name",
+    #                  text: user.name,
+    #                  wait: 10)
+    # end
 
     wp_page.click_custom_action("Escalate")
     wp_page.expect_attributes priority: immediate_priority.name,
                               status: default_status.name,
                               assignee: "-",
                               "customField#{list_custom_field.id}" => selected_list_custom_field_options.map(&:name).join("\n")
-    within ".work-package-details-activities-list" do
-      expect(page)
-        .to have_css(".op-user-activity a.user-mention",
-                     text: other_member_user.name,
-                     wait: 10)
-    end
+    # within ".work-package-details-activities-list" do
+    #   expect(page)
+    #     .to have_css(".op-user-activity a.user-mention",
+    #                  text: other_member_user.name,
+    #                  wait: 10)
+    # end
+    activity_tab.expect_journal_details_header(text: other_member_user.name)
 
     wp_page.click_custom_action("Close")
     wp_page.expect_attributes status: closed_status.name,
@@ -441,7 +444,7 @@ RSpec.describe "Custom actions", :js, :with_cuprite,
 
     wp_page.click_custom_action("Escalate", expect_success: false)
 
-    wp_page.expect_toast type: :error, message: I18n.t("api_v3.errors.code_409")
+    wp_page.expect_conflict_error_banner
   end
 
   it "editing a current date custom action (Regression #30949)" do

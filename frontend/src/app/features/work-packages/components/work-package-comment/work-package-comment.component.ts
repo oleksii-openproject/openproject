@@ -84,13 +84,12 @@ export class WorkPackageCommentComponent extends WorkPackageCommentFieldHandler 
 
   public showAbove:boolean;
 
-  public primerizedActivitiesEnabled:boolean;
-
   public turboFrameSrc:string;
 
   public htmlId = 'wp-comment-field';
 
-  constructor(protected elementRef:ElementRef,
+  constructor(
+    protected elementRef:ElementRef,
     protected injector:Injector,
     protected commentService:CommentService,
     protected wpLinkedActivities:WorkPackagesActivityService,
@@ -111,7 +110,6 @@ export class WorkPackageCommentComponent extends WorkPackageCommentFieldHandler 
 
     this.canAddComment = !!this.workPackage.addComment;
     this.showAbove = this.configurationService.commentsSortedInDescendingOrder();
-    this.primerizedActivitiesEnabled = this.configurationService.activeFeatureFlags.includes('primerizedWorkPackageActivities');
     this.turboFrameSrc = `${this.PathHelper.staticBase}/work_packages/${this.workPackage.id}/activities`;
 
     this.commentService.draft$
