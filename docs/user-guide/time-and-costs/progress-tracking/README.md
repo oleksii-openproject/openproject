@@ -24,7 +24,7 @@ OpenProject lets you track and monitor the progress of your work packages.
 | Estimated time   | Work                  |
 | Remaining time   | Remaining work        |
 
->[!NOTE]
+> [!NOTE]
 > You will still find the new attributes if you search using their older names (in the list of filters, for example).
 
 ## Units of measurement
@@ -68,7 +68,6 @@ In the work-based progress reporting mode %&nbsp;Complete can either be automati
 If you you prefer to enter the values for % Complete manually, you can. You can do that in the table view and work package details view.  Values for *Work* and *Remaining work* are not required to enter  % Complete. 
 
 > [!IMPORTANT]
->
 >  If you do not enter \*Work\* or \*Remaining work\*, the \*% Complete\* field will remain an independent, manually editable field and behave like it did prior to OpenProject 14.0.
 
 ![Manually entering values for % Complete in OpenProject](openproject_user_guide_percentage_complete_manual.png)
@@ -111,7 +110,7 @@ When one field is already set and you enter a value in a second field, the third
 
 > [!NOTE]
 > If you enter a value for Remaining work that is higher than Work, you will see an error message telling you that this is not possible. You will have to enter a value lower than Work to be able to save the new value.
->Additionally, the value for Remaining work cannot be removed if a value for Work exists. If you wish to unset Remaining work, you need to also unset Work.
+> Additionally, the value for Remaining work cannot be removed if a value for Work exists. If you wish to unset Remaining work, you need to also unset Work.
 
 > [!NOTE]
 > **If you enter a % Complete value of 100% when Remaining work has a value**, this will also result in an error, since Remaining work must be 0h when % Complete is 100%.
@@ -158,9 +157,8 @@ OpenProject offers two modes for calculating *% Complete* in hierarchy totals:
 
 - **Weighted by work**: The total %&nbsp;Complete value of a hierarchy is a weighted average tied to Work. For example, a feature with Work set to 50h that is 30% done will influence the total of %&nbsp;Complete of the parent more than a feature with Work set to 5h that is 70% done. 
 
-  > [!TIP]
-  >
-  > Work packages without *Work* will be ignored.
+> [!TIP]
+> Work packages without *Work* will be ignored.
 
 - **Simple average**: *Work* is ignored and the *total % Complete* is calculated as a simple average of the *% Complete* values from the direct work packages children in the hierarchy. The value used on each direct child for computing the average is its *total % Complete* value, or its *% Complete* value if it has no children, or 0% if its *% Complete* value is empty.
 

@@ -220,7 +220,7 @@ class WorkPackages::ActivitiesTabController < ApplicationController
   end
 
   def journal_sorting
-    User.current.preference&.comments_sorting || "desc"
+    User.current.preference&.comments_sorting || OpenProject::Configuration.default_comment_sort_order
   end
 
   def journal_params

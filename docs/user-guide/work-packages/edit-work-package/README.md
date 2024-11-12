@@ -33,8 +33,7 @@ The green message on top of the work package indicates a successful update.
 
 ![Successful update message in OpenProject work package](openproject_user_guide_wp_update_message.png)
 
-> [!TIP] 
->
+> [!TIP]
 > Changes you made are saved locally. If you navigated away from page or could not save your changes due to a technical difficulty, you can access latest changes via the editor toolbar.
 
 ![Restore local backups in text editor in OpenProject](openproject_user_guide_wp_autosave_icon.png)
@@ -61,7 +60,7 @@ Please note, the status may differ from work package type. They can be configure
 
 ### How to add comments to a work package
 
-To add a comment to a work package, open the [details view](../../work-packages/work-package-views/#full-screen-view) or the [split screen view](../../work-packages/work-package-views/#split-screen-view) of a work package. On the tab [Activity](../../../getting-started/work-packages-introduction/#activity-of-work-packages) tab you have a comment field at the bottom (or on top depending on your [My account settings](../../../user-guide/my-account/)).
+To add a comment to a work package, open the [details view](../../work-packages/work-package-views/#full-screen-view) or the [split screen view](../../work-packages/work-package-views/#split-screen-view) of a work package. On the tab [Activity](../../../getting-started/work-packages-introduction/#activity-of-work-packages) tab you have a comment field at the bottom (or on top depending on your [Account settings](../../../user-guide/account-settings/)).
 
 **Split screen view:**
 
@@ -69,7 +68,7 @@ To add a comment to a work package, open the [details view](../../work-packages/
 
 ### @ notification (mention)
 
-You can mention and notify team members via [@notification](../../notifications/). They will receive a notification in OpenProject about the updates (according to their [notification settings](../../../user-guide/notifications/) in the **My account** settings).
+You can mention and notify team members via [@notification](../../notifications/). They will receive a notification in OpenProject about the updates (according to their [notification settings](../../../user-guide/notifications/) in the **Account settings**).
 
 **Full-screen view**:
 
@@ -113,7 +112,7 @@ It is also possible to add oneself as watcher (if you have sufficient permission
 ### How to remove watchers from a work package
 
 To remove watchers, navigate to the work package [details view](../../work-packages/work-package-views/#full-screen-view) and select the tab Watchers. Hover over the name of the watcher you want to remove and click the cross icon next to the watcher name.
-The user will no longer get notifications in OpenProject about changes to this work package according to their notification settings. However, if he/she is the author, assignee or accountable of the work package there still might be notifications. Read [here](../../../user-guide/my-account/#notifications-settings) for more information.
+The user will no longer get notifications in OpenProject about changes to this work package according to their notification settings. However, if he/she is the author, assignee or accountable of the work package there still might be notifications. Read [here](../../../user-guide/account-settings/#notifications-settings) for more information.
 
 ![Remove watchers from OpenProject work packages](openproject_user_guide_wp_watchers_remove.png)
 
@@ -168,8 +167,7 @@ You have the following options:
 - **Indent hierarchy** - creates a child-parent relationship with the work package directly above. The work package you selected become the child work package. The work package directly above becomes the parent work package.
 - **Create new child** - opens a new work package on the right side of the screen. This new work package already has a child relationship to the work package you selected.  
 
-> [!TIP]  
->
+> [!TIP]
 > In OpenProject 14.5 the term *Copy a work package* was replaced by *Duplicate a work package*. *Change project* was replaced by *Move to another project*.
 
 If you have opened the quick context menu for a work package that has a parent work package, you will also see:
