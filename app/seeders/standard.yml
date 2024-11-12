@@ -41,7 +41,7 @@ life_cycles:
     color_name: :default_color_magenta_light
   - reference: :default_life_cycle_closing
     t_name: Closing
-    type: Gate
+    type: Stage
     color_name: :default_color_green_yellow
 
 priorities:
