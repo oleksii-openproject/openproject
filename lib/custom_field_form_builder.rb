@@ -57,6 +57,7 @@ class CustomFieldFormBuilder < TabularFormBuilder
 
   private
 
+  # rubocop:disable Metrics/AbcSize
   def custom_field_input(options = {})
     field = custom_field.attribute_name
 
@@ -79,6 +80,8 @@ class CustomFieldFormBuilder < TabularFormBuilder
       text_field(field, input_options)
     end
   end
+
+  # rubocop:enable Metrics/AbcSize
 
   def custom_field_input_list(field, input_options)
     customized = Array(custom_value).first&.customized
