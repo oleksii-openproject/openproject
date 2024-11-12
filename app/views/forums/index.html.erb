@@ -31,11 +31,10 @@ See COPYRIGHT and LICENSE files for more details.
 <%=
   render Primer::OpenProject::PageHeader.new do |header|
     header.with_title { t(:label_forum_plural) }
-    header.with_breadcrumbs( [
-                               { href: project_overview_path(@project.id), text: @project.name  },
+    header.with_breadcrumbs( [{ href: project_overview_path(@project.id), text: @project.name  },
                                t(:label_forum_plural)
-                             ])
-  end %>
+                             ]) end %>
+
 <% if User.current.allowed_in_project?(:manage_forums, @project) %>
   <%=
     render(Primer::OpenProject::SubHeader.new) do |subheader|
