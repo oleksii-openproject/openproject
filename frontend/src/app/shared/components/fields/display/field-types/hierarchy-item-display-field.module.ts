@@ -26,36 +26,38 @@
 // See COPYRIGHT and LICENSE files for more details.
 //++
 
-import { cssClassCustomOption } from 'core-app/shared/components/fields/display/display-field.module';
-import { ResourcesDisplayField } from './resources-display-field.module';
+import { from, Observable } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 
-export class MultipleLinesCustomOptionsDisplayField extends ResourcesDisplayField {
-  public render(element:HTMLElement, displayText:string):void {
-    const values = this.stringValue;
-    element.setAttribute('title', displayText);
-    element.textContent = displayText;
+import { HalResource } from 'core-app/features/hal/resources/hal-resource';
+import { HalLink } from 'core-app/features/hal/hal-link/hal-link';
+import {
+  ResourceDisplayField,
+} from 'core-app/shared/components/fields/display/field-types/resource-display-field.module';
+import { renderHierarchyItem } from 'core-app/shared/components/fields/display/field-types/render-hierarchy-item';
+
+export class HierarchyItemDisplayField extends ResourceDisplayField {
+  public render(element:HTMLElement, _displayText:string) {
+    const item = this.attribute as HalResource;
+    if (item === null || item.name === this.texts.placeholder) {
+      this.renderEmpty(element);
+      return;
+    }
 
     element.innerHTML = '';
+    element.classList.add('hierarchy-items');
 
-    if (values.length === 0) {
-      this.renderEmpty(element);
-    } else {
-      this.renderValues(values, element);
-    }
-  }
-
-  public get valueString():string {
-    return this.stringValue.join(', ');
-  }
-
-  protected renderValues(values:string[], element:HTMLElement) {
-    values.forEach((value) => {
-      const div = document.createElement('div');
-      div.classList.add(cssClassCustomOption, '-multiple-lines');
-      div.setAttribute('title', value);
-      div.textContent = value;
-
-      element.appendChild(div);
+    this.branch(item).subscribe((path) => {
+      element.appendChild(path);
     });
+  }
+
+  private branch(item:HalResource):Observable<HTMLDivElement> {
+    const itemLink = item.$link as HalLink;
+
+    return from(itemLink.$fetch())
+      .pipe(
+        switchMap((resource:HalResource) => renderHierarchyItem(resource)),
+      );
   }
 }
