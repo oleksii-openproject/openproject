@@ -43,32 +43,63 @@ module Components
         @work_package = work_package
       end
 
+      def find_relatable(relatable)
+        case relatable
+        when WorkPackage
+          relatable
+        when Relation
+          relatable.other_work_package(work_package)
+        else
+          raise "Unknown relatable type: #{relatable.class}"
+        end
+      end
+
+      def expect_no_add_relation_button
+        expect(page).to have_no_css("[data-test-selector='new-relation-action-menu']")
+      end
+
       def find_row(relatable)
-        page.find("[data-test-selector='op-relation-row-#{relatable.id}']")
+        actual_relatable = find_relatable(relatable)
+        page.find("[data-test-selector='op-relation-row-#{actual_relatable.id}']")
       end
 
       def find_some_row(text:)
         page.find("[data-test-selector^='op-relation-row']", text:)
       end
 
+      def expect_row(work_package)
+        find_row(work_package)
+      end
+
       def expect_no_row(relatable)
-        if relatable.is_a?(Relation)
-          expect(page).to have_no_css("[data-test-selector='op-relation-row-#{relatable.to.id}']")
-        else
-          expect(page).to have_no_css("[data-test-selector='op-relation-row-#{relatable.id}']")
-        end
+        actual_relatable = find_relatable(relatable)
+        expect(page).to have_no_css("[data-test-selector='op-relation-row-#{actual_relatable.id}']")
       end
 
       def remove_relation(relatable)
-        relatable_row = find_row(relatable)
+        actual_relatable = find_relatable(relatable)
+        relatable_row = find_row(actual_relatable)
 
-        within(relatable_row) do
-          page.find("[data-test-selector='op-relation-row-#{relatable.id}-action-menu']").click
-          page.find("[data-test-selector='op-relation-row-#{relatable.id}-delete-button']").click
+        retry_block do
+          SeleniumHubWaiter.wait
+          within(relatable_row) do
+            relatable_action_menu(actual_relatable).click
+            relatable_delete_button(actual_relatable).click
+          end
+
+          # Expect relation to be gone
+          expect_no_row(relatable)
         end
+      end
 
-        # Expect relation to be gone
-        expect_no_row(relatable)
+      def relatable_action_menu(relatable)
+        actual_relatable = find_relatable(relatable)
+        page.find("[data-test-selector='op-relation-row-#{actual_relatable.id}-action-menu']")
+      end
+
+      def relatable_delete_button(relatable)
+        actual_relatable = find_relatable(relatable)
+        page.find("[data-test-selector='op-relation-row-#{actual_relatable.id}-delete-button']")
       end
 
       def add_relation(type:, to:)
@@ -164,10 +195,14 @@ module Components
       end
 
       def add_existing_child(work_package)
-        page.find("[data-test-selector='new-relation-action-menu']").click
+        SeleniumHubWaiter.wait
 
-        within page.find_by_id("new-relation-action-menu-list") do # Primer appends "list" to the menu id automatically
-          click_link_or_button "Child"
+        retry_block do
+          page.find("[data-test-selector='new-relation-action-menu']").click
+
+          within page.find_by_id("new-relation-action-menu-list") do # Primer appends "list" to the menu id automatically
+            click_link_or_button "Child"
+          end
         end
 
         within "##{WorkPackageRelationsTab::AddWorkPackageChildFormComponent::DIALOG_ID}" do
@@ -180,6 +215,10 @@ module Components
         end
       end
 
+      def relations_group
+        page.find_by_id("work-package-relations-tab-content")
+      end
+
       def expect_child(work_package)
         expect_row(work_package)
       end
@@ -188,16 +227,12 @@ module Components
         expect_no_row(work_package)
       end
 
-      def relations_group
-        page.find_by_id("work-package-relations-tab-content")
-      end
-
       def remove_child(work_package)
         child_wp_row = find_row(work_package)
 
         within(child_wp_row) do
-          page.find("[data-test-selector='op-relation-row-#{work_package.id}-action-menu']").click
-          page.find("[data-test-selector='op-relation-row-#{work_package.id}-delete-button']").click
+          relatable_action_menu(work_package).click
+          relatable_delete_button(work_package).click
         end
 
         expect_no_row(work_package)

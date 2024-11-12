@@ -61,6 +61,9 @@ class WorkPackageChildrenController < ApplicationController
         children: @children
       )
       replace_via_turbo_stream(component:)
+      update_flash_message_via_turbo_stream(
+        message: I18n.t(:notice_successful_update), scheme: :success
+      )
       respond_with_turbo_streams
     end
   end
@@ -77,6 +80,9 @@ class WorkPackageChildrenController < ApplicationController
         children: @children
       )
       replace_via_turbo_stream(component:)
+      update_flash_message_via_turbo_stream(
+        message: I18n.t(:notice_successful_update), scheme: :success
+      )
 
       respond_with_turbo_streams
     end
