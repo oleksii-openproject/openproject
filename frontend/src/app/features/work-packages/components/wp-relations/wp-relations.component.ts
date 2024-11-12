@@ -124,6 +124,7 @@ export class WorkPackageRelationsComponent extends UntilDestroyedMixin implement
           // eslint-disable-next-line no-self-assign
             renderStreamMessage(html);
           });
+        this.updateCounter();
       });
   }
 
@@ -159,6 +160,8 @@ export class WorkPackageRelationsComponent extends UntilDestroyedMixin implement
           this.halEvents.push(this.workPackage, { eventType: 'updated' });
           // Refetch relations
           void this.wpRelations.require(this.workPackage.id!, true);
+
+          this.updateCounter();
         }
       }
     });
@@ -202,6 +205,11 @@ this.currentRelations,
     this.relationGroupKeys = _.keys(this.relationGroups);
     this.relationsPresent = _.size(this.relationGroups) > 0;
     this.cdRef.detectChanges();
+  }
+
+  public updateCounter() {
+    const url = this.PathHelper.workPackageUpdateCounterPath(this.workPackage.id!, 'relations');
+    void this.turboRequests.request(url);
   }
 
   protected loadedRelations(stateValues:RelationsStateValue):void {

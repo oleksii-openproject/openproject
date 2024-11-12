@@ -227,6 +227,8 @@ export class OpAutocompleterComponent<T extends IAutocompleteItem = IAutocomplet
 
   @Input() public url:string;
 
+  @Input() public relations?:boolean = false;
+
   @Output() public open = new EventEmitter<unknown>();
 
   @Output() public close = new EventEmitter<unknown>();
@@ -467,7 +469,7 @@ export class OpAutocompleterComponent<T extends IAutocompleteItem = IAutocomplet
       tap(() => this.loading$.next(true)),
       debounce(() => timer(this.getDebounceTimeout())),
       switchMap((queryString:string) => {
-        if (this.url) {
+        if (this.relations && this.url) {
           return this.fetchFromUrl(queryString);
         }
 
