@@ -85,7 +85,7 @@ RSpec.describe "custom fields of type hierarchy", :js, :with_cuprite do
     hierarchy_page.expect_current_path
     expect(page).to have_test_selector("op-custom-fields--hierarchy-items-blankslate")
 
-    click_on "Item"
+    within("sub-header") { click_on "Item" }
     expect(page).not_to have_test_selector("op-custom-fields--hierarchy-items-blankslate")
     fill_in "Label", with: "Stormtroopers"
     fill_in "Short", with: "ST"

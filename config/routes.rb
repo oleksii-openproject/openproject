@@ -172,16 +172,15 @@ Rails.application.routes.draw do
 
     scope module: :admin do
       scope module: :custom_fields do
-        resources :projects,
-                  controller: "/admin/custom_fields/custom_field_projects",
-                  only: %i[index new create]
-        resource :project,
-                 controller: "/admin/custom_fields/custom_field_projects",
-                 only: :destroy
-        resources :items,
-                  controller: "/admin/custom_fields/hierarchy/items",
-                  except: %i[show] do
-          get :deletion_dialog, on: :member
+        resources :projects, controller: "/admin/custom_fields/custom_field_projects", only: %i[index new create]
+        resource :project, controller: "/admin/custom_fields/custom_field_projects", only: :destroy
+        resources :items, controller: "/admin/custom_fields/hierarchy/items" do
+          member do
+            get :deletion_dialog
+            get :new_child, action: :new
+            post :new_child, action: :create
+            post :move
+          end
         end
       end
     end
@@ -604,6 +603,7 @@ Rails.application.routes.draw do
                as: :work_package_progress
     end
     get "/export_dialog" => "work_packages#export_dialog", on: :collection, as: "export_dialog"
+    get :show_conflict_flash_message, on: :collection # we don't need a specific work package for this
 
     get "/split_view/update_counter" => "work_packages/split_view#update_counter",
         on: :member

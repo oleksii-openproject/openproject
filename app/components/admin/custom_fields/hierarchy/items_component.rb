@@ -35,19 +35,74 @@ module Admin
         include OpTurbo::Streamable
         include OpPrimer::ComponentHelpers
 
-        def initialize(custom_field:, new_item_form_data: { show: false })
-          super
-          @custom_field = custom_field
-          @new_item_form_data = new_item_form_data
+        def initialize(item:, new_item: nil)
+          super(item)
+          @new_item = new_item
         end
 
-        def items
-          # TODO: This must be context aware (breadcrumbs)
-          @custom_field.hierarchy_root.children
+        def root
+          @root ||= model.root? ? model : model.root
         end
 
-        def show_new_item_form?
-          @new_item_form_data[:show] || false
+        def new_item_path
+          position = model.children.any? ? model.children.last.sort_order + 1 : 0
+
+          new_child_custom_field_item_path(root.custom_field_id, model, position:)
+        end
+
+        def children
+          list = model.children
+          return list unless @new_item
+
+          position = @new_item.sort_order&.to_i
+
+          if position
+            list[0...position] + [@new_item] + list[position..]
+          else
+            list + [@new_item]
+          end
+        end
+
+        def item_header
+          render(Primer::Beta::Breadcrumbs.new) do |loaf|
+            slices.each do |slice|
+              loaf.with_item(href: slice[:href], target: nil) { slice[:label] }
+            end
+          end
+        end
+
+        def blank_icon
+          model.root? ? "list-ordered" : "op-arrow-in"
+        end
+
+        def blank_header_text
+          if model.root?
+            "custom_fields.admin.items.blankslate.root.title"
+          else
+            "custom_fields.admin.items.blankslate.item.title"
+          end
+        end
+
+        def blank_description_text
+          if model.root?
+            "custom_fields.admin.items.blankslate.root.description"
+          else
+            "custom_fields.admin.items.blankslate.item.description"
+          end
+        end
+
+        private
+
+        def slices
+          nodes = ::CustomFields::Hierarchy::HierarchicalItemService.new.get_branch(item: model).value!
+
+          nodes.map do |item|
+            if item.root?
+              { href: custom_field_items_path(root.custom_field_id), label: root.custom_field.name }
+            else
+              { href: custom_field_item_path(root.custom_field_id, item), label: item.label }
+            end
+          end
         end
       end
     end

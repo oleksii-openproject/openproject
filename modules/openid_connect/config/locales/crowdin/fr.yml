@@ -8,24 +8,26 @@ fr:
     attributes:
       openid_connect/provider:
         name: Nom
+        slug: Unique identifier
         display_name: Nom d'affichage
-        client_id: Client ID
-        client_secret: Client secret
+        client_id: ID du client
+        client_secret: Clé secrète du client
         secret: Secret
         scope: Portée
         limit_self_registration: Limiter l'inscription automatique
-        authorization_endpoint: Authorization endpoint
-        userinfo_endpoint: User information endpoint
-        token_endpoint: Token endpoint
-        end_session_endpoint: End session endpoint
-        post_logout_redirect_uri: Post logout redirect URI
-        jwks_uri: JWKS URI
-        issuer: Issuer
+        authorization_endpoint: Point de terminaison d'autorisation
+        userinfo_endpoint: Point de terminaison des informations de l'utilisateur
+        token_endpoint: Point de terminaison de jeton
+        end_session_endpoint: Point de terminaison de la session
+        post_logout_redirect_uri: URL de redirection après déconnexion
+        jwks_uri: URL JWKS
+        issuer: Émetteur
         tenant: Tenant
         metadata_url: Metadata URL
         icon: Custom icon
         claims: Claims
         acr_values: ACR values
+        redirect_url: Redirect URL
   activerecord:
     errors:
       models:
@@ -51,6 +53,7 @@ fr:
     menu_title: Fournisseurs OpenID
     delete_title: "Delete OpenID Connect provider"
     instructions:
+      redirect_url: This is the redirect URL that the OpenID Connect provider should use to redirect back to OpenProject after a successful login.
       endpoint_url: The endpoint URL given to you by the OpenID Connect provider
       metadata_none: I don't have this information
       metadata_url: I have a discovery endpoint URL

@@ -77,7 +77,7 @@ ro:
   caption_save_rate: "Salvează tarif"
   caption_set_rate: "Setează tarif curent"
   caption_show_locked: "Afișați tipurile blocate"
-  description_date_for_new_rate: "Data pentru noul tarif"
+  description_date_for_new_rate: "Dată pentru noul tarif"
   group_by_others: "nici într-un grup"
   label_between: "între"
   label_cost_filter_add: "Adaugă un filtru de intrare a costurilor"

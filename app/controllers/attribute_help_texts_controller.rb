@@ -44,7 +44,7 @@ class AttributeHelpTextsController < ApplicationController
 
   def edit; end
 
-  def create
+  def create # rubocop:disable Metrics/AbcSize
     call = ::AttributeHelpTexts::CreateService
       .new(user: current_user)
       .call(permitted_params_with_attachments)
@@ -54,12 +54,12 @@ class AttributeHelpTextsController < ApplicationController
       redirect_to attribute_help_texts_path(tab: call.result.attribute_scope)
     else
       @attribute_help_text = call.result
-      flash[:error] = call.message || I18n.t("notice_internal_server_error")
-      render action: "new"
+      flash.now[:error] = call.message || I18n.t("notice_internal_server_error")
+      render action: "new", status: :unprocessable_entity
     end
   end
 
-  def update
+  def update # rubocop:disable Metrics/AbcSize
     call = ::AttributeHelpTexts::UpdateService
       .new(user: current_user, model: @attribute_help_text)
       .call(permitted_params_with_attachments)
@@ -68,8 +68,8 @@ class AttributeHelpTextsController < ApplicationController
       flash[:notice] = t(:notice_successful_update)
       redirect_to attribute_help_texts_path(tab: @attribute_help_text.attribute_scope)
     else
-      flash[:error] = call.message || I18n.t("notice_internal_server_error")
-      render action: "edit"
+      flash.now[:error] = call.message || I18n.t("notice_internal_server_error")
+      render action: :edit, status: :unprocessable_entity
     end
   end
 

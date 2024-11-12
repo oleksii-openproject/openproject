@@ -683,6 +683,7 @@ module API
 
         # Attachments need to be eager loaded for the description
         self.to_eager_load = %i[parent
+                                priority
                                 type
                                 watchers
                                 attachments

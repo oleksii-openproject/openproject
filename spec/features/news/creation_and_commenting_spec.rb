@@ -54,6 +54,7 @@ RSpec.describe "News creation and commenting", :js, :with_cuprite do
 
     perform_enqueued_jobs do
       click_button "Create"
+      wait_for_network_idle
     end
 
     # The new news is visible on the index page

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #-- copyright
 # OpenProject is an open source project management software.
 # Copyright (C) the OpenProject GmbH
@@ -32,18 +34,29 @@ module Admin
       class ItemFormComponent < ApplicationComponent
         include OpTurbo::Streamable
 
-        def initialize(custom_field:, hierarchy_item:, url:, method:, label: nil, short: nil)
-          super
-          @custom_field = custom_field
-          @hierarchy_item = hierarchy_item
-          @url = url
-          @method = method
-          @label = label || @hierarchy_item.label
-          @short = short || @hierarchy_item.short
+        def item_options
+          options = { url:, method: http_verb, data: { test_selector: "op-custom-fields--new-item-form" } }
+          options[:data][:turbo_frame] = ItemsComponent.wrapper_key if model.new_record?
+
+          options
         end
 
-        def items_path
-          custom_field_items_path(@custom_field)
+        def http_verb
+          model.new_record? ? :post : :put
+        end
+
+        def url
+          if model.new_record?
+            new_child_custom_field_item_path(root.custom_field_id, model.parent, position: model.sort_order)
+          else
+            custom_field_item_path(root.custom_field_id, model)
+          end
+        end
+
+        private
+
+        def root
+          @root ||= model.new_record? ? model.parent.root : model.root
         end
       end
     end

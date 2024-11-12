@@ -22,7 +22,7 @@ module ::TwoFactorAuthentication
 
       ##
       # Register the device and let the user confirm
-      def register
+      def register # rubocop:disable Metrics/AbcSize
         @device_type = params[:key].to_sym
         @device = new_device_type! @device_type
 
@@ -34,7 +34,7 @@ module ::TwoFactorAuthentication
           redirect_to index_path
         else
           Rails.logger.info "Admin ##{current_user.id} failed to register a new device #{@device_type} for #{@user.id}."
-          render "two_factor_authentication/two_factor_devices/new"
+          render "two_factor_authentication/two_factor_devices/new", status: :unprocessable_entity
         end
       end
 

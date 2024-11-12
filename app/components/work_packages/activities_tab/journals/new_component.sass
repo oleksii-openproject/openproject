@@ -10,6 +10,9 @@
         width: calc(100% - 40px)
         // specific ck editor adjustments
         .ck-content
-            max-height: 30vh
+            &.ck-focused
+                max-height: 30vh
+            &.ck-blurred
+                max-height: 10vh
         .ck-editor__preview
             max-height: 30vh

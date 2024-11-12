@@ -88,13 +88,19 @@ pt-BR:
   label_meeting: "Reunião"
   label_meeting_plural: "Reuniões"
   label_meeting_new: "Nova Reunião"
+  label_meeting_new_one_time: "New one-time meeting"
+  label_meeting_create: "Create meeting"
+  label_meeting_copy: "Copy meeting"
   label_meeting_edit: "Editar Reunião"
   label_meeting_agenda: "Agenda"
   label_meeting_minutes: "Atas"
   label_meeting_close: "Fechar"
   label_meeting_open: "Abrir"
+  label_meeting_index_delete: "Delete"
+  label_meeting_open_this_meeting: "Open this meeting"
   label_meeting_agenda_close: "Fechar a agenda para iniciar a Ata"
   label_meeting_date_time: "Data/Horário"
+  label_meeting_date_and_time: "Date and time"
   label_meeting_diff: "Diferenças"
   label_upcoming_meetings: "Próximas reuniões"
   label_past_meetings: "Reuniões anteriores"
@@ -119,11 +125,14 @@ pt-BR:
       attachments: "Copiar anexos"
       attachments_text: "Copie todos os arquivos anexados para a nova reunião"
       agenda: "Copiar agenda"
+      agenda_items: "Copy agenda items"
       agenda_text: "Copiar a agenda da antiga reunião"
+      participants: "Copy list of participants"
     email:
       send_emails: "Enviar e-mail aos participantes"
       send_invitation_emails: >
         Envie um convite por e-mail imediatamente para os participantes selecionados acima. Você também pode enviar convites manualmente a qualquer momento no futuro.
+      send_invitation_emails_structured: "Send an email invitation immediately to all participants. You can also do this manually at any time later."
       open_meeting_link: "Abrir reunião"
       invited:
         summary: "%{actor} enviou a você um convite para a reunião %{title}"
@@ -137,7 +146,7 @@ pt-BR:
     types:
       classic: "Clássico"
       classic_text: "Organize sua reunião em uma agenda e protocolo de texto formatáveis."
-      structured: "Dinâmico"
+      structured: "One-time"
       structured_text: "Organize sua reunião como uma lista de itens da agenda, opcionalmente vinculando-os a um pacote de trabalho."
       structured_text_copy: "Copiar uma reunião atualmente não copiará os itens associados da agenda da reunião, apenas os detalhes"
     copied: "Copiado para a Reunião #%{id}"
@@ -148,7 +157,7 @@ pt-BR:
     empty_text: "Arraste itens para cá ou crie um novo."
   notice_successful_notification: "Notificação enviada com sucesso"
   notice_timezone_missing: Nenhum fuso horário está definido, portanto assumiu-se %{zone}. Para escolher o seu fuso horário, clique aqui.
-  notice_meeting_updated: "Esta página foi atualizada por outra pessoa. Recarregue para ver as alterações."
+  notice_meeting_updated: "Esta página foi atualizada por outra pessoa. Recarregue para visualizar as alterações."
   permission_create_meetings: "Criar reuniões"
   permission_edit_meetings: "Editar reuniões"
   permission_delete_meetings: "Excluir reuniões"

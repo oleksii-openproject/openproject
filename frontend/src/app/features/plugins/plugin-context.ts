@@ -25,15 +25,11 @@ import { HookService } from 'core-app/features/plugins/hook-service';
 import { PathHelperService } from '../../core/path-helper/path-helper.service';
 import { HTMLSanitizeService } from '../../core/html-sanitize/html-sanitize.service';
 import { DynamicContentModalComponent } from '../../shared/components/modals/modal-wrapper/dynamic-content.modal';
-import {
-  PasswordConfirmationModalComponent,
-} from '../../shared/components/modals/request-for-confirmation/password-confirmation.modal';
 import { DomAutoscrollService } from 'core-app/shared/helpers/drag-and-drop/dom-autoscroll.service';
 import { AttachmentsResourceService } from 'core-app/core/state/attachments/attachments.service';
 import { HttpClient } from '@angular/common/http';
 import { TimezoneService } from 'core-app/core/datetime/timezone.service';
 import { TurboRequestsService } from 'core-app/core/turbo/turbo-requests.service';
-import { IanCenterService } from 'core-app/features/in-app-notifications/center/state/ian-center.service';
 /**
  * Plugin context bridge for plugins outside the CLI compiler context
  * in order to access services and parts of the core application
@@ -69,7 +65,6 @@ export class OpenProjectPluginContext {
     attachmentsResourceService: this.injector.get(AttachmentsResourceService),
     http: this.injector.get(HttpClient),
     turboRequests: this.injector.get(TurboRequestsService),
-    ianCenter: this.injector.get(IanCenterService),
   };
 
   public readonly helpers = {
@@ -79,7 +74,6 @@ export class OpenProjectPluginContext {
   // Random collection of classes needed outside of angular
   public readonly classes = {
     modals: {
-      passwordConfirmation: PasswordConfirmationModalComponent,
       dynamicContent: DynamicContentModalComponent,
     },
     HalResource,

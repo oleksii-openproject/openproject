@@ -293,4 +293,18 @@ RSpec.describe Saml::Provider do
       expect(Setting.omniauth_direct_login_provider).to be_blank
     end
   end
+
+  describe "#to_h" do
+    let(:provider) { create(:saml_provider) }
+
+    context "when uid_mapping is an empty string" do
+      before do
+        provider.mapping_uid = ""
+      end
+
+      it "does not output it (Regression #58592)" do
+        expect(provider.to_h).not_to include(:uid_attribute)
+      end
+    end
+  end
 end

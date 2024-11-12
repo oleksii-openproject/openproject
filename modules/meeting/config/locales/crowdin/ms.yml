@@ -87,13 +87,19 @@ ms:
   label_meeting: "Mesyuarat"
   label_meeting_plural: "Mesyuarat-mesyuarat"
   label_meeting_new: "Mesyuarat Baharu"
+  label_meeting_new_one_time: "New one-time meeting"
+  label_meeting_create: "Create meeting"
+  label_meeting_copy: "Copy meeting"
   label_meeting_edit: "Edit Mesyuarat"
   label_meeting_agenda: "Agenda"
   label_meeting_minutes: "Minit Mesyuarat"
   label_meeting_close: "Tutup"
   label_meeting_open: "Buka"
+  label_meeting_index_delete: "Delete"
+  label_meeting_open_this_meeting: "Open this meeting"
   label_meeting_agenda_close: "Tutup agenda untuk mulakan Minit Mesyuarat"
   label_meeting_date_time: "Tarikh/Masa"
+  label_meeting_date_and_time: "Date and time"
   label_meeting_diff: "Beza"
   label_upcoming_meetings: "Mesyuarat akan datang"
   label_past_meetings: "Mesyuarat lalu"
@@ -118,11 +124,14 @@ ms:
       attachments: "Salin lampiran"
       attachments_text: "Salin semua fail yang dilampirkan ke mesyuarat baharu"
       agenda: "Salin agenda"
+      agenda_items: "Copy agenda items"
       agenda_text: "Salin agenda mesyuarat lama"
+      participants: "Copy list of participants"
     email:
       send_emails: "Email participants"
       send_invitation_emails: >
         Send an email invitation immediately to the participants selected above. You can also do this manually at any time later.
+      send_invitation_emails_structured: "Send an email invitation immediately to all participants. You can also do this manually at any time later."
       open_meeting_link: "Buka mesyuarat"
       invited:
         summary: "%{actor} telah menghantar anda jemputan ke mesyuarat %{title}"
@@ -136,7 +145,7 @@ ms:
     types:
       classic: "Klasik"
       classic_text: "Aturkan mesyuarat anda dalam agenda teks yang boleh diformat dan diprotokol."
-      structured: "Dinamik"
+      structured: "One-time"
       structured_text: "Aturkan mesyuarat anda sebagai senarai butiran agenda, pautkannya ke pakej kerja secara pilihan."
       structured_text_copy: "Menyalin mesyuarat pada masa ini tidak akan menyalin item agenda mesyuarat yang berkaitan, hanya butiran sahaja"
     copied: "Disalin daripada Mesyuarat #%{id}"

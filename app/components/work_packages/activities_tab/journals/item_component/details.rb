@@ -58,7 +58,7 @@ module WorkPackages
             flex_layout: true,
             justify_content: :space_between,
             classes: "work-packages-activities-tab-journals-item-component-details--journal-details-header-container",
-            id: "activity-anchor-#{journal.version}"
+            id: "activity-anchor-#{journal.sequence_version}"
           ) do |header_container|
             render_header_start(header_container)
             render_header_end(header_container)
@@ -187,14 +187,14 @@ module WorkPackages
             classes: "work-packages-activities-tab-journals-item-component-details--activity-link-container"
           ) do
             render(Primer::Beta::Link.new(
-                     href: "#",
+                     href: activity_url(journal),
                      scheme: :secondary,
                      underline: false,
                      font_size: :small,
                      data: { turbo: false, action: "click->work-packages--activities-tab--index#setAnchor:prevent",
-                             "work-packages--activities-tab--index-id-param": journal.version }
+                             "work-packages--activities-tab--index-id-param": journal.sequence_version }
                    )) do
-              "##{journal.version}"
+              "##{journal.sequence_version}"
             end
           end
         end
@@ -225,11 +225,12 @@ module WorkPackages
 
         def render_journal_details(details_container_inner)
           journal.details.each do |detail|
-            render_single_detail(details_container_inner, detail)
+            rendered_detail = journal.render_detail(detail)
+            render_single_detail(details_container_inner, rendered_detail) if rendered_detail.present?
           end
         end
 
-        def render_single_detail(container, detail)
+        def render_single_detail(container, rendered_detail)
           container.with_row(
             flex_layout: true,
             my: 1,
@@ -238,7 +239,7 @@ module WorkPackages
             data: { turbo: false }
           ) do |detail_container|
             render_stem_line(detail_container)
-            render_detail_description(detail_container, detail)
+            render_detail_description(detail_container, rendered_detail)
           end
         end
 
@@ -246,7 +247,7 @@ module WorkPackages
           container.with_column(classes: "work-packages-activities-tab-journals-item-component-details--journal-detail-stem-line")
         end
 
-        def render_detail_description(container, detail)
+        def render_detail_description(container, rendered_detail)
           container.with_column(
             pl: 1,
             font_size: :small,
@@ -256,17 +257,13 @@ module WorkPackages
                      classes: "work-packages-activities-tab-journals-item-component-details--journal-detail-description",
                      data: { "test-selector": "op-journal-detail-description" }
                    )) do
-              journal.render_detail(detail)
+              rendered_detail
             end
           end
         end
 
         def render_empty_line(details_container)
           details_container.with_row(my: 1, font_size: :small, classes: "empty-line")
-        end
-
-        def journal_sorting
-          User.current.preference&.comments_sorting || "desc"
         end
       end
     end

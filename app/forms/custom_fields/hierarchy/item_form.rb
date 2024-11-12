@@ -30,24 +30,28 @@ module CustomFields
   module Hierarchy
     class ItemForm < ApplicationForm
       form do |item_form|
+        item_form.hidden name: :sort_order, value: @target_item.sort_order
+
         item_form.group(layout: :horizontal) do |input_group|
           input_group.text_field(
             name: :label,
             label: "Label",
-            value: @label,
+            value: @target_item.label,
             visually_hide_label: true,
             required: true,
             placeholder: I18n.t("custom_fields.admin.items.placeholder.label"),
             validation_message: validation_message_for(:label)
           )
+
           input_group.text_field(
             name: :short,
             label: "Short",
-            value: @short,
+            value: @target_item.short,
             visually_hide_label: true,
             full_width: false,
             required: false,
-            placeholder: I18n.t("custom_fields.admin.items.placeholder.short")
+            placeholder: I18n.t("custom_fields.admin.items.placeholder.short"),
+            validation_message: validation_message_for(:short)
           )
         end
 
@@ -56,25 +60,34 @@ module CustomFields
                               tag: :a,
                               label: I18n.t(:button_cancel),
                               scheme: :default,
-                              data: { turbo_stream: true },
-                              href: url_helpers.custom_field_items_path(@custom_field))
+                              data: { turbo_target: "admin-custom-fields-hierarchy-items-component" },
+                              href: cancel_href)
           button_group.submit(name: :submit, label: I18n.t(:button_save), scheme: :primary)
         end
       end
 
-      def initialize(custom_field:, hierarchy_item:, label:, short:)
+      # @param target_item [CustomField::Hierarchy::Item] item that will be acted upon
+      def initialize(target_item:)
         super()
-        @custom_field = custom_field
-        @hierarchy_item = hierarchy_item
-        @label = label
-        @short = short
+        @target_item = target_item
       end
 
       private
 
+      def root
+        @root ||= @target_item.parent.root
+      end
+
+      def cancel_href
+        if @target_item.parent.root?
+          url_helpers.custom_field_items_path(root.custom_field_id)
+        else
+          url_helpers.custom_field_item_path(root.custom_field_id, @target_item.parent)
+        end
+      end
+
       def validation_message_for(attribute)
-        @hierarchy_item.errors.messages_for(attribute).to_sentence.presence ||
-          @custom_field.errors.messages_for(attribute).to_sentence.presence
+        @target_item.errors.messages_for(attribute).to_sentence.presence
       end
     end
   end

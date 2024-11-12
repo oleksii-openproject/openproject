@@ -113,7 +113,7 @@ RSpec.describe "Watcher tab", :js, :selenium, :with_cuprite do
       it_behaves_like "watch and unwatch with button"
     end
 
-    context "when auto completing users" do
+    context "when auto completing users", skip: "Flaky test, see #58737" do
       let!(:other_user) { create(:user, firstname: "Other", member_with_roles: { project => role }) }
 
       it "shows only the email address of the current user by default" do

@@ -13,7 +13,7 @@ Navigate to *Administration* -> *Design* in order to customize your OpenProject 
 
 The design page provides several options to customize your OpenProject Enterprise edition, grouped under three tabs, **Interface, Branding, PDF export styles**. You can [choose a color theme](#choose-a-color-theme) under any of these tabs. 
 
-Under **Interface** you can also choose [custom colors](#interface-colors) for elements of the interface such as the primary link colour, secondary accent colour, the background of the top navigation header and the main menu.
+Under **Interface** you can also choose [custom colors](#interface-colors) for elements of the interface such as the primary button colour, accent colour, the background of the top navigation header and the main menu.
 
 ![Design interface settings in OpenProject adminstration](openproject_system_guide_design_interface.png)
 

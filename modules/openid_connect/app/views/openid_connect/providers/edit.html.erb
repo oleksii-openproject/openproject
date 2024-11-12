@@ -26,7 +26,21 @@
   end
 %>
 
-<%= render(OpenIDConnect::Providers::ViewComponent.new(@provider,
-                                                       view_mode: :edit,
-                                                       edit_mode: @edit_mode,
-                                                       edit_state: @edit_state)) %>
+<%=
+  render(Primer::Alpha::Layout.new(stacking_breakpoint: :md)) do |content|
+    content.with_main do
+      render(OpenIDConnect::Providers::ViewComponent.new(@provider,
+                                                         view_mode: :edit,
+                                                         edit_mode: @edit_mode,
+                                                         edit_state: @edit_state))
+    end
+
+    if @provider.persisted?
+      content.with_sidebar(row_placement: :start, col_placement: :end) do
+        render(OpenIDConnect::Providers::SidePanelComponent.new(@provider))
+      end
+    end
+  end
+%>
+
+<%=  %>

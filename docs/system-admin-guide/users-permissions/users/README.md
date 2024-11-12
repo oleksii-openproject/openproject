@@ -112,7 +112,7 @@ Please note: this only works for users who haven't logged in yet. If the user is
 
 ## Manage user settings
 
-You can manage individual user details if you click on the user name in the list. These settings will overwrite the individual user's settings set in their **My Account** settings.
+You can manage individual user details if you click on the user name in the list. These settings will overwrite the individual user's settings set in their **Account settings**.
 
 ### General settings
 
@@ -168,11 +168,11 @@ On the **Global roles** tab, select or de-select the global role(s) for this use
 
 ### Notification settings
 
-Under **Notification settings** tab you can edit the [notification settings](../../../user-guide/notifications/notification-settings/) for the user. Each user can adjust these settings under [My account](../../../user-guide/my-account) on their own.
+Under **Notification settings** tab you can edit the [notification settings](../../../user-guide/notifications/notification-settings/) for the user. Each user can adjust these settings under [Account settings](../../../user-guide/account-settings) on their own.
 
 ### Email reminders
 
-Under **Email reminders** tab you can edit the [email reminders settings](../../../user-guide/my-account/#email-reminders). Each user can adjust these settings under [My account](../../../user-guide/my-account) on their own.
+Under **Email reminders** tab you can edit the [email reminders settings](../../../user-guide/account-settings/#email-reminders). Each user can adjust these settings under [Account settings](../../../user-guide/account-settings) on their own.
 
 ### Rate history
 
@@ -225,7 +225,7 @@ Leave all fields blank. When the details are saved OpenProject will send an emai
 Two [settings](../settings/#user-deletion) allow users to be deleted from the system:
 
 * **User accounts deletable by admins** - if ticked, a **Delete** button is shown on the user details page.
-* **Users allowed to delete their accounts** - if ticked, a **Delete account** menu entry is shown in the **My Account** page.
+* **Users allowed to delete their accounts** - if ticked, a **Delete account** menu entry is shown in the **Account settings** page.
 
 To delete another user's account open the [user list](#user-list). Click on the **user name** of the user which you want to delete. Click the **Delete** button at the top right.
 

@@ -77,7 +77,7 @@ import { IHalResourceLink } from 'core-app/core/state/hal-resource';
 import {
   LocationPickerModalComponent,
 } from 'core-app/shared/components/storages/location-picker-modal/location-picker-modal.component';
-import { ToastService } from 'core-app/shared/components/toaster/toast.service';
+import { IToast, ToastService } from 'core-app/shared/components/toaster/toast.service';
 import { StorageFilesResourceService } from 'core-app/core/state/storage-files/storage-files.service';
 import { IUploadFile, OpUploadService } from 'core-app/core/upload/upload.service';
 import { IUploadLink } from 'core-app/core/state/storage-files/upload-link.model';
@@ -237,21 +237,27 @@ export class StorageComponent extends UntilDestroyedMixin implements OnInit, OnD
   ngOnInit():void {
     this.storage = this.storagesResourceService.requireEntity(this.projectStorage._links.storage.href);
 
-    this.fileLinks = this.collectionKey()
-      .pipe(
-        switchMap((key) => {
-          if (isNewResource(this.resource)) {
-            return this.fileLinkResourceService.collection(key);
-          }
+    this.fileLinks = this.storage.pipe(
+      take(1),
+      switchMap(() =>
+        this.collectionKey().pipe(
+          switchMap((key) => {
+            if (isNewResource(this.resource)) {
+              return this.fileLinkResourceService.collection(key);
+            }
+            return this.fileLinkResourceService.requireCollection(key);
+          }),
+          tap((fileLinks) => {
+            if (isNewResource(this.resource)) {
+              this.resource.fileLinks = { elements: fileLinks.map((a) => a._links?.self) };
+            }
+          }),
+        )),
+    );
 
-          return this.fileLinkResourceService.requireCollection(key);
-        }),
-        tap((fileLinks) => {
-          if (isNewResource(this.resource)) {
-            this.resource.fileLinks = { elements: fileLinks.map((a) => a._links?.self) };
-          }
-        }),
-      );
+    this.fileLinks.subscribe({ error: (err:string | HttpErrorResponse | IToast) =>
+        this.toastService.addError(err),
+    });
 
     this.disabled = combineLatest([
       this.storage,

@@ -82,6 +82,8 @@ RSpec.describe "My spent time widget with a negative time zone", :js,
 
     my_page.expect_and_dismiss_toaster message: I18n.t(:notice_successful_update)
 
+    wait_for_network_idle
+
     expect(page)
       .to have_content time_entry.spent_on.strftime("%-m/%-d")
 

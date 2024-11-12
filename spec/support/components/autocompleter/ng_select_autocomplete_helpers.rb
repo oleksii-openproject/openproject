@@ -14,7 +14,9 @@ module Components::Autocompleter
 
       # Insert the text to find
       within(element) do
-        ng_enter_query(element, query, wait_for_fetched_options:)
+        retry_block do
+          ng_enter_query(element, query, wait_for_fetched_options:)
+        end
       end
 
       # Wait for options to be refreshed after having entered some text.

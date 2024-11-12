@@ -32,6 +32,7 @@ module Components
       include Capybara::DSL
       include Capybara::RSpecMatchers
       include RSpec::Matchers
+      include RSpec::Wait
 
       attr_reader :work_package
 
@@ -64,6 +65,7 @@ module Components
       # helpers for new primerized activities
 
       def within_journal_entry(journal, &)
+        wait_for { page }.to have_test_selector("op-wp-journal-entry-#{journal.id}") # avoid flakyness
         page.within_test_selector("op-wp-journal-entry-#{journal.id}", &)
       end
 
@@ -143,12 +145,19 @@ module Components
         expect(page).not_to have_test_selector("op-work-package-journal-form")
       end
 
-      def add_comment(text: nil, save: true)
-        # TODO: get rid of static sleep
-        sleep 1 # otherwise the stimulus component is not mounted yet and the click does not work
+      def open_new_comment_editor
+        page.find_test_selector("op-open-work-package-journal-form-trigger").click
+      end
 
+      def expect_focus_on_editor
+        page.within_test_selector("op-work-package-journal-form-element") do
+          expect(page).to have_css(".ck-content:focus")
+        end
+      end
+
+      def add_comment(text: nil, save: true)
         if page.find_test_selector("op-open-work-package-journal-form-trigger")
-          page.find_test_selector("op-open-work-package-journal-form-trigger").click
+          open_new_comment_editor
         else
           expect(page).to have_test_selector("op-work-package-journal-form-element")
         end
@@ -160,9 +169,12 @@ module Components
 
         if save
           page.within_test_selector("op-wp-journals-container") do
-            expect(page).to have_text(text)
+            # wait for the comment to be loaded
+            wait_for { page }.to have_test_selector("op-journal-notes-body", text:)
           end
         end
+
+        wait_for_network_idle
       end
 
       def edit_comment(journal, text: nil)
@@ -175,14 +187,12 @@ module Components
             page.find_test_selector("op-submit-work-package-journal-form").click
           end
 
-          expect(page).to have_text(text)
+          # wait for the comment to be loaded
+          wait_for { page }.to have_test_selector("op-journal-notes-body", text:)
         end
       end
 
       def quote_comment(journal)
-        # TODO: get rid of static sleep
-        sleep 1 # otherwise the stimulus component is not mounted yet and the click does not work
-
         within_journal_entry(journal) do
           page.find_test_selector("op-wp-journal-#{journal.id}-action-menu").click
           page.find_test_selector("op-wp-journal-#{journal.id}-quote").click
@@ -199,7 +209,7 @@ module Components
         page.all(".work-packages-activities-tab-journals-item-component--journal-notes-body").map(&:text)
       end
 
-      def filter_journals(filter)
+      def filter_journals(filter, default_sorting: User.current.preference&.comments_sorting || "desc")
         page.find_test_selector("op-wp-journals-filter-menu").click
 
         case filter
@@ -211,10 +221,14 @@ module Components
           page.find_test_selector("op-wp-journals-filter-show-only-changes").click
         end
 
-        sleep 1 # wait for the journals to be reloaded, TODO: get rid of static sleep
+        # Ensure the journals are reloaded
+        # wait_for { page }.to have_test_selector("op-wp-journals-#{filter}-#{default_sorting}")
+        # the wait_for will not work as the selector will be switched to the target filter before the page is updated
+        # so we still need to wait statically unfortuntately to avoid flakyness
+        sleep 1
       end
 
-      def set_journal_sorting(sorting)
+      def set_journal_sorting(sorting, default_filter: :all)
         page.find_test_selector("op-wp-journals-sorting-menu").click
 
         case sorting
@@ -224,7 +238,7 @@ module Components
           page.find_test_selector("op-wp-journals-sorting-desc").click
         end
 
-        sleep 1 # wait for the journals to be reloaded, TODO: get rid of static sleep
+        wait_for { page }.to have_test_selector("op-wp-journals-#{default_filter}-#{sorting}")
       end
     end
   end
