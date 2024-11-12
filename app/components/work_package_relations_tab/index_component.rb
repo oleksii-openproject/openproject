@@ -26,6 +26,18 @@ class WorkPackageRelationsTab::IndexComponent < ApplicationComponent
 
   private
 
+  def should_render_add_child?
+    helpers.current_user.allowed_in_project?(:manage_subtasks, @work_package.project)
+  end
+
+  def should_render_add_relations?
+    helpers.current_user.allowed_in_project?(:manage_work_package_relations, @work_package.project)
+  end
+
+  def should_only_render_add_child?
+    should_render_add_child? && !should_render_add_relations?
+  end
+
   def group_relations_by_directional_context
     relations.group_by do |relation|
       relation.relation_type_for(work_package)
