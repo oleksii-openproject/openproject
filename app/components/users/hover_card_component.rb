@@ -11,8 +11,7 @@ class Users::HoverCardComponent < ApplicationComponent
   end
 
   def show_email?
-    # TODO: permission
-    true
+    (@user == User.current) || User.current.allowed_globally?(:view_user_email)
   end
 
   # Constructs a string in the form of:
