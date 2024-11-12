@@ -8,6 +8,7 @@ sv:
     attributes:
       openid_connect/provider:
         name: Namn
+        slug: Unique identifier
         display_name: Visningsnamn
         client_id: Klient-ID
         client_secret: Client secret
@@ -26,6 +27,7 @@ sv:
         icon: Custom icon
         claims: Claims
         acr_values: ACR values
+        redirect_url: Redirect URL
   activerecord:
     errors:
       models:
@@ -51,6 +53,7 @@ sv:
     menu_title: OpenID leverantörer
     delete_title: "Delete OpenID Connect provider"
     instructions:
+      redirect_url: This is the redirect URL that the OpenID Connect provider should use to redirect back to OpenProject after a successful login.
       endpoint_url: The endpoint URL given to you by the OpenID Connect provider
       metadata_none: I don't have this information
       metadata_url: I have a discovery endpoint URL

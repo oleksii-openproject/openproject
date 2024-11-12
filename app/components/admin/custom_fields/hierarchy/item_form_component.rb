@@ -47,7 +47,7 @@ module Admin
 
         def url
           if model.new_record?
-            new_child_custom_field_item_path(root.custom_field_id, model.parent)
+            new_child_custom_field_item_path(root.custom_field_id, model.parent, position: model.sort_order)
           else
             custom_field_item_path(root.custom_field_id, model)
           end

@@ -47,7 +47,7 @@ class EnterprisesController < ApplicationController
     end
   end
 
-  def create
+  def create # rubocop:disable Metrics/AbcSize
     @token = EnterpriseToken.current || EnterpriseToken.new
     saved_encoded_token = @token.encoded_token
     @token.encoded_token = params[:enterprise_token][:encoded_token]
@@ -64,7 +64,7 @@ class EnterprisesController < ApplicationController
         @current_token = @token || EnterpriseToken.new
       end
       respond_to do |format|
-        format.html { render action: :show }
+        format.html { render action: :show, status: :unprocessable_entity }
         format.json { render json: { description: @token.errors.full_messages.join(", ") }, status: :bad_request }
       end
     end

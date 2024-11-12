@@ -141,7 +141,7 @@ ro:
       revisions: "Show local modifications"
       no_revisions: "No local modifications found"
       preview: "Activaţi/Dezactivați previzualizarea"
-      source_code: "Fă clic pentru a activa/dezactiva modul ierarhic"
+      source_code: "Clic pentru a activa/dezactiva modul ierarhic"
       error_saving_failed: "Salvarea documentului a eșuat cu următoarea eroare: %{error}"
       ckeditor_error: "A apărut o eroare în cadrul CKEditor"
       mode:
@@ -171,14 +171,14 @@ ro:
           macros: "Macro"
           chose_macro: "Alegeți macro"
         toc: "Cuprins"
-        toolbar_help: "Fă clic pentru a selecta widgetul și pentru a afișa bara de instrumente. Fă dublu clic pentru a edita widgetul"
+        toolbar_help: "Clic pentru a selecta piesa și pentru a afișa bara de instrumente. Dublu clic pentru a edita piesa"
         wiki_page_include:
           button: "Includeți conținul altei pagini wiki"
           text: "[Placeholder] Pagină wiki inclusă"
           page: "Pagină wiki"
           not_set: "(Pagina nu a fost încă stabilită)"
           hint: |
-            Includeți conținutul altei pagini wiki specificând titul sau adresa(slug). Puteți include pagina wiki din cadrul altui proiect separându-le prin simbolul ”:” ca și în exemplul următor.
+            Include conținutul altei pagini wiki specificând titlul sau adresa. Poți include pagina wiki din cadrul altui proiect separându-le prin simbolul ”:” ca și în exemplul următor.
         work_package_button:
           button: "Creați pachet de lucru"
           type: "Tip pachet de lucru"
@@ -355,10 +355,10 @@ ro:
           learn_about: "Aflați mai multe despre noile caracteristici"
           #Include the version to invalidate outdated translations in other locales.
           #Otherwise, e.g. chinese might still have the translations for 10.0 in the 12.0 release.
-          "14_6":
+          "15_0":
             standard:
               new_features_html: >
-                The release brings various features and improvements for you, e.g. <br> <ul class="%{list_styling_class}"> <li>Benefit from more flexible progress reporting – thanks to user feedback.</li> <li>Receive an update notification with reload option for meetings.</li> <li>Enable a custom field for multiple projects at once.</li> <li>Use relative work package attribute macros.</li> <li>Show empty lines in saved rich text.</li> <li>See past meetings included in the number next to the Meetings tab.</li> </ul>
+                The release brings various features and improvements for you, e.g. <br> <ul class="%{list_styling_class}"> <li>Boost your communication with a better structured Activity tab, real-time loading messages and notifications, emoji reactions, and more.</li> <li>Benefit from easy Single Sign-On authentication settings with SAML and OIDC in your Enterprise Cloud administration.</li> <li>Use the new 'Standard global role' and enable permissions to view email addresses.</li> <li>Enjoy easier navigation in project lists with quick action table headers.</li> <li>Experience simplified design settings with fewer sidebar design variables needed.</li> <li>Reduce manual cleanup when adding a custom field to a type – no more auto-applying to all projects.</li> <li>Benefit from improved navigation clarity – 'My account' is renamed to 'Account settings'.</li> </ul>
     ical_sharing_modal:
       title: "Subscribe to calendar"
       inital_setup_error_message: "An error occured while fetching data."
@@ -381,7 +381,7 @@ ro:
     label_add_row_before: "Adauga un rand inainte"
     label_add_selected_columns: "Adăugați coloanele selectate"
     label_added_by: "adăugat de"
-    label_added_time_by: 'Added by <a href="%{authorLink}">%{author}</a> at %{age}'
+    label_added_time_by: 'Adăugat de <a href="%{authorLink}">%{author}</a> acum %{age}'
     label_ago: "zile în urmă"
     label_all: "toate"
     label_all_uppercase: "Toate"
@@ -434,7 +434,7 @@ ro:
     label_global_roles: "Global roles"
     label_greater_or_equal: ">="
     label_group: "Grup"
-    label_group_by: "Grupare după"
+    label_group_by: "Grupează după"
     label_group_plural: "Grupuri"
     label_hide_attributes: "Arată mai puţin"
     label_hide_column: "Ascunde coloana"
@@ -533,8 +533,8 @@ ro:
     label_watcher_deleted_successfully: "Observator eliminat cu succes!"
     label_work_package_details_you_are_here: "Sunteți pe fila %{tab} pentru %{type} %{subject}."
     label_work_package_context_menu: "Work package context menu"
-    label_unwatch: "Stop monitorizare"
-    label_unwatch_work_package: "Opriți urmărirea pachetului de lucru"
+    label_unwatch: "Nu mai urmări"
+    label_unwatch_work_package: "Oprește urmărirea pachetului de lucru"
     label_uploaded_by: "Încărcat de"
     label_default_queries: "Implicit"
     label_starred_queries: "Favorit"
@@ -641,7 +641,7 @@ ro:
           with_current_filter: "Nu există notificări în această vizualizare în acest moment"
         mark_all_read: "Marchează toate ca și citite"
         mark_as_read: "Marchează ca Citit"
-        text_update_date_by: "%{date} by"
+        text_update_date_by: "%{date} de"
         total_count_warning: "Se afișează %{newest_count} cele mai recente notificări. %{more_count} în plus nu sunt afișate."
         empty_state:
           no_notification: "Se pare că v-ați pus la punct."
@@ -765,7 +765,7 @@ ro:
         error_no_table_configured: "Vă rugăm să configurați un tabel pentru %{group}."
         reset_title: "Resetare configurare formular"
         confirm_reset: >
-          Antenție: Sunteți sigur că doriți să resetați congurația formularului? Această acțiune va reseta toate atributele înapoi la grupul implicit și va dezactiva TOATE câmpurile personalizate.
+          Atenție: Ești sigur că vrei să resetați conjurația formularului? Această acțiune va reseta toate atributele înapoi la grupul implicit și va dezactiva TOATE câmpurile personalizate.
         upgrade_to_ee: "Actualizare la ediția Enterprise on-premise"
         upgrade_to_ee_text: "Wow! Dacă aveți nevoie de acest add-on sunteți un super profesionist! Vrei să ne sprijini pe noi, dezvoltatorii OpenSource, devenind client al ediției Enterprise?"
         more_information: "Mai multe informatii"
@@ -799,7 +799,7 @@ ro:
       children: "Fii"
       relates: "În relație cu"
       duplicates: "Dublează"
-      duplicated: "Dublate de"
+      duplicated: "Dublat de"
       blocks: "Blochează"
       blocked: "Blocat de"
       precedes: "Precede"
@@ -814,7 +814,7 @@ ro:
       hierarchy_headline: "Arată ierarhia"
       children_headline: "Fii"
     relation_buttons:
-      set_parent: "Setați părintele"
+      set_parent: "Setează părinte"
       change_parent: "Modificare părinte"
       remove_parent: "Elimina părinte"
       hierarchy_indent: "Ierarhia de indentare"
@@ -831,7 +831,7 @@ ro:
       add_existing_relation: "Adăugarea unei relații existente"
       update_description: "Setează sau actualizează descrierea acestei relații"
       toggle_description: "Comută descrierea relației"
-      update_relation: "Fă click pentru a schimba tipul de legătură"
+      update_relation: "Clic pentru a schimba tipul de legătură"
       add_follower: "Adaugă urmăritor"
       show_relations: "Arată relațiile"
       add_predecessor: "Adăugați predecesorul"
@@ -952,7 +952,7 @@ ro:
       hierarchy:
         show: "Afișați modul ierarhic"
         hide: "Ascundeți modul ierarhic"
-        toggle_button: "Fă clic pentru a activa/dezactiva modul ierarhic."
+        toggle_button: "Clic pentru a activa/dezactiva modul ierarhic."
         leaf: "Frunza pachetului de lucru la nivelul %{level}."
         children_collapsed: "Nivelul ierarhic %{level}, prăbușit. Faceți clic pentru a afișa copiii filtrați"
         children_expanded: "Nivelul ierarhic %{level}, extins. Faceți clic pentru a restrânge copiii filtrați"
@@ -1300,29 +1300,29 @@ ro:
         does_not_match_search: "Proiectul nu corespunde criteriilor de căutare."
       no_results: "Niciun proiect nu corespunde criteriilor de căutare."
     baseline:
-      toggle_title: "Baseline"
-      clear: "Inițializare"
+      toggle_title: "Referință"
+      clear: "Golire"
       apply: "Aplică"
-      header_description: "Highlight changes made to this list since any point in the past."
+      header_description: "Evidențiază modificările făcute la această listă de la orice punct din trecut."
       enterprise_header_description: "Highlight changes made to this list since any point in the past with Enterprise edition."
-      show_changes_since: "Show changes since"
-      baseline_comparison: "Baseline comparison"
-      help_description: "Reference time zone for the baseline."
-      time_description: "In your local time: %{datetime}"
-      time: "Ora"
+      show_changes_since: "Arată modificările din"
+      baseline_comparison: "Comparație referință"
+      help_description: "Zona orară de referință"
+      time_description: "În timpul tău local: %{datetime}"
+      time: "Timp"
       from: "Din"
       to: "La"
       drop_down:
         none: "-"
         yesterday: "ieri"
-        last_working_day: "last working day"
+        last_working_day: "ultima zi lucrătoare"
         last_week: "săptămâna trecută"
         last_month: "luna trecută"
-        a_specific_date: "a specific date"
-        between_two_specific_dates: "between two specific dates"
+        a_specific_date: "o anumită dată"
+        between_two_specific_dates: "între două dăți specifice"
       legends:
-        changes_since: "Changes since"
-        changes_between: "Changes between"
+        changes_since: "Modificări de la"
+        changes_between: "Modificări între"
         now_meets_filter_criteria: "Now meets filter criteria"
         no_longer_meets_filter_criteria: "No longer meets filter criteria"
         maintained_with_changes: "Maintained with changes"
@@ -1330,7 +1330,7 @@ ro:
       icon_tooltip:
         added: "Added to view within the comparison time period"
         removed: "Removed from view within the comparison time period"
-        changed: "Maintained with modifications"
+        changed: "Menținut cu modificări"
     forms:
       submit_success_message: "Formularul a fost trimis cu succes"
       load_error_message: "A apărut o eroare la încărcarea formularului"

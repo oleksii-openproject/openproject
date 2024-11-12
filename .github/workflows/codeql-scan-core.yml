@@ -5,6 +5,8 @@ on:
     branches: [ "dev", "release/*", "stable/*" ]
   pull_request:
     branches: [ "dev", "release/*", "stable/*" ]
+    paths-ignore:
+      - 'docs/**'
   schedule:
     - cron: '32 1 * * 2'
 

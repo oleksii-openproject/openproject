@@ -173,7 +173,7 @@ export class MultiSelectEditFieldComponent extends EditFieldComponent implements
       });
     }
 
-    this.availableOptions = availableValues || [];
+    this.availableOptions = this.filterInvalidValues(availableValues || []);
     this._selectedOption = this.buildSelectedOption();
     this.checkCurrentValueValidity();
 
@@ -205,6 +205,10 @@ export class MultiSelectEditFieldComponent extends EditFieldComponent implements
       this.setValues([]);
     }
     return Promise.resolve();
+  }
+
+  private filterInvalidValues(availableValues:HalResource[]) {
+    return availableValues.filter((value) => !!value.name);
   }
 
   private checkCurrentValueValidity() {

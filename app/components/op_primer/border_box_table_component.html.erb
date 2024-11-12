@@ -55,3 +55,7 @@ See COPYRIGHT and LICENSE files for more details.
     end
   end
 %>
+
+<% if paginated? %>
+  <%= helpers.pagination_links_full rows %>
+<% end %>

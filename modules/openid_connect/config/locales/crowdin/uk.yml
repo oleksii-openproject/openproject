@@ -8,40 +8,42 @@ uk:
     attributes:
       openid_connect/provider:
         name: Ім’я
+        slug: Unique identifier
         display_name: Відображуване ім'я
-        client_id: Client ID
-        client_secret: Client secret
+        client_id: ID клієнта
+        client_secret: Секретний ключ клієнта
         secret: Таємний код
         scope: Область використання
         limit_self_registration: Обмежити самостійну реєстрацію
-        authorization_endpoint: Authorization endpoint
-        userinfo_endpoint: User information endpoint
-        token_endpoint: Token endpoint
-        end_session_endpoint: End session endpoint
-        post_logout_redirect_uri: Post logout redirect URI
+        authorization_endpoint: Кінцева точка авторизації
+        userinfo_endpoint: Кінцева точка доступу до інформації про користувача
+        token_endpoint: Кінцева точка маркера
+        end_session_endpoint: Кінцева точка завершення сеансу
+        post_logout_redirect_uri: URI перенаправлення після виходу із системи
         jwks_uri: JWKS URI
         issuer: Issuer
         tenant: Tenant
-        metadata_url: Metadata URL
-        icon: Custom icon
+        metadata_url: URL-адреса метаданих
+        icon: Користувацький значок
         claims: Claims
-        acr_values: ACR values
+        acr_values: Значення ACR
+        redirect_url: Redirect URL
   activerecord:
     errors:
       models:
         openid_connect/provider:
           attributes:
             metadata_url:
-              format: "Discovery endpoint URL %{message}"
+              format: "URL-адреса кінцевої точки виявлення %{message}"
               response_is_not_successful: " responds with %{status}."
               response_is_not_json: " does not return JSON body."
               response_misses_required_attributes: " does not return required attributes. Missing attributes are: %{missing_attributes}."
   provider:
     delete_warning:
-      input_delete_confirmation: Enter the provider name %{name} to confirm deletion.
-      irreversible_notice: Deleting an SSO provider is an irreversible action.
-      provider: 'Are you sure you want to delete the SSO provider %{name}? To confirm this action please enter the name of the provider in the field below, this will:'
-      delete_result_1: Remove the provider from the list of available providers.
+      input_delete_confirmation: Введіть ім’я постачальника послуг %{name}, щоб підтвердити видалення.
+      irreversible_notice: Видалення постачальника послуг SSI не можна скасувати.
+      provider: 'Справді видалити постачальника послуг SSO %{name}? Щоб підтвердити цю дію, введіть ім’я постачальника в поле нижче. Після цього:'
+      delete_result_1: Вилучіть постачальника послуг зі списку доступних провайдерів.
       delete_result_user_count:
         zero: No users are currently using this provider. No further action is required.
         one: "One user is currently still using this provider. They will need to be re-invited or logging in with another provider."
@@ -51,6 +53,7 @@ uk:
     menu_title: Постачальники OpenID
     delete_title: "Delete OpenID Connect provider"
     instructions:
+      redirect_url: This is the redirect URL that the OpenID Connect provider should use to redirect back to OpenProject after a successful login.
       endpoint_url: The endpoint URL given to you by the OpenID Connect provider
       metadata_none: У мене немає цієї інформації
       metadata_url: I have a discovery endpoint URL

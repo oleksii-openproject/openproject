@@ -38,7 +38,7 @@ class CategoriesController < ApplicationController
     @category = @project.categories.build
   end
 
-  def create
+  def create # rubocop:disable Metrics/AbcSize
     @category = @project.categories.build
     @category.attributes = permitted_params.category
 
@@ -55,7 +55,7 @@ class CategoriesController < ApplicationController
     else
       respond_to do |format|
         format.html do
-          render action: :new
+          render action: :new, status: :unprocessable_entity
         end
         format.js do
           render(:update) { |page| page.alert(@category.errors.full_messages.join('\n')) }
@@ -70,7 +70,7 @@ class CategoriesController < ApplicationController
       flash[:notice] = I18n.t(:notice_successful_update)
       redirect_to project_settings_categories_path(@project)
     else
-      render action: "edit"
+      render action: :edit, status: :unprocessable_entity
     end
   end
 

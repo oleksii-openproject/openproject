@@ -92,6 +92,8 @@ RSpec.describe("Activation of storages in projects",
     page.click_on("Cancel")
     expect(page).to have_current_path external_file_storages_project_settings_project_storages_path(project)
 
+    wait_for_network_idle
+
     # Enable one file storage together with a project folder mode
     page.first(:link, "New storage").click
     expect(page).to have_current_path new_project_settings_project_storage_path(project_id: project)

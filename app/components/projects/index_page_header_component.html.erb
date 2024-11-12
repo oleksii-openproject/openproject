@@ -152,6 +152,14 @@
             item.with_leading_visual_icon(icon: 'trash')
           end
         end
+        menu.with_item(
+          tag: :button,
+          label: t('label_zen_mode'),
+          content_arguments: { data: { controller: "projects-zen-mode", target: "projects-zen-mode.button", action: "click->projects-zen-mode#performAction" }
+          }
+        ) do |item|
+          item.with_leading_visual_icon(icon: 'screen-full')
+        end
       end
     end
   %>

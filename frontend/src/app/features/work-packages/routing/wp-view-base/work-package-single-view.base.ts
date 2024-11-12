@@ -188,16 +188,6 @@ export class WorkPackageSingleViewBase extends UntilDestroyedMixin {
       this.attachmentsResourceService.fetchCollection(this.workPackage.$links.attachments.href as string).subscribe();
     }
 
-    if (this.workPackage.$links.fileLinks) {
-      this.fileLinkResourceService
-        .updateCollectionsForWorkPackage(this.workPackage.$links.fileLinks.href as string)
-        .pipe(take(1))
-        .subscribe(
-          () => { /* Do nothing */ },
-          (error:HttpErrorResponse) => { this.toastService.addError(error); },
-        );
-    }
-
     // Listen to tab changes to update the tab label
     this.keepTab.observable
       .pipe(this.untilDestroyed())

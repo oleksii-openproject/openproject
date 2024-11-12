@@ -70,8 +70,14 @@ module Admin
           add_below_action_item(menu)
           add_sub_item_action_item(menu)
           menu.with_divider
-          move_up_action_item(menu) unless first_item?
-          move_down_action_item(menu) unless last_item?
+          if !first_item?
+            move_to_top_action_item(menu)
+            move_up_action_item(menu)
+          end
+          if !last_item?
+            move_down_action_item(menu)
+            move_to_bottom_action_item(menu)
+          end
           menu.with_divider
           deletion_action_item(menu)
         end
@@ -113,6 +119,18 @@ module Admin
           ) { _1.with_leading_visual_icon(icon: "op-arrow-in") }
         end
 
+        def move_to_top_action_item(menu)
+          form_inputs = [{ name: "new_sort_order", value: 0 }]
+
+          menu.with_item(label: I18n.t(:label_sort_highest),
+                         tag: :button,
+                         href: move_custom_field_item_path(@root.custom_field_id, model),
+                         content_arguments: { data: { turbo_frame: ItemsComponent.wrapper_key } },
+                         form_arguments: { method: :post, inputs: form_inputs }) do |item|
+            item.with_leading_visual_icon(icon: "move-to-top")
+          end
+        end
+
         def move_up_action_item(menu)
           form_inputs = [{ name: "new_sort_order", value: model.sort_order - 1 }]
 
@@ -134,6 +152,18 @@ module Admin
                          content_arguments: { data: { turbo_frame: ItemsComponent.wrapper_key } },
                          form_arguments: { method: :post, inputs: form_inputs }) do |item|
             item.with_leading_visual_icon(icon: "chevron-down")
+          end
+        end
+
+        def move_to_bottom_action_item(menu)
+          form_inputs = [{ name: "new_sort_order", value: model.parent.children.length + 1 }]
+
+          menu.with_item(label: I18n.t(:label_sort_lowest),
+                         tag: :button,
+                         href: move_custom_field_item_path(@root.custom_field_id, model),
+                         content_arguments: { data: { turbo_frame: ItemsComponent.wrapper_key } },
+                         form_arguments: { method: :post, inputs: form_inputs }) do |item|
+            item.with_leading_visual_icon(icon: "move-to-bottom")
           end
         end
 

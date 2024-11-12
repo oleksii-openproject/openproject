@@ -102,7 +102,7 @@ RSpec.describe Query::Results, "Grouping and sorting for version" do
     end
   end
   let(:work_packages_asc) { [old_version_wp, no_date_version_wp, new_version_wp, no_version_wp] }
-  let(:work_packages_desc) { [new_version_wp, no_date_version_wp, old_version_wp, no_version_wp] }
+  let(:work_packages_desc) { [no_version_wp, new_version_wp, no_date_version_wp, old_version_wp] }
 
   before do
     login_as(user)

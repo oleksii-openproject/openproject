@@ -57,7 +57,7 @@ class HourlyRatesController < ApplicationController
     end
   end
 
-  def edit
+  def edit # rubocop:disable Metrics/AbcSize, Metrics/PerceivedComplexity
     # TODO: split into edit and update
     # remove code where appropriate
     if @project
@@ -78,14 +78,14 @@ class HourlyRatesController < ApplicationController
       @rates << @user.rates.build(valid_from: Date.today, project: @project) if @rates.empty?
     end
 
-    render action: "edit", layout: !request.xhr?
+    render action: :edit, layout: !request.xhr?
   end
 
   current_menu_item :edit do
     :budgets
   end
 
-  def update
+  def update # rubocop:disable Metrics/AbcSize, Metrics/PerceivedComplexity
     # TODO: copied over from edit
     # remove code where appropriate
     if @project
@@ -123,7 +123,7 @@ class HourlyRatesController < ApplicationController
                  .sort { |a, b| b.valid_from || Date.today <=> a.valid_from || Date.today }
         @rates << @user.rates.build(valid_from: Date.today, project: @project) if @rates.empty?
       end
-      render action: "edit", layout: !request.xhr?
+      render action: :edit, layout: !request.xhr?
     end
   end
 

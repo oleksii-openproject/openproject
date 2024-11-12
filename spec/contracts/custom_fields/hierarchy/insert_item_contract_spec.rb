@@ -81,6 +81,18 @@ RSpec.describe CustomFields::Hierarchy::InsertItemContract do
       end
     end
 
+    context "when short is not unique in the same hierarchy level" do
+      let(:params) { { parent:, label: "Valid Label", short: "Repeated Short" } }
+
+      before { create(:hierarchy_item, parent:, label: "Unique Label", short: "Repeated Short") }
+
+      it "is invalid with localized validation errors" do
+        result = subject.call(params)
+        expect(result).to be_failure
+        expect(result.errors.to_h).to include(short: ["must be unique within the same hierarchy level"])
+      end
+    end
+
     context "when short is set and is a string" do
       let(:params) { { parent:, label: "Valid Label", short: "Valid Short" } }
 

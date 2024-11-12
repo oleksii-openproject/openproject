@@ -8,9 +8,10 @@ pt-PT:
     attributes:
       openid_connect/provider:
         name: Nome
+        slug: Unique identifier
         display_name: Nome a apresentar
         client_id: Client ID
-        client_secret: Client secret
+        client_secret: Client Secret
         secret: Segredo
         scope: Contexto
         limit_self_registration: Limitar auto-registo
@@ -22,10 +23,11 @@ pt-PT:
         jwks_uri: JWKS URI
         issuer: Issuer
         tenant: Tenant
-        metadata_url: Metadata URL
+        metadata_url: URL dos metadados
         icon: Custom icon
         claims: Claims
         acr_values: ACR values
+        redirect_url: Redirect URL
   activerecord:
     errors:
       models:
@@ -51,6 +53,7 @@ pt-PT:
     menu_title: Fornecedores de OpenID
     delete_title: "Delete OpenID Connect provider"
     instructions:
+      redirect_url: This is the redirect URL that the OpenID Connect provider should use to redirect back to OpenProject after a successful login.
       endpoint_url: The endpoint URL given to you by the OpenID Connect provider
       metadata_none: I don't have this information
       metadata_url: I have a discovery endpoint URL
@@ -75,7 +78,7 @@ pt-PT:
       mapping_admin: >
         Provide a custom mapping in the userinfo response to be used for the admin status. It expects a boolean attribute to be returned.
     settings:
-      metadata_none: I don't have this information
+      metadata_none: Não tenho essa informação
       metadata_url: I have a discovery endpoint URL
       endpoint_url: Endpoint URL
     providers:

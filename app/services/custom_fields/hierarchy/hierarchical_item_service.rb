@@ -112,9 +112,21 @@ module CustomFields
         Success()
       end
 
-      def soft_delete_item(item)
+      def soft_delete_item(item:)
         # Soft delete the item and children
         raise NotImplementedError
+      end
+
+      def hashed_subtree(item:, depth:)
+        if depth >= 0
+          Success(item.hash_tree(limit_depth: depth + 1))
+        else
+          Success(item.hash_tree)
+        end
+      end
+
+      def descendant_of?(item:, parent:)
+        item.descendant_of?(parent) ? Success() : Failure()
       end
 
       private

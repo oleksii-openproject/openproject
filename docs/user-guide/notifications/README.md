@@ -40,7 +40,6 @@ The work packages are listed in order of freshness. The work packages on top of 
 Click on a notification to open the Activity tab of this work package in split screen. If you double click on a notification, it will open the full view of a work package. 
 
 > [!TIP]
->
 > You can adjust the split screen by moving the resizer on the left side of the split screen, it will be stored locally and used for other split screen layouts.
 
 The Activity tab will auto-scroll to the last event that generated a notification. Badges next to the tabs  indicate number of content, e.g. number 1 next to the tab *Relations* indicates that current work package is related to one more work package. 
@@ -64,11 +63,11 @@ You can filter or group notifications by using the two sets of predefined filter
 > [!TIP]
 > The **Mark all as read** button clears all _visible_ notification rows. If you have a very large number unread notifications, the oldest ones might not be visible on the page. In this case, you might have to click the button multiple times to clear your inbox completely.
 
-(Area 4) If you would like to view your current notification preferences or modify them, click on the [Notification settings](./notification-settings) button. You can also access your settings via your Avatar in the top right corner > *My account* > *Notification settings*.
+(Area 4) If you would like to view your current notification preferences or modify them, click on the [Notification settings](./notification-settings) button. You can also access your settings via your Avatar in the top right corner > *Account settings*> *Notification settings*.
 
 (Area 5) The split screen view lets you not only view work package activity as previously described, but also lets you access all other work package tabs, including overview, files, relations and watchers.
 
-In addition to the in-app notifications, you will also get a once-a-day summary of all notifications by email. To learn more about Email reminders, [click here](../../user-guide/my-account/#email-reminders).
+In addition to the in-app notifications, you will also get a once-a-day summary of all notifications by email. To learn more about Email reminders, [click here](../../user-guide/account-settings/#email-reminders).
 
 ## Mark notifications as read
 

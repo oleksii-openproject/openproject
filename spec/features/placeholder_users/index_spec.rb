@@ -28,7 +28,10 @@
 
 require "spec_helper"
 
-RSpec.describe "index placeholder users", :js, with_ee: %i[placeholder_users] do
+RSpec.describe "index placeholder users",
+               :js,
+               :with_cuprite,
+               with_ee: %i[placeholder_users] do
   let!(:current_user) { create(:admin) }
   let!(:anonymous) { create(:anonymous) }
   let!(:placeholder_user_1) do

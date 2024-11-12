@@ -221,7 +221,7 @@ zh-CN:
         actions: "项目操作"
         blankslate:
           root:
-            title: "您的项目列表为空"
+            title: "您的条目列表为空"
             description: "首先，将条目添加到类型层次结构的自定义字段中。每个条目都可以用于在其下方创建一个层次结构。要在层次结构中创建子条目，请点击已创建的条目。"
           item:
             title: 该项目下面没有任何层级
@@ -235,7 +235,7 @@ zh-CN:
         subitems:
           zero: 无子项目
           one: 1个子项目
-          other: "%{count} 子项目"
+          other: "%{count} 个子项目"
     text_add_new_custom_field: >
       要向项目添加新的自定义字段，您需要先创建字段，然后才能将其添加到此项目中。
     is_enabled_globally: "已全局启用"
@@ -262,12 +262,26 @@ zh-CN:
     single: "或"
   dry_validation:
     errors:
+      integer?: "必须是整数"
+      filled?: "必须填写"
+      greater_or_equal_zero: "必须大于或等于 0"
+      not_found: "未找到"
       rules:
+        item:
+          root_item: "不能为根项目"
+          not_persisted: "必须是已存在的项目"
         label:
-          filled?: "必须填写"
           not_unique: "在同一层级内必须是唯一的"
+        short:
+          not_unique: "在同一层级内必须是唯一的"
+        parent:
+          not_descendant: "必须是层次结构根的后代"
     rules:
+      depth: "深"
+      item: "条目"
       label: "标签"
+      short: "短名"
+      parent: "父级"
   global_search:
     placeholder: "在%{app_title}中搜索"
     overwritten_tabs:

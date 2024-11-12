@@ -312,10 +312,8 @@ If you face an error while trying to delete or disable user/group "OpenProject" 
 2. Remove user `OpenProject`
 3. Remove group `OpenProject`
 4. Inside the _Group folders_ App (*Administration settings → Administration → Group folders*), remove group folder `OpenProject`.
-
-  [!WARNING]
-  This step will delete all files in that folder. Make sure to make a copy if you want to keep these files!**
-
+  > [!WARNING]
+  > This step will delete all files in that folder. Make sure to make a copy if you want to keep these files!**
 5. Enable the _OpenProject Integration_ App
 
 ### Setting up Nextcloud in OpenProject

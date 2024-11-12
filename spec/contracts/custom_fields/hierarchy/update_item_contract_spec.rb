@@ -35,14 +35,9 @@ RSpec.describe CustomFields::Hierarchy::UpdateItemContract do
 
   # rubocop:disable Rails/DeprecatedActiveModelErrorsMethods
   describe "#call" do
-    let(:vader) { create(:hierarchy_item) }
-    let(:luke) { create(:hierarchy_item, label: "luke", short: "ls", parent: vader) }
-    let(:leia) { create(:hierarchy_item, label: "leia", short: "lo", parent: vader) }
-
-    before do
-      luke
-      leia
-    end
+    let!(:vader) { create(:hierarchy_item) }
+    let!(:luke) { create(:hierarchy_item, label: "luke", short: "ls", parent: vader) }
+    let!(:leia) { create(:hierarchy_item, label: "leia", short: "lo", parent: vader) }
 
     context "when all required fields are valid" do
       it "is valid" do
@@ -51,7 +46,7 @@ RSpec.describe CustomFields::Hierarchy::UpdateItemContract do
           { item: luke, label: "Luke Skywalker" },
           { item: luke, label: "luke", short: "lu" },
           { item: luke, short: "LS" },
-          { item: luke, short: "lo" },
+          { item: luke, short: "ls" },
           { item: luke }
         ].each { |params| expect(subject.call(params)).to be_success }
       end
@@ -63,7 +58,7 @@ RSpec.describe CustomFields::Hierarchy::UpdateItemContract do
       it("is invalid") do
         result = subject.call(params)
         expect(result).to be_failure
-        expect(result.errors.to_h).to include(item: ["must not be a root item"])
+        expect(result.errors.to_h).to include(item: ["cannot be a root item"])
       end
     end
 
@@ -85,7 +80,7 @@ RSpec.describe CustomFields::Hierarchy::UpdateItemContract do
       it "is invalid" do
         result = subject.call(params)
         expect(result).to be_failure
-        expect(result.errors.to_h).to include(item: ["must exist"])
+        expect(result.errors[:item]).to match_array("must be an already existing item")
       end
     end
 
@@ -95,7 +90,22 @@ RSpec.describe CustomFields::Hierarchy::UpdateItemContract do
       it "is invalid" do
         result = subject.call(params)
         expect(result).to be_failure
-        expect(result.errors.to_h).to include(label: ["must be unique at the same hierarchical level"])
+
+        expect(result.errors[:label]).to match_array("must be unique within the same hierarchy level")
+      end
+    end
+
+    context "when the short already exist in the same hierarchy level" do
+      let(:params) { { item: luke, short: "lo" } }
+
+      it "is invalid" do
+        result = subject.call(params)
+
+        expect(result).to be_failure
+
+        p result
+
+        expect(result.errors[:short]).to match_array("must be unique within the same hierarchy level")
       end
     end
 
