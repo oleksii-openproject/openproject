@@ -148,7 +148,7 @@ pt-BR:
     empty_text: "Arraste itens para cá ou crie um novo."
   notice_successful_notification: "Notificação enviada com sucesso"
   notice_timezone_missing: Nenhum fuso horário está definido, portanto assumiu-se %{zone}. Para escolher o seu fuso horário, clique aqui.
-  notice_meeting_updated: "Esta página foi atualizada por outra pessoa. Recarregue para ver as alterações."
+  notice_meeting_updated: "Esta página foi atualizada por outra pessoa. Recarregue para visualizar as alterações."
   permission_create_meetings: "Criar reuniões"
   permission_edit_meetings: "Editar reuniões"
   permission_delete_meetings: "Excluir reuniões"

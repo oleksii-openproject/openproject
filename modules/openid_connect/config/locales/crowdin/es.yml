@@ -10,12 +10,12 @@ es:
         name: Nombre
         slug: Unique identifier
         display_name: Nombre para mostrar
-        client_id: Client ID
-        client_secret: Client secret
+        client_id: ID de cliente
+        client_secret: Secreto del cliente
         secret: Secreto
         scope: Ámbito
         limit_self_registration: Limitar autorregistro
-        authorization_endpoint: Authorization endpoint
+        authorization_endpoint: Terminal de autorización
         userinfo_endpoint: User information endpoint
         token_endpoint: Token endpoint
         end_session_endpoint: End session endpoint
