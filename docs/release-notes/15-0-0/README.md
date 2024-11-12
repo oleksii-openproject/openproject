@@ -52,7 +52,7 @@ Please note that emoji reactions don't trigger notifications. If you need your c
 
 Starting with version 15.0, the notification center will continuously update and new notifications will appear directly. This means no more blue flash message mentioning that there are updates and asking if you want to reload the page. The number shown next to the bell icon will also update immediately. This feature adds to our goal to enable smooth communication and information.
 
-### Admin interfaces for SAML and OpenID Connect (Enterprise only)
+### Admin interfaces for SAML and OpenID Connect (Enterprise add-on)
 
 OpenProject has for a long time supported SAML and OpenID Connect configured through settings or environment variables. With OpenProject 15.0, Enterprise customers will benefit from our new user interface for SAML and OIDC. This means they can now set up integrations between OpenProject and SAML or OpenID connect stacks independently and offer users options for Single Sign-On (SSO). Before 15.0, SaaS customers had to contact the OpenProject support if they wanted custom integrations with their SAML or OpenID connect providers. These new interfaces greatly improve the user experience of adding these providers, which may have been a hurdle at the beginning of your work with OpenProject.
 
