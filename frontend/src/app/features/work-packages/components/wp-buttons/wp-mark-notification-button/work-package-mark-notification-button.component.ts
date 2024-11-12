@@ -25,5 +25,10 @@ export class WorkPackageMarkNotificationButtonComponent {
 
   markAllBelongingNotificationsAsRead():void {
     this.storeService.markAllAsRead();
+    // emit custom event in order to inform the activity tab stimulus controller
+    // will trigger an update of the activities list
+    document.dispatchEvent(
+      new CustomEvent('work-package-notifications-updated'),
+    );
   }
 }

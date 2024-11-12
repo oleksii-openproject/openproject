@@ -106,12 +106,14 @@ export default class IndexController extends Controller {
     this.rescueEditorContentBound = () => { void this.rescueEditorContent(); };
 
     document.addEventListener('work-package-updated', this.handleWorkPackageUpdateBound);
+    document.addEventListener('work-package-notifications-updated', this.handleWorkPackageUpdateBound);
     document.addEventListener('visibilitychange', this.handleVisibilityChangeBound);
     document.addEventListener('beforeunload', this.rescueEditorContentBound);
   }
 
   private removeEventListeners() {
     document.removeEventListener('work-package-updated', this.handleWorkPackageUpdateBound);
+    document.removeEventListener('work-package-notifications-updated', this.handleWorkPackageUpdateBound);
     document.removeEventListener('visibilitychange', this.handleVisibilityChangeBound);
     document.removeEventListener('beforeunload', this.rescueEditorContentBound);
   }
@@ -161,6 +163,8 @@ export default class IndexController extends Controller {
   }
 
   handleWorkPackageUpdate(_event?:Event):void {
+    // wait statically as the events triggering this, fire when an async request was started, not ended
+    // I don't see a way to detect the end of the async requests reliably, thus the static wait
     setTimeout(() => this.updateActivitiesList(), 2000);
   }
 
