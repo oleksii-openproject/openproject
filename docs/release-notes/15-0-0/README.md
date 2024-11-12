@@ -3,7 +3,7 @@ title: OpenProject 15.0.0
 sidebar_navigation:
     title: 15.0.0
 release_version: 15.0.0
-release_date: 2024-10-31
+release_date: 2024-11-13
 ---
 
 # OpenProject 15.0.0
@@ -14,11 +14,11 @@ We released [OpenProject 15.0.0](https://community.openproject.org/versions/2076
 
 ## Important feature changes
 
-### A new look-and feel for the Activity tab, with better structure, real-time loading messages, emoji reactions, and more
+### A new look-and-feel for the Activity tab, with better structure, real-time loading messages, emoji reactions, and more
 
-A major change in version 15.0 is the overall look-and-feel of the Activity tab of work packages. Users will notice that the Activity tab has a new design with additional options, and that emoji reactions are now enabled. Additionally, new comments will appear directly without having to reload. This also applies to the notification center, where new notifications will appear in real-time.
+A major change in version 15.0 is the overall look-and-feel of the [Activity tab of work packages](../../user-guide/activity/). Users will notice that the Activity tab has a new design with additional options, and that emoji reactions are now enabled. Additionally, new comments will appear directly without having to reload. This also applies to the notification center, where new notifications will appear in real time.
 
-This is a big bundle of new features that will greatly improve communication and interaction within OpenProject, making it more simple, more effective and more fun.
+This is a big bundle of new features that will greatly improve communication and interaction within OpenProject, making it simpler, more effective and more fun.
 
 Related features in 15.0:
 - [Change the design of the Activity panel to Primer](https://community.openproject.org/wp/54733)
@@ -34,13 +34,15 @@ Let's take a closer look at the three biggest changes concerning this feature bu
 Apart from some obvious design changes that all fit GitHub's Primer design system, users will benefit from some great new features, such as: 
 - The comment box being a fixed element anchored to the bottom of the split screen area.
 - Filtering the Activity panel with options to either show everything, changes only or comments only.
-- Ordering to either newest on top or newest at the bottom
+- Ordering to either newest on top or newest at the bottom.
+
+Please note that you can still configure the order of your work package comments in the Account settings (formerly called My Account). Changing the order directly in the Activity tab automatically applies to all work packages, exactly like it does if you do the same in the Account settings.
 
 ![Screenshot showing the new Activity tab with highlighted changes](openproject-15-0-activity-tab-highlighted-all.png)
 
 #### Emoji reactions to work package comments
 
-Many users have wished to be able to react to comments in work packages using emoji and with OpenProject 15.0 this is now possible. In order to still keep it clear and concise, we have limited the emojis to eight helpful reactions:
+Many users have wished to be able to react to comments in work packages using emojis, and with OpenProject 15.0 this is now possible. In order to still keep it clear and concise, we have limited the emojis to eight helpful reactions:
 
 ![Example screenshot showing emoji reactions in OpenProject's work package comments](openproject-emoji-overview.png)
 
@@ -52,7 +54,7 @@ Starting with version 15.0, the notification center will continuously update and
 
 ### Admin interfaces for SAML and OpenID Connect (Enterprise only)
 
-OpenProject has for a long time supported SAML and OpenID Connect configured through settings or environment variables. With OpenProject 15.0, all enterprise customers will benefit from our new user interface for SAML and OIDC. This means they can now set up integrations between OpenProject and SAML or OpenID connect stacks independently and offer users options for Single Sign-On (SSO). Before 15.0, SaaS customers had to contact the OpenProject support if they wanted custom integrations with their SAML or OpenID connect providers. These new interfaces greatly improve the user experience of adding these providers, which had been a hurdle at the beginning of your work with OpenProject.
+OpenProject has for a long time supported SAML and OpenID Connect configured through settings or environment variables. With OpenProject 15.0, Enterprise customers will benefit from our new user interface for SAML and OIDC. This means they can now set up integrations between OpenProject and SAML or OpenID connect stacks independently and offer users options for Single Sign-On (SSO). Before 15.0, SaaS customers had to contact the OpenProject support if they wanted custom integrations with their SAML or OpenID connect providers. These new interfaces greatly improve the user experience of adding these providers, which may have been a hurdle at the beginning of your work with OpenProject.
 
 Related features in 15.0:
 
@@ -69,21 +71,22 @@ Once set up, users can log in with their existing account, for example like show
 
 ![Example screenshot of the log in screen with options to single sign-on](OpenProject_SSO_SAML_OpenID-highlighted.png)
 
+See [more technical information about SAML and OIDC providers](#saml-and-openid-connect-providers) in the end of these Release Notes.
+
 ### A new 'Standard global role' with permissions to view email addresses
 
-With OpenProject 15.0, a new default 'Standard global role' is automatically and permanently given to all users. If you are an administrator responsible for roles, please check this under *Administration > Users and permissions > Roles and permissions > Standard global role*. This role has several permissions to choose from, one being 'View users' mail addresses'.  Enable this permission to allow any user to see everyone's email address in autocomplete situations, such as when they select a work package assignee from a drop-down list.
+With OpenProject 15.0, [a new default 'Standard global role' is automatically and permanently given to all users](../../system-admin-guide/users-permissions/roles-permissions/#standard). If you are an administrator responsible for roles, please check this under *Administration > Users and permissions > Roles and permissions > Standard global role*. This role has several permissions to choose from, one being 'View users' mail addresses'. Enable this permission to allow any user to see everyone's email address in autocomplete situations, such as when they select a work package assignee from a drop-down list.
 
 Before version 15.0, users could choose whether their email address was displayed. Now this is an administrative decision that applies to either everyone or no one. The reason behind this is that this privacy control should be decided at the organizational level rather than individually.
 
-As a default, this new role does not have any permissions selected, so there is no change in the granted permissions due to the update.
+> [!NOTE]
+> Please note that with this update, there is no more checkbox 'Hide my email' that used to be in the user's account settings. As a default, the new Standard global role does not have any permissions selected, so that email addresses won't be visible with the update. If you are a system administrator, please navigate to the roles and permissions and decide weather you want the new permission to be checked (globally) or not. Instead of checking the new global permission in the Standard global role, you can also assign this new permission to a group of people, or individually.
 
 ![Example screenshot of permissions view for the new Standard global role, with checkmark at 'View users' mail addresses](openproject-15-0-standard-global-role.png)
 
 ### Quick action table headers in project lists for easier navigation 
 
-With OpenProject 15.0, we are pleased to release another great improvement for our project lists: Clicking on the table headers in a project list now gives you a quick action menu that not only allows you to sort in descending or ascending order, but also to filter or change, remove or add a column. You can still find the same actions in the top-right menu button, but now these actions are now much quicker to access.
-
-![Example screenshot of a project list with dropdown menu on a table header](openproject-15-0-project-lists.png)
+With OpenProject 15.0, we are pleased to release another great improvement for our project lists: Clicking on the table headers in a project list now gives you a quick action menu that not only allows you to sort in descending or ascending order, but also to filter or change, remove or add a column. You can still find the same actions in the top-right menu button, but now these actions are much quicker to access. [Read more about the configuration for project lists in our user guide](../../user-guide/projects/project-lists/#configure-project-lists-view).
 
 ![Gif showing how quickly you can now change rows in project lists by clicking on the headers](quick_action_table_headers.gif)
 
@@ -98,15 +101,17 @@ Before version 15.0, the design configuration in the administration was very com
 - Main menu font on hover
 - Main menu border
 
-All these colors will now be calculated depending on the brightness of the respective background to ensure a high-enough contrast. Font colors will either be black or white, and border colors will be set only if there is a bright background.
+All these colors will now be calculated depending on the brightness of the respective background to ensure a high-enough contrast. Font colors will either be black or white, and border colors will be set only if there is a bright background. [Read more about design options for Enterprise customers in our system admin guide](../../system-admin-guide/design/).
 
 ### Reduce manual cleanup when adding a custom field to a type – no more auto-applying to all projects
 
 With OpenProject 14.6, we released a feature that allows you to enable or disable a custom field for multiple projects at once. This is why with OpenProject 15.0, we remove the automation to apply a new custom field to all projects where the respective type is activated. This reduces manual cleanup in case you did not want to activate the new custom field in all projects. If you do want that, you can use the feature we introduced last release and go to *Administration > Custom Fields* and click on the 'Add projects' button.
 
+[Read more about custom fields in our system admin guide](../../system-admin-guide/custom-fields/).
+
 ### Improved navigation clarity – 'My account' is renamed to 'Account settings'
 
-In the personal menu that can be accessed by clicking on your avatar, we renamed 'My account' to 'Account settings', in order to give you a clearer understanding that this menu item contains settings. It now also differs more clearly from 'My Page' and 'My Activities‘, which provide personal data instead of settings.
+In the personal menu that can be accessed by clicking on your avatar, we renamed 'My account' to '[Account settings](../../user-guide/account-settings/)', in order to give you a clearer understanding that this menu item contains settings. It now also differs more clearly from 'My Page' and 'My Activities‘, which provide personal data instead of settings.
 
 ### Change the basic work package hovercard to Primer design system
 
@@ -134,8 +139,6 @@ For more information, please see our updated guides on these topics:
 
 - [Connecting your OpenID connect provider to OpenProject](../../system-admin-guide/authentication/openid-providers/)
 - [Connecting your SAML identity provider to OpenProject](../../system-admin-guide/authentication/saml/)
-
-
 
 ## Bug fixes and changes
 
@@ -233,8 +236,8 @@ A very special thank you goes to the City of Cologne for sponsoring parts of thi
 
 Last but not least, we are very grateful for our very engaged translation contributors on Crowdin, who translated quite a few OpenProject strings! This release we would like to highlight
 - [Alexander Aleschenko](https://crowdin.com/profile/top4ek), for a great number of translations into Russian.
+- [Alin Marcu](https://crowdin.com/profile/deconfcom), for a great number of translations into Romanian.
 - [hmmftg](https://crowdin.com/profile/hmmftg), for a great number of translations into Persian.
 - [william](https://crowdin.com/profile/WilliamFromTW), for a great number of translations into Chinese Simplified and Chinese Traditional.
-- [Alin Marcu](https://crowdin.com/profile/deconfcom), for a great number of translations into Romanian.
 
 Would you like to help out with translations yourself? Then take a look at our [translation guide](../../development/translate-openproject/) and find out exactly how you can contribute. It is very much appreciated!
