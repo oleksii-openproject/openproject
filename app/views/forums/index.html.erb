@@ -35,20 +35,21 @@ See COPYRIGHT and LICENSE files for more details.
                                { href: project_overview_path(@project.id), text: @project.name  },
                                t(:label_forum_plural)
                              ])
-    if User.current.allowed_in_project?(:manage_forums, @project)
-      header.with_action_button(scheme: :primary,
-                                mobile_icon: :plus,
-                                mobile_label: t(:label_forum_new),
-                                aria: { label: t(:label_forum_new) },
-                                title: t(:label_forum_new),
-                                tag: :a,
-                                href: new_project_forum_path(@project)) do |button|
+  end %>
+<% if User.current.allowed_in_project?(:manage_forums, @project) %>
+  <%=
+    render(Primer::OpenProject::SubHeader.new) do |subheader|
+      subheader.with_action_button(scheme: :primary,
+                                   aria: { label: t(:label_forum_new) },
+                                   title: t(:label_forum_new),
+                                   tag: :a,
+                                   href: new_project_forum_path(@project)) do |button|
         button.with_leading_visual_icon(icon: :plus)
         t('activerecord.models.forum')
       end
     end
-  end %>
-
+  %>
+<% end %>
 <% if @forums.empty? %>
   <%= no_results_box(action_url: new_project_forum_path(@project)) %>
 <% else %>
