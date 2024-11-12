@@ -88,13 +88,19 @@ hu:
   label_meeting: "Megbeszélés"
   label_meeting_plural: "Megbeszélések"
   label_meeting_new: "Új megbeszélés"
+  label_meeting_new_one_time: "New one-time meeting"
+  label_meeting_create: "Create meeting"
+  label_meeting_copy: "Copy meeting"
   label_meeting_edit: "Megbeszélés szerkesztése"
   label_meeting_agenda: "Napirend"
   label_meeting_minutes: "Jegyzőkönyv"
   label_meeting_close: "Bezár"
   label_meeting_open: "Megnyit"
+  label_meeting_index_delete: "Delete"
+  label_meeting_open_this_meeting: "Open this meeting"
   label_meeting_agenda_close: "Napirend lezárása a jegyzőkönyv megkezdéséhez"
   label_meeting_date_time: "Dátum/idő"
+  label_meeting_date_and_time: "Date and time"
   label_meeting_diff: "Eltérés"
   label_upcoming_meetings: "Közelgő megbeszélések"
   label_past_meetings: "Korábbi megbeszélések"
@@ -119,11 +125,14 @@ hu:
       attachments: "Mellékletek másolása"
       attachments_text: "Másolja át az összes csatolt fájlt az új megbeszélésre"
       agenda: "Napirend másolása"
+      agenda_items: "Copy agenda items"
       agenda_text: "A régi megbeszélés napirendjének másolása"
+      participants: "Copy list of participants"
     email:
       send_emails: "Email participants"
       send_invitation_emails: >
         Azonnal küldjön e-mail meghívót a fent kiválasztott résztvevőknek. Ezt később bármikor manuálisan is megteheti.
+      send_invitation_emails_structured: "Send an email invitation immediately to all participants. You can also do this manually at any time later."
       open_meeting_link: "Nyitott megbeszélés"
       invited:
         summary: "%{actor} meghívott a következő megbeszélésre: %{title}"
@@ -137,7 +146,7 @@ hu:
     types:
       classic: "Szokásos"
       classic_text: "Szervezd meg a találkozódat formázott szöveges napirendben és protokollban."
-      structured: "Dinamikus"
+      structured: "One-time"
       structured_text: "Szervezd meg a találkozódat napirendi pontokkal, melyeket opcionálisan munkacsomagokhoz rendelhetsz."
       structured_text_copy: "A megbeszélés másolásával jelnleg nem fogja átmásolni a hozzákapcsolt napirendi pontokat, csak a megbeszélés részleteit."
     copied: "#%{id} megbeszélésből másolva"

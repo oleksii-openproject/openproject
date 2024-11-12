@@ -262,10 +262,10 @@ de:
     single: "oder"
   dry_validation:
     errors:
-      integer?: "must be an integer"
-      filled?: "must be filled"
-      greater_or_equal_zero: "must be greater or equal to 0"
-      not_found: "not found"
+      integer?: "muss eine ganze Zahl sein"
+      filled?: "muss ausgefüllt sein"
+      greater_or_equal_zero: "muss größer oder gleich 0 sein"
+      not_found: "nicht gefunden"
       rules:
         item:
           root_item: "cannot be a root item"
