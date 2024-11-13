@@ -36,7 +36,7 @@ export const PERMITTED_CONTEXT_MENU_ACTIONS:WorkPackageAction[] = [
     link: 'pdf',
   },
   {
-    key: 'generate-pdf',
+    key: 'generate_pdf',
     link: 'generate_pdf',
     icon: 'icon-export-pdf-with-descriptions',
   },

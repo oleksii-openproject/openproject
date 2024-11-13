@@ -140,7 +140,7 @@ module API
           next unless OpenProject::FeatureDecisions.generate_pdf_from_work_package_active?
 
           {
-            href: work_package_path(id: represented.id, format: :generate_pdf),
+            href: generate_pdf_dialog_work_package_path(id: represented.id),
             type: "application/pdf",
             title: "Generate PDF"
           }
