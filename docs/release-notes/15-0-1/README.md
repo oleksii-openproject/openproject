@@ -11,19 +11,11 @@ release_date: 2024-11-13
 Release date: 2024-11-13
 
 We released OpenProject [OpenProject 15.0.1](https://community.openproject.org/versions/2157).
-The release contains several bug fixes and we recommend updating to the newest version.
-In these Release Notes, we will give an overview of important feature changes.
-At the end, you will find a complete list of all changes and bug fixes.
+This release contains an important fix for OpenID Connect providers using Microsoft Entra.
+The tenant of the Azure environment was not correctly communicated to the provider, resulting in failing logins.
 
-## Important feature changes
+This has been fixed. If you are affected by this issue, please update to 15.0.1 and logins should be restored.
 
-<!-- Inform about the major features in this section -->
-
-## Important updates and breaking changes
-
-<!-- Remove this section if empty, add to it in pull requests linking to tickets and provide information -->
-
-<!--more-->
 
 ## Bug fixes and changes
 
