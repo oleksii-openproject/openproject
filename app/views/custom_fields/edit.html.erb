@@ -33,6 +33,11 @@ See COPYRIGHT and LICENSE files for more details.
 
 <%= error_messages_for 'custom_field' %>
 
+<% content_controller "admin--custom-fields",
+                      dynamic: true,
+                      'admin--custom-fields-format-config-value': OpenProject::CustomFieldFormatDependent.stimulus_config
+%>
+
 <% if @custom_field.field_format_hierarchy? %>
   <%= render CustomFields::DetailsComponent.new(@custom_field) %>
 <% else %>

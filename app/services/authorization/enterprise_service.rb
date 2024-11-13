@@ -34,6 +34,7 @@ class Authorization::EnterpriseService
     board_view
     conditional_highlighting
     custom_actions
+    custom_field_hierarchies
     date_alerts
     define_custom_style
     edit_attribute_groups
