@@ -8,114 +8,114 @@ uk:
     attributes:
       openid_connect/provider:
         name: Ім’я
-        slug: Unique identifier
+        slug: Унікальний ідентифікатор
         display_name: Відображуване ім'я
         client_id: Client ID
         client_secret: Client secret
         secret: Таємний код
         scope: Область використання
         limit_self_registration: Обмежити самостійну реєстрацію
-        authorization_endpoint: Authorization endpoint
-        userinfo_endpoint: User information endpoint
-        token_endpoint: Token endpoint
-        end_session_endpoint: End session endpoint
-        post_logout_redirect_uri: Post logout redirect URI
+        authorization_endpoint: Кінцева точка авторизації
+        userinfo_endpoint: Кінцева точка доступу до даних користувача
+        token_endpoint: Кінцева точка маркера
+        end_session_endpoint: Кінцева точка завершення сеансу
+        post_logout_redirect_uri: URI переспрямування після виходу із системи
         jwks_uri: JWKS URI
-        issuer: Issuer
-        tenant: Tenant
-        metadata_url: Metadata URL
-        icon: Custom icon
-        claims: Claims
-        acr_values: ACR values
-        redirect_url: Redirect URL
+        issuer: Видавець
+        tenant: Клієнт
+        metadata_url: URL-адреса метаданих
+        icon: Користувацький значок
+        claims: Запити
+        acr_values: Значення ACR
+        redirect_url: URL переспрямування
   activerecord:
     errors:
       models:
         openid_connect/provider:
           attributes:
             metadata_url:
-              format: "Discovery endpoint URL %{message}"
-              response_is_not_successful: " responds with %{status}."
-              response_is_not_json: " does not return JSON body."
-              response_misses_required_attributes: " does not return required attributes. Missing attributes are: %{missing_attributes}."
+              format: "URL-адреса кінцевої точки виявлення %{message}"
+              response_is_not_successful: " відповідає %{status}."
+              response_is_not_json: " не повертає тіло JSON."
+              response_misses_required_attributes: " не повертає необхідних атрибутів. Відсутні атрибути: %{missing_attributes}."
   provider:
     delete_warning:
-      input_delete_confirmation: Enter the provider name %{name} to confirm deletion.
-      irreversible_notice: Deleting an SSO provider is an irreversible action.
-      provider: 'Are you sure you want to delete the SSO provider %{name}? To confirm this action please enter the name of the provider in the field below, this will:'
-      delete_result_1: Remove the provider from the list of available providers.
+      input_delete_confirmation: Введіть ім’я постачальника послуг %{name}, щоб підтвердити видалення.
+      irreversible_notice: Видалення постачальника послуг SSO не можна скасувати.
+      provider: 'Справді видалити постачальника послуг SSO %{name}? Щоб підтвердити цю дію, введіть ім’я постачальника в поле нижче. Після цього:'
+      delete_result_1: Вилучіть постачальника послуг зі списку доступних постачальників.
       delete_result_user_count:
-        zero: No users are currently using this provider. No further action is required.
-        one: "One user is currently still using this provider. They will need to be re-invited or logging in with another provider."
-        other: "%{count} users are currently still using this provider. They will need to be re-invited or logging in with another provider."
-      delete_result_direct: This provider is marked as a direct login provider. The setting will be removed and users will no longer be redirected to the provider for login.
+        zero: Зараз у цього постачальника послуг немає користувачів. Нічого робити не потрібно.
+        one: "Зараз у цього постачальника послуг один користувач. Надішліть йому нове запрошення. Або ж він має ввійти за допомогою іншого постачальника."
+        other: "Зараз у цього постачальника послуг стільки користувачів: %{count}. Надішліть їм нові запрошення. Або ж вони мають увійти за допомогою іншого постачальника."
+      delete_result_direct: Цього постачальника визначено як постачальника послуг прямого входу. Цей параметр буде вилучено, і користувачам більше не пропонуватиметься вхід за допомогою цього постачальника.
   openid_connect:
     menu_title: Постачальники OpenID
-    delete_title: "Delete OpenID Connect provider"
+    delete_title: "Видалити постачальника послуг OpenID Connect"
     instructions:
-      redirect_url: This is the redirect URL that the OpenID Connect provider should use to redirect back to OpenProject after a successful login.
-      endpoint_url: The endpoint URL given to you by the OpenID Connect provider
+      redirect_url: Це URL-адреса переспрямування, яку постачальник послуг OpenID Connect має використовувати для переспрямування в OpenProject після успішного входу в систему.
+      endpoint_url: URL-адреса кінцевої точки, надана вам постачальником послуг OpenID Connect
       metadata_none: У мене немає цієї інформації
-      metadata_url: I have a discovery endpoint URL
-      client_id: This is the client ID given to you by your OpenID Connect provider
-      client_secret: This is the client secret given to you by your OpenID Connect provider
-      limit_self_registration: Якщо увімкнено, користувачі можуть реєструватися з використанням цього провайдера, якщо це дозволено конфігурацією на стороні провайдера.
-      display_name: Then name of the provider. This will be displayed as the login button and in the list of providers.
-      tenant: 'Please replace the default tenant with your own if applicable. See <a href=" https://learn.microsoft.com/en-us/entra/identity-platform/v2-protocols-oidc#find-your-apps-openid-configuration-document-uri">this</a>.'
-      post_logout_redirect_uri: The URL the OpenID Connect provider should redirect to after a logout request.
+      metadata_url: У мене є URL-адреса кінцевої точки виявлення
+      client_id: ID клієнта, наданий вам постачальником OpenID Connect
+      client_secret: Це клієнтський секрет ключ, наданий вам постачальником OpenID Connect
+      limit_self_registration: If enabled, users can only register using this provider if configuration on the provider's end allows it.
+      display_name: The name of the provider. This will be displayed as the login button and in the list of providers.
+      tenant: 'Замініть клієнта за замовчуванням власним, якщо це можливо. Див. <a href=" https://learn.microsoft.com/en-us/entra/identity-platform/v2-protocols-oidc#find-your-apps-openid-configuration-document-uri">тут</a>.'
+      post_logout_redirect_uri: URL-адреса, на яку постачальник послуг OpenID Connect має виконувати переспрямування після отримання запиту на вихід.
       claims: >
-        You can request additional claims for the userinfo and id token endpoints. Please see [our OpenID connect documentation](docs_url) for more information.
+        Ви також можете надсилати запити на кінцеві точки даних користувача й маркера ID. Щоб дізнатися більше, ознайомтеся з [нашою документацією щодо OpenID Connect](docs_url).
       acr_values: >
-        Request non-essential claims in an easier format. See [our documentation on acr_values](docs_url) for more information.
+        Надсилайте необов’язкові запити в простішому форматі. Щоб дізнатися більше, ознайомтеся з [нашою документацією щодо acr_values](docs_url).
       mapping_login: >
-        Provide a custom mapping in the userinfo response to be used for the login attribute.
+        Надайте користувацьке зіставлення у відповіді на запит даних користувача, яке використовуватиметься для атрибута «Вхід».
       mapping_email: >
-        Provide a custom mapping in the userinfo response to be used for the email attribute.
+        Надайте користувацьке зіставлення у відповіді на запит даних користувача, яке використовуватиметься для атрибута «Електронна адреса».
       mapping_first_name: >
-        Provide a custom mapping in the userinfo response to be used for the first name.
+        Надайте користувацьке зіставлення у відповіді на запит даних користувача, яке використовуватиметься для атрибута «Ім’я».
       mapping_last_name: >
-        Provide a custom mapping in the userinfo response to be used for the last name.
+        Надайте користувацьке зіставлення у відповіді на запит даних користувача, яке використовуватиметься для атрибута «Прізвище».
       mapping_admin: >
-        Provide a custom mapping in the userinfo response to be used for the admin status. It expects a boolean attribute to be returned.
+        Надайте користувацьке зіставлення у відповіді на запит даних користувача, яке використовуватиметься для статусу атрибута «Адміністратор». Має повертатися значення логічного типу.
     settings:
       metadata_none: Я не володію такою інформацією
-      metadata_url: I have a discovery endpoint URL
-      endpoint_url: Endpoint URL
+      metadata_url: У мене є URL-адреса кінцевої точки виявлення
+      endpoint_url: URL кінцевої точки
     providers:
-      seeded_from_env: "This provider was seeded from the environment configuration. It cannot be edited."
+      seeded_from_env: "Цього постачальника послуг додано з конфігурації середовища. Його не можна змінити."
       google:
         name: Google
       microsoft_entra:
         name: Microsoft Entra
       custom:
-        name: Custom
+        name: Власний
       upsale:
-        description: Connect OpenProject to an OpenID connect identity provider
+        description: Підключіть OpenProject до постачальника ідентифікаційних даних OpenID
       label_add_new: Додати нового постачальника OpenID
       label_edit: Редагувати OpenID провайдера %{name}
-      label_empty_title: No OpenID providers configured yet.
-      label_empty_description: Add a provider to see them here.
-      label_metadata: OpenID Connect Discovery Endpoint
-      label_automatic_configuration: Automatic configuration
-      label_optional_configuration: Optional configuration
-      label_advanced_configuration: Advanced configuration
-      label_configuration_details: Metadata
-      label_client_details: Client details
-      label_attribute_mapping: Attribute mapping
-      client_details_description: Configuration details of OpenProject as an OIDC client
+      label_empty_title: Поки не налаштовано жодного постачальника послуг OpenID.
+      label_empty_description: Додайте постачальника послуг, і він з’явиться тут.
+      label_metadata: Кінцева точка виявлення OpenID Connect
+      label_automatic_configuration: Автоматична конфігурація
+      label_optional_configuration: Додаткова конфігурація
+      label_advanced_configuration: Розширена конфігурація
+      label_configuration_details: Метадані
+      label_client_details: Відомості про клієнта
+      label_attribute_mapping: Зіставлення атрибутів
+      client_details_description: Деталі конфігурації OpenProject як клієнта OIDC
       no_results_table: Ще не додано жодного постачальника.
       plural: Постачальники OpenID
       singular: OpenID постачальник
       section_texts:
-        metadata: Pre-fill configuration using an OpenID Connect discovery endpoint URL
-        metadata_form_banner: Editing the discovery endpoint may override existing pre-filled metadata values.
-        metadata_form_title: OpenID Connect Discovery endpoint
-        metadata_form_description: If your identity provider has a discovery endpoint URL. Use it below to pre-fill configuration.
-        configuration_metadata: The information has been pre-filled using the supplied discovery endpoint. In most cases, they do not require editing.
-        configuration: Configuration details of the OpenID Connect provider
-        display_name: The display name visible to users.
-        attribute_mapping: Configure the mapping of attributes between OpenProject and the OpenID Connect provider.
-        claims: Request additional claims for the ID token or userinfo response.
+        metadata: Попередньо заповнюйте конфігурацію, використовуючи URL-адресу кінцевої точки виявлення OpenID Connect
+        metadata_form_banner: Редагування кінцевої точки виявлення може перевизначити наявні, попередньо заповнені значення метаданих.
+        metadata_form_title: Кінцева точка виявлення OpenID Connect
+        metadata_form_description: Якщо в постачальника ідентифікаційних даних є URL-адреса кінцевої точки виявлення. Скористайтеся нею нижче, щоб попередньо заповнити конфігурацію.
+        configuration_metadata: Цю інформацію попередньо заповнено з використанням наданої кінцевої точки виявлення. Здебільшого вона не потребує редагування.
+        configuration: Деталі конфігурації постачальника послуг OpenID Connect
+        display_name: Коротке імʼя, яке бачать користувачі.
+        attribute_mapping: Налаштуйте зіставлення атрибутів між OpenProject і постачальником послуг OpenID Connect.
+        claims: Надсилайте додаткові запити відповіді щодо маркера ID або даних користувача.
     setting_instructions:
       limit_self_registration: >
         Якщо ввімкнено, користувачі можуть зареєструватися лише через цього постачальника послуг (якщо це дозволено параметром самостійної реєстрації).

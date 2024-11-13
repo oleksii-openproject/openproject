@@ -134,7 +134,7 @@ ro:
   permission_view_hourly_rates: "Vezi toate tarifele orare"
   permission_view_own_cost_entries: "Vizualizează propriile costuri înregistrate"
   permission_view_own_hourly_rate: "Vezi propriul tarif orar"
-  permission_view_own_time_entries: "Vizualizați propriul timp petrecut"
+  permission_view_own_time_entries: "Vizualizează propriul timp consumat"
   project_module_costs: "Timp și costuri"
   text_assign_time_and_cost_entries_to_project: "Atribuiți orele și costurile raportate la proiect"
   text_destroy_cost_entries_question: "%{cost_entries} au fost raportate pe pachetele de lucru pe care urmează să le ștergeți. Ce doriți să faceți?"

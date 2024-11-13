@@ -5,7 +5,10 @@ sidebar_navigation:
 description: OpenID providers for OpenProject.
 keywords: OpenID providers
 ---
-# OpenID providers
+# OpenID providers (Enterprise add-on)
+
+> [!IMPORTANT] 
+> OpenID Connect providers is an Enterprise add-on. If you do not see the button you will have to activate the Enterprise edition first.
 
 | Topic                                                        | Content                                                      |
 | ------------------------------------------------------------ | ------------------------------------------------------------ |
@@ -183,7 +186,7 @@ To start creating a custom provider, please follow these steps:
 1. Login as OpenProject Administrator
 2. Navigate to *Administration* -> *Authentication* and choose -> *OpenID providers*. 
    - **Click** the green *+ OpenID Connect provider* button
-   - **Choose** Choose the *Option* **Custom**
+   - **Choose** the *Option* **Custom**
 
 #### Step 1: Display name
 

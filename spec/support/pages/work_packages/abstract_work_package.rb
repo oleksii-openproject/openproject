@@ -89,6 +89,14 @@ module Pages
       end
     end
 
+    def expect_any_active_inline_edit_field
+      expect(page).to have_css(".inline-edit--active-field")
+    end
+
+    def expect_no_active_inline_edit_field
+      expect(page).to have_no_css(".inline-edit--active-field")
+    end
+
     def expect_hidden_field(attribute)
       page.within(container) do
         expect(page).to have_no_css(".inline-edit--display-field.#{attribute}")
@@ -107,10 +115,12 @@ module Pages
 
     def ensure_page_loaded
       expect_angular_frontend_initialized
-      expect(page).to have_css(".op-user-activity--user-name",
-                               text: work_package.journals.last.user.name,
-                               minimum: 1,
-                               wait: 10)
+      unless OpenProject::FeatureDecisions.primerized_work_package_activities_active?
+        expect(page).to have_css(".op-user-activity--user-name",
+                                 text: work_package.journals.last.user.name,
+                                 minimum: 1,
+                                 wait: 10)
+      end
     end
 
     def disable_ajax_requests
@@ -330,6 +340,34 @@ module Pages
 
     def mark_notifications_as_read
       find('[data-test-selector="mark-notification-read-button"]').click
+    end
+
+    def expect_conflict_warning_banner
+      expect(page).to have_test_selector("op-primer-flash-message",
+                                         text: I18n.t("notice_locking_conflict_warning"),
+                                         visible: true) do |element|
+        expect(element["data-banner-scheme"]).to eq("warning")
+      end
+    end
+
+    def expect_conflict_error_banner
+      expect(page).to have_test_selector("op-primer-flash-message",
+                                         text: I18n.t("notice_locking_conflict_danger"),
+                                         visible: true) do |element|
+        expect(element["data-banner-scheme"]).to eq("danger")
+      end
+    end
+
+    def expect_no_conflict_warning_banner
+      expect(page).not_to have_test_selector("op-primer-flash-message",
+                                             text: I18n.t("notice_locking_conflict_warning"),
+                                             visible: true)
+    end
+
+    def expect_no_conflict_error_banner
+      expect(page).not_to have_test_selector("op-primer-flash-message",
+                                             text: I18n.t("notice_locking_conflict_danger"),
+                                             visible: true)
     end
 
     private

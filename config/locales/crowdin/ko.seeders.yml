@@ -68,7 +68,7 @@ ko:
         item_0:
           name: 스태프 및 프로젝트 관리자
         item_1:
-          name: Standard global role
+          name: 표준 글로벌 역할
     standard:
       priorities:
         item_0:

@@ -600,6 +600,7 @@ Rails.application.routes.draw do
                as: :work_package_progress
     end
     get "/export_dialog" => "work_packages#export_dialog", on: :collection, as: "export_dialog"
+    get :show_conflict_flash_message, on: :collection # we don't need a specific work package for this
 
     get "/split_view/update_counter" => "work_packages/split_view#update_counter",
         on: :member

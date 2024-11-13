@@ -37,7 +37,7 @@ pt-BR:
       clear_all: "Remover tudo"
       loading: "Carregando..."
       not_found: "Nenhum item encontrado"
-      type_to_search: "Escreva para pesquisar"
+      type_to_search: "Digite para pesquisar"
     autocomplete_select:
       placeholder:
         multi: 'Adicionar "%{name}"'
@@ -358,7 +358,7 @@ pt-BR:
           "15_0":
             standard:
               new_features_html: >
-                The release brings various features and improvements for you, e.g. <br> <ul class="%{list_styling_class}"> <li>Boost your communication with a better structured Activity tab, real-time loading messages and notifications, emoji reactions, and more.</li> <li>Benefit from easy Single Sign-On authentication settings with SAML and OIDC in your Enterprise Cloud administration.</li> <li>Use the new 'Standard global role' and enable permissions to view email addresses.</li> <li>Enjoy easier navigation in project lists with quick action table headers.</li> <li>Experience simplified design settings with fewer sidebar design variables needed.</li> <li>Reduce manual cleanup when adding a custom field to a type – no more auto-applying to all projects.</li> <li>Benefit from improved navigation clarity – 'My account' is renamed to 'Account settings'.</li> </ul>
+                A versão traz vários recursos e melhorias para você, por exemplo: <br> <ul class="%{list_styling_class}"><li>Impulsione sua comunicação com uma guia de Atividades melhor estruturada, mensagens de carregamento em tempo real e notificações, reações com emojis e muito mais.</li> <li>Beneficie-se de configurações fáceis de autenticação Single Sign-On com SAML e OIDC na administração da sua Enterprise Cloud.</li> <li>Use o novo ‘Papel global padrão’ e habilite permissões para visualizar endereços de e-mail.</li> <li>Desfrute de navegação mais fácil nas listas de projetos com cabeçalhos de tabela de ações rápidas.</li> <li>Experimente configurações de design simplificadas, com menos variáveis de design na barra lateral necessárias.</li> <li>Reduza a limpeza manual ao adicionar um campo personalizado a um tipo (sem mais aplicação automática a todos os projetos).</li> <li>Beneficie-se de uma navegação mais clara – "Minha conta" foi renomeado para "Configurações da conta".</li> </ul>
     ical_sharing_modal:
       title: "Assinar calendário"
       inital_setup_error_message: "Ocorreu um erro ao buscar dados."
@@ -973,7 +973,7 @@ pt-BR:
         createdAt: "Criado em"
         description: "Descrição"
         date: "Data"
-        percentComplete: "% concluído"
+        percentComplete: "% de conclusão"
         percentCompleteAlternative: "Progresso"
         dueDate: "Data de conclusão"
         duration: "Duração"
@@ -1297,7 +1297,7 @@ pt-BR:
       no_results: "Nenhum projeto corresponde ao seu critério de busca."
     baseline:
       toggle_title: "Linha base"
-      clear: "Limpar"
+      clear: "Remover"
       apply: "Aplicar"
       header_description: "Destaque as alterações realizadas nesta lista desde qualquer ponto no passado."
       enterprise_header_description: "Destaque as alterações realizadas nesta lista desde qualquer ponto no passado com a edição Enterprise."
@@ -1305,15 +1305,15 @@ pt-BR:
       baseline_comparison: "Comparação de linha base"
       help_description: "Fuso horário de referência para a linha base."
       time_description: "Em seu horário local: %{datetime}"
-      time: "Horário"
+      time: "Hora"
       from: "De"
       to: "Para"
       drop_down:
         none: "-"
         yesterday: "ontem"
         last_working_day: "último dia útil"
-        last_week: "última semana"
-        last_month: "último mês"
+        last_week: "semana passada"
+        last_month: "mês passado"
         a_specific_date: "uma data específica "
         between_two_specific_dates: "entre suas datas específicas"
       legends:
@@ -1340,7 +1340,7 @@ pt-BR:
         close: "Fechar o modal"
     open_project_storage_modal:
       waiting_title:
-        timeout: "Tempo de espera"
+        timeout: "Tempo limite"
       waiting_subtitle:
         network_off: "Ocorreu um problema de rede"
         network_on: "A rede voltou. Estamos tentando."

@@ -134,7 +134,10 @@ RSpec.describe "Custom actions", :js, :with_cuprite,
     login_as admin
   end
 
-  it "viewing workflow buttons" do
+  # this big spec just has a different expectation when primerized_work_package_activities is enabled for the very last part
+  # where the a different expectation banner would be expected
+  # IMO not worth the extra computation time for the intermediate state when the feature flag is active
+  it "viewing workflow buttons", with_flag: { primerized_work_package_activities: false } do
     # create custom action 'Unassign'
     index_ca_page.visit!
 
