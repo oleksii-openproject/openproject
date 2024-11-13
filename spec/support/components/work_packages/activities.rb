@@ -106,7 +106,8 @@ module Components
       end
 
       def expect_no_notification_bubble
-        expect(page).not_to have_test_selector("op-journal-unread-notification")
+        # Notifications depend on a polling mechanism, so we need to wait for the bubble to disappear
+        wait_for { page }.not_to have_test_selector("op-journal-unread-notification")
       end
 
       def expect_journal_container_at_bottom

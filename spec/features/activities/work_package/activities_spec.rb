@@ -641,8 +641,15 @@ RSpec.describe "Work package activity", :js, :with_cuprite, with_flag: { primeri
       current_user { admin }
 
       before do
+        # Speed up the polling interval for test duration
+        ENV["WORK_PACKAGES_ACTIVITIES_TAB_POLLING_INTERVAL_IN_MS"] = "1000"
+
         wp_page.visit!
         wp_page.wait_for_activity_tab
+      end
+
+      after do
+        ENV.delete("WORK_PACKAGES_ACTIVITIES_TAB_POLLING_INTERVAL_IN_MS")
       end
 
       it "shows the notification bubble", :aggregate_failures do
@@ -653,9 +660,6 @@ RSpec.describe "Work package activity", :js, :with_cuprite, with_flag: { primeri
 
       it "removes the notification bubble after the comment is read", :aggregate_failures do
         notificaton_for_admin.update!(read_ian: true)
-
-        wp_page.visit!
-        wp_page.wait_for_activity_tab
 
         activity_tab.within_journal_entry(journal_mentioning_admin) do
           activity_tab.expect_no_notification_bubble
