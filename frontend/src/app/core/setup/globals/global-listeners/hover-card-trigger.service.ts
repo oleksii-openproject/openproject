@@ -35,6 +35,7 @@ export class HoverCardTriggerService {
   private modalElement:HTMLElement;
 
   private mouseInModal = false;
+  private closeTimeout:number|null;
 
   constructor(
     readonly opModalService:OpModalService,
@@ -51,14 +52,20 @@ export class HoverCardTriggerService {
       const el = e.target as HTMLElement;
       if (!el) { return; }
 
-      // TODO: check if open is still open for some reason (parent element triggered it)
-      // TODO: do not show it again in this case, just leave it as is.
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const turboFrameUrl = el.getAttribute('data-hover-card-url');
       if (!turboFrameUrl) { return; }
 
       // When set in an angular component, the url attribute might be wrapped in additional quotes. Strip them.
       const cleanedTurboFrameUrl = turboFrameUrl.replace(/^"(.*)"$/, '$1');
+
+      // Reset close timer for when hovering over multiple triggers in quick succession.
+      // A timer from a previous hover card might still be running. We do not want it to
+      // close the new (i.e. this) hover card.
+      if (this.closeTimeout) {
+        clearTimeout(this.closeTimeout);
+        this.closeTimeout = null;
+      }
 
       this.opModalService.show(
         HoverCardComponent,
@@ -87,7 +94,7 @@ export class HoverCardTriggerService {
 
   private closeAfterTimeout() {
     this.ngZone.runOutsideAngular(() => {
-      setTimeout(() => {
+      this.closeTimeout = window.setTimeout(() => {
         if (!this.mouseInModal) {
           this.opModalService.close();
         }
