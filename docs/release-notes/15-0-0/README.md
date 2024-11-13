@@ -212,7 +212,7 @@ For more information, please see our updated guides on these topics:
 - Bugfix: Improve error handling when two users edit the same work package in parallel (conflict) \[[#58634](https://community.openproject.org/wp/58634)\]
 - Bugfix: Slow project template selector on new project page \[[#58657](https://community.openproject.org/wp/58657)\]
 - Bugfix: Admin info &quot;bug&quot; icon is misleading \[[#58671](https://community.openproject.org/wp/58671)\]
-- Bugfix: Emoji bar doesn&#39;t stay anchored \[[#58706](https://community.openproject.org/wp/58706)\]
+- Bugfix: Emoji bar doesn't stay anchored \[[#58706](https://community.openproject.org/wp/58706)\]
 - Bugfix: Replace the + icon next to the work package creation item with a regular icon \[[#58735](https://community.openproject.org/wp/58735)\]
 - Bugfix: SAML UI migration fails if expired certificate present in current configuration \[[#58851](https://community.openproject.org/wp/58851)\]
 - Bugfix: OpenID connect provider does not show Redirect URI \[[#59057](https://community.openproject.org/wp/59057)\]
