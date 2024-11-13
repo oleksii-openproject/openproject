@@ -53,8 +53,7 @@ module Users
     end
 
     def call
-      helpers.avatar(
-        @user,
+      options = {
         size: @size,
         link: @link,
         hide_name: !@show_name,
@@ -62,6 +61,16 @@ module Users
         class: @classes,
         name_classes: @name_classes,
         avatar_classes: @avatar_classes
+      }
+
+      if @hover_card
+        options[:hover_card_close_delay] = 600
+        options[:hover_card_alignment] = "top"
+      end
+
+      helpers.avatar(
+        @user,
+        **options
       )
     end
   end

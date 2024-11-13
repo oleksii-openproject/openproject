@@ -14,6 +14,8 @@ export interface AvatarOptions {
   size:AvatarSize;
   additionalClasses?:string;
   hoverCardUrl?:string;
+  hoverCardCloseDelay?:number;
+  hoverCardAlignment?:string;
 }
 
 export interface NameOptions {
@@ -166,6 +168,14 @@ export class PrincipalRendererService {
 
     if (options.hoverCardUrl) {
       image.setAttribute('data-hover-card-url', options.hoverCardUrl);
+    }
+
+    if (options.hoverCardCloseDelay) {
+      image.setAttribute('data-hover-card-close-delay', String(options.hoverCardCloseDelay));
+    }
+
+    if (options.hoverCardAlignment) {
+      image.setAttribute('data-hover-card-alignment', String(options.hoverCardAlignment));
     }
 
     image.src = url;

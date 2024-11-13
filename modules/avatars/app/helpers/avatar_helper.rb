@@ -109,7 +109,9 @@ module AvatarHelper
                             nameClasses: tag_options[:name_classes],
                             title: tag_options.fetch(:title, ""),
                             avatarClasses: tag_options[:avatar_classes],
-                            hoverCardUrl: hover_card_user_path(user.id)
+                            hoverCardUrl: hover_card_user_path(user.id),
+                            hoverCardCloseDelay: tag_options[:hover_card_close_delay],
+                            hoverCardAlignment: tag_options[:hover_card_alignment]
                           }
   end
 

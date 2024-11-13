@@ -29,6 +29,7 @@
 import { Injectable, Injector, NgZone } from '@angular/core';
 import { OpModalService } from 'core-app/shared/components/modal/modal.service';
 import { HoverCardComponent } from 'core-app/shared/components/modals/preview-modal/hover-card-modal/hover-card.modal';
+import { Placement } from '@floating-ui/dom';
 
 @Injectable({ providedIn: 'root' })
 export class HoverCardTriggerService {
@@ -36,6 +37,8 @@ export class HoverCardTriggerService {
 
   private mouseInModal = false;
   private closeTimeout:number|null;
+  private closeDelayInMs:number = 100;
+  private modalAlignment?:string|null;
 
   constructor(
     readonly opModalService:OpModalService,
@@ -67,6 +70,13 @@ export class HoverCardTriggerService {
         this.closeTimeout = null;
       }
 
+      const delay = el.getAttribute('data-hover-card-close-delay');
+      if (delay) {
+        this.closeDelayInMs = parseInt(delay, 10);
+      }
+
+      this.modalAlignment = el.getAttribute('data-hover-card-alignment');
+
       this.opModalService.show(
         HoverCardComponent,
         this.injector,
@@ -74,6 +84,10 @@ export class HoverCardTriggerService {
         true,
       ).subscribe((previewModal) => {
         this.modalElement = previewModal.elementRef.nativeElement as HTMLElement;
+        if (this.modalAlignment) {
+          previewModal.alignment = this.modalAlignment as Placement;
+        }
+
         void previewModal.reposition(this.modalElement, el);
       });
     });
@@ -98,7 +112,7 @@ export class HoverCardTriggerService {
         if (!this.mouseInModal) {
           this.opModalService.close();
         }
-      }, 100);
+      }, this.closeDelayInMs);
     });
   }
 }

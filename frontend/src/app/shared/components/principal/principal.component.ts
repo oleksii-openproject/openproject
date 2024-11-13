@@ -79,6 +79,8 @@ export class OpPrincipalComponent implements OnInit {
   @Input() avatarClasses? = '';
 
   @Input() hoverCardUrl? = '';
+  @Input() hoverCardCloseDelay?:number;
+  @Input() hoverCardAlignment?:string;
 
   @Input() title = '';
 
@@ -110,6 +112,8 @@ export class OpPrincipalComponent implements OnInit {
           size: this.size,
           additionalClasses: this.avatarClasses,
           hoverCardUrl: this.hoverCardUrl,
+          hoverCardCloseDelay: this.hoverCardCloseDelay,
+          hoverCardAlignment: this.hoverCardAlignment,
         },
         this.title === '' ? null : this.title,
       );
