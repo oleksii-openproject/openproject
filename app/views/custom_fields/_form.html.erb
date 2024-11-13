@@ -58,16 +58,17 @@ See COPYRIGHT and LICENSE files for more details.
                    'admin--custom-fields-target': 'format'
                  }
     %>
-  </div>
-  <div class="form--field-extra-actions" <%= format_dependent.attributes(:enterpriseBanner) %>>
-    <%= angular_component_tag "opce-enterprise-banner",
-                              inputs: {
-                                collapsible: true,
-                                opReferrer: "custom-field-hierarchy",
-                                textMessage: "PLACEHOLDER - upgrade to Starkiller Base",
-                                moreInfoLink: OpenProject::Static::Links.links[:enterprise_docs][:boards][:href]
-                              }
-    %>
+    <div class="form--field-extra-actions" <%= format_dependent.attributes(:enterpriseBanner) %>>
+      <%= angular_component_tag "opce-enterprise-banner",
+                                inputs: {
+                                  collapsible: true,
+                                  topMargin: true,
+                                  opReferrer: "custom-field-hierarchy",
+                                  textMessage: "PLACEHOLDER - upgrade to Starkiller Base",
+                                  moreInfoLink: OpenProject::Static::Links.links[:enterprise_docs][:boards][:href]
+                                }
+      %>
+    </div>
   </div>
 
   <div class="form--grouping" id="custom_field_length" <%= format_dependent.attributes(:length) %>>
