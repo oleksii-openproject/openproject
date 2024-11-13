@@ -141,6 +141,7 @@ RSpec.describe "Work Package boards spec",
     split_view.ensure_page_loaded
     split_view.expect_subject
     split_view.switch_to_tab tab: "Relations"
+    expect_angular_frontend_initialized
 
     # Go to full view of WP
     full_view = split_view.switch_to_fullscreen
@@ -170,6 +171,7 @@ RSpec.describe "Work Package boards spec",
     split_view = card.open_details_view
     split_view.ensure_page_loaded
     split_view.expect_subject
+    expect_angular_frontend_initialized
 
     page.driver.refresh
 

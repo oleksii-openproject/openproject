@@ -276,6 +276,10 @@ module Components
         page.find_by_id("work-package-relations-tab-content")
       end
 
+      def expect_relation_group(group_type)
+        expect(page).to have_test_selector("op-relation-group-#{group_type}", wait: 20)
+      end
+
       def expect_child(work_package)
         expect_row(work_package)
       end
