@@ -1,0 +1,226 @@
+#-- copyright
+#OpenProject is an open source project management software.
+#Copyright (C) the OpenProject GmbH
+#This program is free software; you can redistribute it and/or
+#modify it under the terms of the GNU General Public License version 3.
+#OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
+#Copyright (C) 2006-2013 Jean-Philippe Lang
+#Copyright (C) 2010-2013 the ChiliProject Team
+#This program is free software; you can redistribute it and/or
+#modify it under the terms of the GNU General Public License
+#as published by the Free Software Foundation; either version 2
+#of the License, or (at your option) any later version.
+#This program is distributed in the hope that it will be useful,
+#but WITHOUT ANY WARRANTY; without even the implied warranty of
+#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#GNU General Public License for more details.
+#You should have received a copy of the GNU General Public License
+#along with this program; if not, write to the Free Software
+#Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+#See COPYRIGHT and LICENSE files for more details.
+#++
+#English strings go here for Rails i18n
+tr:
+  plugin_openproject_meeting:
+    name: "OpenProject Meeting"
+    description: >-
+      This module adds functions to support project meetings to OpenProject. Meetings can be scheduled selecting invitees from the same project to take part in the meeting. An agenda can be created and sent to the invitees. After the meeting, attendees can be selected and minutes can be created based on the agenda. Finally, the minutes can be sent to all attendees and invitees.
+  activerecord:
+    attributes:
+      meeting:
+        type: "Toplantı türü "
+        location: "Yer"
+        duration: "Süre"
+        notes: "Notlar"
+        participants: "Katılımcılar"
+        participant:
+          one: "1 Katılımcı"
+          other: "%{count} Katılımcı"
+        participants_attended: "Katılımcılar"
+        participants_invited: "Davetliler"
+        project: "Proje"
+        start_date: "Tarih"
+        start_time: "Başlangıç zamanı "
+        start_time_hour: "Başlangıç zamanı "
+      meeting_agenda_item:
+        title: "Başlık"
+        author: "Yazar"
+        duration_in_minutes: "dakika"
+        description: "Notlar"
+        presenter: "Sunucu "
+      meeting_section:
+        title: "Başlık"
+    errors:
+      messages:
+        invalid_time_format: "geçerli bir zaman değil. Gerekli format: SS:DD"
+    models:
+      structured_meeting: "Toplantı (dinamik)"
+      meeting_agenda_item: "Ajanda öğesi"
+      meeting_agenda: "Ajanda"
+      meeting_minutes: "Dakika"
+      meeting_section: "Bölüm"
+  activity:
+    filter:
+      meeting: "Toplantılar"
+    item:
+      meeting_agenda_item:
+        duration:
+          added: "%{value} tarihine ayarlandı"
+          added_html: "<i>%{value}</i> tarihine ayarla"
+          removed: "silindi"
+          updated: "%{old_value} tarihinden %{value} tarihine ayarlandı"
+          updated_html: "<i>%{old_value}</i> tarihinden <i>%{value}</i> tarihine ayarlandı"
+        position:
+          updated: "yeniden sıralandı"
+        work_package:
+          updated: "%{old_value} tarihinden %{value} tarihine ayarlandı"
+          updated_html: "<i>%{old_value}</i> tarihinden <i>%{value}</i> tarihine ayarlandı"
+  description_attended: "katıldı"
+  description_invite: "davet et"
+  events:
+    meeting: Toplantı düzenlendi
+    meeting_agenda: Düzenlenen toplantı gündem
+    meeting_agenda_closed: Toplantı gündemi kapat
+    meeting_agenda_opened: Toplantı gündemi açıldı
+    meeting_minutes: Toplantı dakikaları düzenlendi
+    meeting_minutes_created: Toplantı tutanakları oluşturuldu
+  error_notification_with_errors: "Bildirim hatalı. Aşağıdaki alıcılar bilgilendirilemedi: %{recipients}"
+  label_meeting: "Toplantı"
+  label_meeting_plural: "Toplantılar"
+  label_meeting_new: "Yeni Toplantı"
+  label_meeting_edit: "Toplantıyı Düzenle"
+  label_meeting_agenda: "Ajanda"
+  label_meeting_minutes: "Dakika"
+  label_meeting_close: "Kapat"
+  label_meeting_open: "Aç"
+  label_meeting_agenda_close: "Başlamak için gündemi dakikalar sonra kapatın"
+  label_meeting_date_time: "Tarih/Saat"
+  label_meeting_diff: "Fark"
+  label_upcoming_meetings: "Yaklaşan toplantılar"
+  label_past_meetings: "Geçmiş toplantılar"
+  label_upcoming_meetings_short: "Yaklaşan"
+  label_past_meetings_short: "Geçmiş"
+  label_involvement: "Katılım"
+  label_upcoming_invitations: "Yaklaşan davetiyeler"
+  label_past_invitations: "Geçmiş davetiyeler"
+  label_attendee: "Katılımcı "
+  label_author: "Oluşturan"
+  label_notify: "Gözden geçirilmek üzere gönder"
+  label_icalendar: "Takvime gönder"
+  label_icalendar_download: "iCalender etkinliğini indir "
+  label_version: "Sürüm"
+  label_time_zone: "Saat dilim"
+  label_start_date: "Başlama tarihi"
+  meeting:
+    attachments:
+      text: "Eklenen dosyalar tüm katılımcıların paylaşımına açıktır. Bu dosyaları ajandanıza sürükleyip bırakabilirsiniz."
+    copy:
+      title: "Toplantıyı kopyala: %{title}"
+      attachments: "Ekleri kopyala"
+      attachments_text: "Tük eklenen dosyaları yeni toplantıya kopyala"
+      agenda: "Gündemi kopyala"
+      agenda_text: "Eski toplantının gündemini kopyalayın"
+    email:
+      send_emails: "Email participants"
+      send_invitation_emails: >
+        Yukarıda seçilen katılımcıların hepsine e-posta davetiyesi gönder. Bu işi daha sonra herhangi bir zamanda elle de gerçekleştirebilirsiniz.
+      open_meeting_link: "Açık toplantı"
+      invited:
+        summary: "%{actor} size toplantı için bir davetiye gönderdi %{title}"
+      rescheduled:
+        header: "Meeting %{title} has been rescheduled"
+        summary: "%{title} toplantısı %{actor} tarafından yeniden planlanmıştır."
+        body: "%{title} toplantısı %{actor} tarafından yeniden planlanmıştır."
+        old_date_time: "Eski tarih/saat"
+        new_date_time: "Yeni tarih/saat"
+    label_mail_all_participants: "Tüm katılımcılara e-posta gönderin"
+    types:
+      classic: "Klasik"
+      classic_text: "Toplantınızı biçimlendirilebilir bir metin gündemi ve protokolüyle düzenleyin."
+      structured: "Dinamik"
+      structured_text: "Toplantınızı, isteğe bağlı olarak bunları bir çalışma paketine bağlayarak, gündem maddelerinin bir listesi halinde düzenleyin."
+      structured_text_copy: "Toplantıyı kopyalamak toplantıyla ilgili ajanda maddelerini kopyalamayacaktır, sadece detaylar kopyalanacak"
+    copied: "#%{id} numaralı toplantıdan kopyalandı"
+  meeting_section:
+    untitled_title: "Untitled section"
+    delete_confirmation: "Deleting the section will also delete all of its agenda items. Are you sure you want to do this?"
+    placeholder_title: "New section"
+    empty_text: "Maddeleri buraya sürükleyin ya da yeni bir tane oluşturun"
+  notice_successful_notification: "Bildirim başarıyla gönderildi"
+  notice_timezone_missing: Saat dilimi ayarlanmadı ve %{zone} kabul edildi. Saat dilimini seçmek için lütfen buraya tıklayın.
+  notice_meeting_updated: "Bu sayfa başka biri tarafından güncellendi. Değişiklikleri görmek için yeniden yükleyin."
+  permission_create_meetings: "Toplantı oluşturma"
+  permission_edit_meetings: "Toplantıları düzenleme"
+  permission_delete_meetings: "Toplantıları silme"
+  permission_view_meetings: "Toplantıları görüntüle"
+  permission_create_meeting_agendas: "Toplantı gündemleri oluşturun"
+  permission_create_meeting_agendas_explanation: "Klasik Toplantı modülünün ajanda içeriğinin düzenlenmesini sağlar."
+  permission_manage_agendas: "Acentaları yönetme"
+  permission_manage_agendas_explanation: "Dinamik Toplantı modülünün ajanda maddelerini yönetilmesini sağlar."
+  permission_close_meeting_agendas: "Acenta kapat"
+  permission_send_meeting_agendas_notification: "Acentalar için inceleme bildirimi gönder"
+  permission_create_meeting_minutes: "Dakikaları yönet"
+  permission_send_meeting_minutes_notification: "Dakikalar için inceleme bildirimini gönderin"
+  permission_meetings_send_invite: "Kullanıcıları toplantılara davet edin"
+  permission_send_meeting_agendas_icalendar: "Toplantı gündemini takvim girişi olarak gönderme"
+  project_module_meetings: "Toplantılar"
+  text_duration_in_hours: "Saat süresi"
+  text_in_hours: "saatlerde"
+  text_meeting_agenda_for_meeting: 'toplantı gündemi "%{meeting}"'
+  text_meeting_closing_are_you_sure: "Toplantı ajandasını kapatmak istediğinizden emin misiniz?"
+  text_meeting_agenda_open_are_you_sure: "Bu, dakikalardaki tüm değişikliklerin üzerine yazacaktır! Devam etmek istiyor musun?"
+  text_meeting_minutes_for_meeting: 'toplantı için dakikalar "%{meeting}"'
+  text_notificiation_invited: "Bu posta, aşağıdaki toplantı için bir ics girişi içermektedir:"
+  text_meeting_empty_heading: "Toplantınız boş"
+  text_meeting_empty_description_1: "Ajanda maddelerini aşağıya ekleyerek başlayın. Her bir madde sadece başlık içerecek kadar basit olabilir ama toplantı süresi ve notları gibi ek detaylar da ekleyebilirsiniz."
+  text_meeting_empty_description_2: 'Ayrıca mevcut iş parçalarına referans ekleyebilirsiniz. Bu takdirde, ilişkili notlar iş parçacığının "Toplantılar" sekmesine eklenecektir.'
+  label_meeting_empty_action: "Gündem maddesi ekle"
+  label_meeting_actions: "Toplantı eylemleri"
+  label_meeting_edit_title: "Toplantı başlığını düzenle"
+  label_meeting_delete: "Toplantıyı sil"
+  label_meeting_created_by: "Oluşturan"
+  label_meeting_last_updated: "Son güncelleme"
+  label_meeting_reload: "Yeniden yükle"
+  label_agenda_items: "Gündem maddeleri"
+  label_agenda_items_reordered: "yeniden sıralandı"
+  label_agenda_item_remove: "Ajandadan kaldır"
+  label_agenda_item_undisclosed_wp: "#%{id} numaralı iş parçası görünmez"
+  label_agenda_item_deleted_wp: "Silinmiş iş parçsına referans"
+  label_agenda_item_actions: "Ajanda maddeleri için eylemler"
+  label_agenda_item_move_to_top: "Yukarıya taşı"
+  label_agenda_item_move_to_bottom: "Aşağıya taşı"
+  label_agenda_item_move_up: "Yukarı taşı"
+  label_agenda_item_move_down: "Aşağı taşı"
+  label_agenda_item_add_notes: "Not eklemek"
+  label_agenda_item_work_package: "Ajanda maddesinin iş parçası"
+  text_agenda_item_title: 'Ajanda maddesi %{title}"'
+  text_agenda_work_package_deleted: 'Silinen iş parçası için ajanda maddesi'
+  text_deleted_agenda_item: 'Silinen ajanda maddesi'
+  label_initial_meeting_details: "Toplantı"
+  label_meeting_details: "Toplantı detayları"
+  label_meeting_details_edit: "Toplantı detaylarını düzenle"
+  label_meeting_state: "Toplantı durumu"
+  label_meeting_state_open: "Aç"
+  label_meeting_state_open_html: "<i>Açık</i>"
+  label_meeting_state_closed: "Kapalı"
+  label_meeting_state_closed_html: "<i>Kapalı</i>"
+  label_meeting_reopen_action: "Toplantıyı tekrar aç"
+  label_meeting_close_action: "Toplantıyı kapat"
+  text_meeting_open_description: "Bu toplantı açık. Gündem maddesi ekleyip çıkartabilir ve bu maddeleri düzenleyebilirsiniz. Toplantı bittikten sonra kilitlemek için toplantıyı kapatın."
+  text_meeting_closed_description: "Toplantı kapatılmış. Artık gündem maddesi ekleyip çıkartamazsınız."
+  label_meeting_manage_participants: "Katılımcıları yönet"
+  label_meeting_no_participants: "Katılımcı yok"
+  label_meeting_show_hide_participants: "%{count} kişi daha göster/sakla"
+  label_meeting_show_all_participants: "Tümünü göster"
+  label_meeting_add_participants: "Katılımcı ekle"
+  text_meeting_not_editable_anymore: "Bu toplantıyı artık düzenleyemezsiniz."
+  text_meeting_not_present_anymore: "Toplantı silinmiş. Başka bir toplantı seçin lütfen."
+  label_add_work_package_to_meeting_dialog_title: "Toplantıya iş parçası ekleyin"
+  label_add_work_package_to_meeting_dialog_button: "Toplantıya ekle"
+  label_meeting_selection_caption: "It's only possible to add this work package to upcoming or ongoing open meetings."
+  text_add_work_package_to_meeting_description: "Bir iş paketi tartışılmak üzere bir veya birden fazla toplantıya eklenebilir. Bununla ilgili tüm notlar da burada görülebilir."
+  text_agenda_item_no_notes: "Not verilmemiştir"
+  text_agenda_item_not_editable_anymore: "Bu takvim maddesi artık düzenlenemez."
+  text_work_package_has_no_upcoming_meeting_agenda_items: "Bu iş paketi henüz yaklaşan bir toplantı gündemine alınmamıştır."
+  text_work_package_add_to_meeting_hint: 'Bu iş paketini yaklaşan bir toplantıya eklemek için "Toplantıya ekle" düğmesini kullanın.'
+  text_work_package_has_no_past_meeting_agenda_items: "Bu iş paketinden daha önceki bir toplantıda bahsedilmemişti."

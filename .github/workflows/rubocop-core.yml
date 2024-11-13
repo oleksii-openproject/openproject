@@ -1,0 +1,26 @@
+name: rubocop
+
+on:
+  pull_request:
+
+jobs:
+  rubocop:
+    name: rubocop
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
+      - uses: reviewdog/action-rubocop@v2
+        with:
+          github_token: ${{ secrets.github_token }}
+          rubocop_version: gemfile
+          rubocop_extensions: >
+            rubocop-capybara:gemfile
+            rubocop-factory_bot:gemfile
+            rubocop-openproject:gemfile
+            rubocop-performance:gemfile
+            rubocop-rails:gemfile
+            rubocop-rspec:gemfile
+            rubocop-rspec_rails:gemfile
+          reporter: github-pr-check
+          only_changed: true

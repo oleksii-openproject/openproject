@@ -1,0 +1,61 @@
+<div *ngIf="primerizedActivitiesEnabled" id="work-package-activites-container">
+  <turbo-frame [src]="turboFrameSrc" id="work-package-activities-tab-content" loading="lazy">
+    <op-content-loader viewBox="0 0 100 100">
+      <svg:rect x="0" y="0" width="70" height="5" rx="1" />
+  
+      <svg:rect x="75" y="0" width="25" height="5" rx="1" />
+  
+      <svg:rect x="0" y="10" width="100" height="8" rx="1" />
+  
+      <svg:rect x="0" y="25" width="100" height="12" rx="1" />
+    </op-content-loader>
+  </turbo-frame>
+</div>
+
+<div *ngIf="!primerizedActivitiesEnabled" id="work-package-activites-container">
+  <div id="work-package-comment-container">
+
+    <ng-container *ngIf="!showAbove" [ngTemplateOutlet]="template"></ng-container>
+
+    <div
+        class="work-package--details--long-field work-packages--activity--add-comment hide-when-print"
+        [ngClass]="{'work-packages--activity--add-comment_top': showAbove} "
+        #commentContainer
+        *ngIf="canAddComment"
+    >
+      <div class="inline-edit--container inplace-edit">
+        <edit-form-portal
+            *ngIf="active"
+            [schemaInput]="schema"
+            [changeInput]="change"
+            [editFieldHandler]="handler"
+        >
+        </edit-form-portal>
+        <div
+            *ngIf="!active"
+            (dragover)="startDragOverActivation($event)"
+            (dragenter)="startDragOverActivation($event)"
+        >
+          <button
+              class="work-package-comment inline-edit--display-field"
+              [title]="text.editTitle"
+              (click)="activate()"
+          >
+            <span
+                class="work-package-comment--text"
+                [textContent]="text.placeholder"
+            >
+            </span>
+
+            <op-icon
+                class="work-package-comment--icon"
+                icon-classes="icon-edit" [icon-title]="text.editTitle"
+            ></op-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <ng-container *ngIf="showAbove" [ngTemplateOutlet]="template"></ng-container>
+  </div>
+</div>

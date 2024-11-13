@@ -1,0 +1,225 @@
+#-- copyright
+#OpenProject is an open source project management software.
+#Copyright (C) the OpenProject GmbH
+#This program is free software; you can redistribute it and/or
+#modify it under the terms of the GNU General Public License version 3.
+#OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
+#Copyright (C) 2006-2013 Jean-Philippe Lang
+#Copyright (C) 2010-2013 the ChiliProject Team
+#This program is free software; you can redistribute it and/or
+#modify it under the terms of the GNU General Public License
+#as published by the Free Software Foundation; either version 2
+#of the License, or (at your option) any later version.
+#This program is distributed in the hope that it will be useful,
+#but WITHOUT ANY WARRANTY; without even the implied warranty of
+#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#GNU General Public License for more details.
+#You should have received a copy of the GNU General Public License
+#along with this program; if not, write to the Free Software
+#Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+#See COPYRIGHT and LICENSE files for more details.
+#++
+#English strings go here for Rails i18n
+id:
+  plugin_openproject_meeting:
+    name: "OpenProject Meeting"
+    description: >-
+      This module adds functions to support project meetings to OpenProject. Meetings can be scheduled selecting invitees from the same project to take part in the meeting. An agenda can be created and sent to the invitees. After the meeting, attendees can be selected and minutes can be created based on the agenda. Finally, the minutes can be sent to all attendees and invitees.
+  activerecord:
+    attributes:
+      meeting:
+        type: "Jenis rapat"
+        location: "Lokasi"
+        duration: "Durasi"
+        notes: "Note"
+        participants: "Partisipan"
+        participant:
+          other: "%{count} Peserta"
+        participants_attended: "Peserta"
+        participants_invited: "Undangan"
+        project: "Project"
+        start_date: "Tanggal"
+        start_time: "Waktu mulai"
+        start_time_hour: "Waktu mulai"
+      meeting_agenda_item:
+        title: "Judul"
+        author: "Penulis"
+        duration_in_minutes: "menit"
+        description: "Note"
+        presenter: "Pembawa acara"
+      meeting_section:
+        title: "Judul"
+    errors:
+      messages:
+        invalid_time_format: "bukanlah waktu yang valid. Format seharusnya; JJ:MM"
+    models:
+      structured_meeting: "Rapat (dinamis)"
+      meeting_agenda_item: "Item agenda"
+      meeting_agenda: "Agenda"
+      meeting_minutes: "Laporan"
+      meeting_section: "Bagian"
+  activity:
+    filter:
+      meeting: "Rapat"
+    item:
+      meeting_agenda_item:
+        duration:
+          added: "diatur ke %{value}"
+          added_html: "diatur ke <i>%{value}</i>"
+          removed: "dihapus"
+          updated: "diubah dari %{old_value} menjadi %{value}"
+          updated_html: "berubah dari <i>%{old_value}</i> menjadi <i>%{value}</i>"
+        position:
+          updated: "disusun ulang"
+        work_package:
+          updated: "diubah dari %{old_value} menjadi %{value}"
+          updated_html: "berubah dari <i>%{old_value}</i> menjadi <i>%{value}</i>"
+  description_attended: "hadir"
+  description_invite: "diundang"
+  events:
+    meeting: Rapat diedit
+    meeting_agenda: Agenda rapat diedit
+    meeting_agenda_closed: Agenda rapat ditutup
+    meeting_agenda_opened: Agenda rapat dibuka
+    meeting_minutes: Laporan rapat diedit
+    meeting_minutes_created: Laporan rapat dibuat
+  error_notification_with_errors: "Gagal mengirim notifikasi. Berikut penerima yang tidak terkirim: %{recipients}"
+  label_meeting: "Rapat"
+  label_meeting_plural: "Rapat"
+  label_meeting_new: "Rapat Baru"
+  label_meeting_edit: "Edit Rapat"
+  label_meeting_agenda: "Agenda"
+  label_meeting_minutes: "Laporan"
+  label_meeting_close: "Tutup"
+  label_meeting_open: "Buka"
+  label_meeting_agenda_close: "Tutup agenda untuk memulai Laporan"
+  label_meeting_date_time: "Tanggal/Waktu"
+  label_meeting_diff: "Perbedaan"
+  label_upcoming_meetings: "Rapat mendatang"
+  label_past_meetings: "Rapat sebelumnya"
+  label_upcoming_meetings_short: "Mendatang"
+  label_past_meetings_short: "Lalu"
+  label_involvement: "Keterlibatan"
+  label_upcoming_invitations: "Undangan mendatang"
+  label_past_invitations: "Undangan sebelumnya"
+  label_attendee: "Peserta"
+  label_author: "Pembuat"
+  label_notify: "Kirim untuk ulasan"
+  label_icalendar: "Kirim iCalendar"
+  label_icalendar_download: "Unduh acara iCalendar"
+  label_version: "Versi"
+  label_time_zone: "Zona waktu"
+  label_start_date: "Tanggal mulai"
+  meeting:
+    attachments:
+      text: "File terlampir tersedia untuk semua peserta rapat. Anda juga dapat menyeret dan meletakkannya ke dalam catatan item agenda."
+    copy:
+      title: "Salinan rapat: %{title}"
+      attachments: "Salinan lampiran"
+      attachments_text: "Salin semua file terlampir ke rapat baru"
+      agenda: "Salin agenda"
+      agenda_text: "Salin agenda rapat lama"
+    email:
+      send_emails: "Email participants"
+      send_invitation_emails: >
+        Send an email invitation immediately to the participants selected above. You can also do this manually at any time later.
+      open_meeting_link: "Rapat terbuka"
+      invited:
+        summary: "%{actor} telah mengirimi Anda undangan untuk rapat %{title}"
+      rescheduled:
+        header: "Meeting %{title} has been rescheduled"
+        summary: "Rapat %{title} telah dijadwalkan ulang oleh %{actor}"
+        body: "Rapat tersebut %{title} telah dijadwalkan ulang oleh %{actor}."
+        old_date_time: "Tanggal/waktu lama"
+        new_date_time: "Tanggal/waktu baru"
+    label_mail_all_participants: "Kirim email ke semua peserta"
+    types:
+      classic: "Klasik"
+      classic_text: "Atur rapat Anda dalam agenda dan protokol teks yang dapat diformat."
+      structured: "Dinamis"
+      structured_text: "Organize your meeting as a list of agenda items, optionally linking them to a work package."
+      structured_text_copy: "Copying a meeting will currently not copy the associated meeting agenda items, just the details"
+    copied: "Disalin dari Meeting #%{id}"
+  meeting_section:
+    untitled_title: "Untitled section"
+    delete_confirmation: "Deleting the section will also delete all of its agenda items. Are you sure you want to do this?"
+    placeholder_title: "New section"
+    empty_text: "Drag items here or create a new one"
+  notice_successful_notification: "Berhasil mengirim notifikasi"
+  notice_timezone_missing: Tidak ada zona waktu yang ditetapkan sehingga diasumsikan %{zone}. Untuk memilih zona waktu, silakan mengeklik di sini.
+  notice_meeting_updated: "This page has been updated by someone else. Reload to view changes."
+  permission_create_meetings: "Membuat rapat"
+  permission_edit_meetings: "Edit rapat"
+  permission_delete_meetings: "Hapus rapat"
+  permission_view_meetings: "Lihat rapat"
+  permission_create_meeting_agendas: "Create meeting agendas"
+  permission_create_meeting_agendas_explanation: "Allows editing the Classic Meeting's agenda content."
+  permission_manage_agendas: "Kelola agenda"
+  permission_manage_agendas_explanation: "Allows managing the Dynamic Meeting's agenda items."
+  permission_close_meeting_agendas: "Tutup agenda"
+  permission_send_meeting_agendas_notification: "Kirim notifikasi ulasan untuk agenda"
+  permission_create_meeting_minutes: "Kelola laporan"
+  permission_send_meeting_minutes_notification: "Kirim notifikasi ulasan untuk laporan"
+  permission_meetings_send_invite: "Undang pengguna untuk meeting"
+  permission_send_meeting_agendas_icalendar: "Kirim agenda meeting sebagai catatan kalender"
+  project_module_meetings: "Rapat"
+  text_duration_in_hours: "Durasi dalam jam"
+  text_in_hours: "dalam jam"
+  text_meeting_agenda_for_meeting: 'agenda untuk rapat "%{meeting}"'
+  text_meeting_closing_are_you_sure: "Are you sure you want to close the meeting agenda?"
+  text_meeting_agenda_open_are_you_sure: "Ini akan mengganti semua perubahan dalam beberapa menit! Apakah anda ingin lanjut?"
+  text_meeting_minutes_for_meeting: 'laporan untuk rapat "%{meeting}"'
+  text_notificiation_invited: "Surel ini berisi entri ics untuk rapat di bawah:"
+  text_meeting_empty_heading: "Your meeting is empty"
+  text_meeting_empty_description_1: "Start by adding agenda items below. Each item can be as simple as just a title, but you can also add additional details like duration and notes."
+  text_meeting_empty_description_2: 'You can also add references to existing work packages. When you do, related notes will automatically be visible in the work package''s "Meetings" tab.'
+  label_meeting_empty_action: "Add agenda item"
+  label_meeting_actions: "Meeting actions"
+  label_meeting_edit_title: "Edit meeting title"
+  label_meeting_delete: "Delete meeting"
+  label_meeting_created_by: "Created by"
+  label_meeting_last_updated: "Last updated"
+  label_meeting_reload: "Reload"
+  label_agenda_items: "Agenda items"
+  label_agenda_items_reordered: "disusun ulang"
+  label_agenda_item_remove: "Remove from agenda"
+  label_agenda_item_undisclosed_wp: "Work package #%{id} not visible"
+  label_agenda_item_deleted_wp: "Deleted work package reference"
+  label_agenda_item_actions: "Agenda items actions"
+  label_agenda_item_move_to_top: "Pindah paling atas"
+  label_agenda_item_move_to_bottom: "Pindahkan paling bawah"
+  label_agenda_item_move_up: "Naikkan"
+  label_agenda_item_move_down: "Pindahkan ke bawah"
+  label_agenda_item_add_notes: "Tambahkan catatan"
+  label_agenda_item_work_package: "Agenda item work package"
+  text_agenda_item_title: 'Agenda item "%{title}"'
+  text_agenda_work_package_deleted: 'Agenda item for deleted work package'
+  text_deleted_agenda_item: 'Deleted agenda item'
+  label_initial_meeting_details: "Rapat"
+  label_meeting_details: "Meeting details"
+  label_meeting_details_edit: "Edit meeting details"
+  label_meeting_state: "Meeting status"
+  label_meeting_state_open: "Buka"
+  label_meeting_state_open_html: "<i>Open</i>"
+  label_meeting_state_closed: "Closed"
+  label_meeting_state_closed_html: "<i>Closed</i>"
+  label_meeting_reopen_action: "Reopen meeting"
+  label_meeting_close_action: "Close meeting"
+  text_meeting_open_description: "This meeting is open. You can add/remove agenda items and edit them as you please. After the meeting is over, close it to lock it."
+  text_meeting_closed_description: "This meeting is closed. You cannot add/remove agenda items anymore."
+  label_meeting_manage_participants: "Manage participants"
+  label_meeting_no_participants: "No participants"
+  label_meeting_show_hide_participants: "Show/hide %{count} more"
+  label_meeting_show_all_participants: "Tampilkan semua"
+  label_meeting_add_participants: "Add participants"
+  text_meeting_not_editable_anymore: "This meeting is not editable anymore."
+  text_meeting_not_present_anymore: "This meeting was deleted. Please select another meeting."
+  label_add_work_package_to_meeting_dialog_title: "Add work package to meeting"
+  label_add_work_package_to_meeting_dialog_button: "Add to meeting"
+  label_meeting_selection_caption: "It's only possible to add this work package to upcoming or ongoing open meetings."
+  text_add_work_package_to_meeting_description: "A work package can be added to one or multiple meetings for discussion. Any notes concerning it are also visible here."
+  text_agenda_item_no_notes: "No notes provided"
+  text_agenda_item_not_editable_anymore: "This agenda item is not editable anymore."
+  text_work_package_has_no_upcoming_meeting_agenda_items: "This work package is not scheduled in an upcoming meeting agenda yet."
+  text_work_package_add_to_meeting_hint: 'Use the "Add to meeting" button to add this work package to an upcoming meeting.'
+  text_work_package_has_no_past_meeting_agenda_items: "This work package was not mentioned in a past meeting."

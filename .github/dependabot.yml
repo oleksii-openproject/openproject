@@ -1,0 +1,29 @@
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/frontend"
+    schedule:
+      interval: "daily"
+    target-branch: "dev"
+    open-pull-requests-limit: 3
+    versioning-strategy: lockfile-only
+    groups:
+      angular:
+        patterns:
+          - '@angular*'
+      fullcalendar:
+        patterns:
+          - '@fullcalendar*'
+  - package-ecosystem: "bundler"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    target-branch: "dev"
+    open-pull-requests-limit: 3
+    versioning-strategy: lockfile-only
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    target-branch: "dev"
+    open-pull-requests-limit: 3
