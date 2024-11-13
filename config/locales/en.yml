@@ -388,6 +388,10 @@ en:
         no_results_content_text: Create a new work package category
       custom_fields:
         no_results_title_text: There are currently no custom fields available.
+      life_cycle:
+        header:
+          title: "Project lifecycle"
+          description: 'These project stages and gates in the project lifecycle will be displayed in your <a href=%{overview_url} target="_blank">project overview page</a> and are defined in the <a href=%{admin_settings_url} target="_blank">administration settings</a> by the administrator of the instance. You can enable or disable individual attributes.'
       project_custom_fields:
         header:
           title: "Project attributes"

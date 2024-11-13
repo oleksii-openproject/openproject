@@ -1,0 +1,9 @@
+<%= render Primer::OpenProject::PageHeader.new do |header| %>
+  <%= header.with_title(variant: :default) { t('projects.settings.life_cycle.header.title') } %>
+  <%= header.with_description {
+    t('projects.settings.life_cycle.header.description',
+      overview_url: project_path(@project),
+      admin_settings_url: admin_settings_project_life_cycles_path).html_safe
+  } %>
+  <%= header.with_breadcrumbs(breadcrumb_items) %>
+<% end %>
