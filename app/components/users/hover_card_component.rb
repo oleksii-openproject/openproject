@@ -49,8 +49,9 @@ class Users::HoverCardComponent < ApplicationComponent
   # The latter string is cut off since the complete list of project names would exceed the allowed `max_length`.
   def project_membership_summary(max_length = 40)
     projects = @user.projects
+    return no_project_text if projects.empty?
+
     project_links = linked_project_names(projects)
-    return no_project_text if project_links.empty?
 
     cutoff_index = calculate_cutoff_index(projects.map(&:name), max_length)
     build_summary(project_links, cutoff_index)
