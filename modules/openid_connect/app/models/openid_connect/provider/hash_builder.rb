@@ -39,7 +39,8 @@ module OpenIDConnect
         }
       when "microsoft_entra"
         {
-          use_graph_api:
+          use_graph_api:,
+          tenant:
         }
       else
         {}
