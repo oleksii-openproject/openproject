@@ -58,7 +58,8 @@ def watcher_button_arguments(object, user)
 
   watched = object.watched_by?(user)
 
-  path = send(:"#{(watched ? 'unwatch' : 'watch')}_path", object_type: object.class.to_s.underscore.pluralize,
+  path = send(:"#{(watched ? 'unwatch' : 'watch')}_path",
+              object_type: object.class.to_s.underscore.pluralize,
               object_id: object.id)
 
   method = watched ? :delete : :post
