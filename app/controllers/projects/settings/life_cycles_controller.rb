@@ -29,5 +29,7 @@
 class Projects::Settings::LifeCyclesController < Projects::SettingsController
   include OpTurbo::ComponentStream
 
+  menu_item :settings_life_cycles
+
   def show; end
 end
