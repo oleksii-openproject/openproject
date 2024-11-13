@@ -2781,9 +2781,9 @@ zh-TW:
   notice_locking_conflict: "在此同時，資訊已經被至少一個使用者更新"
   notice_locking_conflict_additional_information: "更新來自於 %{users}"
   notice_locking_conflict_reload_page: "請重新載入頁面，檢查所做的更改並重新套用您的更新。"
-  notice_locking_conflict_warning: "This page has been updated by someone else. To not lose your edits, copy them locally and reload to view the updated version."
-  notice_locking_conflict_danger: "Could not save your changes because of conflicting modifications. To not lose your edits, copy them locally and reload to view the updated version."
-  notice_locking_conflict_action_button: "Discard changes and reload"
+  notice_locking_conflict_warning: "本頁面已由他人更新。為了不遺失您的編輯內容，請複製到本機，然後再重新載入以檢視更新的版本。"
+  notice_locking_conflict_danger: "由於修改衝突，無法儲存您的變更。為了不遺失您的編輯，請將它們複製到本機，然後再重新載入以檢視更新的版本。"
+  notice_locking_conflict_action_button: "放棄變更並重新載入"
   notice_member_added: 新增 %{name} 至專案
   notice_members_added: 已加入了 %{number} 個用戶至專案中
   notice_member_removed: "%{user} 已從專案移除"

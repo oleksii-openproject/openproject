@@ -26,7 +26,7 @@ fr:
     text_upload_instructions: |
       Téléchargez votre propre avatar personnalisé de 128 par 128 pixels. Les fichiers plus gros seront redimensionnés et recadrés pour correspondre.
       Un aperçu de votre avatar sera affiché avant le téléchargement, une fois que vous aurez sélectionné une image.
-    text_change_gravatar_html: 'Pour changer ou ajouter un Gravatar pour votre adresse de courriel, allez à %{gravatar_url}.'
+    text_change_gravatar_html: 'Pour changer ou ajouter un Gravatar pour votre adresse e-mail, allez à %{gravatar_url}.'
     text_your_local_avatar: |
       OpenProject vous permet de téléverser votre propre avatar personnalisé.
     text_local_avatar_over_gravatar: |

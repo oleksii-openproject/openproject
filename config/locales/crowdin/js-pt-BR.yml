@@ -37,7 +37,7 @@ pt-BR:
       clear_all: "Remover tudo"
       loading: "Carregando..."
       not_found: "Nenhum item encontrado"
-      type_to_search: "Escreva para pesquisar"
+      type_to_search: "Digite para pesquisar"
     autocomplete_select:
       placeholder:
         multi: 'Adicionar "%{name}"'
@@ -1297,7 +1297,7 @@ pt-BR:
       no_results: "Nenhum projeto corresponde ao seu critério de busca."
     baseline:
       toggle_title: "Linha base"
-      clear: "Limpar"
+      clear: "Remover"
       apply: "Aplicar"
       header_description: "Destaque as alterações realizadas nesta lista desde qualquer ponto no passado."
       enterprise_header_description: "Destaque as alterações realizadas nesta lista desde qualquer ponto no passado com a edição Enterprise."
@@ -1305,15 +1305,15 @@ pt-BR:
       baseline_comparison: "Comparação de linha base"
       help_description: "Fuso horário de referência para a linha base."
       time_description: "Em seu horário local: %{datetime}"
-      time: "Horário"
+      time: "Hora"
       from: "De"
       to: "Para"
       drop_down:
         none: "-"
         yesterday: "ontem"
         last_working_day: "último dia útil"
-        last_week: "última semana"
-        last_month: "último mês"
+        last_week: "semana passada"
+        last_month: "mês passado"
         a_specific_date: "uma data específica "
         between_two_specific_dates: "entre suas datas específicas"
       legends:

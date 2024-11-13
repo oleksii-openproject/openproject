@@ -8,7 +8,7 @@ zh-TW:
     attributes:
       openid_connect/provider:
         name: 名稱
-        slug: Unique identifier
+        slug: 唯一識別碼
         display_name: 顯示名稱
         client_id: 客戶端 ID
         client_secret: 用戶端密鑰
@@ -27,7 +27,7 @@ zh-TW:
         icon: 自訂圖示
         claims: 要求
         acr_values: ACR 值
-        redirect_url: Redirect URL
+        redirect_url: 重新導向網址
   activerecord:
     errors:
       models:
@@ -53,14 +53,14 @@ zh-TW:
     menu_title: OpenID 提供商
     delete_title: "刪除 OpenID Connect 提供者"
     instructions:
-      redirect_url: This is the redirect URL that the OpenID Connect provider should use to redirect back to OpenProject after a successful login.
+      redirect_url: 這是 OpenID Connect 提供者應使用的重新導向網址，以便在登入成功後導回 OpenProject。
       endpoint_url: OpenID Connect 提供者給予您的端點 URL
       metadata_none: 我沒有這些資訊
       metadata_url: 我有一個發現端點 URL
       client_id: 這是 OpenID Connect 提供者給予您的用戶端 ID
       client_secret: 這是 OpenID Connect 提供者給予您的用戶端密鑰
-      limit_self_registration: 如果啟用，使用者只能在 prvoder 端設定允許的情況下使用此提供者註冊。
-      display_name: 提供商的名稱。這將會顯示在登入按鈕及提供者清單中。
+      limit_self_registration: If enabled, users can only register using this provider if configuration on the provider's end allows it.
+      display_name: The name of the provider. This will be displayed as the login button and in the list of providers.
       tenant: '如果適用，請用您自己的租戶取代預設租戶。請參閱<a href=" https://learn.microsoft.com/en-us/entra/identity-platform/v2-protocols-oidc#find-your-apps-openid-configuration-document-uri">此內容</a>。'
       post_logout_redirect_uri: OpenID Connect 提供者應在登出請求後重定向至的 URL。
       claims: >
