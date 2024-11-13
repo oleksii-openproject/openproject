@@ -53,7 +53,6 @@ import { HalResourceService } from 'core-app/features/hal/services/hal-resource.
 import { CollectionResource } from 'core-app/features/hal/resources/collection-resource';
 import { ApiV3FilterBuilder } from 'core-app/shared/helpers/api-v3/api-v3-filter-builder';
 import { addFiltersToPath } from 'core-app/core/apiv3/helpers/add-filters-to-path';
-import { aR } from '@fullcalendar/core/internal-common';
 
 export interface IAutocompleteItem {
   id:ID;
