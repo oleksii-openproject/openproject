@@ -689,7 +689,7 @@ GEM
       reline (>= 0.4.2)
     iso8601 (0.13.0)
     jmespath (1.6.2)
-    json (2.7.4)
+    json (2.8.1)
     json-jwt (1.16.7)
       activesupport (>= 4.2)
       aes_key_wrap
