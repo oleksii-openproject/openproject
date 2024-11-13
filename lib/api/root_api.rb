@@ -48,6 +48,8 @@ module API
 
     helpers API::Caching::Helpers
     module Helpers
+      include ::API::Helpers::RaiseQueryErrors
+
       def current_user
         User.current
       end
@@ -255,14 +257,6 @@ module API
 
       def authorize_logged_in
         authorize_by_with_raise((current_user.logged? && current_user.active?) || current_user.is_a?(SystemUser))
-      end
-
-      def raise_query_errors(object)
-        api_errors = object.errors.full_messages.map do |message|
-          ::API::Errors::InvalidQuery.new(message)
-        end
-
-        raise ::API::Errors::MultipleErrors.create_if_many api_errors
       end
 
       def raise_invalid_query_on_service_failure

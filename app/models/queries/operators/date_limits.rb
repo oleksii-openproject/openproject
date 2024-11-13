@@ -27,48 +27,22 @@
 #++
 
 module Queries::Operators
-  module DateRangeClauses
-    include DateLimits
+  module DateLimits
+    # Technically dates in PostgreSQL can be up to 5874897 AD, but limit to
+    # timestamp range, as dates are used to query for timestamps too.
+    # Date.new BCE years are counted astronomically, so 0 is 1 BC.
+    # Minimal allowed date is Date.new(-4713, 11, 24), but specification says 4713 BC (-4712).
+    #
+    # https://www.postgresql.org/docs/current/datatype-datetime.html
+    PG_DATE_FROM = Date.new(-4712, 1, 1)
+    PG_DATE_TO_EXCLUSIVE = Date.new(294276 + 1, 1, 1)
 
-    # Returns a SQL clause for a date or datetime field for a relative range from
-    # the end of the day of yesterday + from until the end of today + to.
-    def relative_date_range_clause(table, field, from, to)
-      today = Time.zone.today
-
-      from_date = today + from if from
-      to_date = today + to if to
-
-      date_range_clause(table, field, from_date, to_date)
+    def date_too_small?(date)
+      date < PG_DATE_FROM
     end
 
-    # Returns a SQL clause for date or datetime field for an exact range starting
-    # at the beginning of the day of from until the end of the day of to
-    def date_range_clause(table, field, from, to)
-      s = []
-
-      if from
-        return "1 <> 1" if date_too_big?(from)
-
-        unless date_too_small?(from)
-          s << "#{table}.#{field} > '#{quoted_date_from_utc(from.yesterday)}'"
-        end
-      end
-
-      if to
-        return "1 <> 1" if date_too_small?(to)
-
-        unless date_too_big?(to)
-          s << "#{table}.#{field} <= '#{quoted_date_from_utc(to)}'"
-        end
-      end
-
-      s.join(" AND ").presence || "1 = 1"
-    end
-
-    private
-
-    def quoted_date_from_utc(value)
-      connection.quoted_date(value.to_time(:utc).end_of_day)
+    def date_too_big?(date)
+      date >= PG_DATE_TO_EXCLUSIVE
     end
   end
 end
