@@ -36,9 +36,10 @@ export class HoverCardTriggerService {
   private modalElement:HTMLElement;
 
   private mouseInModal = false;
-  private closeTimeout:number|null;
+  private closeTimeout:number|null = null;
   private closeDelayInMs:number = 100;
-  private modalAlignment?:string|null;
+  private modalAlignment:string|null = null;
+  private previousTarget:HTMLElement|null = null;
 
   constructor(
     readonly opModalService:OpModalService,
@@ -54,6 +55,12 @@ export class HoverCardTriggerService {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const el = e.target as HTMLElement;
       if (!el) { return; }
+
+      // Abort if the current element is already showing a modal
+      if (this.previousTarget && this.previousTarget === el) {
+        return;
+      }
+      this.previousTarget = el;
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const turboFrameUrl = el.getAttribute('data-hover-card-url');
@@ -111,6 +118,8 @@ export class HoverCardTriggerService {
       this.closeTimeout = window.setTimeout(() => {
         if (!this.mouseInModal) {
           this.opModalService.close();
+          // Allow opening this target once more, since it has been orderly closed
+          this.previousTarget = null;
         }
       }, this.closeDelayInMs);
     });

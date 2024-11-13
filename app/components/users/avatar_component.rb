@@ -64,7 +64,7 @@ module Users
       }
 
       if @hover_card
-        options[:hover_card_close_delay] = 600
+        options[:hover_card_close_delay] = 250
         options[:hover_card_alignment] = "top"
       end
 
