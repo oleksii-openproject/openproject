@@ -1,0 +1,12 @@
+<%=
+  component_wrapper do
+    flex_layout(align_items: :center,
+                justify_content: :space_between) do |element_container|
+      element_container.with_column(flex_layout: true) do |title_container|
+        title_container.with_column(pt: 1, mr: 2) do
+          render(Primer::Beta::Text.new) { element.name }
+        end
+      end
+    end
+  end
+%>

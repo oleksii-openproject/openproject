@@ -29,7 +29,15 @@
 class Projects::Settings::LifeCyclesController < Projects::SettingsController
   include OpTurbo::ComponentStream
 
+  before_action :load_life_cycle_elements, only: %i[show]
+
   menu_item :settings_life_cycles
 
   def show; end
+
+  private
+
+  def load_life_cycle_elements
+    @life_cycle_elements = LifeCycle.all
+  end
 end

@@ -26,35 +26,29 @@
 # See COPYRIGHT and LICENSE files for more details.
 # ++
 
-require "support/pages/page"
+module Projects
+  module Settings
+    module LifeCycles
+      class IndexComponent < ApplicationComponent
+        include ApplicationHelper
+        include OpPrimer::ComponentHelpers
+        include OpTurbo::Streamable
 
-module Pages
-  module Projects
-    # TODO: Ideally this would be turned into a module but it would require having the other settings pages being split up.
-    class Settings
-      class LifeCycle < Pages::Page
-        attr_accessor :project
+        attr_reader :project,
+                    :life_cycle_elements
 
-        def initialize(project)
-          super()
+        def initialize(project:, life_cycle_elements:)
+          super
 
-          self.project = project
+          @project = project
+          @life_cycle_elements = life_cycle_elements
         end
 
-        def path
-          "/projects/#{project.identifier}/settings/life_cycle"
-        end
+        private
 
-        def expect_listed(*life_cycle_elements)
-          raise "Currently depends on checking for at least two life cycle events" if life_cycle_elements.size < 2
-
-          life_cycle_elements.each_cons(2) do |predecessor, successor|
-            expect(page).to have_css("#{life_cycle_test_selector(predecessor)} + #{life_cycle_test_selector(successor)}")
-          end
-        end
-
-        def life_cycle_test_selector(element)
-          test_selector("project-life-cycle-element-#{element.id}")
+        # TODO: Check if this is necessary
+        def wrapper_uniq_by
+          @project.id
         end
       end
     end

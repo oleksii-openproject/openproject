@@ -34,8 +34,7 @@ RSpec.describe "Projects life cycle settings", :js, :with_cuprite do
   shared_let(:user_with_permission) do
     create(:user,
            member_with_permissions: {
-             # TODO: change to specific permission
-             project: %w[
+             project => %w[
                select_project_life_cycle
              ]
            })
@@ -54,6 +53,12 @@ RSpec.describe "Projects life cycle settings", :js, :with_cuprite do
 
     it "allows toggling the active/inactive state of lifecycle elements" do
       project_lifecycle_page.visit!
+
+      project_lifecycle_page.expect_listed(initiating_stage,
+                                           read_to_execute_gate,
+                                           executing_stage,
+                                           read_to_close_gate,
+                                           closing_stage)
     end
   end
 end

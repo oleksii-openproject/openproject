@@ -1,0 +1,29 @@
+<%=
+  component_wrapper do
+    render(border_box_container(mb: 3, data: { test_selector: "project-life-cycle-administration" })) do |component|
+      component.with_header(font_weight: :bold, py: 2) do
+        flex_layout(justify_content: :space_between, align_items: :center) do |header_container|
+          header_container.with_column(py: 2) do
+            # adding py: 2 here to match the padding of the actions_container
+            # otherwise the header height changes when the actions gets hidden when filtering
+            render(Primer::Beta::Text.new(font_weight: :bold)) do
+              I18n.t('projects.settings.life_cycle.header.title')
+            end
+          end
+        end
+      end
+      if life_cycle_elements.empty?
+        component.with_row do
+          render(Primer::Beta::Text.new(color: :subtle)) { t("projects.settings.life_cycle.non_defined") }
+        end
+      else
+        life_cycle_elements.each do |life_cycle_element|
+          component.with_row(data: { 'projects--settings--project-custom-fields-mapping-filter-target': 'searchItem' },
+                                     test_selector: "project-life-cycle-element-#{life_cycle_element.id}") do
+            render(Projects::Settings::LifeCycles::ElementComponent.new(life_cycle_element))
+          end
+        end
+      end
+    end
+  end
+%>
