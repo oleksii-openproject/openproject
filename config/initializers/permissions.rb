@@ -133,6 +133,13 @@ Rails.application.reloader.to_prepare do
                      permissible_on: :project,
                      require: :member
 
+      map.permission :select_project_life_cycle,
+                     {
+                       "projects/settings/life_cycles": %i[show]
+                     },
+                     permissible_on: :project,
+                     require: :member
+
       map.permission :manage_members,
                      {
                        members: %i[index new create update destroy destroy_by_principal autocomplete_for_member menu],

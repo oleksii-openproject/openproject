@@ -625,6 +625,7 @@ Redmine::MenuManager.map :project_menu do |menu|
 
   project_menu_items = {
     general: :label_information_plural,
+    life_cycles: :label_life_cycle_plural,
     project_custom_fields: :label_project_attributes_plural,
     modules: :label_module_plural,
     types: :label_work_package_types,

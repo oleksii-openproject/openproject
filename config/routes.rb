@@ -244,6 +244,7 @@ Rails.application.routes.draw do
             put :disable_all_of_section
           end
         end
+        resource :life_cycle, only: %i[show]
         resource :custom_fields, only: %i[show update]
         resource :repository, only: %i[show], controller: "repository"
         resource :versions, only: %i[show]
