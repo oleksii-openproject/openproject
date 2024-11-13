@@ -64,6 +64,8 @@ RSpec.describe "types", :js, :with_cuprite do
 
     project_settings_page.save!
 
+    project_settings_page.expect_and_dismiss_flash(message: "Successful update.")
+
     expect(page)
       .to have_checked_field(type.name)
     expect(page)
