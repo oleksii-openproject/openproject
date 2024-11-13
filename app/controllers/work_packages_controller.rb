@@ -37,7 +37,7 @@ class WorkPackagesController < ApplicationController
   accept_key_auth :index, :show
 
   before_action :authorize_on_work_package,
-                :project, only: [:show, :generate_pdf_dialog, :generate_pdf]
+                :project, only: %i[show generate_pdf_dialog generate_pdf]
   before_action :load_and_authorize_in_optional_project,
                 :check_allowed_export,
                 :protect_from_unauthorized_export, only: %i[index export_dialog]

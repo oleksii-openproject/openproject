@@ -51,52 +51,52 @@ module WorkPackages
           [
             {
               name: "hyphenation",
-              label:'Hyphenation',
-              caption: 'Break words between lines to improve text justification and readability.',
+              label: "Hyphenation",
+              caption: "Break words between lines to improve text justification and readability.",
               options: hyphenation_options
             },
             {
               name: "paper_size",
               label: I18n.t("export.dialog.pdf.paper_size.label"),
-              caption: 'The size of the paper to use for the PDF.',
+              caption: "The size of the paper to use for the PDF.",
               options: paper_size_options
             }
           ]
         end
 
         def hyphenation_options
-            # This is a list of languages that are supported by the hyphenation library
-            # https://rubygems.org/gems/text-hyphen
-            [
-              { value: "", label: 'Off', default: true },
-              { value: "ca", label: 'Catalan' },
-              { value: "cs", label: 'Czech' },
-              { value: "da", label: 'Danish' },
-              { value: "de", label: 'German' },
-              { value: "en_uk", label: 'English (UK)' },
-              { value: "en_us", label: 'English (USA)' },
-              { value: "es", label: 'Spanish' },
-              { value: "et", label: 'Estonian' },
-              { value: "eu", label: 'Basque' },
-              { value: "fi", label: 'Finnish' },
-              { value: "fr", label: 'French' },
-              { value: "ga", label: 'Irish' },
-              { value: "hr", label: 'Croatian' },
-              { value: "hu", label: 'Hungarian' },
-              { value: "ia", label: 'Interlingua' },
-              { value: "id", label: 'Indonesian' },
-              { value: "is", label: 'Icelandic' },
-              { value: "it", label: 'Italian' },
-              { value: "mn", label: 'Mongolian' },
-              { value: "ms", label: 'Malay' },
-              { value: "nl", label: 'Dutch' },
-              { value: "no", label: 'Norwegian' },
-              { value: "pl", label: 'Polish' },
-              { value: "pt", label: 'Portuguese' },
-              { value: "ru", label: 'Russian' },
-              { value: "sk", label: 'Slovak' },
-              { value: "sv", label: 'Swedish' }
-            ]
+          # This is a list of languages that are supported by the hyphenation library
+          # https://rubygems.org/gems/text-hyphen
+          [
+            { value: "", label: "Off", default: true },
+            { value: "ca", label: "Catalan" },
+            { value: "cs", label: "Czech" },
+            { value: "da", label: "Danish" },
+            { value: "de", label: "German" },
+            { value: "en_uk", label: "English (UK)" },
+            { value: "en_us", label: "English (USA)" },
+            { value: "es", label: "Spanish" },
+            { value: "et", label: "Estonian" },
+            { value: "eu", label: "Basque" },
+            { value: "fi", label: "Finnish" },
+            { value: "fr", label: "French" },
+            { value: "ga", label: "Irish" },
+            { value: "hr", label: "Croatian" },
+            { value: "hu", label: "Hungarian" },
+            { value: "ia", label: "Interlingua" },
+            { value: "id", label: "Indonesian" },
+            { value: "is", label: "Icelandic" },
+            { value: "it", label: "Italian" },
+            { value: "mn", label: "Mongolian" },
+            { value: "ms", label: "Malay" },
+            { value: "nl", label: "Dutch" },
+            { value: "no", label: "Norwegian" },
+            { value: "pl", label: "Polish" },
+            { value: "pt", label: "Portuguese" },
+            { value: "ru", label: "Russian" },
+            { value: "sk", label: "Slovak" },
+            { value: "sv", label: "Swedish" }
+          ]
         end
 
         def paper_size_options
