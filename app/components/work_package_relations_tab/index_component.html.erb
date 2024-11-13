@@ -1,13 +1,17 @@
 <%= component_wrapper(tag: "turbo-frame") do %>
   <%=
     if should_render_add_relations?
-      flex_layout(justify_content: :space_between, align_items: :center, mb: 4) do |action_bar|
+      flex_layout(justify_content: :space_between,
+                  align_items: :center,
+                  mb: 4,
+                  style: "gap: 1rem;") do |action_bar|
         action_bar.with_column do
           render(Primer::Beta::Text.new(color: :muted)) do
             t("#{I18N_NAMESPACE}.index.action_bar_title")
           end
         end
-        action_bar.with_column do
+        # Prevent the menu from overflowing on Safari
+        action_bar.with_column(style: "flex: 0 0 auto;") do
           render(Primer::Alpha::ActionMenu.new(test_selector: NEW_RELATION_ACTION_MENU,
                                               menu_id: NEW_RELATION_ACTION_MENU)) do |menu|
             menu.with_show_button do |button|
@@ -51,7 +55,8 @@
             t("#{I18N_NAMESPACE}.index.action_bar_title")
           end
         end
-        action_bar.with_column do
+        # Prevent the menu from overflowing on Safari
+        action_bar.with_column(style: "flex: 0 0 auto;") do
           render(Primer::Alpha::ActionMenu.new(test_selector: NEW_RELATION_ACTION_MENU,
                                               menu_id: NEW_RELATION_ACTION_MENU)) do |menu|
             menu.with_show_button do |button|
@@ -76,8 +81,8 @@
     end
   %>
   <%=
-    if any_relations?
-      flex_layout(classes: "work-package-relations-tab--list-container", mb: 3) do |flex|
+    flex_layout(classes: "work-package-relations-tab--list-container", mb: 3) do |flex|
+      if any_relations?
         key_namespace = "#{I18N_NAMESPACE}.relations"
 
         # Relations
@@ -112,12 +117,14 @@
             end
           end
         end
-      end
-    else
-      render Primer::Beta::Blankslate.new(border: true) do |component|
-        component.with_visual_icon(icon: "package-dependents")
-        component.with_heading(tag: :h2).with_content(t("#{I18N_NAMESPACE}.index.blankslate_heading"))
-        component.with_description { t("#{I18N_NAMESPACE}.index.blankslate_description") }
+      else
+        flex.with_row do
+          render Primer::Beta::Blankslate.new(border: true) do |component|
+            component.with_visual_icon(icon: "package-dependents")
+            component.with_heading(tag: :h2).with_content(t("#{I18N_NAMESPACE}.index.blankslate_heading"))
+            component.with_description { t("#{I18N_NAMESPACE}.index.blankslate_description") }
+          end
+        end
       end
     end
   %>

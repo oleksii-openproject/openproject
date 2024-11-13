@@ -96,6 +96,7 @@ class WorkPackageRelationsController < ApplicationController
       @children = WorkPackage.where(parent_id: @work_package.id)
       @relations = @work_package
         .relations
+        .reload
         .includes(:to, :from)
 
       component = WorkPackageRelationsTab::IndexComponent.new(work_package: @work_package,
