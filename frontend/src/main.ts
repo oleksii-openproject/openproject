@@ -44,10 +44,6 @@ void initializeLocale()
       initializeGlobalListeners();
 
       // Due to the behaviour of the Edge browser we need to wait for 'DOM ready'
-      void platformBrowserDynamic()
-        .bootstrapModule(OpenProjectModule)
-        .then(() => {
-          jQuery('body').addClass('__ng2-bootstrap-has-run');
-        });
+      void platformBrowserDynamic().bootstrapModule(OpenProjectModule);
     });
   });

@@ -414,6 +414,8 @@ export class OpenProjectModule implements DoBootstrap {
     if (root) {
       appRef.bootstrap(ApplicationBaseComponent, root);
     }
+
+    document.body.classList.add('__ng2-bootstrap-has-run');
   }
 
   private registerCustomElements(injector:Injector) {
