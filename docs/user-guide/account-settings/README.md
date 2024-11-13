@@ -1,6 +1,6 @@
 ---
 sidebar_navigation:
-  title: My account
+  title: Account settings
   priority: 999
 description: Learn how to configure account settings.
 keywords: my account, account settings, change language
@@ -36,7 +36,14 @@ Choose **Account settings**.
 
 To change your email address or your name, navigate to **Profile** on the left side menu of **Account settings** page.
 
-Here you can update the information and **save** your changes. If you're changing the email address of your account, you will be requested to confirm your account password before you can continue. (Note: This applies only to internal accounts where OpenProject can verify the password).
+Here you can update the information and **save** your changes. If you're changing the email address of your account, you will be requested to confirm your account password before you can continue. 
+
+> [!NOTE] 
+>
+> This applies only to internal accounts where OpenProject can verify the password.
+
+> [!TIP]
+> Please note that 'Hide my email' checkbox was removed from account settings with OpenProject 15.0.  The function was replaced by [the new Standard global role](../../system-admin-guide/users-permissions/roles-permissions/#standard), which regulates this permission on an instance level. 
 
 ![Profile settings in OpenProject](openproject_account_settings_profile.png)
 
