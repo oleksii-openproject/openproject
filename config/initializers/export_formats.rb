@@ -5,7 +5,6 @@ Rails.application.configure do |application|
       list WorkPackage, WorkPackage::PDFExport::WorkPackageListToPdf
 
       single WorkPackage, WorkPackage::PDFExport::WorkPackageToPdf
-      single WorkPackage, WorkPackage::PDFExport::DocumentGenerator
 
       formatter WorkPackage, WorkPackage::Exports::Formatters::EstimatedHours
       formatter WorkPackage, WorkPackage::Exports::Formatters::RemainingHours
