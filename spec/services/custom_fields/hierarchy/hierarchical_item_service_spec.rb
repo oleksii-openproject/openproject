@@ -118,8 +118,8 @@ RSpec.describe CustomFields::Hierarchy::HierarchicalItemService do
         expect(result).to be_failure
 
         errors = result.failure.errors
-        expect(errors[:label]).to eq(["must be unique within the same hierarchy level"])
-        expect(errors[:short]).to eq(["must be unique within the same hierarchy level"])
+        expect(errors[:label]).to eq(["must be unique within the same hierarchy level."])
+        expect(errors[:short]).to eq(["must be unique within the same hierarchy level."])
       end
     end
   end
