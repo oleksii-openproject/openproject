@@ -41,7 +41,7 @@ ro:
           cmd: Creați ramura cu un commit gol
           title: Fragmente rapide pentru Git
           copy_success: Copiat
-          copy_error: Copiere eşuată
+          copy_error: '❌ Copiere eșuată!'
       tab_issue:
         empty: 'There are no issues linked yet. Link an existing issue by using the code <code>OP#%{wp_id}</code> (or <code>PP#%{wp_id}</code> for private links) in the issue title/description or create a new issue.'
       tab_mrs:

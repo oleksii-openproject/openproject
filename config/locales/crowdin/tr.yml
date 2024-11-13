@@ -2841,6 +2841,9 @@ tr:
   notice_locking_conflict: "Bu arada, bilgi en az bir başka kullanıcı tarafından güncellendi."
   notice_locking_conflict_additional_information: "Güncelleme(ler) %{users} tarafından yapıldı."
   notice_locking_conflict_reload_page: "Lütfen sayfayı yeniden yükleyin, değişiklikleri inceleyin ve güncellemelerinizi yeniden uygulayın."
+  notice_locking_conflict_warning: "This page has been updated by someone else. To not lose your edits, copy them locally and reload to view the updated version."
+  notice_locking_conflict_danger: "Could not save your changes because of conflicting modifications. To not lose your edits, copy them locally and reload to view the updated version."
+  notice_locking_conflict_action_button: "Discard changes and reload"
   notice_member_added: '%{name} projeye dahil edildi.'
   notice_members_added: '%{number} kişi projeye dahil edildi.'
   notice_member_removed: "% {Kullanıcı} adlı projeden kaldırıldı. %{user}"

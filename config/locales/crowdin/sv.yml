@@ -2842,6 +2842,9 @@ sv:
   notice_locking_conflict: "Informationen har uppdaterats av minst en annan användare under tiden."
   notice_locking_conflict_additional_information: "Uppdatering(ar) kom från %{users}."
   notice_locking_conflict_reload_page: "Vänligen ladda om sidan, granska ändringarna och tilldela dina uppdateringar igen."
+  notice_locking_conflict_warning: "This page has been updated by someone else. To not lose your edits, copy them locally and reload to view the updated version."
+  notice_locking_conflict_danger: "Could not save your changes because of conflicting modifications. To not lose your edits, copy them locally and reload to view the updated version."
+  notice_locking_conflict_action_button: "Discard changes and reload"
   notice_member_added: Lade till %{name} i projektet.
   notice_members_added: Lade till %{number} användare till projektet.
   notice_member_removed: "Tog bort %{user} från projektet."

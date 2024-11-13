@@ -347,8 +347,8 @@ ro:
         no_results_title_text: În prezent, nu există forumuri pentru acest proiect.
         no_results_content_text: Creați un nou forum
       categories:
-        no_results_title_text: În acest moment nu există categorii de pachete de lucru.
-        no_results_content_text: Creează categorie de pachete de lucru nouă
+        no_results_title_text: Momentan nu există categorii de pachete de lucru.
+        no_results_content_text: Creează categorie nouă de pachete de lucru
       custom_fields:
         no_results_title_text: În acest moment nu există câmpuri personalizate disponibile.
       project_custom_fields:
@@ -585,7 +585,7 @@ ro:
       reset: "Resetare AVATAR implicit"
       type_color_text: |
         Culoarea selectată distinge diferite tipuri
-        în graficele Gantt sau tabelele pachetelor de lucru. Prin urmare, este recomandat să folosiți o culoare puternică.
+        în graficele Gantt sau tabelele pachetelor de lucru. Prin urmare, este recomandat să folosești o culoare puternică.
   versions:
     overview:
       work_packages_in_archived_projects: "The version is shared with archived projects which still have work packages assigned to this version. These are counted, but will not appear in the linked views."
@@ -1321,7 +1321,7 @@ ro:
       news: "Noutăţi"
       project_attribute: "Atribute proiect"
       subproject: "Include subproiecte"
-      time_entry: "Spent time"
+      time_entry: "Timp consumat"
       wiki_edit: "Wiki"
       work_package: "Pachete de lucru"
   #common attributes of all models
@@ -1435,10 +1435,10 @@ ro:
   button_collapse_all: "Restrângere totală"
   button_configure: "Configurare"
   button_continue: "Continuă"
-  button_copy: "Copiere"
+  button_copy: "Copiază"
   button_copy_to_clipboard: "Copiază în clipboard"
   button_copy_link_to_clipboard: "Copy link to clipboard"
-  button_copy_and_follow: "Copiere și continuare"
+  button_copy_and_follow: "Copiază și continuă"
   button_create: "Creează"
   button_create_and_continue: "Creează și continuă"
   button_delete: "Șterge"
@@ -1513,7 +1513,7 @@ ro:
     update_consent_last_time: "Ultima actualizare a consimțământului: %{update_time}"
   copy_project:
     title: 'Copiați proiectul "%{source_project_name}"'
-    started: 'A început copierea proiectului "%{source_project_name}" în "%{target_project_name}". Veţi fi informat prin mail de îndată ce "%{target_project_name}" este disponibil.'
+    started: 'A început copierea proiectului "%{source_project_name}" în "%{target_project_name}". Vei fi informat prin mail de îndată ce "%{target_project_name}" este disponibil.'
     failed: "Proiectul %{source_project_name} nu poate fi copiat"
     failed_internal: "Copierea a eșuat din cauza unei erori interne."
     succeeded: "Proiectul %{target_project_name} a fost creat"
@@ -1674,8 +1674,8 @@ ro:
   description_date_to: "Introduceţi data de sfârşit"
   description_enter_number: "Introduceţi numărul"
   description_enter_text: "Introduceţi textul"
-  description_filter: "Filtrare"
-  description_filter_toggle: "Afișare/ascundere filtrare"
+  description_filter: "Filtrează"
+  description_filter_toggle: "Afișează/ascunde filtre"
   description_category_reassign: "Alegeți categoria"
   description_message_content: "Conținutul mesajului"
   description_my_project: "Sunteţi membru"
@@ -2086,8 +2086,8 @@ ro:
   label_available_project_forums: "Forumuri disponibile"
   label_available_project_repositories: "Arhive disponibile"
   label_available_project_versions: "Versiuni disponibile"
-  label_available_project_work_package_categories: "Categorii de pachete de lucru disponibile"
-  label_available_project_work_package_types: "Tipuri de pachete de lucru disponibile"
+  label_available_project_work_package_categories: "Categorii disponibile pachete de lucru"
+  label_available_project_work_package_types: "Tipuri disponibile pachete de lucru"
   label_available_projects: "Proiecte disponibile"
   label_api_doc: "Documentație API"
   label_backup: "Backup"
@@ -2115,7 +2115,7 @@ ro:
   label_consent_settings: "Consimțământ utilizator"
   label_wiki_menu_item: Meniu wiki
   label_select_main_menu_item: Selectare meniu wiki nou
-  label_required_disk_storage: "Necesar spațiu pe disc"
+  label_required_disk_storage: "Spațiu pe disc necesar"
   label_send_invitation: Trimite invitație
   label_change_plural: "Modificări"
   label_change_properties: "Modificare proprietăţi"
@@ -2150,8 +2150,8 @@ ro:
   label_copy_same_as_target: "La fel ca destinația"
   label_copy_source: "Sursă"
   label_copy_target: "Destinație"
-  label_copy_workflow_from: "Copiere flux de la"
-  label_copy_project: "Copiere proiect"
+  label_copy_workflow_from: "Copiază flux de la"
+  label_copy_project: "Copiază proiect"
   label_core_version: "Versiune de bază"
   label_core_build: "Core build"
   label_created_by: "Creat de %{user}"
@@ -2246,7 +2246,7 @@ ro:
   label_force_user_language_to_default: "Setare limbă pentru utilizatorii care au o limbă implicită nepermisă"
   label_form_configuration: "Configurare formular"
   label_gantt_chart: "Grafic Gantt"
-  label_gantt_chart_plural: "Gantt charts"
+  label_gantt_chart_plural: "Diagrame Gantt"
   label_general: "General"
   label_generate_key: "Generare cheie"
   label_git_path: "Calea catre directorul .git"
@@ -2559,7 +2559,7 @@ ro:
   label_this_week: "săptămâna curentă"
   label_this_year: "anul curent"
   label_time_entry_plural: "Timp consumat"
-  label_time_entry_activity_plural: "Spent time activities"
+  label_time_entry_activity_plural: "Activități timp consumat"
   label_title: "Titlu"
   label_projects_menu: "Proiecte"
   label_today: "astăzi"
@@ -2627,7 +2627,7 @@ ro:
   label_work_package: "Pachet de lucru"
   label_work_package_attachments: "Anexe la pachetul de lucru"
   label_work_package_category_new: "Categorie nouă"
-  label_work_package_category_plural: "Categorii de pachete de lucru"
+  label_work_package_category_plural: "Categorii pachete de lucru"
   label_work_package_hierarchy: "Ierarhia pachetelor de lucru"
   label_work_package_new: "Pachet de lucru nou"
   label_work_package_edit: "Editare pachet de lucru %{name}"
@@ -2635,7 +2635,7 @@ ro:
   label_work_package_status: "Stare pachet de lucru"
   label_work_package_status_new: "Stare nouă"
   label_work_package_status_plural: "Setări pachete de lucru"
-  label_work_package_types: "Tipuri de pachete de lucru"
+  label_work_package_types: "Tipuri pachete de lucru"
   label_work_package_tracking: "Urmărire pachete de lucru"
   label_work_package_view_all: "Toate pachetele de lucru"
   label_workflow: "Flux de lucru"
@@ -2879,6 +2879,9 @@ ro:
   notice_locking_conflict: "Informaţia a fost actualizată de cel puţin un alt utilizator între timp."
   notice_locking_conflict_additional_information: "Modificările au fost făcute de %{users}."
   notice_locking_conflict_reload_page: "Vă rugăm să reîncărcaţi pagina, examinaţi modificările şi reaplicați actualizările."
+  notice_locking_conflict_warning: "This page has been updated by someone else. To not lose your edits, copy them locally and reload to view the updated version."
+  notice_locking_conflict_danger: "Could not save your changes because of conflicting modifications. To not lose your edits, copy them locally and reload to view the updated version."
+  notice_locking_conflict_action_button: "Discard changes and reload"
   notice_member_added: '%{name} a fost adăugat în proiect.'
   notice_members_added: A adăugat %{number} utilizatori la proiect.
   notice_member_removed: "%{user} a fost eliminat din proiect."
@@ -2954,7 +2957,7 @@ ro:
   permission_change_work_package_status_explanation: "Allows changing status without Edit work packages permission"
   permission_comment_news: "Comentare noutăți"
   permission_commit_access: "Acces de citire/scriere la repo (încărcare)"
-  permission_copy_projects: "Copiere proiecte"
+  permission_copy_projects: "Copiază proiecte"
   permission_copy_work_packages: "Copierea pachetelor de lucru"
   permission_create_backup: "Create backups"
   permission_delete_work_package_watchers: "Eliminare observatori"
@@ -2983,7 +2986,7 @@ ro:
   permission_log_own_time: "Înregistrarea timpului propriu"
   permission_log_time: "Timp de înregistrare pentru alți utilizatori"
   permission_manage_forums: "Gestionare forumuri"
-  permission_manage_categories: "Gestionare categorii de pachete de lucru"
+  permission_manage_categories: "Gestionare categorii pachete de lucru"
   permission_manage_dashboards: "Manage dashboards"
   permission_manage_work_package_relations: "Gestionare relații pachete de lucru"
   permission_manage_members: "Gestionare participanți"
@@ -3065,7 +3068,7 @@ ro:
   project_module_news: "Noutăţi"
   project_module_repository: "Repo"
   project_module_wiki: "Wiki"
-  permission_header_for_project_module_work_package_tracking: "Work packages and Gantt charts"
+  permission_header_for_project_module_work_package_tracking: "Pachete de lucru și diagrame Gantt"
   query:
     attribute_and_direction: "%{attribute} (%{direction})"
   #possible query parameters (e.g. issue queries),
@@ -3083,7 +3086,7 @@ ro:
   repositories:
     at_identifier: "la %{identifier}"
     atom_revision_feed: "Lista de revizii Atom"
-    autofetch_information: "Bifați dacă doriţi ca repo-urile să fie actualizate automat la accesarea paginii din modulul \"Repo\". Această operațiune cuprinde obținerea commit-urilor din repo si recalcularea spațiului de disc necesar."
+    autofetch_information: "Bifează dacă vrei ca repo-urile să fie actualizate automat la accesarea paginii din modulul \"Repo\". Această operațiune cuprinde obținerea commit-urilor din repo si recalcularea spațiului de disc necesar."
     checkout:
       access:
         readwrite: "Citire + Scriere"
@@ -3154,7 +3157,7 @@ ro:
     managed_url: "URL gestionat"
     settings:
       automatic_managed_repos_disabled: "Dezactivează creare automată"
-      automatic_managed_repos: "Crearea automată a repo-urilor gestionate"
+      automatic_managed_repos: "Creare automată a repo-urilor gestionate"
       automatic_managed_repos_text: "Prin setarea unui furnizor aici, proiectele nou create vor primi automat un repo gestionat al acestui vendor."
     scm_vendor: "Sistem de management al controlului codului sursă"
     scm_type: "Tip repo"
@@ -3256,7 +3259,7 @@ ro:
   setting_duration_format: "Duration format"
   setting_duration_format_hours_only: "Hours only"
   setting_duration_format_days_and_hours: "Days and hours"
-  setting_duration_format_instructions: "This defines how Work, Remaining work, and Time spent durations are displayed."
+  setting_duration_format_instructions: "Aceasta definește modul în care sunt afișate munca, munca rămasă și durata timpului consumat."
   setting_emails_footer: "Subsol e-mail"
   setting_emails_header: "Antet e-mail"
   setting_email_login: "Folosiți e-mailul ca autentificare"
@@ -3494,7 +3497,7 @@ ro:
   text_hours_between: "Între %{min} şi %{max} ore."
   text_work_package_added: "Pachetul de lucru %{id} a fost adăugat de către %{author}."
   text_work_package_category_destroy_assignments: "Eliminare alocare categorii"
-  text_work_package_category_destroy_question: "Există pachete de lucru (%{count}) atribuite acestei categorii. Cum doriți să procedați?"
+  text_work_package_category_destroy_question: "Există pachete de lucru (%{count}) atribuite acestei categorii. Cum vrei să procedezi?"
   text_work_package_category_reassign_to: "Reditribuire pachete de lucru la această categorie"
   text_work_package_updated: "Pachetul de lucru %{id} a fost actualizat de către %{author}."
   text_work_package_watcher_added: "Ați fost adăugat ca observator la pachetul de lucru %{id} de către %{watcher_changer}."

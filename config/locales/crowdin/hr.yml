@@ -2880,6 +2880,9 @@ hr:
   notice_locking_conflict: "Informacija je u međuvremenu ažurirana od najmanje jednog korisnika."
   notice_locking_conflict_additional_information: "Ažuiranje(a) je obavio %{users}."
   notice_locking_conflict_reload_page: "Molim vas ponovno učitajte stranicu, pregledajte promjene i ponovno učitajte vaša ažuriranja."
+  notice_locking_conflict_warning: "This page has been updated by someone else. To not lose your edits, copy them locally and reload to view the updated version."
+  notice_locking_conflict_danger: "Could not save your changes because of conflicting modifications. To not lose your edits, copy them locally and reload to view the updated version."
+  notice_locking_conflict_action_button: "Discard changes and reload"
   notice_member_added: Dodano %{name} projektu.
   notice_members_added: Added %{number} users to the project.
   notice_member_removed: "%{user} je uklonjen s projekta."

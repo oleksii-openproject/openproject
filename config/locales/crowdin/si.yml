@@ -2843,6 +2843,9 @@ si:
   notice_locking_conflict: "මේ අතර අවම වශයෙන් එක් පරිශීලකයෙකු විසින් තොරතුරු යාවත්කාලීන කර ඇත."
   notice_locking_conflict_additional_information: "යාවත්කාලීනය (ය) %{users}වෙතින් පැමිණියේය."
   notice_locking_conflict_reload_page: "කරුණාකර පිටුව නැවත පූරණය කරන්න, වෙනස්කම් සමාලෝචනය කර ඔබගේ යාවත්කාලීන කිරීම් නැවත යොදන්න."
+  notice_locking_conflict_warning: "This page has been updated by someone else. To not lose your edits, copy them locally and reload to view the updated version."
+  notice_locking_conflict_danger: "Could not save your changes because of conflicting modifications. To not lose your edits, copy them locally and reload to view the updated version."
+  notice_locking_conflict_action_button: "Discard changes and reload"
   notice_member_added: ව්යාපෘතියට %{name} එකතු කරන ලදි.
   notice_members_added: ව්යාපෘතියට %{number} පරිශීලකයින් එකතු කරන ලදී.
   notice_member_removed: "ව්යාපෘතියෙන් %{user} ඉවත් කර ඇත."

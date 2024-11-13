@@ -2806,6 +2806,9 @@ th:
   notice_locking_conflict: "มีการปรับปรุงข้อมูลจากผู้ใช้อย่างน้อยหนึ่งคนในเวลาเดียวกัน"
   notice_locking_conflict_additional_information: "การปรับปรุงข้อมูลมาจากผู้ใช้ %{users}"
   notice_locking_conflict_reload_page: "กรุณาโหลดหน้าเพจใหม่ เพื่อตรวจสอบว่ามีการเปลี่ยนแปลงและปรับปรุงแล้ว"
+  notice_locking_conflict_warning: "This page has been updated by someone else. To not lose your edits, copy them locally and reload to view the updated version."
+  notice_locking_conflict_danger: "Could not save your changes because of conflicting modifications. To not lose your edits, copy them locally and reload to view the updated version."
+  notice_locking_conflict_action_button: "Discard changes and reload"
   notice_member_added: เพิ่ม %{name} ไปยังโครงการ
   notice_members_added: เพิ่มผู้ใช้ %{number} คนในโครงการแล้ว
   notice_member_removed: "Removed %{user} from project."

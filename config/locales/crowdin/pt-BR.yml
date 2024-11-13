@@ -217,8 +217,8 @@ pt-BR:
     admin:
       custom_field_projects:
         is_for_all_blank_slate:
-          heading: Em todos os projetos
-          description: Este campo personalizado é habilitado em todos os projetos, uma vez que a opção "para todos os projetos" está marcada. Ele não pode ser desativado para projetos individuais.
+          heading: Para todos os projetos
+          description: Este campo personalizado está ativado em todos os projetos, pois a opção “Para todos os projetos” está selecionada. Não é possível desativá-lo para projetos individuais.
       items:
         actions: "Ações do item"
         blankslate:
@@ -402,9 +402,9 @@ pt-BR:
     menu:
       all: "Todos"
       invited: "Convidado"
-      locked: "Trancado"
+      locked: "Bloqueado"
       project_roles: "Funções do projeto"
-      wp_shares: "Compartilhamento de pacote de trabalho"
+      wp_shares: "Compartilhamentos do pacote de trabalho"
       groups: "Grupos"
     delete_member_dialog:
       title: "Remover membro"
@@ -756,9 +756,9 @@ pt-BR:
         status_explanation: "Descrição do status do projeto"
         status_codes:
           not_started: "Não iniciado"
-          on_track: "Sob controle"
+          on_track: "No cronograma"
           at_risk: "Em risco"
-          off_track: "Fora de controle"
+          off_track: "Fora do cronograma"
           finished: "Finalizado"
           discontinued: "Descontinuado"
         templated: "Projeto modelo"
@@ -885,7 +885,7 @@ pt-BR:
         error_enterprise_only: "%{action} só está disponível na edição OpenProject Enterprise"
         error_unauthorized: "não pode ser acessado."
         error_readonly: "tentou escrever, mas não é gravável."
-        error_conflict: "Informação foi atualizada por pelo menos um outro usuário."
+        error_conflict: "As informações foram atualizadas por pelo menos um outro usuário nesse meio tempo."
         email: "não é um endereço de e-mail válido."
         empty: "não pode ser vazio."
         even: "deve ser par."
@@ -955,7 +955,7 @@ pt-BR:
         custom_fields_project:
           attributes:
             project_ids:
-              blank: "Por favor, selecione um projeto."
+              blank: "Selecione um projeto."
         custom_actions:
           only_one_allowed: "(%{name}) apenas um valor é permitido."
           empty: "(%{name}) valor não pode ser vazio."
@@ -1293,13 +1293,13 @@ pt-BR:
           one: "<i>%{count} hora</i>"
           other: "<i>%{count} horas</i>"
         updated: "alterado de %{old_value} para %{value}"
-        logged_for: "Registrado por"
+        logged_for: "Registrado em"
     filter:
       changeset: "Cj de alterações"
       message: "Fóruns"
       news: "Notícias"
       project_attribute: "Atributos do projeto"
-      subproject: "Incur subprojetos"
+      subproject: "Incluir subprojetos"
       time_entry: "Tempo gasto"
       wiki_edit: "Wiki"
       work_package: "Pacotes de trabalho"
@@ -1416,7 +1416,7 @@ pt-BR:
   button_continue: "Continuar"
   button_copy: "Copiar"
   button_copy_to_clipboard: "Copiar para a área de transferência"
-  button_copy_link_to_clipboard: "Link copiado da área de transferência"
+  button_copy_link_to_clipboard: "Copiar link para a área de transferência"
   button_copy_and_follow: "Copiar e seguir"
   button_create: "Criar"
   button_create_and_continue: "Criar e continuar"
@@ -1805,7 +1805,7 @@ pt-BR:
       atom: "Atom"
       csv: "CSV"
       pdf: "PDF"
-      pdf_overview_table: "Tabela PDF"
+      pdf_overview_table: "Tabela em PDF"
       pdf_report_with_images: "Relatório em PDF com imagens"
       pdf_report: "Relatório em PDF"
       pdf_gantt: "Gantt em PDF"
@@ -1867,7 +1867,7 @@ pt-BR:
   journals:
     changes_retracted: "As mudanças foram retraídas."
     caused_changes:
-      dates_changed: "Data modificada"
+      dates_changed: "Datas alteradas"
       default_attribute_written: "Atributos de somente leitura escritos"
       progress_mode_changed_to_status_based: "Cálculo de progresso atualizado"
       status_changed: "Status '%{status_name}'"
@@ -1888,8 +1888,8 @@ pt-BR:
           working: "%{day} agora é um dia útil"
           non_working: "%{day} agora é um dia não útil"
         dates:
-          working: "%{date} agora está funcionando"
-          non_working: "%{date} não está funcionando agora"
+          working: "%{date} agora é um dia útil"
+          non_working: "%{date} agora é um dia não útil"
       progress_mode_changed_to_status_based: Modo de cálculo de progresso definido como com base no status
       status_excluded_from_totals_set_to_false_message: agora incluído nos totais da hierarquia
       status_excluded_from_totals_set_to_true_message: agora excluído dos totais da hierarquia
@@ -2025,7 +2025,7 @@ pt-BR:
   label_ical_access_key_not_present: "Token(s) de iCalendar não presente(s)."
   label_ical_access_key_generation_hint: "Gerado automaticamente ao assinar um calendário."
   label_ical_access_key_latest: "último"
-  label_ical_access_key_revoke: "Revogar"
+  label_ical_access_key_revoke: "Anular"
   label_add_column: "Adicionar coluna"
   label_applied_status: "Situação aplicada"
   label_archive_project: "Arquivar projeto"
@@ -2696,9 +2696,9 @@ pt-BR:
     sharing:
       work_packages:
         allowed_actions: "Você pode %{allowed_actions} este pacote de trabalho. Isso pode mudar dependendo da sua função e permissões do projeto."
-        create_account: "Para acessar este pacote de trabalho, você terá que criar e ativar uma conta %{instance}. "
+        create_account: "Para acessar este pacote de trabalho, você terá que criar e ativar uma conta em %{instance}."
         open_work_package: "Abrir pacote de trabalho"
-        subject: "O Pacote de trabalho #%{id} foi compartilhado com você"
+        subject: "O Pacote de trabalho nº %{id} foi compartilhado com você"
         enterprise_text: "Compartilhe pacotes de trabalho com usuários que não são membros do projeto."
         summary:
           user: "%{user} compartilhou um pacote de trabalho com você com privilégios de %{role_rights}"
@@ -2760,8 +2760,8 @@ pt-BR:
   mail_body_register_ending: "Fique ligado! Atenciosamente,"
   mail_body_reminder: "%{count} pacote(s) de trabalho foram atribuídos a você para os próximos %{days} dias:"
   mail_body_group_reminder: '%{count} pacote(s) de trabalho que estão atribuídos ao grupo "%{group}" expiram nos próximos %{days} dias:'
-  mail_body_wiki_page_added: "A página wiki '%{id}' foi adicionada por %{author}."
-  mail_body_wiki_page_updated: "A página wiki '%{id}' foi atualizada por %{author}."
+  mail_body_wiki_page_added: "A página wiki \"%{id}\" foi adicionada por %{author}."
+  mail_body_wiki_page_updated: "A página wiki \"%{id}\" foi atualizada por %{author}."
   mail_subject_account_activation_request: "solicitação de ativação de conta %{value}"
   mail_subject_backup_ready: "Seu backup está pronto"
   mail_subject_backup_token_reset: "Redefinir token de backup"
@@ -2839,6 +2839,9 @@ pt-BR:
   notice_locking_conflict: "Informação foi atualizada por pelo menos um outro usuário."
   notice_locking_conflict_additional_information: "A(s) atualização(ões) chegaram de %{users}."
   notice_locking_conflict_reload_page: "Por favor, recarregue a página, reveja as alterações e aplique novamente suas atualizações."
+  notice_locking_conflict_warning: "Esta página foi atualizada por outra pessoa. Para não perder suas alterações, copie-as localmente e recarregue a página para ver a versão mais recente."
+  notice_locking_conflict_danger: "Não foi possível salvar suas alterações devido a conflitos. Para não perder seu trabalho, copie-o localmente e recarregue a página para ver a versão mais recente."
+  notice_locking_conflict_action_button: "Descartar alterações e recarregar"
   notice_member_added: '%{name} adicionado ao projeto.'
   notice_members_added: Adicionados %{number} usuários ao projeto.
   notice_member_removed: "%{user} removido do projeto."
@@ -2974,7 +2977,7 @@ pt-BR:
   permission_view_news: "Visualizar notícias"
   permission_view_members: "Visualizar membros"
   permission_view_reportings: "Ver relatórios"
-  permission_view_shared_work_packages: "Ver pacotes de trabalho compartilhado"
+  permission_view_shared_work_packages: "Ver compartilhamentos de pacotes de trabalho"
   permission_view_time_entries: "Ver tempo gasto"
   permission_view_timelines: "Ver cronogramas"
   permission_view_user_email: "Visualizar endereços de e-mail dos usuários"

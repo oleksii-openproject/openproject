@@ -2839,6 +2839,9 @@ nl:
   notice_locking_conflict: "Informatie is in de tussentijd door ten minste één andere gebruiker bijgewerkt."
   notice_locking_conflict_additional_information: "De update kwam van %{users}."
   notice_locking_conflict_reload_page: "Pagina opnieuw laden, bekijk de wijzigingen en uw wijzigingen opnieuw toepassen."
+  notice_locking_conflict_warning: "This page has been updated by someone else. To not lose your edits, copy them locally and reload to view the updated version."
+  notice_locking_conflict_danger: "Could not save your changes because of conflicting modifications. To not lose your edits, copy them locally and reload to view the updated version."
+  notice_locking_conflict_action_button: "Discard changes and reload"
   notice_member_added: '%{name} is toegevoegd aan het project.'
   notice_members_added: '%{number} gebruikers zijn toegevoegd aan het project.'
   notice_member_removed: "%{user} verwijderd uit het project."

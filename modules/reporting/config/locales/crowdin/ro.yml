@@ -65,7 +65,7 @@ ro:
   label_week_reporting: "Săptămână (consumată)"
   label_year_reporting: "An (consumat)"
   label_count: "Număr"
-  label_filter: "Filtrare"
+  label_filter: "Filtrează"
   label_filter_add: "Adăugare filtru"
   label_filter_plural: "Filtre"
   label_group_by: "Grupare după"

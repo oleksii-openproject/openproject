@@ -2808,6 +2808,9 @@ vi:
   notice_locking_conflict: "Thông tin đã được cập nhật bởi ít nhất một người dùng khác trong thời gian này."
   notice_locking_conflict_additional_information: "Bản cập nhật(s) này đến từ %{users}."
   notice_locking_conflict_reload_page: "Vui lòng tải lại trang, xem xét các thay đổi và áp dụng lại các cập nhật của bạn."
+  notice_locking_conflict_warning: "This page has been updated by someone else. To not lose your edits, copy them locally and reload to view the updated version."
+  notice_locking_conflict_danger: "Could not save your changes because of conflicting modifications. To not lose your edits, copy them locally and reload to view the updated version."
+  notice_locking_conflict_action_button: "Discard changes and reload"
   notice_member_added: Đã thêm %{name} vào dự án.
   notice_members_added: Đã thêm %{number} người dùng vào dự án.
   notice_member_removed: "Đã xóa %{user} khỏi dự án."

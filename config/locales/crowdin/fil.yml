@@ -2843,6 +2843,9 @@ fil:
   notice_locking_conflict: "Ang impormasyon ay naka-update sa kahit hindi baba isa o."
   notice_locking_conflict_additional_information: "Ang mga update nagmula sa %{users}."
   notice_locking_conflict_reload_page: "Mangyaring i-reload ang pahina na ito, repasuhin ang mga pagbabago at muling i-apply ang iyong mga update."
+  notice_locking_conflict_warning: "This page has been updated by someone else. To not lose your edits, copy them locally and reload to view the updated version."
+  notice_locking_conflict_danger: "Could not save your changes because of conflicting modifications. To not lose your edits, copy them locally and reload to view the updated version."
+  notice_locking_conflict_action_button: "Discard changes and reload"
   notice_member_added: Idinagdag ang %{name} sa proyekto.
   notice_members_added: Idinagdag %{number} ng mga gumagamit sa proyekto.
   notice_member_removed: "Tinanggal ang %{user} mula sa proyekto."

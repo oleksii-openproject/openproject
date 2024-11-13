@@ -2836,6 +2836,9 @@ ca:
   notice_locking_conflict: "La informació s'ha actualitzat per almenys un altre usuari mentrestant."
   notice_locking_conflict_additional_information: "Les actualitzacions provenen de %{users}."
   notice_locking_conflict_reload_page: "Si us plau, regarrega la pàgina, revisa els canvis i torna a aplicar les actualitzacions."
+  notice_locking_conflict_warning: "This page has been updated by someone else. To not lose your edits, copy them locally and reload to view the updated version."
+  notice_locking_conflict_danger: "Could not save your changes because of conflicting modifications. To not lose your edits, copy them locally and reload to view the updated version."
+  notice_locking_conflict_action_button: "Discard changes and reload"
   notice_member_added: '%{name} afegit al projecte.'
   notice_members_added: Afegits %{number} d'usuaris al projecte.
   notice_member_removed: "%{user} esborrat del projecte."

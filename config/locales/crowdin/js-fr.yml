@@ -359,7 +359,7 @@ fr:
           "15_0":
             standard:
               new_features_html: >
-                The release brings various features and improvements for you, e.g. <br> <ul class="%{list_styling_class}"> <li>Boost your communication with a better structured Activity tab, real-time loading messages and notifications, emoji reactions, and more.</li> <li>Benefit from easy Single Sign-On authentication settings with SAML and OIDC in your Enterprise Cloud administration.</li> <li>Use the new 'Standard global role' and enable permissions to view email addresses.</li> <li>Enjoy easier navigation in project lists with quick action table headers.</li> <li>Experience simplified design settings with fewer sidebar design variables needed.</li> <li>Reduce manual cleanup when adding a custom field to a type – no more auto-applying to all projects.</li> <li>Benefit from improved navigation clarity – 'My account' is renamed to 'Account settings'.</li> </ul>
+                Cette version apporte diverses fonctionnalités et améliorations, notamment : <br> <ul class="%{list_styling_class}"> <li>Améliorez votre communication grâce à un onglet Activité mieux structuré, au chargement en temps réel des messages et des notifications, aux réactions par émoji et plus encore.</li> <li>Bénéficiez de paramètres d'authentification simples avec SAML et OIDC dans votre interface d'administration Enterprise Cloud.</li> <li>Utilisez le nouveau « rôle global standard » et activez les autorisations pour voir les adresses e-mail.</li> <li>Profitez d'une navigation plus facile dans les listes de projets avec des en-têtes de tableau avec action rapide.</li> <li>Bénéficiez de paramètres de conception simplifiés avec la réduction du nombre de variables de conception de barre latérale nécessaires.</li> <li>Réduisez le nettoyage manuel lors de l'ajout d'un champ personnalisé à un type. Il n'y a plus d'application automatique à tous les projets.</li> <li>Bénéficiez d'une meilleure clarté de navigation : « Mon compte » est renommé « Paramètres du compte ».</li> </ul>
     ical_sharing_modal:
       title: "S'abonner au calendrier"
       inital_setup_error_message: "Une erreur est survenue lors de la récupération des données."
@@ -443,7 +443,7 @@ fr:
     label_in: "dans"
     label_in_less_than: "dans moins de"
     label_in_more_than: "dans plus de"
-    label_incoming_emails: "Courriels entrants"
+    label_incoming_emails: "E-mails entrants"
     label_information_plural: "Information"
     label_invalid: "Non valide"
     label_import: "Importer"
@@ -453,7 +453,7 @@ fr:
     label_less_or_equal: "<="
     label_less_than_ago: "il y a moins de quelques jours"
     label_loading: "Chargement…"
-    label_mail_notification: "Notifications par courriel"
+    label_mail_notification: "Notifications par e-mail"
     label_manage_columns: "Gérer et réorganiser les colonnes"
     label_me: "moi"
     label_meeting_agenda: "Ordre du jour"
@@ -1237,7 +1237,7 @@ fr:
           title: "Utilisateur de remplacement"
           title_no_ee: "Utilisateur fictif (add-on de la version Entreprise uniquement)"
           description: "N'a pas d'accès au projet et aucun e-mail n'est envoyé."
-          description_no_ee: 'N''a pas accès au projet et aucun courriel n''est envoyé. <br>Consultez la <a href="%{eeHref}" target="_blank">version Entreprise</a>.'
+          description_no_ee: 'N''a pas accès au projet et aucun e-mail n''est envoyé. <br>Consultez la <a href="%{eeHref}" target="_blank">version Entreprise</a>.'
       principal:
         label:
           name_or_email: "Nom ou adresse e-mail"

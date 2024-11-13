@@ -14,7 +14,7 @@ pt-BR:
         client_secret: Segredo do cliente
         secret: Chave
         scope: Escopo
-        limit_self_registration: Limitar o registro automático
+        limit_self_registration: Limitar registro automático
         authorization_endpoint: Endpoint de autorização
         userinfo_endpoint: Endpoint de informações do usuários
         token_endpoint: Endpoint do token
@@ -35,9 +35,9 @@ pt-BR:
           attributes:
             metadata_url:
               format: "URL do endpoint de descoberta %{message}"
-              response_is_not_successful: " responde com %{status}."
-              response_is_not_json: " não retorna o conteúdo em formato JSON."
-              response_misses_required_attributes: " não retorna os atributos obrigatórios. Os atributos ausentes são: %{missing_attributes}."
+              response_is_not_successful: " respondeu com %{status}."
+              response_is_not_json: " não retornou o conteúdo em formato JSON."
+              response_misses_required_attributes: " não retornou os atributos obrigatórios. Os atributos ausentes são: %{missing_attributes}."
   provider:
     delete_warning:
       input_delete_confirmation: Digite o nome do provedor %{name} para confirmar a exclusão.
@@ -118,4 +118,4 @@ pt-BR:
         claims: Solicite reivindicações adicionais para a resposta de token de ID ou userinfo.
     setting_instructions:
       limit_self_registration: >
-        Se ativado, os usuários só poderão se registrar usando esse provedor se a configuração de registro automático permitir isso.
+        Se ativado, os usuários poderão se registrar apenas por meio deste provedor, desde que a configuração de auto-registro permita.

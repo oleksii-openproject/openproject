@@ -2799,6 +2799,9 @@ id:
   notice_locking_conflict: "Informasi telah diperbarui oleh setidaknya satu user lain."
   notice_locking_conflict_additional_information: "Diupdate oleh %{users}."
   notice_locking_conflict_reload_page: "Silahkan reload halaman, tinjau perubahan dan reapply."
+  notice_locking_conflict_warning: "This page has been updated by someone else. To not lose your edits, copy them locally and reload to view the updated version."
+  notice_locking_conflict_danger: "Could not save your changes because of conflicting modifications. To not lose your edits, copy them locally and reload to view the updated version."
+  notice_locking_conflict_action_button: "Discard changes and reload"
   notice_member_added: Added %{name} to the project.
   notice_members_added: Added %{number} users to the project.
   notice_member_removed: "Removed %{user} from project."
