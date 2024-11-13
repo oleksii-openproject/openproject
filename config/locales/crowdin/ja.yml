@@ -2802,6 +2802,9 @@ ja:
   notice_locking_conflict: "別のユーザーが同時にデータを更新しています。"
   notice_locking_conflict_additional_information: "ユーザ%{users}により更新されました。"
   notice_locking_conflict_reload_page: "ページをリロードして、変更を確認してから再適用してください。"
+  notice_locking_conflict_warning: "This page has been updated by someone else. To not lose your edits, copy them locally and reload to view the updated version."
+  notice_locking_conflict_danger: "Could not save your changes because of conflicting modifications. To not lose your edits, copy them locally and reload to view the updated version."
+  notice_locking_conflict_action_button: "Discard changes and reload"
   notice_member_added: '%{name} をプロジェクトに追加しました。'
   notice_members_added: '%{number} ユーザーをプロジェクトに追加しました。'
   notice_member_removed: "%{user} をプロジェクトから削除しました。"

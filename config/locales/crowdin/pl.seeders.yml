@@ -68,7 +68,7 @@ pl:
         item_0:
           name: Kierownik personelu i projektów
         item_1:
-          name: Standard global role
+          name: Standardowa rola globalna
     standard:
       priorities:
         item_0:

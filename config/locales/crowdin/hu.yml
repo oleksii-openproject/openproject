@@ -2839,6 +2839,9 @@ hu:
   notice_locking_conflict: "Az adatokat frissítette egy másik felhasználó időközben."
   notice_locking_conflict_additional_information: "A frissítést %{users} végezte el."
   notice_locking_conflict_reload_page: "Töltse újra az oldalt, tekintse át a módosításokat, és a frissítse újra."
+  notice_locking_conflict_warning: "This page has been updated by someone else. To not lose your edits, copy them locally and reload to view the updated version."
+  notice_locking_conflict_danger: "Could not save your changes because of conflicting modifications. To not lose your edits, copy them locally and reload to view the updated version."
+  notice_locking_conflict_action_button: "Discard changes and reload"
   notice_member_added: Hozzáadva %{name} projekthez.
   notice_members_added: '%{number} felhasználó hozzáadva a projekthez.'
   notice_member_removed: "%{user} eltávolítva a projektből."

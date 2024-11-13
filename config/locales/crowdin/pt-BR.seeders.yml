@@ -66,7 +66,7 @@ pt-BR:
           name: Administrador do projeto
       global_roles:
         item_0:
-          name: Equipe e gerente de projetos
+          name: Gerente de equipe e projetos
         item_1:
           name: Função global padrão
     standard:
@@ -82,22 +82,22 @@ pt-BR:
       projects:
         demo-project:
           name: Projeto de demonstração
-          status_explanation: Todas as tarefas estão dentro do cronograma. As pessoas envolvidas conhecem suas tarefas. O sistema está completamente configurado.
-          description: Este é um breve resumo dos objetivos deste projeto de demonstração.
+          status_explanation: Todas as tarefas estão no cronograma. As pessoas responsáveis conhecem suas tarefas. O sistema está completamente configurado.
+          description: Este é um resumo breve dos objetivos deste projeto de demonstração.
           news:
             item_0:
-              title: Bem-vindo ao seu projeto de demonstração
+              title: Boas-vindas ao seu projeto de demonstração
               summary: |
                 Estamos felizes por você ter se juntado a nós.
-                Neste módulo, você pode comunicar as novidades do projeto aos membros da sua equipe.
-              description: As notícias atuais
+                Neste módulo, você pode compartilhar as atualizações do projeto com os membros da sua equipe.
+              description: As notícias mais recentes
           categories:
-            item_0: Categoria 1 (a ser alterada nas configurações do projeto)
+            item_0: Categoria 1 (a ser alterada nas configurações do Projeto)
           queries:
             item_0:
-              name: 'Plano do Projeto:'
+              name: Plano do Projeto
             item_1:
-              name: Etapas
+              name: Marcos
             item_2:
               name: Tarefas
             item_3:

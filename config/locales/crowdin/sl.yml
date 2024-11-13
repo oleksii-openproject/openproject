@@ -2914,6 +2914,9 @@ sl:
   notice_locking_conflict: "Medtem so bili podatki posodobljeni od vsaj še enega uporabnika."
   notice_locking_conflict_additional_information: "Posodobitev je prišla od %{users}."
   notice_locking_conflict_reload_page: "Prosimo osvežite stran. Preverite spremembe in na novo potrdite posodobitve."
+  notice_locking_conflict_warning: "This page has been updated by someone else. To not lose your edits, copy them locally and reload to view the updated version."
+  notice_locking_conflict_danger: "Could not save your changes because of conflicting modifications. To not lose your edits, copy them locally and reload to view the updated version."
+  notice_locking_conflict_action_button: "Discard changes and reload"
   notice_member_added: Projektu je bil dodan %{name}.
   notice_members_added: Projektu je bilo dodano %{number} uporabnikov.
   notice_member_removed: "Iz projekta je bil odstranjen %{user}"

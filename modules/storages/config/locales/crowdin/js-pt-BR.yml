@@ -37,7 +37,7 @@ pt-BR:
         empty_folder_location_hint: "Clique no botão abaixo para carregar o arquivo para esta localização."
         file_not_selectable_location: "Não é possível selecionar um arquivo no processo de escolha de uma localização."
         project_folder_no_access: >
-          Você não tem acesso à pasta do projeto. Por favor, entre em contato com o administrador para obter acesso ou envie o arquivo em outro local.
+          Você não possui acesso à pasta do projeto. Entre em contato com o administrador para obter acesso ou carregue o arquivo em outra pasta.
         managed_project_folder_not_available: >
           A pasta do projeto gerenciado automaticamente ainda não foi encontrada. Aguarde um pouco, recarregue a página para obter os dados mais recentes e tente novamente.
         managed_project_folder_no_access: >

@@ -8,114 +8,114 @@ pt-PT:
     attributes:
       openid_connect/provider:
         name: Nome
-        slug: Unique identifier
+        slug: Identificador único
         display_name: Nome a apresentar
         client_id: Client ID
         client_secret: Client Secret
         secret: Segredo
         scope: Contexto
         limit_self_registration: Limitar auto-registo
-        authorization_endpoint: Authorization endpoint
-        userinfo_endpoint: User information endpoint
-        token_endpoint: Token endpoint
-        end_session_endpoint: End session endpoint
-        post_logout_redirect_uri: Post logout redirect URI
+        authorization_endpoint: Endpoint da autorização
+        userinfo_endpoint: Endpoint da informação do utilizador
+        token_endpoint: Endpoint do token
+        end_session_endpoint: Endpoint de término de sessão
+        post_logout_redirect_uri: URI de redirecionamento após o encerramento da sessão
         jwks_uri: JWKS URI
-        issuer: Issuer
-        tenant: Tenant
+        issuer: Emissor
+        tenant: Inquilino
         metadata_url: URL dos metadados
-        icon: Custom icon
-        claims: Claims
-        acr_values: ACR values
-        redirect_url: Redirect URL
+        icon: Ícone personalizado
+        claims: Reclamações
+        acr_values: Valores ACR
+        redirect_url: URL de Redirecionamento
   activerecord:
     errors:
       models:
         openid_connect/provider:
           attributes:
             metadata_url:
-              format: "Discovery endpoint URL %{message}"
-              response_is_not_successful: " responds with %{status}."
-              response_is_not_json: " does not return JSON body."
-              response_misses_required_attributes: " does not return required attributes. Missing attributes are: %{missing_attributes}."
+              format: "URL do endpoint de descoberta %{message}"
+              response_is_not_successful: " responde com %{status}."
+              response_is_not_json: " não devolve o corpo JSON."
+              response_misses_required_attributes: " não devolve os atributos necessários. Os atributos em falta são: %{missing_attributes}."
   provider:
     delete_warning:
-      input_delete_confirmation: Enter the provider name %{name} to confirm deletion.
-      irreversible_notice: Deleting an SSO provider is an irreversible action.
-      provider: 'Are you sure you want to delete the SSO provider %{name}? To confirm this action please enter the name of the provider in the field below, this will:'
-      delete_result_1: Remove the provider from the list of available providers.
+      input_delete_confirmation: Insira o nome do fornecedor %{name} para confirmar a eliminação.
+      irreversible_notice: A eliminação de um fornecedor SSO é uma ação irreversível.
+      provider: 'Tem a certeza de que pretende eliminar o fornecedor SSO %{name}? Para confirmar esta ação, introduza o nome do fornecedor no campo abaixo, isto irá:'
+      delete_result_1: Remova o fornecedor da lista de fornecedores disponíveis.
       delete_result_user_count:
-        zero: No users are currently using this provider. No further action is required.
-        one: "One user is currently still using this provider. They will need to be re-invited or logging in with another provider."
-        other: "%{count} users are currently still using this provider. They will need to be re-invited or logging in with another provider."
-      delete_result_direct: This provider is marked as a direct login provider. The setting will be removed and users will no longer be redirected to the provider for login.
+        zero: Nenhum utilizador está atualmente a utilizar este fornecedor. Não é necessária mais nenhuma ação.
+        one: "Um utilizador ainda está a utilizar este fornecedor. Terá de ser convidado novamente ou iniciar sessão através de outro fornecedor."
+        other: "%{count} utilizadores ainda estão a utilizar este fornecedor. Terão de ser convidados novamente ou iniciar sessão através de outro fornecedor."
+      delete_result_direct: Este fornecedor está marcado como um fornecedor de início de sessão direto. A definição será removida e os utilizadores deixarão de ser redirecionados para o fornecedor para iniciar sessão.
   openid_connect:
     menu_title: Fornecedores de OpenID
-    delete_title: "Delete OpenID Connect provider"
+    delete_title: "Eliminar o fornecedor OpenID Connect"
     instructions:
-      redirect_url: This is the redirect URL that the OpenID Connect provider should use to redirect back to OpenProject after a successful login.
-      endpoint_url: The endpoint URL given to you by the OpenID Connect provider
-      metadata_none: I don't have this information
-      metadata_url: I have a discovery endpoint URL
-      client_id: This is the client ID given to you by your OpenID Connect provider
-      client_secret: This is the client secret given to you by your OpenID Connect provider
-      limit_self_registration: If enabled, users can only register using this provider if configuration on the prvoder's end allows it.
-      display_name: Then name of the provider. This will be displayed as the login button and in the list of providers.
-      tenant: 'Please replace the default tenant with your own if applicable. See <a href=" https://learn.microsoft.com/en-us/entra/identity-platform/v2-protocols-oidc#find-your-apps-openid-configuration-document-uri">this</a>.'
-      post_logout_redirect_uri: The URL the OpenID Connect provider should redirect to after a logout request.
+      redirect_url: Este é o URL de redirecionamento que o fornecedor OpenID Connect deve usar para redirecionar de volta para o OpenProject após um início de sessão bem-sucedido.
+      endpoint_url: O URL do endpoint que lhe foi fornecido pelo fornecedor do OpenID Connect
+      metadata_none: Não tenho esta informação
+      metadata_url: Tenho um URL de endpoint de descoberta
+      client_id: Este é o ID de cliente que lhe foi atribuído pelo seu fornecedor OpenID Connect
+      client_secret: Este é o segredo do cliente que lhe foi atribuído pelo seu fornecedor OpenID Connect
+      limit_self_registration: Se estiver ativado, os utilizadores só podem registar-se utilizando este fornecedor se a configuração no lado do fornecedor o permitir.
+      display_name: O nome do fornecedor. Este nome será apresentado no botão de início de sessão e na lista de fornecedores.
+      tenant: 'Substitua o inquilino predefinido pelo seu próprio inquilino, se aplicável. Consulte <a href=" https://learn.microsoft.com/pt-pt/entra/identity-platform/v2-protocols-oidc#find-your-apps-openid-configuration-document-uri">este artigo</a>.'
+      post_logout_redirect_uri: O URL para o qual o fornecedor do OpenID Connect deve redirecionar após um pedido de encerramento de sessão.
       claims: >
-        You can request additional claims for the userinfo and id token endpoints. Please see [our OpenID connect documentation](docs_url) for more information.
+        Pode solicitar reclamações adicionais para os endpoints userinfo e id token. Consulte [a nossa documentação sobre o OpenID connect](docs_url) para obter mais informações.
       acr_values: >
-        Request non-essential claims in an easier format. See [our documentation on acr_values](docs_url) for more information.
+        Solicite reclamações não essenciais num formato mais fácil. Consulte [a nossa documentação sobre acr_values](docs_url) para mais informações.
       mapping_login: >
-        Provide a custom mapping in the userinfo response to be used for the login attribute.
+        Forneça um mapeamento personalizado na resposta userinfo a ser utilizado para o atributo de início de sessão.
       mapping_email: >
-        Provide a custom mapping in the userinfo response to be used for the email attribute.
+        Forneça um mapeamento personalizado na resposta userinfo a ser utilizado para o atributo de e-mail.
       mapping_first_name: >
-        Provide a custom mapping in the userinfo response to be used for the first name.
+        Forneça um mapeamento personalizado na resposta userinfo a ser utilizado para o nome próprio.
       mapping_last_name: >
-        Provide a custom mapping in the userinfo response to be used for the last name.
+        Forneça um mapeamento personalizado na resposta userinfo a ser utilizado para o sobrenome.
       mapping_admin: >
-        Provide a custom mapping in the userinfo response to be used for the admin status. It expects a boolean attribute to be returned.
+        Forneça um mapeamento personalizado na resposta userinfo a ser utilizado para o estado do administrador. Espera que seja devolvido um atributo booleano.
     settings:
       metadata_none: Não tenho essa informação
-      metadata_url: I have a discovery endpoint URL
-      endpoint_url: Endpoint URL
+      metadata_url: Tenho um URL de endpoint de descoberta
+      endpoint_url: URL do Endpoint
     providers:
-      seeded_from_env: "This provider was seeded from the environment configuration. It cannot be edited."
+      seeded_from_env: "Este fornecedor foi semeado a partir da configuração do ambiente. Não pode ser editado."
       google:
         name: Google
       microsoft_entra:
         name: Microsoft Entra
       custom:
-        name: Custom
+        name: Personalizado
       upsale:
-        description: Connect OpenProject to an OpenID connect identity provider
+        description: Associar o OpenProject a um fornecedor de identidade OpenID Connect
       label_add_new: Adicionar um novo fornecedor OpenID
       label_edit: Editar fornecedor de OpenID %{name}
-      label_empty_title: No OpenID providers configured yet.
-      label_empty_description: Add a provider to see them here.
-      label_metadata: OpenID Connect Discovery Endpoint
-      label_automatic_configuration: Automatic configuration
-      label_optional_configuration: Optional configuration
-      label_advanced_configuration: Advanced configuration
-      label_configuration_details: Metadata
-      label_client_details: Client details
-      label_attribute_mapping: Attribute mapping
-      client_details_description: Configuration details of OpenProject as an OIDC client
+      label_empty_title: Ainda não existem fornecedores OpenID configurados.
+      label_empty_description: Adicione um fornecedor para vê-lo aqui.
+      label_metadata: Endpoint de descoberta do OpenID Connect
+      label_automatic_configuration: Configuração automática
+      label_optional_configuration: Configuração opcional
+      label_advanced_configuration: Configuração avançada
+      label_configuration_details: Metadados
+      label_client_details: Dados do cliente
+      label_attribute_mapping: Mapeamento de atributos
+      client_details_description: Detalhes de configuração do OpenProject como um cliente OIDC
       no_results_table: Ainda não foram definidos fornecedores.
       plural: Fornecedores de OpenID
       singular: Fornecedor de OpenID
       section_texts:
-        metadata: Pre-fill configuration using an OpenID Connect discovery endpoint URL
-        metadata_form_banner: Editing the discovery endpoint may override existing pre-filled metadata values.
-        metadata_form_title: OpenID Connect Discovery endpoint
-        metadata_form_description: If your identity provider has a discovery endpoint URL. Use it below to pre-fill configuration.
-        configuration_metadata: The information has been pre-filled using the supplied discovery endpoint. In most cases, they do not require editing.
-        configuration: Configuration details of the OpenID Connect provider
-        display_name: The display name visible to users.
-        attribute_mapping: Configure the mapping of attributes between OpenProject and the OpenID Connect provider.
-        claims: Request additional claims for the ID token or userinfo response.
+        metadata: Preencha previamente a configuração usando um URL de endpoint de descoberta do OpenID Connect
+        metadata_form_banner: A edição do endpoint de descoberta pode substituir os valores de metadados pré-preenchidos existentes.
+        metadata_form_title: Endpoint de descoberta do OpenID Connect
+        metadata_form_description: Se o seu fornecedor de identidade tiver um URL de endpoint de descoberta. Utilize-o abaixo para pré-preencher a configuração.
+        configuration_metadata: Estas informações foram pré-preenchidas utilizando o endpoint de descoberta fornecido. Na maioria dos casos, não necessitam de edição.
+        configuration: Detalhes de configuração do fornecedor OpenID Connect
+        display_name: O nome de apresentação visível para os utilizadores.
+        attribute_mapping: Configure o mapeamento de atributos entre o OpenProject e o fornecedor OpenID Connect.
+        claims: Solicitar reclamações adicionais para o token de ID ou para a resposta userinfo.
     setting_instructions:
       limit_self_registration: >
         Se estiver ativado, os utilizadores apenas podem registar-se utilizando este fornecedor se a definição de auto-registo o permitir.

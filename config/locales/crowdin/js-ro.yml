@@ -297,7 +297,7 @@ ro:
       more_values_not_shown: "Mai sunt %{total} rezultate, caută pentru a filtra rezultatele."
       description:
         text_open_filter: "Deschideți acest filtru cu 'ALT' și tastele săgeată."
-        text_close_filter: "Pentru a selecta o poziție schimbați prim-planul (de exemplu apasand Enter). Pentru a ieși fără filtrare selectați prima poziție (goală)."
+        text_close_filter: "Pentru a selecta o poziție schimbă prim-planul de exemplu apăsând Enter. Pentru a ieși fără filtrare selectează prima poziție (goală)."
       noneElement: "(nimic)"
       time_zone_converted:
         two_values: "%{from} - %{to} ora locală."
@@ -396,8 +396,8 @@ ro:
     label_board_plural: "Panouri"
     label_board_sticky: "Lipicios"
     label_change: "Modificare"
-    label_create: "Creare"
-    label_create_work_package: "Creare pachet de lucru nou"
+    label_create: "Creează"
+    label_create_work_package: "Creează pachet de lucru nou"
     label_created_by: "Creat de"
     label_current: "current"
     label_date: "Dată"
@@ -593,7 +593,7 @@ ro:
           list: "Acest pachet <b>de lucru</b> oferă o listă a tuturor activităților din proiectul tău, cum ar fi sarcini, jaloane, faze și altele. <br> Pachetele de lucru pot fi create și editate direct din acest punct de vedere. Pentru a accesa detaliile unui anumit pachet de lucru, faceți dublu clic pe rând."
           full_view: "Vizualizarea <b>pentru detaliile pachetului de lucru</b> furnizează toate informațiile relevante referitoare la un anumit pachet de lucru, cum ar fi descrierea, starea, prioritatea, activitățile, dependențele si comentariile."
           back_button: "Utilizați săgeata de întoarcere din colțul din stânga sus pentru a ieși și pentru a reveni la lista pachetelor de lucru."
-          create_button: "Butonul <b>Create (Creare</b> ) va adăuga un nou pachet de lucru la proiectul dumneavoastră."
+          create_button: "Butonul <b>Creează</b> va adăuga un nou pachet de lucru la proiectul tău."
           gantt_menu: "Create project schedules and timelines effortlessly using the Gantt chart module."
           timeline: "Aici puteţi <b>edita planul de proiect</b>, crea noi pachete de lucru, cum ar fi sarcini, repere de etapă, faze și multe altele, precum și <b>adaugă dependențe</b>. Toți membrii echipei pot vedea și actualiza cel mai recent plan în orice moment."
         team_planner:
@@ -909,7 +909,7 @@ ro:
         show_relations: "Arată relațiile"
         ignore_non_working_days:
           title: "Numai în zilele lucrătoare"
-      description_filter: "Filtrare"
+      description_filter: "Filtrează"
       description_enter_text: "Introduceţi textul"
       description_options_hide: "Ascundere opțiuni"
       description_options_show: "Afișare opțiuni"
@@ -924,7 +924,7 @@ ro:
       message_error_during_bulk_delete: A apărut o eroare la ștergerea pachetelor de lucru.
       message_successful_bulk_delete: Pachetele de lucru au fost șterse cu succes.
       message_successful_show_in_fullscreen: "Click aici pentru a afișa acest pachet de lucru pe tot ecranul."
-      message_view_spent_time: "Arată timpul petrecut pentru acest pachet de lucru"
+      message_view_spent_time: "Arată timpul consumat pentru acest pachet de lucru"
       message_work_package_read_only: "Pachetul de lucru este blocat în acest statut. Niciun alt atribut în afară de status nu poate fi modificat."
       message_work_package_status_blocked: "Starea pachetului de lucru nu poate fi scrisă din cauza statutului închis și a versiunii închise care au fost atribuite."
       placeholder_filter_by_text: "Subiect, descriere, comentarii, ..."
@@ -936,7 +936,7 @@ ro:
         modification_label: "Modified within the comparison time period"
         column_incompatible: "This column does not show changes in Baseline mode."
       filters:
-        title: "Filtrare pachete de lucru"
+        title: "Filtrează pachete de lucru"
         baseline_incompatible: "This filter attribute is not taken into consideration in Baseline mode."
         baseline_warning: "Baseline mode is on but some of your active filters are not included in the comparison."
       inline_create:
@@ -962,7 +962,7 @@ ro:
       no_results:
         title: Nu sunt pachete de lucru de afișat.
         description: Nu a fost creat niciun pachet de lucru, sau toate sunt eliminate prin filtru.
-      limited_results: Numai pachetele de lucru %{count} pot fi afișate în modul de sortare manuală. Vă rugăm să reduceți rezultatele prin filtrare sau să treceți la sortare automată.
+      limited_results: Numai pachetele de lucru %{count} pot fi afișate în modul de sortare manuală. Te rog să reduci rezultatele prin filtrare sau să treci la sortare automată.
       property_groups:
         details: "Detalii"
         people: "Persoane"
@@ -1089,7 +1089,7 @@ ro:
           relation_columns: "Aveți nevoie să vedeți relațiile din lista pachetelor de lucru?"
           check_out_link: "Consultați ediția Enterprise."
         relation_filters:
-          filter_work_packages_by_relation_type: "Filtrare pachete de lucru"
+          filter_work_packages_by_relation_type: "Filtrează pachetele de lucru după tipul relației"
       tabs:
         overview: Prezentare generală
         activity: Activitate
@@ -1117,7 +1117,7 @@ ro:
         share_calendar: "Subscribe to calendar"
         page_settings: "Redenumire"
         delete: "Șterge"
-      filter: "Filtrare"
+      filter: "Filtrează"
       unselected_title: "Pachet de lucru"
       search_query_label: "Căutați vizualizări salvate"
     modals:
@@ -1142,7 +1142,7 @@ ro:
         title: "Confirmarea ștergerii înregistrării timpului"
         text: "Ești sigur că vrei să ștergi următoarea înregistrare a timpului?"
     notice_no_results_to_display: "Fara rezultate vizibile de afisat."
-    notice_successful_create: "Creare reuşită."
+    notice_successful_create: "Creare reușită."
     notice_successful_delete: "Ştergere reuşită."
     notice_successful_update: "Actualizare reușită."
     notice_job_started: "munca începută."
@@ -1295,7 +1295,7 @@ ro:
       search_placeholder: "Caută proiect..."
       include_subprojects: "Include toate subproiectele"
       tooltip:
-        include_all_selected: "Proiectul este deja inclus, deoarece opțiunea Include toate subproiectele este activată."
+        include_all_selected: "Proiectul este deja inclus, din moment ce opțiunea Include toate subproiectele este activată."
         current_project: "Acesta este proiectul curent în care vă aflați."
         does_not_match_search: "Proiectul nu corespunde criteriilor de căutare."
       no_results: "Niciun proiect nu corespunde criteriilor de căutare."

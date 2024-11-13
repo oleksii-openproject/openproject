@@ -2843,6 +2843,9 @@ bg:
   notice_locking_conflict: "Информацията е актуализирана от поне един друг потребител в същото време."
   notice_locking_conflict_additional_information: "Обновленията са от %{users}."
   notice_locking_conflict_reload_page: "Моля презаредете страницата, прегледайте промените и приложете отново вашите обновления."
+  notice_locking_conflict_warning: "This page has been updated by someone else. To not lose your edits, copy them locally and reload to view the updated version."
+  notice_locking_conflict_danger: "Could not save your changes because of conflicting modifications. To not lose your edits, copy them locally and reload to view the updated version."
+  notice_locking_conflict_action_button: "Discard changes and reload"
   notice_member_added: Добавен %{name} в проекта.
   notice_members_added: Добавяне са %{number} потребителя към проекта.
   notice_member_removed: "Премахнат %{user} от проект."

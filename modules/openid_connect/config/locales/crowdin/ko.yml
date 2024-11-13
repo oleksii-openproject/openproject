@@ -8,35 +8,35 @@ ko:
     attributes:
       openid_connect/provider:
         name: 이름
-        slug: Unique identifier
+        slug: 고유 식별자
         display_name: 표시 이름
-        client_id: Client ID
-        client_secret: Client secret
+        client_id: 클라이언트 ID
+        client_secret: 클라이언트 비밀번호
         secret: 비밀번호
         scope: 범위
         limit_self_registration: 자체 등록 제한
-        authorization_endpoint: Authorization endpoint
-        userinfo_endpoint: User information endpoint
-        token_endpoint: Token endpoint
-        end_session_endpoint: End session endpoint
-        post_logout_redirect_uri: Post logout redirect URI
+        authorization_endpoint: 권한 부여 엔드포인트
+        userinfo_endpoint: 사용자 정보 엔드포인트
+        token_endpoint: 토큰 엔드포인트
+        end_session_endpoint: 세션 종료 엔드포인트
+        post_logout_redirect_uri: 사후 로그아웃 리디렉션 URI
         jwks_uri: JWKS URI
-        issuer: Issuer
-        tenant: Tenant
-        metadata_url: Metadata URL
-        icon: Custom icon
-        claims: Claims
-        acr_values: ACR values
-        redirect_url: Redirect URL
+        issuer: 발급자
+        tenant: 테넌트
+        metadata_url: 메타데이터 URL
+        icon: 사용자 지정 아이콘
+        claims: 클레임
+        acr_values: ACR 값
+        redirect_url: 리디렉션 URL
   activerecord:
     errors:
       models:
         openid_connect/provider:
           attributes:
             metadata_url:
-              format: "Discovery endpoint URL %{message}"
-              response_is_not_successful: " responds with %{status}."
-              response_is_not_json: " does not return JSON body."
+              format: "검색 엔드포인트 URL %{message}"
+              response_is_not_successful: " - 응답 상태는 %{status}입니다."
+              response_is_not_json: " - JSON 본문을 반환하지 않습니다."
               response_misses_required_attributes: " does not return required attributes. Missing attributes are: %{missing_attributes}."
   provider:
     delete_warning:
@@ -48,15 +48,15 @@ ko:
         zero: No users are currently using this provider. No further action is required.
         one: "One user is currently still using this provider. They will need to be re-invited or logging in with another provider."
         other: "%{count} users are currently still using this provider. They will need to be re-invited or logging in with another provider."
-      delete_result_direct: This provider is marked as a direct login provider. The setting will be removed and users will no longer be redirected to the provider for login.
+      delete_result_direct: 이 공급자는 직접 로그인 공급자로 표시됩니다. 이 설정은 제거되며 사용자는 더 이상 로그인을 위해 해당 공급자로 리디렉션되지 않습니다.
   openid_connect:
     menu_title: OpenID 공급자
-    delete_title: "Delete OpenID Connect provider"
+    delete_title: "OpenID Connect 공급자 삭제"
     instructions:
-      redirect_url: This is the redirect URL that the OpenID Connect provider should use to redirect back to OpenProject after a successful login.
-      endpoint_url: The endpoint URL given to you by the OpenID Connect provider
-      metadata_none: I don't have this information
-      metadata_url: I have a discovery endpoint URL
+      redirect_url: 로그인 성공 후 OpenID Connect 공급자가 OpenProject로 다시 리디렉션할 때 사용해야 하는 리디렉션 URL입니다.
+      endpoint_url: OpenID Connect 공급자가 사용자에게 제공한 엔드포인트 URL
+      metadata_none: 이 정보가 없습니다
+      metadata_url: 검색 엔드포인트 URL이 있습니다
       client_id: This is the client ID given to you by your OpenID Connect provider
       client_secret: This is the client secret given to you by your OpenID Connect provider
       limit_self_registration: If enabled, users can only register using this provider if configuration on the prvoder's end allows it.
@@ -88,20 +88,20 @@ ko:
       microsoft_entra:
         name: Microsoft Entra
       custom:
-        name: Custom
+        name: 사용자 지정
       upsale:
-        description: Connect OpenProject to an OpenID connect identity provider
+        description: OpenID Connect ID 공급자에 OpenProject 연결
       label_add_new: 새로운 OpenID 공급자 추가
       label_edit: OpenID 공급자 %{name} 편집
-      label_empty_title: No OpenID providers configured yet.
-      label_empty_description: Add a provider to see them here.
-      label_metadata: OpenID Connect Discovery Endpoint
+      label_empty_title: 아직 구성된 OpenID 공급자가 없습니다.
+      label_empty_description: 여기에서 보려면 공급자를 추가합니다.
+      label_metadata: OpenID Connect 검색 엔드포인트
       label_automatic_configuration: Automatic configuration
       label_optional_configuration: Optional configuration
-      label_advanced_configuration: Advanced configuration
-      label_configuration_details: Metadata
-      label_client_details: Client details
-      label_attribute_mapping: Attribute mapping
+      label_advanced_configuration: 고급 구성
+      label_configuration_details: 메타데이터
+      label_client_details: 클라이언트 세부 정보
+      label_attribute_mapping: 특성 매핑
       client_details_description: Configuration details of OpenProject as an OIDC client
       no_results_table: 아직 정의된 공급자가 없습니다.
       plural: OpenID 공급자

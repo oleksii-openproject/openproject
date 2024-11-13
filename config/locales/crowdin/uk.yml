@@ -26,20 +26,20 @@ uk:
       no_results_title_text: Протягом цього часу не було жодної діяльності для проекту.
     work_packages:
       activity_tab:
-        no_results_title_text: No activity to display
-        no_results_description_text: "Choose \"Show everything\" to show all activity and comments"
-        label_activity_show_all: "Show everything"
-        label_activity_show_only_comments: "Show comments only"
-        label_activity_show_only_changes: "Show changes only"
-        label_sort_asc: "Newest at the bottom"
-        label_sort_desc: "Newest on top"
-        label_type_to_comment: "Type here to comment"
-        label_submit_comment: "Submit comment"
-        changed_on: "changed on"
-        created_on: "created this on"
-        changed: "changed"
-        created: "created"
-        commented: "commented"
+        no_results_title_text: Немає дій
+        no_results_description_text: "Виберіть \"Показати все\", щоб показати всі дії і коментарі"
+        label_activity_show_all: "Показати все"
+        label_activity_show_only_comments: "Показувати лише коментарі"
+        label_activity_show_only_changes: "Показувати лише зміни"
+        label_sort_asc: "Найновіші внизу"
+        label_sort_desc: "Найновіші вгорі"
+        label_type_to_comment: "Місце для коментаря"
+        label_submit_comment: "Надіслати коментар"
+        changed_on: "змінено"
+        created_on: "створив(-ла)"
+        changed: "змінено"
+        created: "створено"
+        commented: "прокоментовано"
   admin:
     plugins:
       no_results_title_text: Зараз немає встановлених плагінів.
@@ -216,24 +216,24 @@ uk:
           heading: Для всіх проєктів
           description: Це користувацьке поле активовано в усіх проєктах, оскільки встановлено прапорець «Для всіх проєктів». Його не можна деактивувати для окремих проєктів.
       items:
-        actions: "Item actions"
+        actions: "Дії"
         blankslate:
           root:
-            title: "Your list of items is empty"
-            description: "Start by adding items to the custom field of type hierarchy. Each item can be used to create a hierarchy bellow it. To navigate and create sub-items inside a hierarchy click on the created item."
+            title: "Ваш список елементів порожній"
+            description: "Спочатку додайте елементи до користувацького поля ієрархії типів. Створити ієрархію можна для кожного елемента. Щоб переходити між піделементами ієрархії і додавати\nїх, натисніть створений елемент."
           item:
-            title: This item doesn't have any hierarchy level below
-            description: Add items to this list to create sub-items inside another one
+            title: Цей елемент не має нижчого рівня ієрархії
+            description: Додайте елементи до цього списку, щоб створити піделементи всередині іншого
         placeholder:
-          label: "Item label"
-          short: "Short name"
+          label: "Мітка елемента"
+          short: "Коротка назва"
       notice:
         remember_items_and_projects: "Обов’язково задайте елементи й проєкти на відповідних вкладках для цього користувацького поля."
       hierarchy:
         subitems:
-          zero: no sub-items
-          one: 1 sub-item
-          other: "%{count} sub-items"
+          zero: немає піделементів
+          one: 1 піделемент
+          other: "Піделементів: %{count}"
     text_add_new_custom_field: >
       Щоб додати нові користувальницькі поля до проекту, спочатку потрібно створити їх, перш ніж ви зможете додати їх до цього проекту.
     is_enabled_globally: "Увімкнено у всьому світі"
@@ -246,7 +246,7 @@ uk:
       is_required: "Позначте користувацьке поле як обов’язкове. Так його потрібно буде заповнювати під час створення нових або оновлення наявних ресурсів."
       is_required_for_project: "Установіть прапорець, щоб увімкнути цей атрибут і зробити його обов’язковим в усіх проєктах. Його не можна деактивувати для окремих проєктів."
       is_for_all: "Позначте користувацьке поле як доступне в усіх наявних і нових проєктах."
-      multi_select: "Allows the user to assign multiple values to this custom field."
+      multi_select: "Дає змогу користувачу задавати кілька значень цього користувацького поля."
       searchable: "Включіть значення полів під час використання функції глобального пошуку."
       searchable_for_project: "Установіть прапорець, щоб зробити цей атрибут доступним як фільтр у списках проєктів."
       editable: "Дозвольте користувачам самостійно редагувати це поле."
@@ -260,26 +260,26 @@ uk:
     single: "або"
   dry_validation:
     errors:
-      integer?: "must be an integer"
-      filled?: "must be filled"
-      greater_or_equal_zero: "must be greater or equal to 0"
-      not_found: "not found"
+      integer?: "має бути цілим числом"
+      filled?: "має бути заповнено"
+      greater_or_equal_zero: "має дорівнювати нулю або перевищувати його"
+      not_found: "не знайдено"
       rules:
         item:
-          root_item: "cannot be a root item"
-          not_persisted: "must be an already existing item"
+          root_item: "не може бути кореневим елементом"
+          not_persisted: "має бути вже наявним елементом"
         label:
-          not_unique: "must be unique within the same hierarchy level"
+          not_unique: "має бути унікальним у межах одного рівня ієрархії"
         short:
-          not_unique: "must be unique within the same hierarchy level"
+          not_unique: "має бути унікальним у межах одного рівня ієрархії"
         parent:
-          not_descendant: "must be a descendant of the hierarchy root"
+          not_descendant: "має бути дочірнім елементом кореня ієрархії"
     rules:
-      depth: "Depth"
-      item: "Item"
-      label: "Label"
-      short: "Short name"
-      parent: "Parent"
+      depth: "Глибина"
+      item: "Елемент"
+      label: "Мітка"
+      short: "Коротка назва"
+      parent: "Батьківський елемент"
   global_search:
     placeholder: "Пошук у додатку %{app_title}"
     overwritten_tabs:
@@ -526,16 +526,16 @@ uk:
         Натисніть, щоб призначити або змінити колір цього пріоритету.
         Його можна використовувати для виділення робочих пакетів у таблиці.
   reactions:
-    action_title: "React"
-    add_reaction: "Add reaction"
-    react_with: "React with %{reaction}"
-    and_user: "and %{user}"
+    action_title: "Реакція"
+    add_reaction: "Додати реакцію"
+    react_with: "Відреагувати за допомогою %{reaction}"
+    and_user: "і %{user}"
     and_others:
-      one: and 1 other
-      few: and %{count} others
-      many: and %{count} others
-      other: and %{count} others
-    reaction_by: "%{reaction} by"
+      one: і ще 1
+      few: і ще %{count}
+      many: і ще %{count}
+      other: і ще %{count}
+    reaction_by: "%{reaction} від"
   reportings:
     index:
       no_results_title_text: Наразі немає повідомлень про статус.
@@ -546,13 +546,12 @@ uk:
         Натисніть, щоб призначити або змінити колір цього статусу.
         Він відображається в кнопці стану і може використовуватися для виділення робочих пакетів у таблиці.
       status_default_text: |-
-        New work packages are by default set to this type. They cannot be read-only.
+        Цей тип за замовчуванням мають нові пакети робіт. Вони не можуть бути доступні лише для читання.
       status_excluded_from_totals_text: |-
         Поставте цей прапорець, щоб виключити пакети робіт із цим статусом із підсумків атрибутів «Робота», «Залишок роботи» й «% завершення» в ієрархії.
       status_percent_complete_text: |-
-        In <a href="%{href}">status-based progress calculation mode</a>, the % Complete of a work
-        package is automatically set to this value when this status is selected.
-        Ignored in work-based mode.
+        У <a href="%{href}">режимі обчислення прогресу на основі статусу</a> для атрибута «% завершення» пакета робіт автоматично встановлюється це значення, коли вибрано цей статус.
+        Ігнорується в режимі на основі роботи.
       status_readonly_html: |
         Відмітьте цю опцію, щоб позначити пакети робіт з таким статусом, як доступні лише для перегляду.
         Жоден атрибут не можуть бути змінені за виключенням статусу.
@@ -567,7 +566,7 @@ uk:
         is_readonly: "Лише для перегляду"
         excluded_from_totals: "Виключено з підсумків"
   themes:
-    dark: "Dark"
+    dark: "Темна"
     light: "Світла"
     light_high_contrast: "Світла, високий контраст"
   types:
@@ -889,7 +888,7 @@ uk:
         blank: "не може бути порожнім."
         blank_nested: "– потрібно встановити властивість «%{property}»."
         cannot_delete_mapping: "– обов’язкове. Неможливо видалити."
-        is_for_all_cannot_modify: "is for all projects and can therefore not be modified."
+        is_for_all_cannot_modify: "призначений для всіх проєктів, тому його не можна бути змінити."
         cant_link_a_work_package_with_a_descendant: "Робочий пакет не може бути пов'язаний з одним з підзадач."
         circular_dependency: "Це співвідношення створить кругову залежність."
         confirmation: "не збігається %{attribute}"
@@ -920,12 +919,12 @@ uk:
         not_available: "– недоступно через налаштування системи."
         not_deletable: "не можна видалити."
         not_current_user: "не поточний користувач."
-        not_found: "not found."
+        not_found: "не знайдено."
         not_a_date: "не є дійсною датою."
         not_a_datetime: "не є дійсним датою."
         not_a_number: "не є числом"
         not_allowed: "недійсний через відсутність дозволів."
-        not_json: "is not a valid JSON object."
+        not_json: "не є припустимим об’єктом JSON."
         not_an_integer: "не є цілим числом"
         not_an_iso_date: "не є дійсною датою. Необхідний формат: YYYY-MM-DD."
         not_same_project: "не належить до одного проекту."
@@ -1427,9 +1426,9 @@ uk:
   button_actions: "Дії"
   button_add: "Додати"
   button_add_comment: "Додати коментар"
-  button_add_item_above: "Add item above"
-  button_add_item_below: "Add item below"
-  button_add_sub_item: "Add sub-item"
+  button_add_item_above: "Додати елемент вище"
+  button_add_item_below: "Додати елемент нижче"
+  button_add_sub_item: "Додати піделемент"
   button_add_member: Додати учасника
   button_add_watcher: "Додати спостерігача"
   button_annotate: "Коментувати"
@@ -1941,7 +1940,7 @@ uk:
       progress_mode_changed_to_status_based: "Обчислення прогресу оновлено"
       status_changed: "Статус «%{status_name}»"
       system_update: "Оновлення системи OpenProject"
-      work_package_duplicate_closed: "Duplicate work package updated:"
+      work_package_duplicate_closed: "Дублікат пакета робіт оновлено:"
       total_percent_complete_mode_changed_to_work_weighted_average: "Під час обчислення підсумків атрибута «% завершення» тепер враховується значення атрибута «Робота»."
       total_percent_complete_mode_changed_to_simple_average: "Обчислення підсумків атрибута «% завершення» тепер ґрунтується на середньому арифметичному значень лише атрибута «% завершення»."
     cause_descriptions:
@@ -1949,7 +1948,7 @@ uk:
       work_package_parent_changed_times: внесенням змін у батькіський елемент %{link}
       work_package_children_changed_times: внесенням змін у дочірній елемент %{link}
       work_package_related_changed_times: внесенням змін у пов’язаний елемент %{link}
-      work_package_duplicate_closed: The status was automatically updated by the duplicated work package %{link}
+      work_package_duplicate_closed: Статус автоматично оновлено на основі дубліката пакета робіт %{link}
       unaccessable_work_package_changed: внесенням змін у пов’язаний пакет робіт
       working_days_changed:
         changed: "внесенням змін у робочі дні (%{changes})"
@@ -2095,7 +2094,7 @@ uk:
   label_ical_access_key_generation_hint: "Автоматично створено під час оформлення підписки на календар."
   label_ical_access_key_latest: "останні"
   label_ical_access_key_revoke: "Скасувати"
-  label_add_column: "Add column"
+  label_add_column: "Додати стовпець"
   label_applied_status: "Застосовний статус"
   label_archive_project: "Архівний проект"
   label_ascending: "За зростанням"
@@ -2122,7 +2121,7 @@ uk:
   label_api_doc: "Документація API"
   label_backup: "Резервна копія"
   label_backup_code: "Код резервної копії"
-  label_basic_details: "Basic details"
+  label_basic_details: "Основна інформація"
   label_between: "між ними"
   label_blocked_by: "заблоковано"
   label_blocks: "блоки"
@@ -2267,7 +2266,7 @@ uk:
   label_file_plural: "Файли"
   label_filter: "Фільтри"
   label_filter_add: "Додати фільтр"
-  label_filter_by: "Filter by"
+  label_filter_by: "Фільтрувати за"
   label_filter_plural: "Фільтри"
   label_filters_toggle: "Показати / приховати фільтри"
   label_float: "З плаваючою крапкою"
@@ -2356,7 +2355,7 @@ uk:
   label_custom_favicon: "призначені для користувача іконки"
   label_custom_touch_icon: "Призначений для користувача значок логотипу"
   label_logout: "Вийти"
-  label_mapping_for: "Mapping for: %{attribute}"
+  label_mapping_for: "Зіставлення для: %{attribute}"
   label_main_menu: "Бокове меню"
   label_manage: "Керувати"
   label_manage_groups: "Керувати групами"
@@ -2391,8 +2390,8 @@ uk:
   label_months_from: "місяців(ця) з"
   label_more: "Більше"
   label_more_than_ago: "більш ніж днів(я) назад"
-  label_move_column_left: "Move column left"
-  label_move_column_right: "Move column right"
+  label_move_column_left: "Перемістити стовпець ліворуч"
+  label_move_column_right: "Перемістити стовпець праворуч"
   label_move_work_package: "Перемістити робочий пакет"
   label_my_account: "Налаштування облікового запису"
   label_my_activity: "Мої дії"
@@ -2484,7 +2483,7 @@ uk:
   label_project_latest: "Останні проекти"
   label_project_default_type: "Дозволити порожній тип"
   label_project_hierarchy: "Ієрархія проектів"
-  label_project_mappings: "Projects"
+  label_project_mappings: "Проєкти"
   label_project_new: "Новий проект"
   label_project_plural: "Проекти"
   label_project_list_plural: "Списки проєкту"
@@ -2515,7 +2514,7 @@ uk:
   label_relation_new: "Новий зв'язок"
   label_release_notes: "Примітки до випуску"
   label_remaining_work: "Залишок роботи"
-  label_remove_column: "Remove column"
+  label_remove_column: "Вилучити стовпець"
   label_remove_columns: "Видалити вибрані стовпці"
   label_renamed: "перейменовано"
   label_reply_plural: "Відповіді"
@@ -2556,10 +2555,10 @@ uk:
   label_show_completed_versions: "Показати завершені версії"
   label_columns: "Стовпці"
   label_sort: "Сортувати"
-  label_sort_ascending: "Sort ascending"
+  label_sort_ascending: "Сортувати за зростанням"
   label_sort_by: "Сортувати за %{value}"
   label_sorted_by: "відсортовані за %{value}"
-  label_sort_descending: "Sort descending"
+  label_sort_descending: "Сортувати за спаданням"
   label_sort_higher: "Рухатися вгору"
   label_sort_highest: "Помістити на верх"
   label_sort_lower: "Пересунути нижче"
@@ -2910,6 +2909,9 @@ uk:
   notice_locking_conflict: "Інформація була оновлена принаймні один інший користувач в той же час."
   notice_locking_conflict_additional_information: "Оновлення надійшли від %{users}."
   notice_locking_conflict_reload_page: "Будь ласка поновіть сторінку, перевірте зміни та застосувати оновлення."
+  notice_locking_conflict_warning: "Хтось оновив цю сторінку. Щоб не втратити свої зміни, скопіюйте й збережіть їх локально й перезавантажте сторінку, щоб переглянути оновлену версію."
+  notice_locking_conflict_danger: "Не вдалося зберегти зміни через суперечливі модифікації. Щоб не втратити зміни, скопіюйте їх локально і перезавантажте сторінку, щоб переглянути оновлену версію."
+  notice_locking_conflict_action_button: "Відхилити зміни й перезавантажити"
   notice_member_added: Додано %{name} проекту.
   notice_members_added: Додано %{number} користувач(-а,-ів) до проекту.
   notice_member_removed: "Користувач %{user} видалений з проекту."
@@ -3049,7 +3051,7 @@ uk:
   permission_view_shared_work_packages: "Переглянути дозволи на доступ до пакета робіт"
   permission_view_time_entries: "Перегляд трудовитрат"
   permission_view_timelines: "Переглянути часові рамки"
-  permission_view_user_email: "View users' mail addresses"
+  permission_view_user_email: "Переглянути поштові адреси користувачів"
   permission_view_wiki_edits: "Перегляд історії wiki"
   permission_view_wiki_pages: "Перегляд wiki"
   permission_work_package_assigned: "Стати виконавцем / відповідальним"
@@ -3280,9 +3282,9 @@ uk:
   setting_default_language: "Мова за замовчуванням"
   setting_default_projects_modules: "Включені по замовчуванню модулі для нових проектів"
   setting_default_projects_public: "Нові проекти є загальнодоступними"
-  setting_disable_password_login: "Disable password authentication"
+  setting_disable_password_login: "Вимкнути автентифікацію за допомогою пароля"
   setting_diff_max_lines_displayed: "Відображається максимальна кількість рядків diff"
-  setting_omniauth_direct_login_provider: "Direct login SSO provider"
+  setting_omniauth_direct_login_provider: "Постачальник послуг SSO для прямого входу"
   setting_display_subprojects_work_packages: "Дисплей підпроекти пакети робіт на основні проекти за замовчуванням"
   setting_duration_format: "Формат тривалості"
   setting_duration_format_hours_only: "Тільки години"
@@ -3381,7 +3383,7 @@ uk:
     authentication:
       single_sign_on: "Single Sign-On"
       omniauth_direct_login_hint_html: >
-        If this option is active, login requests will redirect to the configured omniauth provider. The login dropdown and sign-in page will be disabled. <br/> <strong>Note:</strong> Unless you also disable password logins, with this option enabled, users can still log in internally by visiting the <code>%{internal_path}</code> login page.
+        Якщо цей параметр увімкнено, запити на вхід переспрямовуватимуться налаштованому постачальнику omniauth. Спадний список і сторінку входу буде вимкнено. <br/> <strong>Примітка.</strong> Якщо цей параметр увімкнено й вхід за допомогою пароля дозволено, користувачі зможуть входити зі сторінки входу <code>%{internal_path}</code>.
     attachments:
       whitelist_text_html: >
         Визначте список дійсних розширень файлів і/або типів MIME для завантажених файлів. <br/>Введіть розширення файлу (напр., <code>%{ext_example}</code>) або типи MIME (напр., <code>%{mime_example}</code>). Не вказуйте нічого, щоб дозволити завантаження будь-яких типів файлів. Ви можете вводити кілька значень (по одному в кожному рядку).

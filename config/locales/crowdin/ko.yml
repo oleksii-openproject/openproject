@@ -280,11 +280,11 @@ ko:
         parent:
           not_descendant: "must be a descendant of the hierarchy root"
     rules:
-      depth: "Depth"
-      item: "Item"
-      label: "Label"
-      short: "Short name"
-      parent: "Parent"
+      depth: "깊이"
+      item: "항목"
+      label: "레이블"
+      short: "짧은 이름"
+      parent: "부모"
   global_search:
     placeholder: "%{app_title}에서 검색"
     overwritten_tabs:
@@ -551,7 +551,7 @@ ko:
         is_readonly: "읽기 전용"
         excluded_from_totals: "합계에서 제외됨"
   themes:
-    dark: "Dark"
+    dark: "다크"
     light: "라이트"
     light_high_contrast: "라이트 하이 콘트라스트"
   types:
@@ -1378,9 +1378,9 @@ ko:
   button_actions: "작업"
   button_add: "추가"
   button_add_comment: "댓글 달기"
-  button_add_item_above: "Add item above"
-  button_add_item_below: "Add item below"
-  button_add_sub_item: "Add sub-item"
+  button_add_item_above: "위에 항목 추가"
+  button_add_item_below: "아래에 항목 추가"
+  button_add_sub_item: "하위 항목 추가"
   button_add_member: 멤버 추가
   button_add_watcher: "주시자 추가"
   button_annotate: "주석 달기"
@@ -1838,7 +1838,7 @@ ko:
       progress_mode_changed_to_status_based: "진행률 계산 업데이트됨"
       status_changed: "상태 '%{status_name}'"
       system_update: "OpenProject 시스템 업데이트:"
-      work_package_duplicate_closed: "Duplicate work package updated:"
+      work_package_duplicate_closed: "중복 작업 패키지가 업데이트되었습니다:"
       total_percent_complete_mode_changed_to_work_weighted_average: "이제 완료 % 합계 계산에는 작업별로 가중치가 적용됩니다."
       total_percent_complete_mode_changed_to_simple_average: "이제 완료 % 합계 계산은 완료 % 값의 단순 평균만을 기반으로 합니다."
     cause_descriptions:
@@ -1846,7 +1846,7 @@ ko:
       work_package_parent_changed_times: 부모 %{link}에 대한 변경 사항 기준
       work_package_children_changed_times: 자식 %{link}에 대한 변경 사항 기준
       work_package_related_changed_times: 관련 %{link}에 대한 변경 사항 기준
-      work_package_duplicate_closed: The status was automatically updated by the duplicated work package %{link}
+      work_package_duplicate_closed: 중복 작업 패키지에 의해 자동으로 상태가 업데이트되었습니다(%{link})
       unaccessable_work_package_changed: 관련 작업 패키지에 대한 변경 사항 기준
       working_days_changed:
         changed: "근무일에 대한 변경 사항 기준(%{changes})"
@@ -1992,7 +1992,7 @@ ko:
   label_ical_access_key_generation_hint: "캘린더 구독 시 자동으로 생성됩니다."
   label_ical_access_key_latest: "최신"
   label_ical_access_key_revoke: "취소"
-  label_add_column: "Add column"
+  label_add_column: "열 추가"
   label_applied_status: "적용된 상태"
   label_archive_project: "프로젝트 아카이브하기"
   label_ascending: "오름차순"
@@ -2019,7 +2019,7 @@ ko:
   label_api_doc: "API 문서"
   label_backup: "백업"
   label_backup_code: "백업 코드"
-  label_basic_details: "Basic details"
+  label_basic_details: "기본 세부 정보"
   label_between: "사이에"
   label_blocked_by: "차단한 사용자"
   label_blocks: "블록"
@@ -2164,7 +2164,7 @@ ko:
   label_file_plural: "파일"
   label_filter: "필터"
   label_filter_add: "필터 추가"
-  label_filter_by: "Filter by"
+  label_filter_by: "필터링 기준"
   label_filter_plural: "필터"
   label_filters_toggle: "필터 표시/숨기기"
   label_float: "부동"
@@ -2253,7 +2253,7 @@ ko:
   label_custom_favicon: "사용자 지정 favicon"
   label_custom_touch_icon: "사용자 지정 터치 아이콘"
   label_logout: "로그아웃"
-  label_mapping_for: "Mapping for: %{attribute}"
+  label_mapping_for: "매핑 대상: %{attribute}"
   label_main_menu: "측면 메뉴"
   label_manage: "관리"
   label_manage_groups: "그룹 관리"
@@ -2288,8 +2288,8 @@ ko:
   label_months_from: "개월 동안 | 다음부터"
   label_more: "기타"
   label_more_than_ago: "일 이상 전"
-  label_move_column_left: "Move column left"
-  label_move_column_right: "Move column right"
+  label_move_column_left: "왼쪽으로 열 이동"
+  label_move_column_right: "오른쪽으로 열 이동"
   label_move_work_package: "작업 패키지 이동"
   label_my_account: "계정 설정"
   label_my_activity: "내 활동"
@@ -2381,7 +2381,7 @@ ko:
   label_project_latest: "최근 프로젝트"
   label_project_default_type: "빈 유형 허용"
   label_project_hierarchy: "프로젝트 계층 구조"
-  label_project_mappings: "Projects"
+  label_project_mappings: "프로젝트"
   label_project_new: "새 프로젝트"
   label_project_plural: "프로젝트"
   label_project_list_plural: "프로젝트 목록"
@@ -2805,6 +2805,9 @@ ko:
   notice_locking_conflict: "그 사이에 정보가 한 명 이상의 다른 사용자에 의해 업데이트되었습니다."
   notice_locking_conflict_additional_information: "%{users}의 업데이트입니다."
   notice_locking_conflict_reload_page: "페이지를 다시 로드하고, 변경 사항을 검토하고, 업데이트를 다시 적용하세요."
+  notice_locking_conflict_warning: "This page has been updated by someone else. To not lose your edits, copy them locally and reload to view the updated version."
+  notice_locking_conflict_danger: "Could not save your changes because of conflicting modifications. To not lose your edits, copy them locally and reload to view the updated version."
+  notice_locking_conflict_action_button: "Discard changes and reload"
   notice_member_added: '%{name} 이(가) 프로젝트에 추가 됨'
   notice_members_added: '%{number}명의 사용자가 프로젝트에 추가되었습니다.'
   notice_member_removed: "프로젝트에서 %{user} 사용자가 제거됨."
@@ -2941,7 +2944,7 @@ ko:
   permission_view_shared_work_packages: "작업 패키지 공유 보기"
   permission_view_time_entries: "소요 시간 보기"
   permission_view_timelines: "타임라인 보기"
-  permission_view_user_email: "View users' mail addresses"
+  permission_view_user_email: "사용자의 메일 주소 보기"
   permission_view_wiki_edits: "위키 기록 보기"
   permission_view_wiki_pages: "위키 보기"
   permission_work_package_assigned: "담당자/책임자 되기"
@@ -3170,9 +3173,9 @@ ko:
   setting_default_language: "기본 언어"
   setting_default_projects_modules: "새 프로젝트에 대해 기본적으로 활성화된 모듈"
   setting_default_projects_public: "새 프로젝트는 기본적으로 공용입니다."
-  setting_disable_password_login: "Disable password authentication"
+  setting_disable_password_login: "암호 인증 비활성화"
   setting_diff_max_lines_displayed: "표시되는 최대 차이점 줄 수"
-  setting_omniauth_direct_login_provider: "Direct login SSO provider"
+  setting_omniauth_direct_login_provider: "직접 로그인 SSO 공급자"
   setting_display_subprojects_work_packages: "기본적으로 기본 프로젝트의 하위 프로젝트 작업 패키지 표시"
   setting_duration_format: "기간 형식"
   setting_duration_format_hours_only: "시간만"

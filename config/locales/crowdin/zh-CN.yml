@@ -280,7 +280,7 @@ zh-CN:
       depth: "深"
       item: "条目"
       label: "标签"
-      short: "短名"
+      short: "简称"
       parent: "父级"
   global_search:
     placeholder: "在%{app_title}中搜索"
@@ -2799,6 +2799,9 @@ zh-CN:
   notice_locking_conflict: "信息已由至少一个其他用户同时更新。"
   notice_locking_conflict_additional_information: "更新来自 %{users}。"
   notice_locking_conflict_reload_page: "请重新加载该页面，查看所做的更改并重新应用您的更新。"
+  notice_locking_conflict_warning: "本页面已由他人更新。为了不丢失您的编辑内容，请将其复制到本地并重新加载，以查看更新后的版本。"
+  notice_locking_conflict_danger: "无法保存您的修改，因为修改冲突。为避免丢失您的编辑内容，请将其复制到本地，并重新加载以查看更新版本。"
+  notice_locking_conflict_action_button: "放弃更改并重新加载"
   notice_member_added: 向项目添加 %{name}。
   notice_members_added: 添加了 %{number} 个用户到该项目。
   notice_member_removed: "已从项目删除 %{user}。"
