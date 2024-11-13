@@ -186,10 +186,7 @@ module CustomFieldsHelper
 
   # Return a string used to display a custom value
   def format_value(value, custom_field)
-    custom_value = CustomValue.new(custom_field:,
-                                   value:)
-
-    custom_value.formatted_value
+    CustomValue.new(custom_field:, value:).formatted_value
   end
 
   # Return an array of custom field formats which can be used in select_tag
@@ -208,15 +205,14 @@ module CustomFieldsHelper
   end
 
   def label_for_custom_field_format(format_string)
-    show_enterprise_text = format_string == "hierarchy" && !EnterpriseToken.allows_to?(:custom_field_hierarchies)
-
     format = OpenProject::CustomFieldFormat.find_by(name: format_string)
-    label = if format
-              format.label.is_a?(Proc) ? format.label.call : I18n.t(format.label)
-            end
+    return "" if format.nil?
 
-    label += " (#{I18n.t(:label_enterprise_addon)})" if show_enterprise_text
+    label = format.label.is_a?(Proc) ? format.label.call : I18n.t(format.label)
 
-    label
+    show_enterprise_text = format_string == "hierarchy" && !EnterpriseToken.allows_to?(:custom_field_hierarchies)
+    suffix = show_enterprise_text ? " (#{I18n.t(:label_enterprise_addon)})" : ""
+
+    "#{label}#{suffix}"
   end
 end
