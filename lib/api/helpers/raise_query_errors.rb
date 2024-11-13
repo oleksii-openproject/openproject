@@ -26,26 +26,16 @@
 # See COPYRIGHT and LICENSE files for more details.
 #++
 
-module Queries::Filters::Strategies
-  module Validations
-    private
+module API
+  module Helpers
+    module RaiseQueryErrors
+      def raise_query_errors(object)
+        api_errors = object.errors.full_messages.map do |message|
+          ::API::Errors::InvalidQuery.new(message)
+        end
 
-    def date?(str)
-      true if Date.parse(str)
-    rescue StandardError
-      false
-    end
-
-    def validate
-      unless values.all? { |value| value.blank? || date?(value) }
-        errors.add(:values, I18n.t("activerecord.errors.messages.not_a_date"))
+        raise ::API::Errors::MultipleErrors.create_if_many api_errors
       end
-    end
-
-    def integer?(str)
-      true if Integer(str)
-    rescue StandardError
-      false
     end
   end
 end

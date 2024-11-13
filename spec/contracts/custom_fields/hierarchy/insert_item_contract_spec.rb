@@ -67,15 +67,15 @@ RSpec.describe CustomFields::Hierarchy::InsertItemContract do
       it "is invalid" do
         result = subject.call(params)
         expect(result).to be_failure
-        expect(result.errors.to_h).to include(label: ["must be unique within the same hierarchy level"])
+        expect(result.errors.to_h).to include(label: ["must be unique within the same hierarchy level."])
       end
 
-      context "if locale is set to 'de'", skip: "Skipped until the german localization is available" do
+      context "if locale is set to 'de'" do
         it "is invalid with localized validation errors" do
           I18n.with_locale(:de) do
             result = subject.call(params)
             expect(result).to be_failure
-            expect(result.errors.to_h).to include(label: ["muss einzigartig innerhalb derselben Hierarchieebene sein"])
+            expect(result.errors.to_h).to include(label: ["muss innerhalb der gleichen Hierarchieebene eindeutig sein"])
           end
         end
       end
@@ -89,7 +89,7 @@ RSpec.describe CustomFields::Hierarchy::InsertItemContract do
       it "is invalid with localized validation errors" do
         result = subject.call(params)
         expect(result).to be_failure
-        expect(result.errors.to_h).to include(short: ["must be unique within the same hierarchy level"])
+        expect(result.errors.to_h).to include(short: ["must be unique within the same hierarchy level."])
       end
     end
 

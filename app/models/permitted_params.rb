@@ -474,7 +474,6 @@ class PermittedParams
           :searchable,
           :admin_only,
           :default_value,
-          :possible_values,
           :multi_value,
           :content_right_to_left,
           :custom_field_section_id,

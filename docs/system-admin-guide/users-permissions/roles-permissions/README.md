@@ -98,11 +98,11 @@ OpenProject allows to share project information with **anonymous** users which a
 **Standard** is the default role of users of your OpenProject instance. It is configured by administrators on the instance level. <br>
 
 > [!NOTE]
-> The *Standard* role cannot be deleted and it is applied to every user on the instance. Users cannot be assigned to, or unassigned from this role.
+> The *Standard* role cannot be deleted and it is applied to every user on the instance. Users cannot be assigned to, or unassigned from this role. Per default no permissions will be selected. Please adjust the permissions yourself.
 
-| Scope of the role                                            | Permission examples          | Customization options                                |
-| ------------------------------------------------------------ | ---------------------------- | ---------------------------------------------------- |
-| Application-level: Permissions scoped to specific administrative tasks (not restricted to specific projects) | - View user's mail addresses | Assign different permissions to the role *Anonymous* |
+| Scope of the role                                            | Permission examples          | Customization options                               |
+| ------------------------------------------------------------ | ---------------------------- | --------------------------------------------------- |
+| Application-level: Permissions scoped to specific administrative tasks (not restricted to specific projects) | - View user's mail addresses | Assign different permissions to the role *Standard* |
 
 ## Customize roles with individual permissions
 

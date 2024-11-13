@@ -3,7 +3,7 @@ title: OpenProject 15.0.0
 sidebar_navigation:
     title: 15.0.0
 release_version: 15.0.0
-release_date: 2024-10-31
+release_date: 2024-11-13
 ---
 
 # OpenProject 15.0.0
@@ -14,11 +14,11 @@ We released [OpenProject 15.0.0](https://community.openproject.org/versions/2076
 
 ## Important feature changes
 
-### A new look-and feel for the Activity tab, with better structure, real-time loading messages, emoji reactions, and more
+### A new look-and-feel for the Activity tab, with better structure, real-time loading messages, emoji reactions, and more
 
-A major change in version 15.0 is the overall look-and-feel of the Activity tab of work packages. Users will notice that the Activity tab has a new design with additional options, and that emoji reactions are now enabled. Additionally, new comments will appear directly without having to reload. This also applies to the notification center, where new notifications will appear in real-time.
+A major change in version 15.0 is the overall look-and-feel of the [Activity tab of work packages](../../user-guide/activity/). Users will notice that the Activity tab has a new design with additional options, and that emoji reactions are now enabled. Additionally, new comments will appear directly without having to reload. This also applies to the notification center, where new notifications will appear in real time.
 
-This is a big bundle of new features that will greatly improve communication and interaction within OpenProject, making it more simple, more effective and more fun.
+This is a big bundle of new features that will greatly improve communication and interaction within OpenProject, making it simpler, more effective and more fun.
 
 Related features in 15.0:
 - [Change the design of the Activity panel to Primer](https://community.openproject.org/wp/54733)
@@ -34,13 +34,15 @@ Let's take a closer look at the three biggest changes concerning this feature bu
 Apart from some obvious design changes that all fit GitHub's Primer design system, users will benefit from some great new features, such as: 
 - The comment box being a fixed element anchored to the bottom of the split screen area.
 - Filtering the Activity panel with options to either show everything, changes only or comments only.
-- Ordering to either newest on top or newest at the bottom
+- Ordering to either newest on top or newest at the bottom.
+
+Please note that you can still configure the order of your work package comments in the Account settings (formerly called My Account). Changing the order directly in the Activity tab automatically applies to all work packages, exactly like it does if you do the same in the Account settings.
 
 ![Screenshot showing the new Activity tab with highlighted changes](openproject-15-0-activity-tab-highlighted-all.png)
 
 #### Emoji reactions to work package comments
 
-Many users have wished to be able to react to comments in work packages using emoji and with OpenProject 15.0 this is now possible. In order to still keep it clear and concise, we have limited the emojis to eight helpful reactions:
+Many users have wished to be able to react to comments in work packages using emojis, and with OpenProject 15.0 this is now possible. In order to still keep it clear and concise, we have limited the emojis to eight helpful reactions:
 
 ![Example screenshot showing emoji reactions in OpenProject's work package comments](openproject-emoji-overview.png)
 
@@ -50,9 +52,9 @@ Please note that emoji reactions don't trigger notifications. If you need your c
 
 Starting with version 15.0, the notification center will continuously update and new notifications will appear directly. This means no more blue flash message mentioning that there are updates and asking if you want to reload the page. The number shown next to the bell icon will also update immediately. This feature adds to our goal to enable smooth communication and information.
 
-### Admin interfaces for SAML and OpenID Connect (Enterprise only)
+### Admin interfaces for SAML and OpenID Connect (Enterprise add-on)
 
-OpenProject has for a long time supported SAML and OpenID Connect configured through settings or environment variables. With OpenProject 15.0, all enterprise customers will benefit from our new user interface for SAML and OIDC. This means they can now set up integrations between OpenProject and SAML or OpenID connect stacks independently and offer users options for Single Sign-On (SSO). Before 15.0, SaaS customers had to contact the OpenProject support if they wanted custom integrations with their SAML or OpenID connect providers. These new interfaces greatly improve the user experience of adding these providers, which had been a hurdle at the beginning of your work with OpenProject.
+OpenProject has for a long time supported SAML and OpenID Connect configured through settings or environment variables. With OpenProject 15.0, Enterprise customers will benefit from our new user interface for SAML and OIDC. This means they can now set up integrations between OpenProject and SAML or OpenID connect stacks independently and offer users options for Single Sign-On (SSO). Before 15.0, SaaS customers had to contact the OpenProject support if they wanted custom integrations with their SAML or OpenID connect providers. These new interfaces greatly improve the user experience of adding these providers, which may have been a hurdle at the beginning of your work with OpenProject.
 
 Related features in 15.0:
 
@@ -69,21 +71,22 @@ Once set up, users can log in with their existing account, for example like show
 
 ![Example screenshot of the log in screen with options to single sign-on](OpenProject_SSO_SAML_OpenID-highlighted.png)
 
+See [more technical information about SAML and OIDC providers](#saml-and-openid-connect-providers) in the end of these Release Notes.
+
 ### A new 'Standard global role' with permissions to view email addresses
 
-With OpenProject 15.0, a new default 'Standard global role' is automatically and permanently given to all users. If you are an administrator responsible for roles, please check this under *Administration > Users and permissions > Roles and permissions > Standard global role*. This role has several permissions to choose from, one being 'View users' mail addresses'.  Enable this permission to allow any user to see everyone's email address in autocomplete situations, such as when they select a work package assignee from a drop-down list.
+With OpenProject 15.0, [a new default 'Standard global role' is automatically and permanently given to all users](../../system-admin-guide/users-permissions/roles-permissions/#standard). If you are an administrator responsible for roles, please check this under *Administration > Users and permissions > Roles and permissions > Standard global role*. This role has several permissions to choose from, one being 'View users' mail addresses'. Enable this permission to allow any user to see everyone's email address in autocomplete situations, such as when they select a work package assignee from a drop-down list.
 
 Before version 15.0, users could choose whether their email address was displayed. Now this is an administrative decision that applies to either everyone or no one. The reason behind this is that this privacy control should be decided at the organizational level rather than individually.
 
-As a default, this new role does not have any permissions selected, so there is no change in the granted permissions due to the update.
+> [!NOTE]
+> Please note that with this update, there is no more checkbox 'Hide my email' that used to be in the user's account settings. As a default, the new Standard global role does not have any permissions selected, so that email addresses won't be visible with the update. If you are a system administrator, please navigate to the roles and permissions and decide weather you want the new permission to be checked (globally) or not. Instead of checking the new global permission in the Standard global role, you can also assign this new permission to a group of people, or individually.
 
 ![Example screenshot of permissions view for the new Standard global role, with checkmark at 'View users' mail addresses](openproject-15-0-standard-global-role.png)
 
 ### Quick action table headers in project lists for easier navigation 
 
-With OpenProject 15.0, we are pleased to release another great improvement for our project lists: Clicking on the table headers in a project list now gives you a quick action menu that not only allows you to sort in descending or ascending order, but also to filter or change, remove or add a column. You can still find the same actions in the top-right menu button, but now these actions are now much quicker to access.
-
-![Example screenshot of a project list with dropdown menu on a table header](openproject-15-0-project-lists.png)
+With OpenProject 15.0, we are pleased to release another great improvement for our project lists: Clicking on the table headers in a project list now gives you a quick action menu that not only allows you to sort in descending or ascending order, but also to filter or change, remove or add a column. You can still find the same actions in the top-right menu button, but now these actions are much quicker to access. [Read more about the configuration for project lists in our user guide](../../user-guide/projects/project-lists/#configure-project-lists-view).
 
 ![Gif showing how quickly you can now change rows in project lists by clicking on the headers](quick_action_table_headers.gif)
 
@@ -98,15 +101,17 @@ Before version 15.0, the design configuration in the administration was very com
 - Main menu font on hover
 - Main menu border
 
-All these colors will now be calculated depending on the brightness of the respective background to ensure a high-enough contrast. Font colors will either be black or white, and border colors will be set only if there is a bright background.
+All these colors will now be calculated depending on the brightness of the respective background to ensure a high-enough contrast. Font colors will either be black or white, and border colors will be set only if there is a bright background. [Read more about design options for Enterprise customers in our system admin guide](../../system-admin-guide/design/).
 
 ### Reduce manual cleanup when adding a custom field to a type – no more auto-applying to all projects
 
 With OpenProject 14.6, we released a feature that allows you to enable or disable a custom field for multiple projects at once. This is why with OpenProject 15.0, we remove the automation to apply a new custom field to all projects where the respective type is activated. This reduces manual cleanup in case you did not want to activate the new custom field in all projects. If you do want that, you can use the feature we introduced last release and go to *Administration > Custom Fields* and click on the 'Add projects' button.
 
+[Read more about custom fields in our system admin guide](../../system-admin-guide/custom-fields/).
+
 ### Improved navigation clarity – 'My account' is renamed to 'Account settings'
 
-In the personal menu that can be accessed by clicking on your avatar, we renamed 'My account' to 'Account settings', in order to give you a clearer understanding that this menu item contains settings. It now also differs more clearly from 'My Page' and 'My Activities‘, which provide personal data instead of settings.
+In the personal menu that can be accessed by clicking on your avatar, we renamed 'My account' to '[Account settings](../../user-guide/account-settings/)', in order to give you a clearer understanding that this menu item contains settings. It now also differs more clearly from 'My Page' and 'My Activities‘, which provide personal data instead of settings.
 
 ### Change the basic work package hovercard to Primer design system
 
@@ -135,8 +140,6 @@ For more information, please see our updated guides on these topics:
 - [Connecting your OpenID connect provider to OpenProject](../../system-admin-guide/authentication/openid-providers/)
 - [Connecting your SAML identity provider to OpenProject](../../system-admin-guide/authentication/saml/)
 
-
-
 ## Bug fixes and changes
 
 <!-- Warning: Anything within the below lines will be automatically removed by the release script -->
@@ -146,7 +149,6 @@ For more information, please see our updated guides on these topics:
 - Feature: Emoji reactions to work package comments \[[#40437](https://community.openproject.org/wp/40437)\]
 - Feature: Custom field no longer added to all projects when added to a type \[[#46309](https://community.openproject.org/wp/46309)\]
 - Feature: Quick action table headers \[[#52147](https://community.openproject.org/wp/52147)\]
-- Feature: Quick OAuth configuration flow for mobile app \[[#53620](https://community.openproject.org/wp/53620)\]
 - Feature: Update PageHeaders &amp; SubHeaders in the (rails) global index pages \[[#53809](https://community.openproject.org/wp/53809)\]
 - Feature: Primerise the Activity panel \[[#54733](https://community.openproject.org/wp/54733)\]
 - Feature: Add separate permission to show email address in autocompleters \[[#56577](https://community.openproject.org/wp/56577)\]
@@ -156,7 +158,6 @@ For more information, please see our updated guides on these topics:
 - Feature: User interface for OIDC (OpenID Connect) provider configuration \[[#57677](https://community.openproject.org/wp/57677)\]
 - Feature: Rename &quot;My account&quot; to &quot;Account settings&quot; \[[#57685](https://community.openproject.org/wp/57685)\]
 - Feature: Remove the &quot;Project details&quot; widget from Project overview \[[#57778](https://community.openproject.org/wp/57778)\]
-- Feature: Create and edit custom field of type hierarchy \[[#57806](https://community.openproject.org/wp/57806)\]
 - Feature: Remove &quot;Latest activity&quot; section from work package &quot;Overview&quot; tab \[[#58017](https://community.openproject.org/wp/58017)\]
 - Feature: Remove link to full view from success flash message when saving a work package in other views \[[#58098](https://community.openproject.org/wp/58098)\]
 - Feature: Add a caption to clarify what the % Complete field does in the Status settings page \[[#58147](https://community.openproject.org/wp/58147)\]
@@ -166,7 +167,6 @@ For more information, please see our updated guides on these topics:
 - Feature: Show danger zone when deleting SAML or OIDC provider \[[#58451](https://community.openproject.org/wp/58451)\]
 - Feature: Remove &quot;Beta&quot; label from Dark mode selection \[[#58508](https://community.openproject.org/wp/58508)\]
 - Feature: Primerised version of the basic work package hovercard \[[#58512](https://community.openproject.org/wp/58512)\]
-- Feature: Move primary action to subheader \[[#58636](https://community.openproject.org/wp/58636)\]
 - Bugfix: Work package date picker: wrong spacing \[[#47777](https://community.openproject.org/wp/47777)\]
 - Bugfix: User is not taken to the secondary input field after selecting a filter \[[#53767](https://community.openproject.org/wp/53767)\]
 - Bugfix: Creating project from template doesn&#39;t take over version filter correctly \[[#53978](https://community.openproject.org/wp/53978)\]
@@ -177,18 +177,14 @@ For more information, please see our updated guides on these topics:
 - Bugfix: Transparent button of onboarding tour is sometimes hard to see \[[#56917](https://community.openproject.org/wp/56917)\]
 - Bugfix: Mobile: tap twice on comment input to start typing \[[#57107](https://community.openproject.org/wp/57107)\]
 - Bugfix: mention/comment made at the same time as work package modifications prevents mention notification email \[[#57251](https://community.openproject.org/wp/57251)\]
-- Bugfix: Sorting by custom field has strong impact on performance for the project list \[[#57305](https://community.openproject.org/wp/57305)\]
 - Bugfix: 500 error when opening a cost type with HTML in its name \[[#57333](https://community.openproject.org/wp/57333)\]
 - Bugfix: Text barely readable because of hover effect when row is highlighted by status \[[#57412](https://community.openproject.org/wp/57412)\]
 - Bugfix: Migration 20230608151123\_add\_validity\_period\_to\_journals is very slow \[[#57526](https://community.openproject.org/wp/57526)\]
 - Bugfix: Custom field with format „Version“ are ordered as strings \[[#57550](https://community.openproject.org/wp/57550)\]
-- Bugfix: Absent value for custom field is ordered not consistently at the beginning or end for different formats \[[#57554](https://community.openproject.org/wp/57554)\]
 - Bugfix: Broken ordering by multi value custom fields \[[#57577](https://community.openproject.org/wp/57577)\]
 - Bugfix: Empty string is selectable in the time zone selection drop-down \[[#57667](https://community.openproject.org/wp/57667)\]
 - Bugfix: Insufficient spacing on Captcha modal \[[#57804](https://community.openproject.org/wp/57804)\]
-- Bugfix: Broken link to the documentation in open storage modal after timeout. \[[#57896](https://community.openproject.org/wp/57896)\]
 - Bugfix: Topbar search input text color is too dark when unfocused \[[#57950](https://community.openproject.org/wp/57950)\]
-- Bugfix: Gantt chart PDF export ignores manuall sorting \[[#57960](https://community.openproject.org/wp/57960)\]
 - Bugfix: The Activity entry for creation is lacking the info that it is a &quot;Creation&quot;. \[[#57968](https://community.openproject.org/wp/57968)\]
 - Bugfix: Number of listed Work Packages limited to 20 only w/o button of page number for switching \[[#57977](https://community.openproject.org/wp/57977)\]
 - Bugfix: Fix AMPF &quot;Health status&quot; error messages capitalisation \[[#58016](https://community.openproject.org/wp/58016)\]
@@ -211,16 +207,18 @@ For more information, please see our updated guides on these topics:
 - Bugfix: When you click on the &quot;To the Notification Center&quot; button, an outline appears \[[#58414](https://community.openproject.org/wp/58414)\]
 - Bugfix: Time &amp; Costs Delete button is green \[[#58419](https://community.openproject.org/wp/58419)\]
 - Bugfix: Notification screen does not show submenu headers in the breadcrumb \[[#58420](https://community.openproject.org/wp/58420)\]
-- Bugfix: Sidebar menu should be hidden when page width is reduced \[[#58454](https://community.openproject.org/wp/58454)\]
-- Bugfix: Info box on new custom field of type hierarchy is permanent \[[#58466](https://community.openproject.org/wp/58466)\]
-- Bugfix: Item add form disappears after added a new item to a custom field of type hierarchy \[[#58467](https://community.openproject.org/wp/58467)\]
 - Bugfix: Rename &quot;Enabled in projects&quot; to &quot;Projects&quot; tab &quot;Projects&quot; \[[#58479](https://community.openproject.org/wp/58479)\]
 - Bugfix: Calendar shortcut link broken \[[#58527](https://community.openproject.org/wp/58527)\]
 - Bugfix: Improve error handling when two users edit the same work package in parallel (conflict) \[[#58634](https://community.openproject.org/wp/58634)\]
-- Bugfix: Using multi-select and required options do not work \[[#58635](https://community.openproject.org/wp/58635)\]
 - Bugfix: Slow project template selector on new project page \[[#58657](https://community.openproject.org/wp/58657)\]
 - Bugfix: Admin info &quot;bug&quot; icon is misleading \[[#58671](https://community.openproject.org/wp/58671)\]
-- Bugfix: Performance issues on work\_packages api endpoint \[[#58689](https://community.openproject.org/wp/58689)\]
+- Bugfix: Emoji bar doesn&#39;t stay anchored \[[#58706](https://community.openproject.org/wp/58706)\]
+- Bugfix: Replace the + icon next to the work package creation item with a regular icon \[[#58735](https://community.openproject.org/wp/58735)\]
+- Bugfix: SAML UI migration fails if expired certificate present in current configuration \[[#58851](https://community.openproject.org/wp/58851)\]
+- Bugfix: OpenID connect provider does not show Redirect URI \[[#59057](https://community.openproject.org/wp/59057)\]
+- Bugfix: Activity number is not a link but sets href only using javascript \[[#59157](https://community.openproject.org/wp/59157)\]
+- Bugfix: Performance penalty on project list unnecessarily imposed on non admins \[[#59202](https://community.openproject.org/wp/59202)\]
+- Bugfix: Default standard role should be empty \[[#59227](https://community.openproject.org/wp/59227)\]
 - Feature: Create and share custom project lists with new filter options \[[#49687](https://community.openproject.org/wp/49687)\]
 - Feature: Work package Activity tab update: Timeline UI, instant updates, Emoji reactions \[[#56865](https://community.openproject.org/wp/56865)\]
 
@@ -233,8 +231,8 @@ A very special thank you goes to the City of Cologne for sponsoring parts of thi
 
 Last but not least, we are very grateful for our very engaged translation contributors on Crowdin, who translated quite a few OpenProject strings! This release we would like to highlight
 - [Alexander Aleschenko](https://crowdin.com/profile/top4ek), for a great number of translations into Russian.
+- [Alin Marcu](https://crowdin.com/profile/deconfcom), for a great number of translations into Romanian.
 - [hmmftg](https://crowdin.com/profile/hmmftg), for a great number of translations into Persian.
 - [william](https://crowdin.com/profile/WilliamFromTW), for a great number of translations into Chinese Simplified and Chinese Traditional.
-- [Alin Marcu](https://crowdin.com/profile/deconfcom), for a great number of translations into Romanian.
 
 Would you like to help out with translations yourself? Then take a look at our [translation guide](../../development/translate-openproject/) and find out exactly how you can contribute. It is very much appreciated!

@@ -349,11 +349,34 @@ class WorkPackages::ActivitiesTabController < ApplicationController
 
   def rerender_journals_with_updated_notification(journals, last_update_timestamp, grouped_emoji_reactions)
     # Case: the user marked the journal as read somewhere else and expects the bubble to disappear
-    journals
-      .joins(:notifications)
+    #
+    # below code stopped working with the introduction of the sequence_version query
+    # I believe it is due to the fact that the notification join does not work well with the sequence_version query
+    # see below comments from my debugging session
+    # journals
+    #   .joins(:notifications)
+    #   .where("notifications.updated_at > ?", last_update_timestamp)
+    #   .find_each do |journal|
+    #   # DEBUGGING:
+    #   # the journal id is actually 85 but below data is logged:
+    #   # # journal id 14 (?!)
+    #   # # journal sequence_version 22 (correct!)
+    #   # the update stream has a wrong target then!
+    #   # target="work-packages-activities-tab-journals-item-component-14"
+    #   # instead of
+    #   # target="work-packages-activities-tab-journals-item-component-85"
+    #   update_item_show_component(journal:, grouped_emoji_reactions: grouped_emoji_reactions.fetch(journal.id, {}))
+    # end
+    #
+    # alternative approach in order to bypass the notification join issue in relation with the sequence_version query
+    Notification
+      .where(journal_id: journals.pluck(:id))
       .where("notifications.updated_at > ?", last_update_timestamp)
-      .find_each do |journal|
-      update_item_show_component(journal:, grouped_emoji_reactions: grouped_emoji_reactions.fetch(journal.id, {}))
+      .find_each do |notification|
+      update_item_show_component(
+        journal: journals.find(notification.journal_id), # take the journal from the journals querried with sequence_version!
+        grouped_emoji_reactions: grouped_emoji_reactions.fetch(notification.journal_id, {})
+      )
     end
   end
 

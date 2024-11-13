@@ -49,3 +49,10 @@ OpenProject::FeatureDecisions.add :generate_pdf_from_work_package,
 
 OpenProject::FeatureDecisions.add :custom_field_of_type_hierarchy,
                                   description: "Allows the use of the custom field type 'Hierarchy'."
+
+# TODO: Remove once the feature flag primerized_work_package_activities is removed altogether
+OpenProject::FeatureDecisions.define_singleton_method(:primerized_work_package_activities_active?) do
+  Rails.env.production? ||
+    (Setting.exists?("feature_primerized_work_package_activities_active") &&
+      Setting.send(:feature_primerized_work_package_activities_active?))
+end
