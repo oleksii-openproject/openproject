@@ -262,20 +262,20 @@ zh-CN:
     single: "或"
   dry_validation:
     errors:
-      integer?: "必须是整数"
-      filled?: "必须填写"
-      greater_or_equal_zero: "必须大于或等于 0"
-      not_found: "未找到"
+      int?: "must be an integer."
+      filled?: "must be filled."
+      greater_or_equal_zero: "must be greater or equal to 0."
+      not_found: "not found."
       rules:
         item:
-          root_item: "不能为根项目"
-          not_persisted: "必须是已存在的项目"
+          root_item: "cannot be a root item."
+          not_persisted: "must be an already existing item."
         label:
-          not_unique: "在同一层级内必须是唯一的"
+          not_unique: "must be unique within the same hierarchy level."
         short:
-          not_unique: "在同一层级内必须是唯一的"
+          not_unique: "must be unique within the same hierarchy level."
         parent:
-          not_descendant: "必须是层次结构根的后代"
+          not_descendant: "must be a descendant of the hierarchy root."
     rules:
       depth: "深"
       item: "条目"
