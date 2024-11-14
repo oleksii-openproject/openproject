@@ -45,16 +45,43 @@ module Pages
           "/projects/#{project.identifier}/settings/life_cycle"
         end
 
-        def expect_listed(*life_cycle_elements)
-          raise "Currently depends on checking for at least two life cycle events" if life_cycle_elements.size < 2
-
-          life_cycle_elements.each_cons(2) do |predecessor, successor|
-            expect(page).to have_css("#{life_cycle_test_selector(predecessor)} + #{life_cycle_test_selector(successor)}")
+        # Checks if the life cycle elements are listed in the order given and with the correct toggle state.
+        # @param life_cycle_elements [Hash{LifeCycleElement => Boolean}]
+        def expect_listed(**life_cycle_elements)
+          if life_cycle_elements.size > 1
+            life_cycle_elements.each_cons(2) do |(predecessor, _), (successor, _)|
+              expect(page).to have_css("#{life_cycle_test_selector(predecessor)} + #{life_cycle_test_selector(successor)}")
+            end
           end
+
+          life_cycle_elements.each do |element, active|
+            expect_toggle_state(element, active)
+          end
+        end
+
+        def expect_toggle_state(element, active)
+          within toggle_element(element) do
+            expect(page)
+              .to have_css(".ToggleSwitch-status#{expected_toggle_status(active)}"),
+                  "Expected toggle for '#{element.name}' to be #{expected_toggle_status(active)} " \
+                  "but was #{expected_toggle_status(!active)}"
+          end
+        end
+
+        def toggle(element)
+          toggle_element(element).click
         end
 
         def life_cycle_test_selector(element)
           test_selector("project-life-cycle-element-#{element.id}")
+        end
+
+        def toggle_element(element)
+          find_test_selector("toggle-project-life-cycle-#{element.id}")
+        end
+
+        def expected_toggle_status(active)
+          active ? "On" : "Off"
         end
       end
     end

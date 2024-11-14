@@ -393,6 +393,8 @@ en:
           title: "Project lifecycle"
           description: 'These project stages and gates in the project lifecycle will be displayed in your <a href=%{overview_url} target="_blank">project overview page</a> and are defined in the <a href=%{admin_settings_url} target="_blank">administration settings</a> by the administrator of the instance. You can enable or disable individual attributes.'
         non_defined: "Neither stages nor gates are currently defined."
+        element:
+          use_in_project: "Use %{element} in this project"
       project_custom_fields:
         header:
           title: "Project attributes"

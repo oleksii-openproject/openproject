@@ -30,14 +30,34 @@ class Projects::Settings::LifeCyclesController < Projects::SettingsController
   include OpTurbo::ComponentStream
 
   before_action :load_life_cycle_elements, only: %i[show]
+  before_action :load_or_create_life_cycle_element, only: %i[toggle]
 
   menu_item :settings_life_cycles
 
   def show; end
 
+  def toggle
+    @life_cycle_element.toggle!(:active)
+  end
+
   private
 
   def load_life_cycle_elements
     @life_cycle_elements = LifeCycle.all
+  end
+
+  def load_or_create_life_cycle_element
+    element_params = params.require(:project_life_cycle).permit(:life_cycle_id, :project_id, :type)
+
+    klass = case element_params.delete(:type)
+            when Stage.name
+              Project::Stage
+            when Gate.name
+              Project::Gate
+            else
+              raise NotImplementedError, "Unknown life cycle element type"
+            end
+
+    @life_cycle_element = klass.find_or_create_by(element_params)
   end
 end

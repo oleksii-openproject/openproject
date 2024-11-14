@@ -17,10 +17,10 @@
           render(Primer::Beta::Text.new(color: :subtle)) { t("projects.settings.life_cycle.non_defined") }
         end
       else
-        life_cycle_elements.each do |life_cycle_element|
+        life_cycle_elements.each do |element|
           component.with_row(data: { 'projects--settings--project-custom-fields-mapping-filter-target': 'searchItem' },
-                                     test_selector: "project-life-cycle-element-#{life_cycle_element.id}") do
-            render(Projects::Settings::LifeCycles::ElementComponent.new(life_cycle_element))
+                                     test_selector: "project-life-cycle-element-#{element.id}") do
+            render(Projects::Settings::LifeCycles::ElementComponent.new(project:, element:))
           end
         end
       end

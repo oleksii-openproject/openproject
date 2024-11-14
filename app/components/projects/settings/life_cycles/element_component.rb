@@ -34,12 +34,25 @@ module Projects
         include OpPrimer::ComponentHelpers
         include OpTurbo::Streamable
 
-        attr_reader :element
+        attr_reader :element,
+                    :project
 
-        def initialize(life_cycle_element)
+        def initialize(project:, element:)
           super
 
-          @element = life_cycle_element
+          @element = element
+          @project = project
+        end
+
+        def active_in_project?
+          project
+            .project_life_cycles
+            .detect { |project_lc| project_lc.life_cycle_id == element.id }
+            &.active
+        end
+
+        def toggle_aria_label
+          I18n.t("projects.settings.life_cycle.element.use_in_project", element: element.name)
         end
 
         private
