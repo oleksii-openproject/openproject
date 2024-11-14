@@ -264,20 +264,20 @@ ru:
     single: "или"
   dry_validation:
     errors:
-      integer?: "должно быть целое число"
-      filled?: "должно быть заполнено"
-      greater_or_equal_zero: "должно быть больше или равно 0"
-      not_found: "не найдено"
+      int?: "must be an integer."
+      filled?: "must be filled."
+      greater_or_equal_zero: "must be greater or equal to 0."
+      not_found: "not found."
       rules:
         item:
-          root_item: "не может быть корневым элементом"
-          not_persisted: "должно быть уже существующим элементом"
+          root_item: "cannot be a root item."
+          not_persisted: "must be an already existing item."
         label:
-          not_unique: "должно быть уникальным в пределах одного уровня иерархии"
+          not_unique: "must be unique within the same hierarchy level."
         short:
-          not_unique: "должно быть уникальным в пределах одного уровня иерархии"
+          not_unique: "must be unique within the same hierarchy level."
         parent:
-          not_descendant: "должно быть потомком корня иерархии"
+          not_descendant: "must be a descendant of the hierarchy root."
     rules:
       depth: "Глубина"
       item: "Элемент"
@@ -2915,9 +2915,9 @@ ru:
   notice_locking_conflict: "Информация была обновлена одновременно с вами  по крайней мере одним пользователем."
   notice_locking_conflict_additional_information: "Обновление(-ия) пришли от %{users}."
   notice_locking_conflict_reload_page: "Пожалуйста перезагрузите страницу, пересмотрите изменения и повторно примените Ваши обновления."
-  notice_locking_conflict_warning: "This page has been updated by someone else. To not lose your edits, copy them locally and reload to view the updated version."
-  notice_locking_conflict_danger: "Could not save your changes because of conflicting modifications. To not lose your edits, copy them locally and reload to view the updated version."
-  notice_locking_conflict_action_button: "Discard changes and reload"
+  notice_locking_conflict_warning: "Эта страница была обновлена кем-то еще. Чтобы не потерять ваши изменения, скопируйте их локально и перезагрузите страницу, чтобы просмотреть обновленную версию."
+  notice_locking_conflict_danger: "Не удалось сохранить ваши изменения из-за конфликтующих изменений. Чтобы не потерять ваши изменения, скопируйте их локально и перезагрузите страницу для просмотра обновления."
+  notice_locking_conflict_action_button: "Отменить изменения и перезагрузить"
   notice_member_added: '%{name} добавлено в проект.'
   notice_members_added: В проект добавлено %{number} пользователей.
   notice_member_removed: "Пользователь %{user} удален из проекта."
@@ -3388,7 +3388,7 @@ ru:
     authentication:
       single_sign_on: "Единый вход"
       omniauth_direct_login_hint_html: >
-        If this option is active, login requests will redirect to the configured omniauth provider. The login dropdown and sign-in page will be disabled. <br/> <strong>Note:</strong> Unless you also disable password logins, with this option enabled, users can still log in internally by visiting the <code>%{internal_path}</code> login page.
+        Если эта опция включена, запросы на вход в систему будут перенаправлены на настроенный провайдер omniauth. Выпадающий список входа и страница входа будут отключены. <br/> <strong>Примечание:</strong> Если вы также не отключите вход по паролю, то пользователи все еще могут войти внутри системы, посетив страницу входа <code>%{internal_path}</code>.
     attachments:
       whitelist_text_html: >
         Определите список допустимых расширений файлов и/или mime типов для загруженных файлов. <br/> Введите расширения файлов (например, <code>%{ext_example}</code>) или mime типы (e. ., <code>%{mime_example}</code>). <br/> Оставьте пустым, чтобы разрешить загрузку любого типа файла. Допустимы несколько значений (одна строка для каждого значения).

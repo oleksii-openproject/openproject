@@ -59,7 +59,7 @@ pt-PT:
       metadata_url: Tenho um URL de endpoint de descoberta
       client_id: Este é o ID de cliente que lhe foi atribuído pelo seu fornecedor OpenID Connect
       client_secret: Este é o segredo do cliente que lhe foi atribuído pelo seu fornecedor OpenID Connect
-      limit_self_registration: Se estiver ativado, os utilizadores só podem registar-se utilizando este fornecedor se a configuração no lado do fornecedor o permitir.
+      limit_self_registration: Se estiver ativado, os utilizadores só podem registar-se utilizando este fornecedor se a configuração do fornecedor o permitir.
       display_name: O nome do fornecedor. Este nome será apresentado no botão de início de sessão e na lista de fornecedores.
       tenant: 'Substitua o inquilino predefinido pelo seu próprio inquilino, se aplicável. Consulte <a href=" https://learn.microsoft.com/pt-pt/entra/identity-platform/v2-protocols-oidc#find-your-apps-openid-configuration-document-uri">este artigo</a>.'
       post_logout_redirect_uri: O URL para o qual o fornecedor do OpenID Connect deve redirecionar após um pedido de encerramento de sessão.

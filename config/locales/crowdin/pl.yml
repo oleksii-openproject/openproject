@@ -262,20 +262,20 @@ pl:
     single: "lub"
   dry_validation:
     errors:
-      integer?: "musi być liczbą całkowitą"
-      filled?: "musi być wypełnione"
-      greater_or_equal_zero: "musi mieć wartość większą lub równą 0"
-      not_found: "nie znaleziono"
+      int?: "must be an integer."
+      filled?: "must be filled."
+      greater_or_equal_zero: "must be greater or equal to 0."
+      not_found: "not found."
       rules:
         item:
-          root_item: "nie może być elementem głównym"
-          not_persisted: "musi być już istniejącym elementem"
+          root_item: "cannot be a root item."
+          not_persisted: "must be an already existing item."
         label:
-          not_unique: "muszą być unikalne na tym samym poziomie hierarchii"
+          not_unique: "must be unique within the same hierarchy level."
         short:
-          not_unique: "muszą być unikalne na tym samym poziomie hierarchii"
+          not_unique: "must be unique within the same hierarchy level."
         parent:
-          not_descendant: "musi być potomkiem katalogu głównego hierarchii"
+          not_descendant: "must be a descendant of the hierarchy root."
     rules:
       depth: "Głębokość"
       item: "Element"

@@ -263,20 +263,20 @@ pt-PT:
     single: "ou"
   dry_validation:
     errors:
-      integer?: "tem de ser um número inteiro"
-      filled?: "tem de ser preenchido"
-      greater_or_equal_zero: "tem de ser maior ou igual a 0"
-      not_found: "não encontrado"
+      int?: "must be an integer."
+      filled?: "must be filled."
+      greater_or_equal_zero: "must be greater or equal to 0."
+      not_found: "not found."
       rules:
         item:
-          root_item: "não pode ser um item de raiz"
-          not_persisted: "tem de ser um item já existente"
+          root_item: "cannot be a root item."
+          not_persisted: "must be an already existing item."
         label:
-          not_unique: "tem de ser único dentro do mesmo nível hierárquico"
+          not_unique: "must be unique within the same hierarchy level."
         short:
-          not_unique: "tem de ser único dentro do mesmo nível hierárquico"
+          not_unique: "must be unique within the same hierarchy level."
         parent:
-          not_descendant: "tem de ser um descendente da raiz da hierarquia"
+          not_descendant: "must be a descendant of the hierarchy root."
     rules:
       depth: "Profundidade"
       item: "Item"
