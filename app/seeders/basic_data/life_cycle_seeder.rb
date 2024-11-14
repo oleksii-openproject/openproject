@@ -27,13 +27,6 @@
 #++
 module BasicData
   class LifeCycleSeeder < ModelSeeder
-    REQUIRED_COLOURS = %i[
-      default_color_orange_dark
-      default_color_red_dark
-      default_color_magenta_light
-      default_color_green_yellow
-    ].freeze
-
     self.model_class = LifeCycle
     self.seed_data_model_key = "life_cycles"
     self.needs = [
@@ -68,7 +61,8 @@ module BasicData
     def missing_colors
       # Build map for color names and references for a reverse lookup
       # ie: { "Orange (dark)" => :default_color_orange_dark, "Red (dark)"=>:default_color_red_dark }
-      required_color_map = REQUIRED_COLOURS.each_with_object({}) do |reference, colors|
+      required_colors = models_data.pluck("color_name")
+      required_color_map = required_colors.each_with_object({}) do |reference, colors|
         color_name = color_seeder.mapped_models_data.dig(reference, :name) or
                      raise ArgumentError, "Could not find required color #{reference} in seed data definition."
         colors[color_name] = reference

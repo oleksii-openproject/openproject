@@ -45,6 +45,10 @@ RSpec.describe BasicData::LifeCycleSeeder do
           name: Initiating
           type: Stage
           color_name: :default_color_orange_dark
+        - reference: :default_life_cycle_ready_for_executing
+          name: Ready for Executing
+          type: Gate
+          color_name: :default_color_purple
         - reference: :default_life_cycle_planning
           name: Planning
           type: Stage
@@ -62,9 +66,12 @@ RSpec.describe BasicData::LifeCycleSeeder do
 
     shared_examples_for "creates the life_cycles seeds" do
       it "creates the corresponding life cycles with the given attributes" do
-        expect(LifeCycle.count).to eq(4)
+        expect(LifeCycle.count).to eq(5)
         expect(Stage.find_by(name: "Initiating")).to have_attributes(
           color_id: Color.find_by(name: "Orange (dark)").id
+        )
+        expect(Gate.find_by(name: "Ready for Executing")).to have_attributes(
+          color_id: Color.find_by(name: "Purple").id
         )
         expect(Stage.find_by(name: "Planning")).to have_attributes(
           color_id: Color.find_by(name: "Red (dark)").id
@@ -97,6 +104,8 @@ RSpec.describe BasicData::LifeCycleSeeder do
           # using the first seed data as the expected value
           expect(second_seed_data.find_reference(:default_life_cycle_initiating))
             .to eq(seed_data.find_reference(:default_life_cycle_initiating))
+          expect(second_seed_data.find_reference(:default_life_cycle_ready_for_executing))
+            .to eq(seed_data.find_reference(:default_life_cycle_ready_for_executing))
           expect(second_seed_data.find_reference(:default_life_cycle_planning))
             .to eq(seed_data.find_reference(:default_life_cycle_planning))
           expect(second_seed_data.find_reference(:default_life_cycle_executing))
@@ -128,6 +137,9 @@ RSpec.describe BasicData::LifeCycleSeeder do
           - reference: :default_color_red_dark
             name: Red (dark)
             hexcode: "#F05823"
+          - reference: :default_color_purple
+            name: Purple
+            hexcode: "#682D91"
           - reference: :default_color_magenta_light
             name: Magenta (light)
             hexcode: "#EC038A"
