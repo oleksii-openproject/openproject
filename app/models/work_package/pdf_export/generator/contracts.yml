@@ -33,9 +33,9 @@ page-footer-3:
 page-header:
   filter-pages: [ ]
   align: "right"
-  offset: 0
   size: 8
   leading: 4
+  offset: -61
 
 page-logo:
   filter-pages: [ ]

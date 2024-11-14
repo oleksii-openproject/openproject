@@ -51,7 +51,7 @@ module WorkPackage::PDFExport::Generator::Generator
       page_style = @styles.page
       page_margins = opts_margin(page_style)
       pdf.options[:page_layout] = (page_style[:page_layout] || "portrait").to_sym
-      pdf.options[:page_size] = options[:paper_size] || page_style[:page_size]
+      pdf.options[:page_size] = page_style[:page_size]
       %i[top_margin left_margin bottom_margin right_margin].each do |margin|
         pdf.options[margin] = page_margins[margin]
       end
@@ -63,7 +63,7 @@ module WorkPackage::PDFExport::Generator::Generator
                  .merge(@styles.default_fields)
                  .merge(options)
       doc = parse_frontmatter_markdown(markdown, fields)
-      @hyphens = Hyphen.new(doc[:language], doc[:hyphenation])
+      @hyphens = Text::Hyphen.new(language: options[:language], left: 2, right: 2) unless options[:language].blank?
       render_doc(doc)
     end
 
@@ -85,7 +85,9 @@ module WorkPackage::PDFExport::Generator::Generator
     end
 
     def hyphenate(text)
-      text # @hyphens.hyphenate(text)
+      return text if @hyphens.nil?
+
+      @hyphens.visualize(text, Prawn::Text::SHY)
     end
 
     def handle_mention_html_tag(tag, node, opts)
@@ -125,14 +127,18 @@ module WorkPackage::PDFExport::Generator::Generator
 
   def generate_doc!(work_package, markdown, styling_file)
     styling = YAML::load_file(File.join(styling_asset_path, styling_file))
+    # overwrite the paper size if it is set in the options
+    styling['page']['page-size'] = options[:paper_size] unless options[:paper_size].blank?
     md2pdf = MD2PDFGenerator.new(styling)
     md2pdf.init_pdf(pdf)
     # rubocop:disable Naming/VariableNumber
     options = {
+      language: hyphenation_language,
       pdf_footer: footer_date,
       pdf_footer_2: footer_title,
       pdf_footer_3: I18n.t("export.page_nr_footer", page: "<page>", total: "<total>"),
-      pdf_header_logo: logo_image_filename
+      pdf_header_logo: logo_image_filename,
+      pdf_header: heading
     }
     # rubocop:enable Naming/VariableNumber
     md2pdf.generate!(markdown, options, ->(src) {

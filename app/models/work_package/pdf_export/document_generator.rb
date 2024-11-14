@@ -69,12 +69,16 @@ class WorkPackage::PDFExport::DocumentGenerator < Exports::Exporter
     )
   end
 
+  def hyphenation_language
+    options[:hyphenation]
+  end
+
   def heading
-    "#{work_package.type} ##{work_package.id} - #{work_package.subject}"
+    options[:header_text_right]
   end
 
   def footer_title
-    work_package.name
+    options[:footer_text_center]
   end
 
   def title

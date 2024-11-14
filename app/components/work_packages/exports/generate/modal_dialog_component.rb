@@ -47,6 +47,14 @@ module WorkPackages
           @params = params
         end
 
+        def default_header_text_right
+          "#{work_package.type} ##{work_package.id}"
+        end
+
+        def default_footer_text_center
+          work_package.subject
+        end
+
         def generate_selects
           [
             {
@@ -64,39 +72,46 @@ module WorkPackages
           ]
         end
 
+        def language_name(locale)
+          I18n.translate('cldr.language_name', locale: locale)
+        rescue
+          nil # not supported language
+        end
+
         def hyphenation_options
           # This is a list of languages that are supported by the hyphenation library
           # https://rubygems.org/gems/text-hyphen
-          [
-            { value: "", label: "Off", default: true },
-            { value: "ca", label: "Catalan" },
-            { value: "cs", label: "Czech" },
-            { value: "da", label: "Danish" },
-            { value: "de", label: "German" },
+          # The labels are the language names in the language itself (NOT to be put I18n)
+          supported_languages = [
+            { value: "ca", label: "Català" },
+            { value: "cs", label: "Čeština" },
+            { value: "da", label: "Dansk" },
+            { value: "de", label: "Deutsch" },
             { value: "en_uk", label: "English (UK)" },
             { value: "en_us", label: "English (USA)" },
-            { value: "es", label: "Spanish" },
-            { value: "et", label: "Estonian" },
-            { value: "eu", label: "Basque" },
-            { value: "fi", label: "Finnish" },
-            { value: "fr", label: "French" },
-            { value: "ga", label: "Irish" },
-            { value: "hr", label: "Croatian" },
-            { value: "hu", label: "Hungarian" },
+            { value: "es", label: "Español" },
+            { value: "et", label: "Eesti" },
+            { value: "eu", label: "Euskara" },
+            { value: "fi", label: "Suomi" },
+            { value: "fr", label: "Français" },
+            { value: "ga", label: "Gaeilge" },
+            { value: "hr", label: "Hrvatski" },
+            { value: "hu", label: "Magyar" },
             { value: "ia", label: "Interlingua" },
-            { value: "id", label: "Indonesian" },
-            { value: "is", label: "Icelandic" },
-            { value: "it", label: "Italian" },
-            { value: "mn", label: "Mongolian" },
-            { value: "ms", label: "Malay" },
-            { value: "nl", label: "Dutch" },
-            { value: "no", label: "Norwegian" },
-            { value: "pl", label: "Polish" },
-            { value: "pt", label: "Portuguese" },
-            { value: "ru", label: "Russian" },
-            { value: "sk", label: "Slovak" },
-            { value: "sv", label: "Swedish" }
-          ]
+            { value: "id", label: "Indonesia" },
+            { value: "is", label: "Ísland" },
+            { value: "it", label: "Italiano" },
+            { value: "mn", label: "Монгол" },
+            { value: "ms", label: "Melayu" },
+            { value: "nl", label: "Nederlands" },
+            { value: "no", label: "Norsk" },
+            { value: "pl", label: "Polski" },
+            { value: "pt", label: "Português" },
+            { value: "ru", label: "Русский" },
+            { value: "sk", label: "Slovenčina" },
+            { value: "sv", label: "Svenska" }
+          ].sort_by { |item| item[:label] }
+          [{ value: "", label: "Off", default: true }].concat(supported_languages)
         end
 
         def paper_size_options
