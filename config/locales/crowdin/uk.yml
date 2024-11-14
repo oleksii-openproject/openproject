@@ -37,9 +37,9 @@ uk:
         label_submit_comment: "Надіслати коментар"
         changed_on: "змінено"
         created_on: "створив(-ла)"
-        changed: "змінено"
-        created: "створено"
-        commented: "прокоментовано"
+        changed: "змінив(-ла)"
+        created: "створив(-ла)"
+        commented: "прокоментував(-ла)"
   admin:
     plugins:
       no_results_title_text: Зараз немає встановлених плагінів.
