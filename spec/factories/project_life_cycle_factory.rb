@@ -29,6 +29,7 @@
 FactoryBot.define do
   factory :project_life_cycle, class: "Project::LifeCycle" do
     project
+    active { true }
 
     factory :project_stage, class: "Project::Stage" do
       life_cycle factory: :stage
