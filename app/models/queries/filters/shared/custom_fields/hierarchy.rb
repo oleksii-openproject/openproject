@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #-- copyright
 # OpenProject is an open source project management software.
 # Copyright (C) the OpenProject GmbH
@@ -26,27 +28,37 @@
 # See COPYRIGHT and LICENSE files for more details.
 #++
 
-module Queries::Filters
-  STRATEGIES = {
-    list: Queries::Filters::Strategies::List,
-    list_all: Queries::Filters::Strategies::ListAll,
-    list_optional: Queries::Filters::Strategies::ListOptional,
-    shared_with_user_list_optional: Queries::Filters::Strategies::WorkPackages::SharedWithUser::ListOptional,
-    integer: Queries::Filters::Strategies::Integer,
-    date: Queries::Filters::Strategies::Date,
-    datetime_past: Queries::Filters::Strategies::DateTimePast,
-    string: Queries::Filters::Strategies::String,
-    text: Queries::Filters::Strategies::Text,
-    search: Queries::Filters::Strategies::Search,
-    float: Queries::Filters::Strategies::Float,
-    inexistent: Queries::Filters::Strategies::Inexistent,
-    empty_value: Queries::Filters::Strategies::EmptyValue,
-    hierarchy: Queries::Filters::Strategies::Hierarchy
-  }.freeze
+module Queries
+  module Filters
+    module Shared
+      module CustomFields
+        class Hierarchy < Base
+          def ar_object_filter?
+            true
+          end
 
-  ##
-  # Wrapper class for invalid filters being created
-  class InvalidError < StandardError; end
+          def value_objects
+            CustomField::Hierarchy::Item
+              .where(id: @values)
+              .map { |item| HierarchyItemFilterAdapter.new(item:) }
+          end
+        end
 
-  class MissingError < StandardError; end
+        class HierarchyItemFilterAdapter
+          attr_reader :name
+
+          delegate :id, to: :item
+
+          def initialize(item:)
+            @item = item
+            @name = item.label
+          end
+
+          private
+
+          attr_accessor :item
+        end
+      end
+    end
+  end
 end
