@@ -43,31 +43,31 @@ class Users::HoverCardComponent < ApplicationComponent
   end
 
   # Constructs a string in the form of:
-  # "Member of project4, project5"
+  # "Member of group4, group5"
   # or
-  # "Member of project1, project2 and 3 more"
-  # The latter string is cut off since the complete list of project names would exceed the allowed `max_length`.
-  def project_membership_summary(max_length = 40)
-    projects = @user.projects
-    return no_project_text if projects.empty?
+  # "Member of group1, group2 and 3 more"
+  # The latter string is cut off since the complete list of group names would exceed the allowed `max_length`.
+  def group_membership_summary(max_length = 40)
+    groups = @user.groups
+    return no_group_text if groups.empty?
 
-    project_links = linked_project_names(projects)
+    group_links = linked_group_names(groups)
 
-    cutoff_index = calculate_cutoff_index(projects.map(&:name), max_length)
-    build_summary(project_links, cutoff_index)
+    cutoff_index = calculate_cutoff_index(groups.map(&:name), max_length)
+    build_summary(group_links, cutoff_index)
   end
 
   private
 
-  def linked_project_names(projects)
-    projects.map { |project| link_to(h(project.name), project_path(project)) }
+  def linked_group_names(groups)
+    groups.map { |group| link_to(h(group.name), show_group_path(group)) }
   end
 
-  def no_project_text
-    t("users.memberships.no_results_title_text")
+  def no_group_text
+    t("users.groups.no_results_title_text")
   end
 
-  # Calculate the index at which to cut off the project names, based on plain text length
+  # Calculate the index at which to cut off the group names, based on plain text length
   def calculate_cutoff_index(names, max_length)
     current_length = 0
 
@@ -86,9 +86,9 @@ class Users::HoverCardComponent < ApplicationComponent
     remaining_count = links.size - cutoff_index
 
     if remaining_count > 0
-      t("users.memberships.summary_with_more", names: summary_links, count: remaining_count).html_safe
+      t("users.groups.summary_with_more", names: summary_links, count: remaining_count).html_safe
     else
-      t("users.memberships.summary", names: summary_links).html_safe
+      t("users.groups.summary", names: summary_links).html_safe
     end
   end
 end

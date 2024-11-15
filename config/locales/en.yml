@@ -539,10 +539,10 @@ en:
     groups:
       member_in_these_groups: "This user is currently a member of the following groups:"
       no_results_title_text: This user is currently not a member in any group.
+      summary_with_more: Member of %{names} and %{count} more.
+      summary: Member of %{names}.
     memberships:
       no_results_title_text: This user is currently not a member of a project.
-      summary_with_more: Member of %{names} and %{count} more
-      summary: Member of %{names}
   page:
     text: "Text"
   placeholder_users:
