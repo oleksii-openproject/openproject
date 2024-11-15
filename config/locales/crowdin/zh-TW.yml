@@ -264,20 +264,20 @@ zh-TW:
     single: "或者"
   dry_validation:
     errors:
-      int?: "must be an integer."
-      filled?: "must be filled."
-      greater_or_equal_zero: "must be greater or equal to 0."
-      not_found: "not found."
+      int?: "必須是整數"
+      filled?: "必填"
+      greater_or_equal_zero: "必須大於或等於 0"
+      not_found: "未找到"
       rules:
         item:
-          root_item: "cannot be a root item."
-          not_persisted: "must be an already existing item."
+          root_item: "不能為根項目"
+          not_persisted: "必須是已存在的項目"
         label:
-          not_unique: "must be unique within the same hierarchy level."
+          not_unique: "在同一階層內必須唯一"
         short:
-          not_unique: "must be unique within the same hierarchy level."
+          not_unique: "在同一階層內必須唯一"
         parent:
-          not_descendant: "must be a descendant of the hierarchy root."
+          not_descendant: "必須是層級展開的"
     rules:
       depth: "深度"
       item: "項目"
