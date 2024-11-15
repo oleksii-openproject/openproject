@@ -31,9 +31,8 @@ See COPYRIGHT and LICENSE files for more details.
 <%=
   render Primer::OpenProject::PageHeader.new do |header|
     header.with_title { @sprint.name }
-    header.with_breadcrumbs([*([ href: home_path, text: organization_name ] unless @project),
-                             *([ href: project_overview_path(@project.id), text: @project.name ] if @project),
-                             *([ href: backlogs_project_backlogs_path(@project), text: t(:label_backlogs) ] if @project),
+    header.with_breadcrumbs([{ href: project_overview_path(@project.id), text: @project.name },
+                             { href: backlogs_project_backlogs_path(@project), text: t(:label_backlogs) },
                              @sprint.name])
   end
 %>
