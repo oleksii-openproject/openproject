@@ -64,6 +64,8 @@ module Saml
       attribute :authn_requests_signed
       validate :valid_certificate_key_pair
 
+      attribute :limit_self_registration
+
       %i[mapping_mail mapping_login mapping_firstname mapping_lastname].each do |attr|
         attribute attr
         validates_presence_of attr, if: -> { model.public_send(:"#{attr}_changed?") }
