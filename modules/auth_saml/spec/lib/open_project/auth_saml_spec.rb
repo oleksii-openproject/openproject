@@ -31,5 +31,15 @@ RSpec.describe OpenProject::AuthSaml do
       expect(security[:want_assertions_signed]).to be false
       expect(security[:want_assertions_encrypted]).to be false
     end
+
+    context "with limit_self_registration: false" do
+      let!(:provider) do
+        create(:saml_provider, slug: "my-saml", limit_self_registration: false)
+      end
+
+      it "includes the false value in the auth hash" do
+        expect(subject[:limit_self_registration]).to be false
+      end
+    end
   end
 end
