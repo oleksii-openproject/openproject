@@ -3,8 +3,11 @@
     flex_layout(align_items: :center,
                 justify_content: :space_between) do |element_container|
       element_container.with_column(flex_layout: true) do |title_container|
-        title_container.with_column(pt: 1, mr: 2) do
+        title_container.with_column(pt: 1, mr: 3) do
           render(Primer::Beta::Text.new) { element.name }
+        end
+        title_container.with_column(pt: 1) do
+          render(Projects::LifeCycleTypeComponent.new(element))
         end
       end
       # py: 1 quick fix: prevents the row from bouncing as the toggle switch currently changes height while toggling
