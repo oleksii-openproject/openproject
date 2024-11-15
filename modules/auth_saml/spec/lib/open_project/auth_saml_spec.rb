@@ -15,6 +15,7 @@ RSpec.describe OpenProject::AuthSaml do
       expect(subject[:assertion_consumer_service_url]).to eq "http://#{Setting.host_name}/auth/my-saml/callback"
       expect(subject[:idp_sso_service_url]).to eq "https://example.com/sso"
       expect(subject[:idp_slo_service_url]).to eq "https://example.com/slo"
+      expect(subject[:limit_self_registration]).to be true
 
       attributes = subject[:attribute_statements]
       expect(attributes[:email]).to eq Saml::Defaults::MAIL_MAPPING.split("\n")

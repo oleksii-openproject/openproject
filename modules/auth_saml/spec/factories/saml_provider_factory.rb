@@ -43,6 +43,8 @@ FactoryBot.define do
     idp_sso_service_url { "https://example.com/sso" }
     idp_slo_service_url { "https://example.com/slo" }
 
+    limit_self_registration { true }
+
     mapping_login { Saml::Defaults::MAIL_MAPPING }
     mapping_mail { Saml::Defaults::MAIL_MAPPING }
     mapping_firstname { Saml::Defaults::FIRSTNAME_MAPPING }
