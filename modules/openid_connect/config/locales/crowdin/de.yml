@@ -59,8 +59,8 @@ de:
       metadata_url: Ich habe eine Discovery-Endpunkt-URL
       client_id: Dies ist die Client-ID, die Sie von Ihrem OpenID Connect-Anbieter erhalten haben
       client_secret: Dies ist das Client-Secret, die Sie von Ihrem OpenID Connect-Anbieter erhalten haben
-      limit_self_registration: If enabled, users can only register using this provider if configuration on the provider's end allows it.
-      display_name: The name of the provider. This will be displayed as the login button and in the list of providers.
+      limit_self_registration: Wenn diese Option aktiviert ist, können sich Benutzer nur dann über diesen Anbieter registrieren, wenn die Konfiguration aufseiten des Anbieters dies zulässt.
+      display_name: Der Name des Anbieters. Dieser wird als Anmeldeschaltfläche und in der Liste der Anbieter angezeigt.
       tenant: 'Bitte ersetzen Sie den vorgegebenen Mandanten durch Ihren eigenen, falls zutreffend. Siehe <a href="https://learn.microsoft.com/de-de/entra/identity-platform/v2-protocols-oidc#find-your-apps-openid-configuration-document-uri">diese Dokumentation von Microsoft Entra</a>.'
       post_logout_redirect_uri: Die URL, an die der OpenID Connect-Anbieter nach einer erfolgreichen Abmeldung weiterleiten soll.
       claims: >
