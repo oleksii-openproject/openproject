@@ -84,9 +84,10 @@ class Users::HoverCardComponent < ApplicationComponent
   def build_summary(links, cutoff_index)
     summary_links = safe_join(links[0...cutoff_index], ", ")
     remaining_count = links.size - cutoff_index
+    remaining_count_link = link_to(t("users.groups.more", count: remaining_count), user_path(@user))
 
     if remaining_count > 0
-      t("users.groups.summary_with_more", names: summary_links, count: remaining_count).html_safe
+      t("users.groups.summary_with_more", names: summary_links, count_link: remaining_count_link).html_safe
     else
       t("users.groups.summary", names: summary_links).html_safe
     end
