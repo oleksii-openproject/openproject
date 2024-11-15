@@ -83,6 +83,10 @@ RSpec.describe CustomFields::Hierarchy::InsertItemContract do
           )
         end
 
+        after do
+          I18n.config.enforce_available_locales = true
+        end
+
         it "is invalid with localized validation errors" do
           I18n.with_locale(:mo) do
             result = subject.call(params)
