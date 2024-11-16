@@ -53,6 +53,13 @@ See COPYRIGHT and LICENSE files for more details.
     header.with_breadcrumbs([{ href: project_overview_path(@project.id), text: @project.name },
                              { href: project_forums_path(@project), text: t(:label_forum_plural) },
                              @forum.name])
+    unless User.current.anonymous?
+      watcher_button_args = watcher_button_arguments(@forum, User.current)
+      header.with_action_button(**watcher_button_args) do |button|
+        button.with_leading_visual_icon(icon: watcher_button_args[:mobile_icon])
+        watcher_button_args[:mobile_label]
+      end
+    end
   end
 %>
 <% if authorize_for(:messages, :new) %>
@@ -67,11 +74,6 @@ See COPYRIGHT and LICENSE files for more details.
                                      href: url_for({controller: '/messages', action: 'new', forum_id: @forum})) do |button|
           button.with_leading_visual_icon(icon: :plus)
           t(:label_message)
-        end
-      end
-      unless User.current.anonymous?
-        subheader.with_action_component do
-          watcher_link(@forum, User.current)
         end
       end
     end
