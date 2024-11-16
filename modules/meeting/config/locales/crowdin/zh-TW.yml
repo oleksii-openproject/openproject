@@ -43,7 +43,7 @@ zh-TW:
         start_time_hour: "開始時間"
       meeting_agenda_item:
         title: "標題"
-        author: "作者"
+        author: "會議發起者"
         duration_in_minutes: "分鐘"
         description: "備註"
         presenter: "簡報者"

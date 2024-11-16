@@ -1273,7 +1273,7 @@ zh-TW:
     assigned_to: "執行者"
     assignee: "執行者"
     attachments: "附加檔"
-    author: "作者"
+    author: "工作項目發起者"
     base: "一般錯誤:"
     blocks_ids: "已被限制的工作項目 IDs"
     category: "類別"
