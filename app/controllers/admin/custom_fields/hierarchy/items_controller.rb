@@ -56,7 +56,7 @@ module Admin
         end
 
         def new
-          @new_item = ::CustomField::Hierarchy::Item.new(parent: @active_item)
+          @new_item = ::CustomField::Hierarchy::Item.new(parent: @active_item, sort_order: params[:position])
         end
 
         def edit; end
@@ -65,10 +65,15 @@ module Admin
           item_service
             .insert_item(**item_input)
             .either(
-              ->(_) { redirect_to(new_child_custom_field_item_path(@custom_field, @active_item), status: :see_other) },
-              ->(validation_result) do
+              lambda do |item|
+                redirect_to(
+                  new_child_custom_field_item_path(@custom_field, @active_item, position: item.sort_order + 1),
+                  status: :see_other
+                )
+              end,
+              lambda do |validation_result|
                 add_errors_to_form(validation_result)
-                render action: :new
+                render :new
               end
             )
         end
@@ -77,14 +82,21 @@ module Admin
           item_service
             .update_item(item: @active_item, label: item_input[:label], short: item_input[:short])
             .either(
-              ->(_) do
+              lambda do |_|
                 redirect_to(custom_field_item_path(@custom_field, @active_item.parent), status: :see_other)
               end,
-              ->(validation_result) do
+              lambda do |validation_result|
                 add_errors_to_edit_form(validation_result)
                 render action: :edit
               end
             )
+        end
+
+        def move
+          item_service
+            .reorder_item(item: @active_item, new_sort_order: params.require(:new_sort_order))
+
+          redirect_to(custom_field_item_path(@custom_field, @active_item.parent), status: :see_other)
         end
 
         def destroy
@@ -111,12 +123,13 @@ module Admin
         def item_input
           input = { parent: @active_item, label: params[:label] }
           input[:short] = params[:short] if params[:short].present?
+          input[:sort_order] = params[:sort_order].to_i if params[:sort_order].present?
 
           input
         end
 
         def add_errors_to_form(validation_result)
-          @new_item = ::CustomField::Hierarchy::Item.new(parent: @active_item, **validation_result.to_h)
+          @new_item = ::CustomField::Hierarchy::Item.new(**item_input)
           validation_result.errors(full: true).to_h.each do |attribute, errors|
             @new_item.errors.add(attribute, errors.join(", "))
           end

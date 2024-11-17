@@ -13,7 +13,7 @@ pt-BR:
     label_board_type: "Tipo de quadro"
     board_types:
       free: Básico
-      action: "Quadro de ação (%{attribute})"
+      action: "Quadro de ações (%{attribute})"
     board_type_attributes:
       assignee: Atribuição
       status: Status

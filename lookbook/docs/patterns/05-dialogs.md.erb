@@ -9,7 +9,7 @@ attributes to it:
 
 - `tag: :a` so that the component is rendered as a link
 - `href: link_to_dialog_path` to specify where to request the dialog stream from
-- `data: { controller: "async-dialog" }` to attach the async-dialog controller to the button.
+- `data: { controller: "async-dialog" }` to attach the async-dialog controller to the button (In some cases, depending on the underlying html structure, `content_arguments: { data: { controller: "async-dialog" }}` might be needed instead)
 
 ```erb
 <%%= render(Primer::Beta::Button.new(
@@ -39,7 +39,7 @@ class TestController < ApplicationControler
 end
 ```
 
-For this to work, the `OpTurbo::Streamable` module needs to be included in the modal component:
+For this to work, the `OpTurbo::Streamable` module needs to be included in the modal component, along with the `OpTurbo::DialogStreamHelper` module in the corresponding controller:
 
 ```ruby
 class MyDialogComponent < ApplicationControler
@@ -66,7 +66,7 @@ Assuming the MyDialogComponent template looks like this:
 %>
 ```
 
-You can also render the dialog in a manual turbo_stream template
+You can also render the dialog in a manual turbo_stream template:
 
 ```ruby
 class TestController < ApplicationControler

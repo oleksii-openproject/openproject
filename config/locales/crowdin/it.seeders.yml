@@ -68,7 +68,7 @@ it:
         item_0:
           name: Staff e gestore dei progetti
         item_1:
-          name: Standard global role
+          name: Ruolo globale standard
     standard:
       priorities:
         item_0:

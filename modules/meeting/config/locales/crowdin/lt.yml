@@ -90,13 +90,19 @@ lt:
   label_meeting: "Pasitarimas"
   label_meeting_plural: "Pasitarimai"
   label_meeting_new: "Naujas pasitarimas"
+  label_meeting_new_one_time: "New one-time meeting"
+  label_meeting_create: "Create meeting"
+  label_meeting_copy: "Copy meeting"
   label_meeting_edit: "Redaguoti pasitarimą"
   label_meeting_agenda: "Dienotvarkė"
   label_meeting_minutes: "Minutės"
   label_meeting_close: "Uždaryti"
   label_meeting_open: "Atidaryti"
+  label_meeting_index_delete: "Delete"
+  label_meeting_open_this_meeting: "Open this meeting"
   label_meeting_agenda_close: "Uždaryti darbotvarkę, kad būtų pradėtos minutės"
   label_meeting_date_time: "Data/Laikas"
+  label_meeting_date_and_time: "Date and time"
   label_meeting_diff: "skirt."
   label_upcoming_meetings: "Artėjantys susirinkimai"
   label_past_meetings: "Įvykę susirinkimai"
@@ -121,11 +127,14 @@ lt:
       attachments: "Kopijuoti priedus"
       attachments_text: "Perkopijuoti visus prisegtus failus į naują susitikimą"
       agenda: "Kopijuoti dienotvarkę"
+      agenda_items: "Copy agenda items"
       agenda_text: "Kopijuoti seno susitikimo darbotvarkę"
+      participants: "Copy list of participants"
     email:
       send_emails: "Email participants"
       send_invitation_emails: >
         Send an email invitation immediately to the participants selected above. You can also do this manually at any time later.
+      send_invitation_emails_structured: "Send an email invitation immediately to all participants. You can also do this manually at any time later."
       open_meeting_link: "Atverti susitikimą"
       invited:
         summary: "%{actor} atsiuntė jums pakvietimą į susitikimą %{title}"
@@ -139,7 +148,7 @@ lt:
     types:
       classic: "Klasikinis"
       classic_text: "Organizuokite jūsų susitikimą su formatuojamo teksto darbotvarke ir protokolu."
-      structured: "Dinaminis"
+      structured: "One-time"
       structured_text: "Organizuokite jūsų susitikimą su darbotvarkės elementų sąrašu, pasirinktinai susiejant juos su darbo paketu."
       structured_text_copy: "Šiuo metu nukopijavus susitikimą, susiję susitikimo elmentai nebus kopijuojami, tik detalės."
     copied: "Nukopijuota iš susitikimo #%{id}"

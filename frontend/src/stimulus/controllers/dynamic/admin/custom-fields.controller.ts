@@ -34,6 +34,7 @@ export default class CustomFieldsController extends Controller {
   static targets = [
     'format',
     'dragContainer',
+    'submitButton',
 
     'customOptionDefaults',
     'customOptionRow',
@@ -48,17 +49,23 @@ export default class CustomFieldsController extends Controller {
     'regexp',
     'searchable',
     'textOrientation',
+
+    'enterpriseBanner',
   ];
 
   static values = {
     formatConfig: Array,
+    enterpriseEdition: Boolean,
   };
 
   declare readonly formatConfigValue:[string, string, string[]][];
+  declare readonly enterpriseEditionValue:boolean;
 
   declare readonly formatTarget:HTMLInputElement;
   declare readonly dragContainerTarget:HTMLElement;
   declare readonly hasDragContainerTarget:boolean;
+  declare readonly submitButtonTarget:HTMLButtonElement;
+  declare readonly hasSubmitButtonTarget:boolean;
 
   declare readonly customOptionDefaultsTargets:HTMLInputElement[];
   declare readonly customOptionRowTargets:HTMLTableRowElement[];
@@ -73,6 +80,8 @@ export default class CustomFieldsController extends Controller {
   declare readonly regexpTargets:HTMLElement[];
   declare readonly searchableTargets:HTMLInputElement[];
   declare readonly textOrientationTargets:HTMLElement[];
+
+  declare readonly enterpriseBannerTarget:HTMLElement;
 
   connect() {
     if (this.hasDragContainerTarget) {
@@ -242,8 +251,16 @@ export default class CustomFieldsController extends Controller {
   }
 
   private toggleFormat(format:string) {
+    if (this.hasSubmitButtonTarget) {
+      this.submitButtonTarget.disabled = format === 'hierarchy' && !this.enterpriseEditionValue;
+    }
+
     this.formatConfigValue.forEach(([targetsName, operator, formats]) => {
-      const active = operator === 'only' ? formats.includes(format) : !formats.includes(format);
+      let active = operator === 'only' ? formats.includes(format) : !formats.includes(format);
+      if (targetsName === 'enterpriseBanner' && this.enterpriseEditionValue) {
+        active = false;
+      }
+
       const targets = this[`${targetsName}Targets` as keyof typeof this] as HTMLElement[];
       if (targets) {
         this.setActive(targets, active);

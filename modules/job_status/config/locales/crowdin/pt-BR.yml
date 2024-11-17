@@ -4,13 +4,13 @@ pt-BR:
     name: "Situação do trabalho OpenProject"
     description: "Listagem e situação dos trabalhos em segundo plano."
   job_status_dialog:
-    download_starts: 'O download deve iniciar automaticamente.'
-    link_to_download: 'Ou, %{link} para baixar.'
+    download_starts: 'O download deverá começar automaticamente.'
+    link_to_download: 'Ou, %{link} para fazer o download.'
     click_here: 'clique aqui'
     title: 'Status do trabalho em segundo plano'
     redirect: 'Você está sendo redirecionado.'
-    redirect_link: 'Por favor, clique aqui para continuar.'
-    redirect_errors: 'Devido a esses erros, você não será redirecionado automaticamente.'
+    redirect_link: 'Clique aqui para continuar.'
+    redirect_errors: 'Devido a esses erros, o redirecionamento automático não ocorrerá.'
     errors: 'Algo deu errado'
     generic_messages:
       not_found: 'Este trabalho não pôde ser encontrado.'

@@ -28,6 +28,8 @@
     grid-template-columns: auto auto 1fr
     grid-column-gap: $spot-spacing-2
     margin: 0 $spot-spacing-1 0
+    .spot-form-field--input:has(spot-switch)
+      margin-bottom: 0px !important
 
   &--dates-container
     display: grid
@@ -52,7 +54,8 @@
     visibility: hidden
 
   &--flatpickr-instance.inline
-    margin: 0.5rem auto !important
+    margin: 0.5rem auto 0  auto !important
+    overflow: hidden
 
   &--stretch-content
     flex-grow: 1

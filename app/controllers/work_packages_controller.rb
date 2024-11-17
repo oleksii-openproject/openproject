@@ -32,6 +32,7 @@ class WorkPackagesController < ApplicationController
   include Layout
   include WorkPackagesControllerHelper
   include OpTurbo::DialogStreamHelper
+  include OpTurbo::ComponentStream
 
   accept_key_auth :index, :show
 
@@ -40,6 +41,8 @@ class WorkPackagesController < ApplicationController
   before_action :load_and_authorize_in_optional_project,
                 :check_allowed_export,
                 :protect_from_unauthorized_export, only: %i[index export_dialog]
+
+  before_action :authorize, only: :show_conflict_flash_message
   authorization_checked! :index, :show, :export_dialog
 
   before_action :load_and_validate_query, only: :index, unless: -> { request.format.html? }
@@ -88,6 +91,19 @@ class WorkPackagesController < ApplicationController
 
   def export_dialog
     respond_with_dialog WorkPackages::Exports::ModalDialogComponent.new(query: @query, project: @project, title: params[:title])
+  end
+
+  def show_conflict_flash_message
+    scheme = params[:scheme]&.to_sym || :danger
+
+    update_flash_message_via_turbo_stream(
+      component: WorkPackages::UpdateConflictComponent,
+      scheme:,
+      message: I18n.t("notice_locking_conflict_#{scheme}"),
+      button_text: I18n.t("notice_locking_conflict_action_button")
+    )
+
+    respond_with_turbo_streams
   end
 
   protected

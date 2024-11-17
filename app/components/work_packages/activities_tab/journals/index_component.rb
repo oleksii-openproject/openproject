@@ -35,6 +35,7 @@ module WorkPackages
         include ApplicationHelper
         include OpPrimer::ComponentHelpers
         include OpTurbo::Streamable
+        include WorkPackages::ActivitiesTab::SharedHelpers
 
         def initialize(work_package:, filter: :all)
           super
@@ -55,16 +56,16 @@ module WorkPackages
           "work-package-journal-days"
         end
 
-        def journal_sorting
-          User.current.preference&.comments_sorting || "desc"
-        end
-
         def journal_sorting_desc?
           journal_sorting == "desc"
         end
 
         def journals
-          work_package.journals.includes(:user, :notifications).reorder(version: journal_sorting)
+          work_package
+            .journals
+            .includes(:user, :notifications)
+            .reorder(version: journal_sorting)
+            .with_sequence_version
         end
 
         def journal_with_notes

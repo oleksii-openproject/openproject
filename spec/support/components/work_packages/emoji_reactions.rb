@@ -80,12 +80,36 @@ module Components
         end
       end
 
-      def expect_add_reactions_button
-        expect(page).to have_test_selector("add-reactions-button")
-      end
-
       def expect_no_add_reactions_button
         expect(page).not_to have_test_selector("add-reactions-button")
+      end
+
+      def add_emoji_reaction_in_overlay(journal, emoji)
+        open_emoji_reactions_overlay_for_journal(journal) do
+          click_on emoji
+        end
+      end
+
+      def open_emoji_reactions_overlay_for_journal(journal, &block)
+        within_journal_entry(journal) do
+          click_on "Add reaction"
+          wait_for { page }.to have_test_selector("emoji-reactions-overlay")
+          within_emoji_reactions_overlay(&block)
+        end
+      end
+
+      def expect_emoji_reactions_highlited_in_overlay(journal, *emojis)
+        open_emoji_reactions_overlay_for_journal(journal) do
+          emojis.each do |emoji|
+            expect(page).to have_css(".color-bg-accent", text: emoji)
+          end
+
+          yield if block_given?
+        end
+      end
+
+      def within_emoji_reactions_overlay(&)
+        page.within_test_selector("emoji-reactions-overlay", &)
       end
     end
   end

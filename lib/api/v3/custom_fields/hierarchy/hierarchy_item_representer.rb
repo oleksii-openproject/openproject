@@ -35,7 +35,43 @@ module API
             "HierarchyItem"
           end
 
+          self_link path: :custom_field_item,
+                    title_getter: ->(*) { represented.label }
+
           property :id
+
+          property :label, render_nil: true
+
+          property :short, render_nil: true
+
+          property :depth,
+                   render_nil: true,
+                   exec_context: :decorator,
+                   getter: ->(*) { represented.depth < 0 ? nil : represented.depth }
+
+          link :parent do
+            next if represented.root?
+
+            parent = represented.parent
+
+            {
+              href: api_v3_paths.custom_field_item(parent.id),
+              title: parent.label
+            }
+          end
+
+          links :children do
+            represented.children.map do |child|
+              {
+                href: api_v3_paths.custom_field_item(child.id),
+                title: child.label
+              }
+            end
+          end
+
+          link :branch do
+            { href: api_v3_paths.custom_field_item_branch(represented.id) }
+          end
         end
       end
     end

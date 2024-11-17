@@ -26,7 +26,7 @@
 // See COPYRIGHT and LICENSE files for more details.
 //++
 
-import { ChangeDetectionStrategy, Component, Injector, Input, OnInit, Type } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostListener, Injector, Input, OnInit, Type } from '@angular/core';
 import { StateService } from '@uirouter/core';
 import {
   WorkPackageViewFocusService,
@@ -91,6 +91,14 @@ export class WorkPackageSplitViewComponent extends WorkPackageSingleViewBase imp
     readonly wpTabs:WorkPackageTabsService,
   ) {
     super(injector, $state.params.workPackageId);
+  }
+
+    // enable other parts of the application to trigger an immediate update
+  // e.g. a stimulus controller
+  // currently used by the new activities tab which does it's own polling
+  @HostListener('document:ian-update-immediate')
+  triggerImmediateUpdate() {
+    this.storeService.reload();
   }
 
   ngOnInit():void {

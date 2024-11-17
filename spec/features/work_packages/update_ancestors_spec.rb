@@ -179,6 +179,8 @@ RSpec.describe "Update ancestors", :js, :with_cuprite do
 
       context_menu = wp_table.open_context_menu_for(second_child)
       context_menu.choose(I18n.t("js.relation_buttons.hierarchy_indent"))
+      wait_for_network_idle
+
       wp_table.expect_and_dismiss_toaster message: "Successful update"
 
       expect_totals(parent, [child, second_child])

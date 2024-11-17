@@ -220,8 +220,12 @@ nl:
       items:
         actions: "Item actions"
         blankslate:
-          title: "Your list of items is empty"
-          description: "Start by adding items to the custom field of type hierarchy. Each item can be used to create a hierarchy bellow it. To navigate and create sub-items inside a hierarchy click on the created item."
+          root:
+            title: "Your list of items is empty"
+            description: "Start by adding items to the custom field of type hierarchy. Each item can be used to create a hierarchy bellow it. To navigate and create sub-items inside a hierarchy click on the created item."
+          item:
+            title: This item doesn't have any hierarchy level below
+            description: Add items to this list to create sub-items inside another one
         placeholder:
           label: "Item label"
           short: "Short name"
@@ -258,12 +262,26 @@ nl:
     single: "of"
   dry_validation:
     errors:
+      int?: "must be an integer."
+      filled?: "must be filled."
+      greater_or_equal_zero: "must be greater or equal to 0."
+      not_found: "not found."
       rules:
+        item:
+          root_item: "cannot be a root item."
+          not_persisted: "must be an already existing item."
         label:
-          filled?: "must be filled"
-          not_unique: "must be unique within the same hierarchy level"
+          not_unique: "must be unique within the same hierarchy level."
+        short:
+          not_unique: "must be unique within the same hierarchy level."
+        parent:
+          not_descendant: "must be a descendant of the hierarchy root."
     rules:
+      depth: "Depth"
+      item: "Item"
       label: "Label"
+      short: "Short name"
+      parent: "Parent"
   global_search:
     placeholder: "Zoeken in %{app_title}"
     overwritten_tabs:
@@ -1376,6 +1394,9 @@ nl:
   button_actions: "Acties"
   button_add: "Toevoegen"
   button_add_comment: "Commentaar toevoegen"
+  button_add_item_above: "Add item above"
+  button_add_item_below: "Add item below"
+  button_add_sub_item: "Add sub-item"
   button_add_member: Lid toevoegen
   button_add_watcher: "Watcher toevoegen"
   button_annotate: "Aantekeningen"
@@ -2818,6 +2839,9 @@ nl:
   notice_locking_conflict: "Informatie is in de tussentijd door ten minste één andere gebruiker bijgewerkt."
   notice_locking_conflict_additional_information: "De update kwam van %{users}."
   notice_locking_conflict_reload_page: "Pagina opnieuw laden, bekijk de wijzigingen en uw wijzigingen opnieuw toepassen."
+  notice_locking_conflict_warning: "This page has been updated by someone else. To not lose your edits, copy them locally and reload to view the updated version."
+  notice_locking_conflict_danger: "Could not save your changes because of conflicting modifications. To not lose your edits, copy them locally and reload to view the updated version."
+  notice_locking_conflict_action_button: "Discard changes and reload"
   notice_member_added: '%{name} is toegevoegd aan het project.'
   notice_members_added: '%{number} gebruikers zijn toegevoegd aan het project.'
   notice_member_removed: "%{user} verwijderd uit het project."

@@ -222,8 +222,12 @@ ms:
       items:
         actions: "Item actions"
         blankslate:
-          title: "Your list of items is empty"
-          description: "Start by adding items to the custom field of type hierarchy. Each item can be used to create a hierarchy bellow it. To navigate and create sub-items inside a hierarchy click on the created item."
+          root:
+            title: "Your list of items is empty"
+            description: "Start by adding items to the custom field of type hierarchy. Each item can be used to create a hierarchy bellow it. To navigate and create sub-items inside a hierarchy click on the created item."
+          item:
+            title: This item doesn't have any hierarchy level below
+            description: Add items to this list to create sub-items inside another one
         placeholder:
           label: "Item label"
           short: "Short name"
@@ -260,12 +264,26 @@ ms:
     single: "atau"
   dry_validation:
     errors:
+      int?: "must be an integer."
+      filled?: "must be filled."
+      greater_or_equal_zero: "must be greater or equal to 0."
+      not_found: "not found."
       rules:
+        item:
+          root_item: "cannot be a root item."
+          not_persisted: "must be an already existing item."
         label:
-          filled?: "must be filled"
-          not_unique: "must be unique within the same hierarchy level"
+          not_unique: "must be unique within the same hierarchy level."
+        short:
+          not_unique: "must be unique within the same hierarchy level."
+        parent:
+          not_descendant: "must be a descendant of the hierarchy root."
     rules:
+      depth: "Depth"
+      item: "Item"
       label: "Label"
+      short: "Short name"
+      parent: "Parent"
   global_search:
     placeholder: "Cari dalam %{app_title}"
     overwritten_tabs:
@@ -1359,6 +1377,9 @@ ms:
   button_actions: "Tindakan"
   button_add: "Tambah"
   button_add_comment: "Tambah komen"
+  button_add_item_above: "Add item above"
+  button_add_item_below: "Add item below"
+  button_add_sub_item: "Add sub-item"
   button_add_member: Tambah ahli
   button_add_watcher: "Tambah pemerhati"
   button_annotate: "Anotasi"
@@ -2783,6 +2804,9 @@ ms:
   notice_locking_conflict: "Sementara itu, maklumat telah dikemas kini oleh sekurang-kurangnya salah satu pengguna lain."
   notice_locking_conflict_additional_information: "Kemas kini tersebut ialah daripada %{users}."
   notice_locking_conflict_reload_page: "Sila muat semula halaman, semak semula perubahan dan terapkan semula kemas kini anda."
+  notice_locking_conflict_warning: "This page has been updated by someone else. To not lose your edits, copy them locally and reload to view the updated version."
+  notice_locking_conflict_danger: "Could not save your changes because of conflicting modifications. To not lose your edits, copy them locally and reload to view the updated version."
+  notice_locking_conflict_action_button: "Discard changes and reload"
   notice_member_added: Tambah %{name} ke projek.
   notice_members_added: Tambah %{number} pengguna ke projek.
   notice_member_removed: "Keluarkan %{user} dari projek."

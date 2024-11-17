@@ -111,7 +111,6 @@ Configure a button or link to target the work package creation screen in the cur
 Create a hierarchical list of all child pages of the current page.
 
 > [!TIP]
->
 > For more information on using macros take a look at this [blog article](https://www.openproject.org/blog/how-to-use-macros/).
 
 ## Full vs constrained editor

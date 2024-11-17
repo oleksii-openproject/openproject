@@ -25,8 +25,8 @@ ro:
           at: 'la'
           no_results: 'Nimic nou de raportat.'
         project_description:
-          title: 'Descrierea proiectului'
-          no_results: "Nu a fost scrisă încă nicio descriere. Aceasta poate fi furnizată în \"Setări proiect\"."
+          title: 'Descriere proiect'
+          no_results: "Nu a fost scrisă încă nicio descriere. Aceasta poate fi adăugată în \"Setări proiect\"."
         project_status:
           title: 'Stare proiect'
           not_started: 'Neînceput'
@@ -41,12 +41,12 @@ ro:
           no_results: 'Cu subproiecte'
         project_favorites:
           title: 'Proiecte favorite'
-          no_results: 'Nu ai niciun proiect favorit. Fă clic pe pictograma cu steluță din tabloul de bord al proiectului pentru a adăuga unul la favorite.'
+          no_results: 'Nu ai niciun proiect favorit. Clic pe pictograma cu steluță din tabloul de bord al proiectului pentru a adăuga unul la favorite.'
         time_entries_current_user:
-          title: 'Timpul meu petrecut'
+          title: 'Timpul meu consumat'
           displayed_days: 'Zile afișate în lista de activități a proiectului'
         time_entries_list:
-          title: 'Timp petrecut (ultimele 7 zile)'
+          title: 'Timp consumat (ultimele 7 zile)'
           no_results: 'Nu există înregistrări de timp pentru ultimele 7 zile.'
         work_packages_accountable:
           title: "Pachete de lucru pentru care sunt responsabil"

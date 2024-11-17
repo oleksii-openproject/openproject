@@ -26,20 +26,20 @@ ko:
       no_results_title_text: 이 시간 프레임 내에서 프로젝트에 대한 활동이 없습니다.
     work_packages:
       activity_tab:
-        no_results_title_text: No activity to display
-        no_results_description_text: "Choose \"Show everything\" to show all activity and comments"
-        label_activity_show_all: "Show everything"
-        label_activity_show_only_comments: "Show comments only"
-        label_activity_show_only_changes: "Show changes only"
-        label_sort_asc: "Newest at the bottom"
-        label_sort_desc: "Newest on top"
-        label_type_to_comment: "Type here to comment"
-        label_submit_comment: "Submit comment"
-        changed_on: "changed on"
-        created_on: "created this on"
-        changed: "changed"
-        created: "created"
-        commented: "commented"
+        no_results_title_text: 표시할 활동 없음
+        no_results_description_text: "모든 활동과 코멘트를 표시하려면 '모두 표시'를 선택합니다"
+        label_activity_show_all: "모두 표시"
+        label_activity_show_only_comments: "코멘트만 표시"
+        label_activity_show_only_changes: "변경 사항만 표시"
+        label_sort_asc: "오래된 순"
+        label_sort_desc: "최신 순"
+        label_type_to_comment: "코멘트를 작성하려면 여기에 입력하세요"
+        label_submit_comment: "코멘트 제출"
+        changed_on: "- 변경함:"
+        created_on: "- 이 패키지를 생성함:"
+        changed: "- 변경함"
+        created: "- 생성함"
+        commented: "- 코멘트 작성함"
   admin:
     plugins:
       no_results_title_text: 현재 설치된 플러그인이 없습니다.
@@ -221,20 +221,24 @@ ko:
           heading: 모든 프로젝트용
           description: '"모든 프로젝트용" 옵션이 선택되었으므로 모든 프로젝트에서 이 사용자 지정 필드가 활성화되었습니다. 개별 프로젝트에 대해 비활성화할 수 없습니다.'
       items:
-        actions: "Item actions"
+        actions: "항목 작업"
         blankslate:
-          title: "항목 목록이 비어 있습니다"
-          description: "먼저 유형 계층의 사용자 지정 필드에 항목을 추가하여 시작하세요. 각 항목을 사용하여 그 아래에 계층을 만들 수 있습니다. 계층 내에서 하위 항목을 탐색하고 만들려면 생성된 항목을 클릭하세요."
+          root:
+            title: "항목 목록이 비어 있습니다"
+            description: "먼저 유형 계층의 사용자 지정 필드에 항목을 추가하여 시작하세요. 각 항목을 사용하여 그 아래에 계층을 만들 수 있습니다. 계층 내에서 탐색하고 하위 항목을 만들려면 생성된 항목을 클릭하세요."
+          item:
+            title: 이 항목에는 아래 계층 수준이 없습니다
+            description: 이 목록에 항목을 추가하여 다른 목록 내에서 하위 항목을 만듭니다
         placeholder:
-          label: "Item label"
-          short: "Short name"
+          label: "항목 레이블"
+          short: "짧은 이름"
       notice:
         remember_items_and_projects: "이 사용자 지정 필드의 각 탭에서 항목과 프로젝트를 설정해야 합니다."
       hierarchy:
         subitems:
-          zero: no sub-items
-          one: 1 sub-item
-          other: "%{count} sub-items"
+          zero: 하위 항목 없음
+          one: 하위 항목 1개
+          other: "하위 항목 %{count}개"
     text_add_new_custom_field: >
       프로젝트에 새 사용자 지정 필드를 추가하려면 먼저 해당 필드를 만들어야 합니다. 그래야 이 프로젝트에 해당 필드를 추가할 수 있습니다.
     is_enabled_globally: "는 세계적으로 사용 가능합니다."
@@ -247,7 +251,7 @@ ko:
       is_required: "사용자 지정 필드를 필수로 표시합니다. 이렇게 하면 새 리소스를 생성하거나 기존 리소스를 업데이트할 때 이 필드를 반드시 입력해야 합니다."
       is_required_for_project: "이 특성을 활성화하려면 선택하고 모든 프로젝트에서 필수로 지정하세요. 개별 프로젝트에 대해 비활성화할 수는 없습니다."
       is_for_all: "모든 기존 프로젝트와 새 프로젝트에서 사용자 지정 필드를 사용 가능으로 표시합니다."
-      multi_select: "Allows the user to assign multiple values to this custom field."
+      multi_select: "사용자가 이 사용자 지정 필드에 여러 값을 할당할 수 있도록 허용합니다."
       searchable: "글로벌 검색 기능을 사용할 때 필드 값을 포함합니다."
       searchable_for_project: "프로젝트 목록에서 이 특성을 필터로 사용 가능하게 설정하려면 선택하세요."
       editable: "사용자가 필드를 편집할 수 있도록 허용합니다."
@@ -261,12 +265,26 @@ ko:
     single: "또는"
   dry_validation:
     errors:
+      int?: "must be an integer."
+      filled?: "must be filled."
+      greater_or_equal_zero: "must be greater or equal to 0."
+      not_found: "not found."
       rules:
+        item:
+          root_item: "cannot be a root item."
+          not_persisted: "must be an already existing item."
         label:
-          filled?: "must be filled"
-          not_unique: "must be unique within the same hierarchy level"
+          not_unique: "must be unique within the same hierarchy level."
+        short:
+          not_unique: "must be unique within the same hierarchy level."
+        parent:
+          not_descendant: "must be a descendant of the hierarchy root."
     rules:
-      label: "Label"
+      depth: "깊이"
+      item: "항목"
+      label: "레이블"
+      short: "짧은 이름"
+      parent: "부모"
   global_search:
     placeholder: "%{app_title}에서 검색"
     overwritten_tabs:
@@ -495,13 +513,13 @@ ko:
         이 우선 순위 색상을 할당하거나 변경하려면 클릭하세요.
         테이블의 작업 패키지를 강조 표시하는 데 사용할 수 있습니다.
   reactions:
-    action_title: "React"
-    add_reaction: "Add reaction"
-    react_with: "React with %{reaction}"
-    and_user: "and %{user}"
+    action_title: "반응"
+    add_reaction: "반응 추가"
+    react_with: "%{reaction}(으)로 반응"
+    and_user: "및 %{user}"
     and_others:
-      other: and %{count} others
-    reaction_by: "%{reaction} by"
+      other: 외 %{count}건
+    reaction_by: "%{reaction} -"
   reportings:
     index:
       no_results_title_text: 상태 보고가 없습니다.
@@ -512,14 +530,14 @@ ko:
         이 상태 색상을 할당하거나 변경하려면 클릭하세요.
         상태 버튼에 표시되고 테이블의 작업 패키지를 강조 표시하는 데 사용할 수 있습니다.
       status_default_text: |-
-        New work packages are by default set to this type. They cannot be read-only.
+        새 작업 패키지는 기본적으로 이 유형으로 설정됩니다. 읽기 전용으로 설정할 수 없습니다.
       status_excluded_from_totals_text: |-
         계층의 총 작업, 남은 작업 및 완료 %에서 이 상태의 작업 패키지를
         제외하려면 이 옵션을 선택하세요.
       status_percent_complete_text: |-
-        In <a href="%{href}">status-based progress calculation mode</a>, the % Complete of a work
-        package is automatically set to this value when this status is selected.
-        Ignored in work-based mode.
+        <a href="%{href}">상태 기반 진행률 계산 모드</a>에서, 이 상태를 선택하면 작업
+        패키지의 완료 %가 자동으로 이 값으로 설정됩니다.
+        작업 기반 모드에서는 무시됩니다.
       status_readonly_html: |
         이 상태를 읽기 전용으로 작업 패키지에 표시하려면 이 옵션을 선택합니다. 상태를 제외하고 특성은 변경할 수 없습니다.
         <br/>
@@ -533,7 +551,7 @@ ko:
         is_readonly: "읽기 전용"
         excluded_from_totals: "합계에서 제외됨"
   themes:
-    dark: "Dark"
+    dark: "다크"
     light: "라이트"
     light_high_contrast: "라이트 하이 콘트라스트"
   types:
@@ -883,12 +901,12 @@ ko:
         not_available: "- 시스템 구성으로 인해 사용 가능하지 않습니다."
         not_deletable: "- 삭제할 수 없습니다."
         not_current_user: "은(는) 현재 유효한 사용자가 아닙니다."
-        not_found: "not found."
+        not_found: "- 찾을 수 없습니다."
         not_a_date: "은(는) 유효한 날짜가 아닙니다."
         not_a_datetime: "은(는) 유효한 날짜가 아닙니다."
         not_a_number: "은(는) 숫자가 아닙니다."
         not_allowed: "- 사용 권한이 없어 유효하지 않습니다."
-        not_json: "is not a valid JSON object."
+        not_json: "- 유효한 JSON 개체가 아닙니다."
         not_an_integer: "은(는) 정수가 아닙니다."
         not_an_iso_date: "은(는) 유효한 날짜가 아닙니다. 필요한 형식: YYYY-MM-DD."
         not_same_project: "은(는) 동일한 프로젝트에 속하지 않습니다."
@@ -1360,6 +1378,9 @@ ko:
   button_actions: "작업"
   button_add: "추가"
   button_add_comment: "댓글 달기"
+  button_add_item_above: "위에 항목 추가"
+  button_add_item_below: "아래에 항목 추가"
+  button_add_sub_item: "하위 항목 추가"
   button_add_member: 멤버 추가
   button_add_watcher: "주시자 추가"
   button_annotate: "주석 달기"
@@ -1817,7 +1838,7 @@ ko:
       progress_mode_changed_to_status_based: "진행률 계산 업데이트됨"
       status_changed: "상태 '%{status_name}'"
       system_update: "OpenProject 시스템 업데이트:"
-      work_package_duplicate_closed: "Duplicate work package updated:"
+      work_package_duplicate_closed: "중복 작업 패키지가 업데이트되었습니다:"
       total_percent_complete_mode_changed_to_work_weighted_average: "이제 완료 % 합계 계산에는 작업별로 가중치가 적용됩니다."
       total_percent_complete_mode_changed_to_simple_average: "이제 완료 % 합계 계산은 완료 % 값의 단순 평균만을 기반으로 합니다."
     cause_descriptions:
@@ -1825,7 +1846,7 @@ ko:
       work_package_parent_changed_times: 부모 %{link}에 대한 변경 사항 기준
       work_package_children_changed_times: 자식 %{link}에 대한 변경 사항 기준
       work_package_related_changed_times: 관련 %{link}에 대한 변경 사항 기준
-      work_package_duplicate_closed: The status was automatically updated by the duplicated work package %{link}
+      work_package_duplicate_closed: 중복 작업 패키지에 의해 자동으로 상태가 업데이트되었습니다(%{link})
       unaccessable_work_package_changed: 관련 작업 패키지에 대한 변경 사항 기준
       working_days_changed:
         changed: "근무일에 대한 변경 사항 기준(%{changes})"
@@ -1971,7 +1992,7 @@ ko:
   label_ical_access_key_generation_hint: "캘린더 구독 시 자동으로 생성됩니다."
   label_ical_access_key_latest: "최신"
   label_ical_access_key_revoke: "취소"
-  label_add_column: "Add column"
+  label_add_column: "열 추가"
   label_applied_status: "적용된 상태"
   label_archive_project: "프로젝트 아카이브하기"
   label_ascending: "오름차순"
@@ -1998,7 +2019,7 @@ ko:
   label_api_doc: "API 문서"
   label_backup: "백업"
   label_backup_code: "백업 코드"
-  label_basic_details: "Basic details"
+  label_basic_details: "기본 세부 정보"
   label_between: "사이에"
   label_blocked_by: "차단한 사용자"
   label_blocks: "블록"
@@ -2143,7 +2164,7 @@ ko:
   label_file_plural: "파일"
   label_filter: "필터"
   label_filter_add: "필터 추가"
-  label_filter_by: "Filter by"
+  label_filter_by: "필터링 기준"
   label_filter_plural: "필터"
   label_filters_toggle: "필터 표시/숨기기"
   label_float: "부동"
@@ -2232,7 +2253,7 @@ ko:
   label_custom_favicon: "사용자 지정 favicon"
   label_custom_touch_icon: "사용자 지정 터치 아이콘"
   label_logout: "로그아웃"
-  label_mapping_for: "Mapping for: %{attribute}"
+  label_mapping_for: "매핑 대상: %{attribute}"
   label_main_menu: "측면 메뉴"
   label_manage: "관리"
   label_manage_groups: "그룹 관리"
@@ -2267,8 +2288,8 @@ ko:
   label_months_from: "개월 동안 | 다음부터"
   label_more: "기타"
   label_more_than_ago: "일 이상 전"
-  label_move_column_left: "Move column left"
-  label_move_column_right: "Move column right"
+  label_move_column_left: "왼쪽으로 열 이동"
+  label_move_column_right: "오른쪽으로 열 이동"
   label_move_work_package: "작업 패키지 이동"
   label_my_account: "계정 설정"
   label_my_activity: "내 활동"
@@ -2360,7 +2381,7 @@ ko:
   label_project_latest: "최근 프로젝트"
   label_project_default_type: "빈 유형 허용"
   label_project_hierarchy: "프로젝트 계층 구조"
-  label_project_mappings: "Projects"
+  label_project_mappings: "프로젝트"
   label_project_new: "새 프로젝트"
   label_project_plural: "프로젝트"
   label_project_list_plural: "프로젝트 목록"
@@ -2391,7 +2412,7 @@ ko:
   label_relation_new: "새 관계"
   label_release_notes: "릴리스 노트"
   label_remaining_work: "남은 작업"
-  label_remove_column: "Remove column"
+  label_remove_column: "열 제거"
   label_remove_columns: "선택된 열 제거"
   label_renamed: "이름 변경됨"
   label_reply_plural: "회신"
@@ -2432,10 +2453,10 @@ ko:
   label_show_completed_versions: "완료된 버전 표시"
   label_columns: "열"
   label_sort: "분류"
-  label_sort_ascending: "Sort ascending"
+  label_sort_ascending: "오름차순 정렬"
   label_sort_by: "%{value}(으)로 정렬"
   label_sorted_by: "%{value}(으)로 정렬됨"
-  label_sort_descending: "Sort descending"
+  label_sort_descending: "내림차순 정렬"
   label_sort_higher: "위로 이동"
   label_sort_highest: "맨 위로 이동"
   label_sort_lower: "아래로 이동"
@@ -2784,6 +2805,9 @@ ko:
   notice_locking_conflict: "그 사이에 정보가 한 명 이상의 다른 사용자에 의해 업데이트되었습니다."
   notice_locking_conflict_additional_information: "%{users}의 업데이트입니다."
   notice_locking_conflict_reload_page: "페이지를 다시 로드하고, 변경 사항을 검토하고, 업데이트를 다시 적용하세요."
+  notice_locking_conflict_warning: "이 페이지는 다른 사용자에 의해 업데이트되었습니다. 편집 사항을 손실하지 않으려면 로컬로 복사한 후 다시 로드하여 업데이트된 버전을 보세요."
+  notice_locking_conflict_danger: "수정 사항이 충돌하므로 변경 사항을 저장할 수 없습니다. 편집 사항이 손실되지 않게 하려면 로컬로 복사한 후 다시 로드하여 업데이트된 버전을 보세요."
+  notice_locking_conflict_action_button: "변경 사항 취소 및 다시 로드"
   notice_member_added: '%{name} 이(가) 프로젝트에 추가 됨'
   notice_members_added: '%{number}명의 사용자가 프로젝트에 추가되었습니다.'
   notice_member_removed: "프로젝트에서 %{user} 사용자가 제거됨."
@@ -2920,7 +2944,7 @@ ko:
   permission_view_shared_work_packages: "작업 패키지 공유 보기"
   permission_view_time_entries: "소요 시간 보기"
   permission_view_timelines: "타임라인 보기"
-  permission_view_user_email: "View users' mail addresses"
+  permission_view_user_email: "사용자의 메일 주소 보기"
   permission_view_wiki_edits: "위키 기록 보기"
   permission_view_wiki_pages: "위키 보기"
   permission_work_package_assigned: "담당자/책임자 되기"
@@ -3149,9 +3173,9 @@ ko:
   setting_default_language: "기본 언어"
   setting_default_projects_modules: "새 프로젝트에 대해 기본적으로 활성화된 모듈"
   setting_default_projects_public: "새 프로젝트는 기본적으로 공용입니다."
-  setting_disable_password_login: "Disable password authentication"
+  setting_disable_password_login: "암호 인증 비활성화"
   setting_diff_max_lines_displayed: "표시되는 최대 차이점 줄 수"
-  setting_omniauth_direct_login_provider: "Direct login SSO provider"
+  setting_omniauth_direct_login_provider: "직접 로그인 SSO 공급자"
   setting_display_subprojects_work_packages: "기본적으로 기본 프로젝트의 하위 프로젝트 작업 패키지 표시"
   setting_duration_format: "기간 형식"
   setting_duration_format_hours_only: "시간만"
@@ -3250,7 +3274,7 @@ ko:
     authentication:
       single_sign_on: "Single Sign-On"
       omniauth_direct_login_hint_html: >
-        If this option is active, login requests will redirect to the configured omniauth provider. The login dropdown and sign-in page will be disabled. <br/> <strong>Note:</strong> Unless you also disable password logins, with this option enabled, users can still log in internally by visiting the <code>%{internal_path}</code> login page.
+        이 옵션이 활성화된 경우, 로그인 요청은 구성된 omniauth 공급자로 리디렉션됩니다. 로그인 드롭다운 및 로그인 페이지가 비활성화됩니다. <br/> <strong>참고:</strong> 또한 암호 로그인을 비활성화하지 않는 경우에는 이 옵션이 활성화된 상태에서 사용자가 <code>%{internal_path}</code> 로그인 페이지를 방문하여 내부에서 계속 로그인할 수 있습니다.
     attachments:
       whitelist_text_html: >
         업로드된 파일의 유효한 파일 확장명 및/또는 MIME 형식 목록을 정의합니다. <br/> 파일 확장명(예: <code>%{ext_example}</code>) 또는 MIME 형식(예: <code>%{mime_example}</code>)을 입력합니다. <br/> 모든 파일 형식을 업로드할 수 있도록 허용하려면 비워 둡니다. 여러 값이 허용됩니다(각 값에 대해 한 줄).

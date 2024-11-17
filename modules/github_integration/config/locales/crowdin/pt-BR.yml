@@ -34,7 +34,7 @@ pt-BR:
   permission_show_github_content: "Exibir conteúdo GitHub"
   permission_introspection: Leia a versão principal do OpenProject em execução e construa o SHA.
   text_deploy_target_type_info: >
-    No momento, oferecemos suporte apenas ao próprio OpenProject
+    Até o momento, damos suporte apenas ao OpenProject em si.
   text_deploy_target_api_key_info: >
-    Uma [API key](docs_url) do OpenProject pertencente a um usuário que tenha permissões globais de introspecção.
+    Uma [chave de API](docs_url) do OpenProject vinculada a um usuário com permissão global para introspecção.
   text_pull_request_deployed_to: "%{pr_link} implantado para %{deploy_target_link}"

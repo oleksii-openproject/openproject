@@ -62,9 +62,14 @@ RSpec.describe "Cancel editing work package", :js do
   end
 
   def move_to_home_page(alert: true)
-    find(".op-logo--link").click
+    if alert
+      accept_alert do
+        find(".op-logo--link").click
+      end
+    else
+      find(".op-logo--link").click
+    end
 
-    page.driver.browser.switch_to.alert.accept if alert
     expect(page).to have_css("#projects-menu", text: "Select a project")
   end
 
@@ -80,7 +85,7 @@ RSpec.describe "Cancel editing work package", :js do
     #  move_to_home_page(alert: false)
     paths.each do |path|
       expect_active_edit(path)
-      move_to_home_page(alert: false)
+      move_to_home_page(alert: true)
     end
   end
 

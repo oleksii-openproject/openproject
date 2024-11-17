@@ -72,7 +72,7 @@ cs:
         confirmation_text: Please, confirm you understand and want to remove this file storage from this project
         heading_text: Remove project from %{storage}
         text: This action is irreversible and will remove all links from work packages of this project to files and folders of that storage.
-      label: Remove project
+      label: Odstranit projekt
   services:
     attributes:
       nextcloud_sync_service:
@@ -209,7 +209,7 @@ cs:
     health:
       checked: Poslední kontrola %{datetime}
       connection_validation:
-        action: Recheck connection
+        action: Překontrolujte připojení
         app_version_mismatch: The Integration OpenProject app version is not supported. Please update your Nextcloud server.
         client_id_wrong: The configured OAuth 2 client id is invalid. Please check the configuration.
         client_secret_wrong: The configured OAuth 2 client secret is invalid. Please check the configuration.

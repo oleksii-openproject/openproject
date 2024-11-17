@@ -88,13 +88,19 @@ bg:
   label_meeting: "среща"
   label_meeting_plural: "Срещи"
   label_meeting_new: "Нова среща"
+  label_meeting_new_one_time: "New one-time meeting"
+  label_meeting_create: "Create meeting"
+  label_meeting_copy: "Copy meeting"
   label_meeting_edit: "Редактиране на срещата"
   label_meeting_agenda: "Дневен ред"
   label_meeting_minutes: "Минути"
   label_meeting_close: "Close"
   label_meeting_open: "Open"
+  label_meeting_index_delete: "Delete"
+  label_meeting_open_this_meeting: "Open this meeting"
   label_meeting_agenda_close: "Закриване на дневния ред за започване на протокола"
   label_meeting_date_time: "Дата/час"
+  label_meeting_date_and_time: "Date and time"
   label_meeting_diff: "Разлика"
   label_upcoming_meetings: "Предстоящи срещи"
   label_past_meetings: "Предишни срещи"
@@ -119,11 +125,14 @@ bg:
       attachments: "Копиране на прикачените файлове"
       attachments_text: "Копиране на всички прикачени файлове в новата среща"
       agenda: "Копиране на дневния ред"
+      agenda_items: "Copy agenda items"
       agenda_text: "Копиране на дневния ред от старата среща"
+      participants: "Copy list of participants"
     email:
       send_emails: "Email participants"
       send_invitation_emails: >
         Send an email invitation immediately to the participants selected above. You can also do this manually at any time later.
+      send_invitation_emails_structured: "Send an email invitation immediately to all participants. You can also do this manually at any time later."
       open_meeting_link: "Отворена среща"
       invited:
         summary: "%{actor} ви е изпратил покана за срещата %{title}"
@@ -137,7 +146,7 @@ bg:
     types:
       classic: "Класически"
       classic_text: "Организирайте срещата си в текстова програма и протокол, които могат да се форматират."
-      structured: "Динамичен"
+      structured: "One-time"
       structured_text: "Организирайте срещата си като списък с точки от дневния ред, като по желание ги свържете с работен пакет."
       structured_text_copy: "Копирането на среща понастоящем не копира свързаните с нея точки от дневния ред, а само подробностите."
     copied: "Копирано от среща #%{id}"

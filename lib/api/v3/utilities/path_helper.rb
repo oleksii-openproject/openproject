@@ -44,11 +44,13 @@ module API
               RequestStore.store[:"cached_#{plural_name}"] ||= "#{root}/#{path}"
             end
           end
+
           private_class_method :index
 
           def self.show(name, path = name)
             define_singleton_method(name) { |id| build_path(path, id) }
           end
+
           private_class_method :show
 
           def self.create_form(name)
@@ -56,11 +58,13 @@ module API
               RequestStore.store[:"cached_create_#{name}_form"] ||= build_path(name, "form")
             end
           end
+
           private_class_method :create_form
 
           def self.update_form(name)
             define_singleton_method(:"#{name}_form") { |id| build_path(name, id, "form") }
           end
+
           private_class_method :update_form
 
           def self.schema(name)
@@ -68,11 +72,13 @@ module API
               RequestStore.store[:"cached_#{name}_schema"] ||= build_path(name, "schema")
             end
           end
+
           private_class_method :schema
 
           def self.build_path(name, *kwargs)
             [root, name.to_s.pluralize, *kwargs].compact.join("/")
           end
+
           private_class_method :build_path
 
           def self.resources(name,
@@ -83,6 +89,7 @@ module API
               send(method, name)
             end
           end
+
           private_class_method :resources
 
           # Determining the root_path on every url we want to render is
@@ -198,6 +205,28 @@ module API
 
           def self.custom_action_execute(id)
             "#{custom_action(id)}/execute"
+          end
+
+          def self.custom_field(id)
+            "#{root}/custom_fields/#{id}"
+          end
+
+          def self.custom_field_item(id)
+            "#{root}/custom_field_items/#{id}"
+          end
+
+          def self.custom_field_item_branch(id)
+            "#{custom_field_item(id)}/branch"
+          end
+
+          def self.custom_field_items(id, parent = nil, depth = nil)
+            query = { parent:, depth: }.compact_blank.to_query
+
+            if query.present?
+              "#{custom_field(id)}/items?#{query}"
+            else
+              "#{custom_field(id)}/items"
+            end
           end
 
           def self.custom_option(id)
@@ -511,9 +540,9 @@ module API
 
           def self.work_package(id, timestamps: nil)
             "#{root}/work_packages/#{id}" + \
-            if (param_value = timestamps_to_param_value(timestamps)).present? && Array(timestamps).any?(&:historic?)
-              "?#{{ timestamps: param_value }.to_query}"
-            end.to_s
+              if (param_value = timestamps_to_param_value(timestamps)).present? && Array(timestamps).any?(&:historic?)
+                "?#{{ timestamps: param_value }.to_query}"
+              end.to_s
           end
 
           def self.work_package_schema(project_id, type_id)

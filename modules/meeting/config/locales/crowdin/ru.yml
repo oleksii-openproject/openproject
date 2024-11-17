@@ -90,13 +90,19 @@ ru:
   label_meeting: "Совещание"
   label_meeting_plural: "Совещания"
   label_meeting_new: "Новое совещание"
+  label_meeting_new_one_time: "Новое однократное совещание"
+  label_meeting_create: "Создать совещание"
+  label_meeting_copy: "Копировать совещание"
   label_meeting_edit: "Измененить совещание"
   label_meeting_agenda: "Повестка дня"
   label_meeting_minutes: "Протокол(-ы)"
   label_meeting_close: "Закрыть"
   label_meeting_open: "Открыть"
+  label_meeting_index_delete: "Удалить"
+  label_meeting_open_this_meeting: "Открыть это совещание"
   label_meeting_agenda_close: "Закрыть повестку для начала протоколирования"
   label_meeting_date_time: "Дата/Время"
+  label_meeting_date_and_time: "Дата и время"
   label_meeting_diff: "Различия"
   label_upcoming_meetings: "Предстоящие встречи"
   label_past_meetings: "Прошедшие встречи"
@@ -121,11 +127,14 @@ ru:
       attachments: "Копировать вложения"
       attachments_text: "Копировать все прикрепленные файлы в новую встречу"
       agenda: "Копировать повестку"
+      agenda_items: "Копировать пункты повестки дня"
       agenda_text: "Копировать повестку старой встречи"
+      participants: "Копировать список участников"
     email:
       send_emails: "Отправить email участникам"
       send_invitation_emails: >
         Немедленно отправьте приглашение по электронной почте участникам, выбранным выше. Вы также можете сделать это вручную в любое время позже.
+      send_invitation_emails_structured: "Отправить приглашение по электронной почте сразу всем участникам. Вы также можете сделать это вручную в любое время."
       open_meeting_link: "Открыть совещание"
       invited:
         summary: "%{actor} отправил вам приглашение на совещание %{title}"
@@ -139,7 +148,7 @@ ru:
     types:
       classic: "Классический"
       classic_text: "Организуйте своё совещание с помощью форматируемой текстовой повестки и протокола."
-      structured: "Динамический"
+      structured: "Однократно"
       structured_text: "Организуйте своё совещание в виде списка пунктов повестки, при необходимости связав их с пакетом работ."
       structured_text_copy: "При копировании совещания в настоящее время не скопируются связанные с ним пункты повестки, будут скопированы только детали"
     copied: "Скопировано со встречи #%{id}"

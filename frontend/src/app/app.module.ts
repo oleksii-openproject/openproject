@@ -76,9 +76,7 @@ import { DynamicContentModalComponent } from 'core-app/shared/components/modals/
 import {
   PasswordConfirmationModalComponent,
 } from 'core-app/shared/components/modals/request-for-confirmation/password-confirmation.modal';
-import {
-  HoverCardComponent,
-} from 'core-app/shared/components/modals/preview-modal/hover-card-modal/hover-card.modal';
+import { HoverCardComponent } from 'core-app/shared/components/modals/preview-modal/hover-card-modal/hover-card.modal';
 import {
   OpHeaderProjectSelectComponent,
 } from 'core-app/shared/components/header-project-select/header-project-select.component';
@@ -237,18 +235,31 @@ import {
 } from 'core-app/shared/components/attribute-help-texts/static-attribute-help-text.component';
 import { appBaseSelector, ApplicationBaseComponent } from 'core-app/core/routing/base/application-base.component';
 import { SpotSwitchComponent } from 'core-app/spot/components/switch/switch.component';
+import { OPContextMenuService } from 'core-app/shared/components/op-context-menu/op-context-menu.service';
+import { CurrentProjectService } from 'core-app/core/current-project/current-project.service';
 
 export function initializeServices(injector:Injector) {
   return () => {
     const PreviewTrigger = injector.get(HoverCardTriggerService);
     const topMenuService = injector.get(TopMenuService);
     const keyboardShortcuts = injector.get(KeyboardShortcutService);
+    const contextMenu = injector.get(OPContextMenuService);
+    const currentProject = injector.get(CurrentProjectService);
+
     // Conditionally add the Revit Add-In settings button
     injector.get(RevitAddInSettingsButtonService);
 
     topMenuService.register();
-
     PreviewTrigger.setupListener();
+    contextMenu.register();
+
+    // Re-register on turbo:load
+    document.addEventListener('turbo:load', () => {
+      topMenuService.register();
+      PreviewTrigger.setupListener();
+      contextMenu.register();
+      currentProject.detect();
+    });
 
     keyboardShortcuts.register();
 
@@ -387,13 +398,24 @@ export function initializeServices(injector:Injector) {
 export class OpenProjectModule implements DoBootstrap {
   // noinspection JSUnusedGlobalSymbols
   ngDoBootstrap(appRef:ApplicationRef) {
+    this.runBootstrap(appRef);
+
+    // Connect ui router to turbo drive
+    document.addEventListener('turbo:load', () => {
+      this.runBootstrap(appRef);
+    });
+
+    this.registerCustomElements(appRef.injector);
+  }
+
+  private runBootstrap(appRef:ApplicationRef) {
     // Try to bootstrap a dynamic root element
     const root = document.querySelector(appBaseSelector);
     if (root) {
       appRef.bootstrap(ApplicationBaseComponent, root);
     }
 
-    this.registerCustomElements(appRef.injector);
+    document.body.classList.add('__ng2-bootstrap-has-run');
   }
 
   private registerCustomElements(injector:Injector) {
@@ -433,7 +455,6 @@ export class OpenProjectModule implements DoBootstrap {
     registerCustomElement('opce-remote-field-updater', RemoteFieldUpdaterComponent, { injector });
     registerCustomElement('opce-modal-single-date-picker', OpModalSingleDatePickerComponent, { injector });
     registerCustomElement('opce-basic-single-date-picker', OpBasicSingleDatePickerComponent, { injector });
-    registerCustomElement('opce-storage-login-button', StorageLoginButtonComponent, { injector });
     registerCustomElement('opce-spot-drop-modal-portal', SpotDropModalPortalComponent, { injector });
     registerCustomElement('opce-spot-switch', SpotSwitchComponent, { injector });
     registerCustomElement('opce-modal-overlay', OpModalOverlayComponent, { injector });

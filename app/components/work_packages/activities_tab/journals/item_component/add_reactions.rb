@@ -34,22 +34,49 @@ module WorkPackages
         include OpPrimer::ComponentHelpers
         include OpTurbo::Streamable
 
-        def initialize(journal:)
+        def initialize(journal:, grouped_emoji_reactions:)
           super
 
           @journal = journal
+          @grouped_emoji_reactions = grouped_emoji_reactions || {}
         end
 
         def render?
-          User.current.allowed_in_work_package?(:add_work_package_notes, work_package)
+          current_user_can_react?
         end
 
         private
 
-        attr_reader :journal
+        attr_reader :journal, :grouped_emoji_reactions
+
+        def counter_color(reaction)
+          reacted_by_current_user?(reaction) ? :accent : nil
+        end
+
+        def button_scheme(reaction)
+          reacted_by_current_user?(reaction) ? :default : :invisible
+        end
+
+        def reacted_by_current_user?(reaction)
+          return false if grouped_emoji_reactions.blank?
+
+          grouped_emoji_reactions.dig(reaction, :users)&.any? { |u| u[:id] == User.current.id }
+        end
+
+        def href(reaction:)
+          return if current_user_cannot_react?
+
+          toggle_reaction_work_package_activity_path(journal.journable.id, id: journal.id, reaction:)
+        end
 
         def work_package = journal.journable
         def wrapper_uniq_by = journal.id
+
+        def current_user_can_react?
+          User.current.allowed_in_work_package?(:add_work_package_notes, work_package)
+        end
+
+        def current_user_cannot_react? = !current_user_can_react?
       end
     end
   end

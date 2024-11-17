@@ -223,8 +223,12 @@
       items:
         actions: "Item actions"
         blankslate:
-          title: "Din liste over elementer er tom"
-          description: "Start ved å legge elementer til i det tilpassede feltet av typehierarkiet. Hvert element kan brukes til å opprette et hierarkisk buk på det. For å navigere og opprette underelementer i et hierarki, klikk på det opprettede elementet."
+          root:
+            title: "Your list of items is empty"
+            description: "Start by adding items to the custom field of type hierarchy. Each item can be used to create a hierarchy bellow it. To navigate and create sub-items inside a hierarchy click on the created item."
+          item:
+            title: This item doesn't have any hierarchy level below
+            description: Add items to this list to create sub-items inside another one
         placeholder:
           label: "Item label"
           short: "Short name"
@@ -261,12 +265,26 @@
     single: "eller"
   dry_validation:
     errors:
+      int?: "must be an integer."
+      filled?: "must be filled."
+      greater_or_equal_zero: "must be greater or equal to 0."
+      not_found: "not found."
       rules:
+        item:
+          root_item: "cannot be a root item."
+          not_persisted: "must be an already existing item."
         label:
-          filled?: "must be filled"
-          not_unique: "must be unique within the same hierarchy level"
+          not_unique: "must be unique within the same hierarchy level."
+        short:
+          not_unique: "must be unique within the same hierarchy level."
+        parent:
+          not_descendant: "must be a descendant of the hierarchy root."
     rules:
+      depth: "Depth"
+      item: "Item"
       label: "Label"
+      short: "Short name"
+      parent: "Parent"
   global_search:
     placeholder: "Søk i %{app_title}"
     overwritten_tabs:
@@ -1378,6 +1396,9 @@
   button_actions: "Handlinger"
   button_add: "Legg til"
   button_add_comment: "Legg til kommentar"
+  button_add_item_above: "Add item above"
+  button_add_item_below: "Add item below"
+  button_add_sub_item: "Add sub-item"
   button_add_member: Legg til medlem
   button_add_watcher: "Legg til overvåker"
   button_annotate: "Kommentèr"
@@ -2821,6 +2842,9 @@
   notice_locking_conflict: "Informasjonen har blitt oppdatert av minst en annen bruker i mellomtiden."
   notice_locking_conflict_additional_information: "Oppdateringen(e) ble utført av %{users}."
   notice_locking_conflict_reload_page: "Vennligst oppdater siden, se gjennom endringene og legg til dine oppdateringer på nytt."
+  notice_locking_conflict_warning: "This page has been updated by someone else. To not lose your edits, copy them locally and reload to view the updated version."
+  notice_locking_conflict_danger: "Could not save your changes because of conflicting modifications. To not lose your edits, copy them locally and reload to view the updated version."
+  notice_locking_conflict_action_button: "Discard changes and reload"
   notice_member_added: La til %{name} i prosjektet.
   notice_members_added: La til %{number} brukere i prosjektet.
   notice_member_removed: "%{user} ble fjernet fra prosjektet."

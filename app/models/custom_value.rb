@@ -59,7 +59,7 @@ class CustomValue < ApplicationRecord
   def strategy
     @strategy ||= begin
       format = custom_field&.field_format || "empty"
-      OpenProject::CustomFieldFormat.find_by_name(format).formatter.new(self) # rubocop:disable Rails/DynamicFindBy
+      OpenProject::CustomFieldFormat.find_by(name: format).formatter.new(self)
     end
   end
 

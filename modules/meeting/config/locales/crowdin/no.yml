@@ -88,13 +88,19 @@
   label_meeting: "Møte"
   label_meeting_plural: "Møter"
   label_meeting_new: "Nytt møte"
+  label_meeting_new_one_time: "New one-time meeting"
+  label_meeting_create: "Create meeting"
+  label_meeting_copy: "Copy meeting"
   label_meeting_edit: "Redigere møte"
   label_meeting_agenda: "Saksliste"
   label_meeting_minutes: "Referat"
   label_meeting_close: "Afslutt"
   label_meeting_open: "Åpne"
+  label_meeting_index_delete: "Delete"
+  label_meeting_open_this_meeting: "Open this meeting"
   label_meeting_agenda_close: "Lukk sakslisten for å begynne referatet"
   label_meeting_date_time: "Dato/klokkeslett"
+  label_meeting_date_and_time: "Date and time"
   label_meeting_diff: "Forskjell"
   label_upcoming_meetings: "Kommende møter"
   label_past_meetings: "Tidligere møter"
@@ -119,11 +125,14 @@
       attachments: "Kopier vedlegg"
       attachments_text: "Kopier over alle vedlagte filer til det nye møtet"
       agenda: "Kopier saksliste"
+      agenda_items: "Copy agenda items"
       agenda_text: "Kopier sakslisten fra det forrige møtet"
+      participants: "Copy list of participants"
     email:
       send_emails: "Send e-post til deltakere"
       send_invitation_emails: >
         Send en e-postinvitasjon til deltakerne som er valgt over. Du kan også gjøre dette manuelt når som helst senere.
+      send_invitation_emails_structured: "Send an email invitation immediately to all participants. You can also do this manually at any time later."
       open_meeting_link: "Åpent møte"
       invited:
         summary: "%{actor} har sendt deg en invitasjon til møtet %{title}"
@@ -137,7 +146,7 @@
     types:
       classic: "Klassisk"
       classic_text: "Organiser møtet ditt i en formattabel tekst agenda og protokoll."
-      structured: "Dynamisk"
+      structured: "One-time"
       structured_text: "Organiser møtet som en liste over saker, eventuelt knytte dem til en arbeidspakke."
       structured_text_copy: "Kopiering av et møte vil for tiden ikke kopiere de tilknyttede elementene på dagsordenen, bare detaljene"
     copied: "Kopiert fra møte #%{id}"
