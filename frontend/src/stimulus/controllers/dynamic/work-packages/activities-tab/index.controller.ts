@@ -647,8 +647,8 @@ export default class IndexController extends Controller {
     if (!this.journalsContainerTarget) return;
 
     this.clearEditor();
-    this.handleEditorVisibility();
-    this.adjustJournalsContainer();
+    this.hideEditor();
+    this.resetJournalsContainerMargins();
 
     setTimeout(() => {
       if (this.isMobile() && !this.isWithinNotificationCenter()) {
@@ -667,19 +667,11 @@ export default class IndexController extends Controller {
     this.saveInProgress = false;
   }
 
-  private handleEditorVisibility():void {
-    if (this.isMobile()) {
-      this.hideEditorIfEmpty();
-    } else {
-      this.focusEditor();
-    }
-  }
-
-  private adjustJournalsContainer():void {
+  private resetJournalsContainerMargins():void {
     if (!this.journalsContainerTarget) return;
 
     this.journalsContainerTarget.style.marginBottom = '';
-    this.journalsContainerTarget.classList.add('work-packages-activities-tab-index-component--journals-container_with-input-compensation');
+    this.journalsContainerTarget.classList.add('work-packages-activities-tab-index-component--journals-container_with-initial-input-compensation');
   }
 
   private setLastServerTimestampViaHeaders(headers:Headers) {
