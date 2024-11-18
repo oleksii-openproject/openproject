@@ -372,7 +372,7 @@ RSpec.describe "Work package activity", :js, :with_cuprite, with_flag: { primeri
                                                     version: 2)
 
       # the comment is shown without browser reload
-      wait_for { page }.to have_test_selector("op-journal-notes-body", text: "First comment by member")
+      activity_tab.expect_journal_notes(text: "First comment by member")
 
       # simulate comments made within the polling interval
       create(:work_package_journal, user: member, notes: "Second comment by member", journable: work_package, version: 3)
@@ -390,7 +390,7 @@ RSpec.describe "Work package activity", :js, :with_cuprite, with_flag: { primeri
       first_journal.update!(notes: "First comment by member updated")
 
       # properly updates the comment when the comment is updated
-      wait(delay: 0.5).for { page }.to have_test_selector("op-journal-notes-body", text: "First comment by member updated")
+      activity_tab.expect_journal_notes(text: "First comment by member updated")
     end
   end
 
