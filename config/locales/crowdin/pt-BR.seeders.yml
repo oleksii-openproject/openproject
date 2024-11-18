@@ -210,9 +210,9 @@ pt-BR:
                 Neste módulo, você pode compartilhar as atualizações do projeto com os membros da sua equipe.
           versions:
             item_0:
-              name: Registro de erros e pendências
+              name: Backlog de Bugs
             item_1:
-              name: Erros e Pendências do Produto
+              name: Backlog de produtos
             item_2:
               name: Sprint 1
               wiki:

@@ -266,7 +266,7 @@ sv:
           filled?: "must be filled"
           not_unique: "must be unique within the same hierarchy level"
     rules:
-      label: "Label"
+      label: "Etikett"
   global_search:
     placeholder: "Search in %{app_title}"
     overwritten_tabs:
