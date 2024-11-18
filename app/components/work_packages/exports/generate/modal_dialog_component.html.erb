@@ -1,5 +1,5 @@
 <%= render(Primer::Alpha::Dialog.new(
-  title: "Generate PDF",
+  title: I18n.t("pdf_generator.dialog.title"),
   id: MODAL_ID,
   size: :large
 )) do |dialog|
@@ -31,8 +31,8 @@
         modal_body.with_row(mt: 3) do
           render Primer::Alpha::TextField.new(
             name: :header_text_right,
-            label: 'Header right',
-            caption: 'Text to be displayed in the right of the header',
+            label: I18n.t("pdf_generator.dialog.header_right.label"),
+            caption: I18n.t("pdf_generator.dialog.header_right.caption"),
             visually_hide_label: false,
             value: default_header_text_right
           )
@@ -40,8 +40,8 @@
         modal_body.with_row(mt: 3) do
           render Primer::Alpha::TextField.new(
             name: :footer_text_center,
-            label: 'Footer center',
-            caption: 'Text to be displayed in the center of the footer',
+            label: I18n.t("pdf_generator.dialog.footer_center.label"),
+            caption: I18n.t("pdf_generator.dialog.footer_center.caption"),
             visually_hide_label: false,
             value: default_footer_text_center
           )
@@ -53,6 +53,6 @@
     render(Primer::ButtonComponent.new(data: { "close-dialog-id": MODAL_ID })) { I18n.t(:button_cancel) }
     render(Primer::ButtonComponent.new(
       scheme: :primary, type: :submit, form: GENERATE_PDF_FORM_ID,
-      data: { "close-dialog-id": MODAL_ID })) { "Generate" }
+      data: { "close-dialog-id": MODAL_ID })) { I18n.t("pdf_generator.dialog.submit") }
   end
 end %>

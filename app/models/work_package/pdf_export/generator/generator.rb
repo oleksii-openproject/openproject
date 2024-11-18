@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2024 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -152,7 +152,7 @@ module WorkPackage::PDFExport::Generator::Generator
       language: hyphenation_language,
       pdf_footer: footer_date,
       pdf_footer_2: footer_title,
-      pdf_footer_3: I18n.t("export.page_nr_footer", page: "<page>", total: "<total>"),
+      pdf_footer_3: I18n.t("pdf_generator.page_nr_footer", page: "<page>", total: "<total>"),
       pdf_header_logo: logo_image_filename,
       pdf_header: heading
     }

@@ -59,14 +59,14 @@ module WorkPackages
           [
             {
               name: "hyphenation",
-              label: "Hyphenation",
-              caption: "Break words between lines to improve text justification and readability.",
+              label: I18n.t("pdf_generator.dialog.hyphenation.label"),
+              caption: I18n.t("pdf_generator.dialog.hyphenation.caption"),
               options: hyphenation_options
             },
             {
               name: "paper_size",
-              label: I18n.t("export.dialog.pdf.paper_size.label"),
-              caption: "The size of the paper to use for the PDF.",
+              label: I18n.t("pdf_generator.dialog.paper_size.label"),
+              caption: I18n.t("pdf_generator.dialog.paper_size.caption"),
               options: paper_size_options
             }
           ]
