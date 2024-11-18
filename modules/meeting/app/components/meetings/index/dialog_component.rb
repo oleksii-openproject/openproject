@@ -52,7 +52,7 @@ module Meetings
     end
 
     def title
-      @type == :new ? I18n.t("label_meeting_new_one_time") : "Copy meeting"
+      @type == :new ? I18n.t("label_meeting_new_dynamic") : "Copy meeting"
     end
   end
 end
