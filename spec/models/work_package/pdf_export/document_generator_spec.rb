@@ -1,4 +1,5 @@
 require "spec_helper"
+require "text/hyphen"
 
 RSpec.describe WorkPackage::PDFExport::DocumentGenerator do
   include Redmine::I18n
@@ -71,6 +72,12 @@ RSpec.describe WorkPackage::PDFExport::DocumentGenerator do
           header_text_right: "",
           footer_text_center: ""
         }
+      end
+
+      it "loads the hyphenation language" do
+        hyphens = Text::Hyphen.new(language: options[:hyphenation], left: 2, right: 2)
+        split = hyphens.visualise("honorificabilitudinitatibus", Prawn::Text::SHY)
+        expect(split).to eq("hon­ori­fi­ca­bil­i­tu­dini­tat­i­bus")
       end
 
       it "contains correct data" do
