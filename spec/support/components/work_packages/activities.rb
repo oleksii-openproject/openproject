@@ -175,18 +175,20 @@ module Components
         end
       end
 
-      def edit_comment(journal, text: nil)
+      def edit_comment(journal, text: nil, save: true)
         within_journal_entry(journal) do
           page.find_test_selector("op-wp-journal-#{journal.id}-action-menu").click
           page.find_test_selector("op-wp-journal-#{journal.id}-edit").click
 
           page.within_test_selector("op-work-package-journal-form-element") do
             FormFields::Primerized::EditorFormField.new("notes", selector: "#work-package-journal-form-element").set_value(text)
-            page.find_test_selector("op-submit-work-package-journal-form").click
+            page.find_test_selector("op-submit-work-package-journal-form").click if save
           end
 
-          # wait for the comment to be loaded
-          wait_for { page }.to have_test_selector("op-journal-notes-body", text:)
+          if save
+            # wait for the comment to be loaded
+            wait_for { page }.to have_test_selector("op-journal-notes-body", text:)
+          end
         end
       end
 

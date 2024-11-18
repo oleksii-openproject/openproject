@@ -637,7 +637,7 @@ export default class IndexController extends Controller {
       headers: {
         'X-CSRF-Token': (document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement).content,
       },
-    });
+    }, true);
   }
 
   private handleSuccessfulSubmission(html:string, headers:Headers) {
