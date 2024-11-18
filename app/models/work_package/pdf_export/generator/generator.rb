@@ -87,8 +87,7 @@ module WorkPackage::PDFExport::Generator::Generator
     def hyphenate(text)
       return text if @hyphens.nil?
 
-      raise "Hyphenation disabled"
-      # @hyphens.visualize(text, Prawn::Text::SHY)
+      @hyphens.visualize(text, Prawn::Text::SHY)
     end
 
     def handle_mention_html_tag(tag, node, opts)
