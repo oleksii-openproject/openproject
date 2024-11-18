@@ -79,7 +79,7 @@ ro:
       text_2fa_disabled: "The user did not set up a 2FA device through their 'My account page'"
       only_sms_allowed: "Only SMS delivery can be set up for other users."
     upsale:
-      title: "Autentificare cu doi factori"
+      title: "Autentificare doi factori"
       description: "Consolidarea securității instanței OpenProject prin oferirea (sau impunerea) autentificării cu doi factori pentru toți membrii proiectului."
     backup_codes:
       none_found: Nu există coduri de rezervă pentru acest cont.
