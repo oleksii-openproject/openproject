@@ -43,7 +43,8 @@ class WorkPackages::ActivitiesTabController < ApplicationController
       WorkPackages::ActivitiesTab::IndexComponent.new(
         work_package: @work_package,
         filter: @filter,
-        last_server_timestamp: get_current_server_timestamp
+        last_server_timestamp: get_current_server_timestamp,
+        deferred: params[:deferred] == "true"
       ),
       layout: false
     )

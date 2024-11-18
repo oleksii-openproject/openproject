@@ -32,21 +32,24 @@ module WorkPackages
   module ActivitiesTab
     module Journals
       class IndexComponent < ApplicationComponent
+        MAX_RECENT_JOURNALS = 30
+
         include ApplicationHelper
         include OpPrimer::ComponentHelpers
         include OpTurbo::Streamable
         include WorkPackages::ActivitiesTab::SharedHelpers
 
-        def initialize(work_package:, filter: :all)
+        def initialize(work_package:, filter: :all, deferred: false)
           super
 
           @work_package = work_package
           @filter = filter
+          @deferred = deferred
         end
 
         private
 
-        attr_reader :work_package, :filter
+        attr_reader :work_package, :filter, :deferred
 
         def insert_target_modified?
           true
@@ -66,6 +69,24 @@ module WorkPackages
             .includes(:user, :notifications)
             .reorder(version: journal_sorting)
             .with_sequence_version
+        end
+
+        def recent_journals
+          if journal_sorting_desc?
+            journals.first(MAX_RECENT_JOURNALS)
+          else
+            journals.last(MAX_RECENT_JOURNALS)
+          end
+        end
+
+        def older_journals
+          if journal_sorting_desc?
+            journals.offset(MAX_RECENT_JOURNALS)
+          else
+            total = journals.count
+            limit = [total - MAX_RECENT_JOURNALS, 0].max
+            journals.limit(limit)
+          end
         end
 
         def journal_with_notes
