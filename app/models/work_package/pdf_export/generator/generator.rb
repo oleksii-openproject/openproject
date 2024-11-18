@@ -63,7 +63,7 @@ module WorkPackage::PDFExport::Generator::Generator
                  .merge(@styles.default_fields)
                  .merge(options)
       doc = parse_frontmatter_markdown(markdown, fields)
-      @hyphens = Text::Hyphen.new(language: options[:language], left: 2, right: 2) unless options[:language].blank?
+      @hyphens = Text::Hyphen.new(language: options[:language], left: 2, right: 2) if options[:language].present?
       render_doc(doc)
     end
 
@@ -125,23 +125,10 @@ module WorkPackage::PDFExport::Generator::Generator
     end
   end
 
-  def generate_doc!(work_package, markdown, styling_file)
-    styling = YAML::load_file(File.join(styling_asset_path, styling_file))
-    # overwrite the paper size if it is set in the options
-    styling['page']['page-size'] = options[:paper_size] unless options[:paper_size].blank?
-    md2pdf = MD2PDFGenerator.new(styling)
+  def generate_doc!(markdown, styling_file)
+    md2pdf = MD2PDFGenerator.new(md_to_pdf_styling(styling_file))
     md2pdf.init_pdf(pdf)
-    # rubocop:disable Naming/VariableNumber
-    options = {
-      language: hyphenation_language,
-      pdf_footer: footer_date,
-      pdf_footer_2: footer_title,
-      pdf_footer_3: I18n.t("export.page_nr_footer", page: "<page>", total: "<total>"),
-      pdf_header_logo: logo_image_filename,
-      pdf_header: heading
-    }
-    # rubocop:enable Naming/VariableNumber
-    md2pdf.generate!(markdown, options, ->(src) {
+    md2pdf.generate!(markdown, md_to_pdf_options, ->(src) {
       if src == logo_image_filename
         logo_image_filename
       else
@@ -151,6 +138,25 @@ module WorkPackage::PDFExport::Generator::Generator
   end
 
   private
+
+  def md_to_pdf_styling
+    styling = YAML::load_file(File.join(styling_asset_path, styling_file))
+    # overwrite the paper size if it is set in the options
+    styling["page"]["page-size"] = options[:paper_size] if options[:paper_size].present?
+  end
+
+  def md_to_pdf_options
+    # rubocop:disable Naming/VariableNumber
+    {
+      language: hyphenation_language,
+      pdf_footer: footer_date,
+      pdf_footer_2: footer_title,
+      pdf_footer_3: I18n.t("export.page_nr_footer", page: "<page>", total: "<total>"),
+      pdf_header_logo: logo_image_filename,
+      pdf_header: heading
+    }
+    # rubocop:enable Naming/VariableNumber
+  end
 
   def styling_asset_path
     File.dirname(File.expand_path(__FILE__))

@@ -72,12 +72,6 @@ module WorkPackages
           ]
         end
 
-        def language_name(locale)
-          I18n.translate('cldr.language_name', locale: locale)
-        rescue
-          nil # not supported language
-        end
-
         def hyphenation_options
           # This is a list of languages that are supported by the hyphenation library
           # https://rubygems.org/gems/text-hyphen
