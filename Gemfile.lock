@@ -342,7 +342,7 @@ GEM
       activerecord (>= 4.0.0, < 8.0)
     awrence (1.2.1)
     aws-eventstream (1.3.0)
-    aws-partitions (1.996.0)
+    aws-partitions (1.1001.0)
     aws-sdk-core (3.211.0)
       aws-eventstream (~> 1, >= 1.3.0)
       aws-partitions (~> 1, >= 1.992.0)
@@ -351,7 +351,7 @@ GEM
     aws-sdk-kms (1.95.0)
       aws-sdk-core (~> 3, >= 3.210.0)
       aws-sigv4 (~> 1.5)
-    aws-sdk-s3 (1.169.0)
+    aws-sdk-s3 (1.170.0)
       aws-sdk-core (~> 3, >= 3.210.0)
       aws-sdk-kms (~> 1)
       aws-sigv4 (~> 1.5)
@@ -438,7 +438,7 @@ GEM
       bigdecimal
       rexml
     crass (1.0.6)
-    css_parser (1.19.0)
+    css_parser (1.19.1)
       addressable
     csv (3.3.0)
     cuprite (0.15.1)
@@ -703,7 +703,7 @@ GEM
     launchy (3.0.1)
       addressable (~> 2.8)
       childprocess (~> 5.0)
-    lefthook (1.8.1)
+    lefthook (1.8.2)
     letter_opener (1.10.0)
       launchy (>= 2.2, < 4)
     letter_opener_web (3.0.0)
@@ -727,7 +727,7 @@ GEM
     loofah (2.22.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.12.0)
-    lookbook (2.3.3)
+    lookbook (2.3.4)
       activemodel
       css_parser
       htmlbeautifier (~> 1.3)
@@ -1062,7 +1062,7 @@ GEM
     secure_headers (7.0.0)
     selenium-devtools (0.129.0)
       selenium-webdriver (~> 4.2)
-    selenium-webdriver (4.25.0)
+    selenium-webdriver (4.26.0)
       base64 (~> 0.2)
       logger (~> 1.4)
       rexml (~> 3.2, >= 3.2.5)
@@ -1147,7 +1147,8 @@ GEM
       public_suffix
     vcr (6.3.1)
       base64
-    view_component (3.19.0)
+    vernier (1.3.1)
+    view_component (3.20.0)
       activesupport (>= 5.2.0, < 8.1)
       concurrent-ruby (~> 1.0)
       method_source (~> 1.0)
@@ -1272,7 +1273,7 @@ DEPENDENCIES
   letter_opener_web
   listen (~> 3.9.0)
   lograge (~> 0.14.0)
-  lookbook (~> 2.3.3)
+  lookbook (~> 2.3.4)
   mail (= 2.8.1)
   markly (~> 0.10)
   matrix (~> 0.4.2)
@@ -1395,6 +1396,7 @@ DEPENDENCIES
   tzinfo-data (~> 1.2024.1)
   validate_url
   vcr
+  vernier
   view_component
   warden (~> 1.2)
   warden-basic_auth (~> 0.2.1)

@@ -8,13 +8,17 @@ RSpec.describe "Watcher tab", :js, :selenium, :with_cuprite do
   let(:work_package) { create(:work_package, project:) }
   let(:tabs) { Components::WorkPackages::Tabs.new(work_package) }
   let(:role) { create(:project_role, permissions:) }
-  let(:user) { create(:user, member_with_roles: { project => role }) }
   let(:permissions) do
     %i(view_work_packages
        view_work_package_watchers
        delete_work_package_watchers
        add_work_package_watchers)
   end
+
+  # Ensure users are eagerly created (and at top level). #58737 was caused by `other_user` not being there
+  # in time for some cases => flaky user auto completer specs
+  let!(:user) { create(:user, member_with_roles: { project => role }) }
+  let!(:other_user) { create(:user, firstname: "Other", member_with_roles: { project => role }) }
 
   let(:watch_button) { find_by_id "watch-button" }
   let(:watchers_tab) { find(".op-tab-row--link_selected", text: "WATCHERS") }
@@ -114,8 +118,6 @@ RSpec.describe "Watcher tab", :js, :selenium, :with_cuprite do
     end
 
     context "when auto completing users" do
-      let!(:other_user) { create(:user, firstname: "Other", member_with_roles: { project => role }) }
-
       it "shows only the email address of the current user by default" do
         autocomplete = find(".wp-watcher--autocomplete ng-select")
         target_dropdown = search_autocomplete autocomplete,

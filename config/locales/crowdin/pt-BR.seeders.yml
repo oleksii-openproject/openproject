@@ -66,9 +66,9 @@ pt-BR:
           name: Administrador do projeto
       global_roles:
         item_0:
-          name: Equipe e gerente de projetos
+          name: Gerente de equipe e projetos
         item_1:
-          name: Standard global role
+          name: Função global padrão
     standard:
       priorities:
         item_0:
@@ -82,22 +82,22 @@ pt-BR:
       projects:
         demo-project:
           name: Projeto de demonstração
-          status_explanation: Todas as tarefas estão dentro do cronograma. As pessoas envolvidas conhecem suas tarefas. O sistema está completamente configurado.
-          description: Este é um breve resumo dos objetivos deste projeto de demonstração.
+          status_explanation: Todas as tarefas estão no cronograma. As pessoas responsáveis conhecem suas tarefas. O sistema está completamente configurado.
+          description: Este é um resumo breve dos objetivos deste projeto de demonstração.
           news:
             item_0:
-              title: Bem-vindo ao seu projeto de demonstração
+              title: Boas-vindas ao seu projeto de demonstração
               summary: |
                 Estamos felizes por você ter se juntado a nós.
-                Neste módulo, você pode comunicar as novidades do projeto aos membros da sua equipe.
-              description: As notícias atuais
+                Neste módulo, você pode compartilhar as atualizações do projeto com os membros da sua equipe.
+              description: As notícias mais recentes
           categories:
-            item_0: Categoria 1 (a ser alterada nas configurações do projeto)
+            item_0: Categoria 1 (a ser alterada nas configurações do Projeto)
           queries:
             item_0:
-              name: 'Plano do Projeto:'
+              name: Plano do Projeto
             item_1:
-              name: Etapas
+              name: Marcos
             item_2:
               name: Tarefas
             item_3:
@@ -109,7 +109,7 @@ pt-BR:
               name: Painel básico
               lists:
                 item_0:
-                  name: Lista de Desejo
+                  name: Lista de desejos
                 item_1:
                   name: Lista curta
                 item_2:
@@ -122,26 +122,26 @@ pt-BR:
             widgets:
               item_0:
                 options:
-                  name: Bem-vindo
+                  name: Boas-vindas
               item_1:
                 options:
-                  name: Primeiros passos
+                  name: Guia de introdução
                   text: |
-                    Estamos felizes por você ter se juntado a nós! Sugerimos que você experimente algumas coisas para começar a usar o OpenProject.
+                    Estamos felizes que você tenha se juntado a nós! Aqui estão algumas sugestões para começar a usar o OpenProject.
 
-                    Descubra os recursos mais importantes com nosso [Guided Tour] ({{opSetting:base_url}}/projects/demo-project/work_packages/?start_onboarding_tour=true).
+                    Descubra os principais recursos com o nosso [Tour Guiado]({{opSetting:base_url}}/projects/demo-project/work_packages/?start_onboarding_tour=true).
 
-                    _Tente as seguintes etapas:_
+                    Tente as seguintes etapas:
 
-                    1. *Convide novos membros para seu projeto*: &rightarrow; Vá para [Members]({{opSetting:base_url}}/projects/demo-project/members) na navegação do projeto.
-                    2. *Ver o trabalho em seu projeto*: &rightarrow; Vá para [Work packages]({{opSetting:base_url}}/projects/demo-project/work_packages) na navegação do projeto.
-                    3. *Crie um novo pacote de trabalho*: &rightarrow; Vá para [Work packages &rightarrow; Create]({{opSetting:base_url}}/projects/demo-project/work_packages/new).
-                    4. *Crie e atualize um plano de projeto*: &rightarrow; Vá para [Plano de projeto]({{opSetting:base_url}}/projects/demo-project/work_packages?query_id=##query.id:demo_project__query__project_plan) na navegação do projeto.
-                    5. *Ativar outros módulos*: &rightarrow; Vá para [Project settings &rightarrow; Modules]({{opSetting:base_url}}}/projects/demo-project/settings/modules).
-                    6. *Conclua suas tarefas no projeto*: &rightarrow; Vá para [Work packages &rightarrow; Tasks]({{opSetting:base_url}}/projects/demo-project/work_packages/details/##wp.id:set_date_and_location_of_conference/overview?query_id=##query.id:demo_project__query__tasks).
+                    1. *Convide novos membros para o seu projeto*: &rightarrow; Vá para [Membros]({{opSetting:base_url}}/projects/demo-project/members) na navegação do projeto.
+                    2. *Veja as tarefas do seu projeto*: &rightarrow; Vá para [Pacotes de trabalho]({{opSetting:base_url}}/projects/demo-project/work_packages) na navegação do projeto.
+                    3. *Crie um novo pacote de trabalho*: &rightarrow; Vá para [Pacotes de trabalho &rightarrow; Criar]({{opSetting:base_url}}/projects/demo-project/work_packages/new).
+                    4. *Crie e atualize o plano do projeto*: &rightarrow; Vá para [Plano de projeto]({{opSetting:base_url}}/projects/demo-project/work_packages?query_id=##query.id:demo_project__query__project_plan) na navegação do projeto.
+                    5. *Ative módulos adicionais*: &rightarrow; Vá para [Configurações do projeto &rightarrow; Módulos]({{opSetting:base_url}}/projects/demo-project/settings/modules).
+                    6. *Conclua suas tarefas no projeto*: &rightarrow; Vá para [Pacotes de trabalho &rightarrow; Tarefas]({{opSetting:base_url}}/projects/demo-project/work_packages/details/##wp.id:set_date_and_location_of_conference/overview?query_id=##query.id:demo_project__query__tasks).
 
-                    Aqui você encontrará nossos [User Guides] (https://www.openproject.org/docs/user-guide/).
-                    Entre em contato conosco se tiver alguma dúvida ou precisar de suporte. Entre em contato conosco: [support[at]openproject.com](mailto:support@openproject.com).
+                    Aqui você encontra nossos Guias do usuário.
+                    Se tiver alguma dúvida ou precisar de ajuda, entre em contato conosco: [support[at]openproject.com](mailto:support@openproject.com).
               item_5:
                 options:
                   name: Pacotes de trabalho
@@ -170,7 +170,7 @@ pt-BR:
             item_2:
               subject: Conferência
             item_3:
-              subject: Acompanhamento das tarefas
+              subject: Tarefas de acompanhamento
               children:
                 item_0:
                   subject: Fazer upload de apresentações para o site
@@ -200,19 +200,19 @@ pt-BR:
             Mais informações: [https://www.openproject.org/docs/user-guide/wiki/](https://www.openproject.org/docs/user-guide/wiki/)
         scrum-project:
           name: Projeto Scrum
-          status_explanation: Todas as tarefas estão dentro do cronograma. As pessoas envolvidas conhecem suas tarefas. O sistema está completamente configurado.
-          description: Este é um breve resumo dos objetivos deste projeto de demonstração do Scrum.
+          status_explanation: Todas as tarefas estão dentro do cronograma, e os envolvidos conhecem suas atribuições. O sistema está completamente configurado.
+          description: Este é um resumo dos objetivos deste projeto Scrum de demonstração.
           news:
             item_0:
-              title: Bem-vindo ao seu projeto de demonstração do Scrum
+              title: Boas-vindas ao seu projeto de demonstração do Scrum
               summary: |
-                Estamos felizes por você ter se juntado a nós.
-                Neste módulo, você pode comunicar as novidades do projeto aos membros da sua equipe.
+                Estamos felizes que você tenha se juntado a nós.
+                Neste módulo, você pode compartilhar as atualizações do projeto com os membros da sua equipe.
           versions:
             item_0:
-              name: Registro de erros e pendências
+              name: Backlog de Bugs
             item_1:
-              name: Erros e Pendências do Produto
+              name: Backlog de produtos
             item_2:
               name: Sprint 1
               wiki:

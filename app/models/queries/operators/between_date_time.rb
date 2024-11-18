@@ -34,12 +34,9 @@ module Queries::Operators
     extend DatetimeRangeClauses
 
     def self.sql_for_field(values, db_table, db_field)
-      lower_boundary, upper_boundary = values.map { |v| v.blank? ? nil : DateTime.parse(v) }
+      lower_boundary, upper_boundary = values.map { |v| DateTime.parse(v) if v.present? }
 
-      datetime_range_clause(db_table,
-                            db_field,
-                            lower_boundary,
-                            upper_boundary)
+      datetime_range_clause(db_table, db_field, lower_boundary, upper_boundary)
     end
   end
 end

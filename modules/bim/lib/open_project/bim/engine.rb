@@ -125,6 +125,11 @@ module OpenProject::Bim
     patch_with_namespace :DemoData, :WorkPackageSeeder
     patch_with_namespace :DemoData, :WorkPackageBoardSeeder
 
+    config.to_prepare do
+      # needed for `#bcf_issue?` calls in the work package representer
+      ::API::V3::WorkPackages::WorkPackageRepresenter.to_eager_load << :bcf_issue
+    end
+
     extend_api_response(:v3, :work_packages, :work_package) do
       include API::Bim::Utilities::PathHelper
 

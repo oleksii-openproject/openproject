@@ -51,7 +51,7 @@ module API
           "user" => ["users", "groups", "placeholder_users"],
           "version" => "versions",
           "list" => "custom_options",
-          "hierarchy" => "hierarchical_items"
+          "hierarchy" => "custom_field_items"
         }.freeze
 
         REPRESENTER_MAP = {
@@ -115,6 +115,8 @@ module API
             inject_user_schema(custom_field)
           when "list"
             inject_list_schema(custom_field)
+          when "hierarchy"
+            inject_hierarchy_schema(custom_field)
           else
             inject_basic_schema(custom_field)
           end
@@ -170,6 +172,16 @@ module API
             value_representer: CustomOptions::CustomOptionRepresenter,
             link_factory: list_schemas_link_callback,
             required: custom_field.is_required
+          )
+        end
+
+        def inject_hierarchy_schema(custom_field)
+          @class.schema_with_allowed_link(
+            property_name(custom_field),
+            type: resource_type(custom_field),
+            name_source: ->(*) { custom_field.name },
+            required: custom_field.is_required,
+            href_callback: ->(*) { api_v3_paths.custom_field_items(custom_field.id) }
           )
         end
 
@@ -233,11 +245,12 @@ module API
           representer_class = derive_representer_class(custom_field)
 
           proc do
-            # Do not embed list or multi values as their links contain all the
+            # Do not embed list, hierarchies or multi values as their links contain all the
             # information needed (title and href) already.
             next if represented.available_custom_fields.exclude?(custom_field) ||
-                    custom_field.list? ||
-                    custom_field.multi_value?
+              custom_field.list? ||
+              custom_field.field_format_hierarchy? ||
+              custom_field.multi_value?
 
             value = represented.send custom_field.attribute_getter
 
@@ -402,13 +415,14 @@ module API
           def custom_field_class(custom_fields)
             custom_field_sha = OpenProject::Cache::CacheKey.expand(custom_fields.sort_by(&:id))
 
-            cached_custom_field_classes[custom_field_sha] ||= begin
-              injector_class = custom_field_injector_config[:injector_class]
+            cached_custom_field_classes[custom_field_sha] ||=
+              begin
+                injector_class = custom_field_injector_config[:injector_class]
 
-              method_name = :"create_#{custom_field_injector_config[:type]}"
+                method_name = :"create_#{custom_field_injector_config[:type]}"
 
-              injector_class.send(method_name, custom_fields, self)
-            end
+                injector_class.send(method_name, custom_fields, self)
+              end
           end
 
           def cached_custom_field_classes

@@ -90,13 +90,19 @@ uk:
   label_meeting: "Зустріч"
   label_meeting_plural: "Зустрічі"
   label_meeting_new: "Нова зустріч"
+  label_meeting_new_one_time: "Нова одноразова нарада"
+  label_meeting_create: "Створити нараду"
+  label_meeting_copy: "Копіювати нараду"
   label_meeting_edit: "Редагувати збори"
   label_meeting_agenda: "Порядок денний"
   label_meeting_minutes: "Хвилини"
   label_meeting_close: "Закрити"
   label_meeting_open: "Відкрити"
+  label_meeting_index_delete: "Видалити"
+  label_meeting_open_this_meeting: "Відкрити цю нараду"
   label_meeting_agenda_close: "Закрийте порядок денний, щоб розпочати протоколи"
   label_meeting_date_time: "Дата, час"
+  label_meeting_date_and_time: "Дата й час"
   label_meeting_diff: "Відмінність"
   label_upcoming_meetings: "Майбутні заходи"
   label_past_meetings: "Минулі заходи"
@@ -121,11 +127,14 @@ uk:
       attachments: "Копіювати вкладення"
       attachments_text: "Скопіюйте всі прикріплені файли до нової наради"
       agenda: "Копіювати порядок денний"
+      agenda_items: "Копіювати пункти порядку денного"
       agenda_text: "Копіювати порядок денний старої наради"
+      participants: "Копіювати список учасників"
     email:
       send_emails: "Надіслати електронні листи учасникам"
       send_invitation_emails: >
         Надішліть запрошення електронною поштою вибраним вище учасникам. Це можна будь-коли зробити вручну.
+      send_invitation_emails_structured: "Надішліть запрошення електронною поштою одразу всім учасникам. Це можна будь-коли зробити вручну."
       open_meeting_link: "Відкрити зустріч"
       invited:
         summary: "%{actor} надіслав запрошення на зустріч %{title}"
@@ -139,7 +148,7 @@ uk:
     types:
       classic: "Класична"
       classic_text: "Організуйте нараду у вигляді порядку денного й протоколу в текстовому форматі з підтримкою редагування."
-      structured: "Динамічна"
+      structured: "Одноразова"
       structured_text: "Організуйте нараду у вигляді переліку пунктів порядку денного, за бажанням пов’язавши їх із пакетом робіт."
       structured_text_copy: "Зараз копіювання наради стосується лише докладних даних про неї, але не пов’язаних пунктів її порядку денного"
     copied: "Скопійовано з наради #%{id} "

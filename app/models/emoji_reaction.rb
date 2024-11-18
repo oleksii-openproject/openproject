@@ -39,8 +39,6 @@ class EmojiReaction < ApplicationRecord
     eyes: "\u{1F440}"
   }.freeze
 
-  AVAILABLE_EMOJIS = EMOJI_MAP.values.freeze
-
   belongs_to :user
   belongs_to :reactable, polymorphic: true
 
@@ -48,8 +46,8 @@ class EmojiReaction < ApplicationRecord
 
   enum :reaction, EMOJI_MAP.each_with_object({}) { |(k, _v), h| h[k] = k.to_s }
 
-  def self.available_emojis
-    AVAILABLE_EMOJIS
+  def self.available_emoji_reactions
+    EMOJI_MAP.invert.sort
   end
 
   def self.emoji(reaction)

@@ -88,13 +88,19 @@ pt-PT:
   label_meeting: "Reunião"
   label_meeting_plural: "Reuniões"
   label_meeting_new: "Nova reunião"
+  label_meeting_new_one_time: "Nova reunião única"
+  label_meeting_create: "Criar reunião"
+  label_meeting_copy: "Copiar reunião"
   label_meeting_edit: "Editar a reunião"
   label_meeting_agenda: "Agenda"
   label_meeting_minutes: "Minutos"
   label_meeting_close: "Fechar"
   label_meeting_open: "Abrir"
+  label_meeting_index_delete: "Eliminar"
+  label_meeting_open_this_meeting: "Abrir esta reunião"
   label_meeting_agenda_close: "Fechar a agenda para começar os minutos"
   label_meeting_date_time: "Data/Hora"
+  label_meeting_date_and_time: "Data e hora"
   label_meeting_diff: "Diferença"
   label_upcoming_meetings: "Próximas reuniões"
   label_past_meetings: "Reuniões anteriores"
@@ -119,11 +125,14 @@ pt-PT:
       attachments: "Copiar anexos"
       attachments_text: "Copiar todos os ficheiros anexados para a nova reunião"
       agenda: "Copiar agenda"
+      agenda_items: "Copiar itens da agenda"
       agenda_text: "Copiar agenda da reunião anterior"
+      participants: "Copiar lista de participantes"
     email:
       send_emails: "Enviar um e-mail aos participantes"
       send_invitation_emails: >
         Envie imediatamente um convite por e-mail aos participantes selecionados acima. Também pode fazê-lo manualmente em qualquer altura.
+      send_invitation_emails_structured: "Envie imediatamente um convite por e-mail a todos os participantes. Também pode fazê-lo manualmente em qualquer altura."
       open_meeting_link: "Entrar na Reunião"
       invited:
         summary: "%{actor} enviou-lhe um convite para a reunião %{title}"
@@ -137,7 +146,7 @@ pt-PT:
     types:
       classic: "Clássico"
       classic_text: "Organize a sua reunião numa agenda e protocolo de texto formatáveis."
-      structured: "Dinâmico"
+      structured: "Uma vez"
       structured_text: "Organize a sua reunião como uma lista de itens da agenda, associando-os opcionalmente a um pacote de trabalho."
       structured_text_copy: "Atualmente, a cópia de uma reunião não copia os itens associados da agenda da reunião, apenas os detalhes"
     copied: "Copiado da reunião #%{id}"

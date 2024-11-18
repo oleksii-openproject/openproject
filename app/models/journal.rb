@@ -102,6 +102,10 @@ class Journal < ApplicationRecord
 
   has_many :notifications, dependent: :destroy
 
+  include ::Scopes::Scoped
+
+  scopes :with_sequence_version
+
   # Scopes to all journals excluding the initial journal - useful for change
   # logs like the history on issue#show
   scope :changing, -> { where(["version > 1"]) }

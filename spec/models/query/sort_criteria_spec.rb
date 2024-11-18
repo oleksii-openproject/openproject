@@ -87,7 +87,7 @@ RSpec.describe Query::SortCriteria do
 
       it "adds the order handling (and the default order by id)" do
         expect(subject)
-          .to eq [["work_packages.start_date NULLS LAST"], ["work_packages.id DESC"]]
+          .to eq [["work_packages.start_date"], ["work_packages.id DESC"]]
       end
     end
 
@@ -96,7 +96,7 @@ RSpec.describe Query::SortCriteria do
 
       it "adds the order handling (and the default order by id)" do
         expect(subject)
-          .to eq [["work_packages.start_date NULLS LAST"], ["work_packages.id DESC"]]
+          .to eq [["work_packages.start_date"], ["work_packages.id DESC"]]
       end
     end
 
@@ -105,7 +105,7 @@ RSpec.describe Query::SortCriteria do
 
       it "adds the order handling (and the default order by id)" do
         expect(subject)
-          .to eq [["work_packages.start_date DESC NULLS LAST"], ["work_packages.id DESC"]]
+          .to eq [["work_packages.start_date DESC"], ["work_packages.id DESC"]]
       end
     end
 
@@ -114,8 +114,8 @@ RSpec.describe Query::SortCriteria do
 
       it "adds the order handling (and the default order by id)" do
         expect(subject)
-          .to eq [["name DESC NULLS LAST"],
-                  ["work_packages.start_date NULLS LAST"],
+          .to eq [["name DESC"],
+                  ["work_packages.start_date"],
                   ["work_packages.id DESC"]]
       end
     end

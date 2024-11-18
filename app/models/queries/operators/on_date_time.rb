@@ -39,10 +39,7 @@ module Queries::Operators
       lower_boundary = datetime
       upper_boundary = datetime + 24.hours
 
-      datetime_range_clause(db_table,
-                            db_field,
-                            lower_boundary,
-                            upper_boundary)
+      datetime_range_clause(db_table, db_field, lower_boundary, upper_boundary)
     end
   end
 end

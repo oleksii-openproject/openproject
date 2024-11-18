@@ -75,6 +75,7 @@ module API
               ::API::V3::WorkPackages::EagerLoading::Hierarchy,
               ::API::V3::WorkPackages::EagerLoading::Ancestor,
               ::API::V3::WorkPackages::EagerLoading::Project,
+              ::API::V3::WorkPackages::EagerLoading::Principals,
               ::API::V3::WorkPackages::EagerLoading::Checksum,
               ::API::V3::WorkPackages::EagerLoading::CustomValue,
               ::API::V3::WorkPackages::EagerLoading::CustomAction,

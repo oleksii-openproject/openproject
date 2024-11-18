@@ -33,7 +33,7 @@ fr:
           unmatched_private_key: "n'appartient pas au certificat donné"
   saml:
     menu_title: Fournisseurs SAML
-    delete_title: Delete SAML provider
+    delete_title: Supprimer le fournisseur SAML
     info:
       title: "Paramètres de configuration du protocole SAML"
       description: >
@@ -54,13 +54,13 @@ fr:
       label_add_new: Nouveau fournisseur d'identité SAML
       label_edit: Modifier le fournisseur d'identité SAML %{name}
       label_uid: Identifiant de l'utilisateur interne
-      label_mapping: Mappage
+      label_mapping: Mapping
       label_requested_attribute_for: "Attribut demandé pour : %{attribute}"
       no_results_table: Aucun fournisseur d'identité SAML n'a encore été défini.
       plural: Fournisseurs d'identité SAML
       singular: Fournisseur d'identité SAML
       requested_attributes: Attributs demandés
-      attribute_mapping: Mappage des attributs
+      attribute_mapping: Mapping des attributs
       attribute_mapping_text: >
         Les champs suivants contrôlent quels attributs fournis par le fournisseur d'identité SAML sont utilisés pour fournir des attributs d'utilisateur dans OpenProject
       metadata:
@@ -98,7 +98,7 @@ fr:
       display_name: >
         Le nom du fournisseur. Il sera affiché comme bouton de connexion et dans la liste des fournisseurs.
       metadata_none: >
-        Your identity provider does not have a metadata endpoint or XML download option. You can configure it manually.
+        Votre fournisseur d'identité n'a pas de point de terminaison des métadonnées ou d'option de téléchargement XML. Vous pouvez le configurer manuellement.
       metadata_url: >
         Votre fournisseur d'identité fournit une URL de métadonnées.
       metadata_xml: >

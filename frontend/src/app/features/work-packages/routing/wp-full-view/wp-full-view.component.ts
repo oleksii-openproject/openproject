@@ -30,6 +30,7 @@ import { WorkPackageResource } from 'core-app/features/hal/resources/work-packag
 import { StateService } from '@uirouter/core';
 import {
   Component,
+  HostListener,
   Injector,
   Input,
   OnInit,
@@ -83,6 +84,14 @@ export class WorkPackagesFullViewComponent extends WorkPackageSingleViewBase imp
     readonly currentUserService:CurrentUserService,
   ) {
     super(injector);
+  }
+
+  // enable other parts of the application to trigger an immediate update
+  // e.g. a stimulus controller
+  // currently used by the new activities tab which does it's own polling
+  @HostListener('document:ian-update-immediate')
+  triggerImmediateUpdate() {
+    this.storeService.reload();
   }
 
   ngOnInit():void {

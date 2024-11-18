@@ -88,13 +88,19 @@ ca:
   label_meeting: "Reunió"
   label_meeting_plural: "Reunions"
   label_meeting_new: "Nova reunió"
+  label_meeting_new_one_time: "New one-time meeting"
+  label_meeting_create: "Create meeting"
+  label_meeting_copy: "Copy meeting"
   label_meeting_edit: "Editar reunió"
   label_meeting_agenda: "Agenda"
   label_meeting_minutes: "Acta"
   label_meeting_close: "Tanca"
   label_meeting_open: "Obre"
+  label_meeting_index_delete: "Delete"
+  label_meeting_open_this_meeting: "Open this meeting"
   label_meeting_agenda_close: "Tanca l'agenda per començar l'acta"
   label_meeting_date_time: "Data/Hora"
+  label_meeting_date_and_time: "Date and time"
   label_meeting_diff: "Diferència"
   label_upcoming_meetings: "Pròximes reunions"
   label_past_meetings: "Reunions passades"
@@ -119,11 +125,14 @@ ca:
       attachments: "Copia adjunts"
       attachments_text: "Copia tots els fitxers adjunts a la nova reunió"
       agenda: "Copia l'agenda"
+      agenda_items: "Copy agenda items"
       agenda_text: "Copia l'agenda de l'antiga reunió"
+      participants: "Copy list of participants"
     email:
       send_emails: "Email participants"
       send_invitation_emails: >
         Send an email invitation immediately to the participants selected above. You can also do this manually at any time later.
+      send_invitation_emails_structured: "Send an email invitation immediately to all participants. You can also do this manually at any time later."
       open_meeting_link: "Reunió oberta"
       invited:
         summary: "%{actor} us ha enviat una invitació per a la reunió %{title}"
@@ -137,7 +146,7 @@ ca:
     types:
       classic: "Clàssica"
       classic_text: "Organitzeu la vostra reunió en una agenda i un protocol de text formatejables."
-      structured: "Dinàmica"
+      structured: "One-time"
       structured_text: "Organitza la vostra reunió com una llista d'elements de l'agenda, enllaçant-los opcionalment a un paquet de treball."
       structured_text_copy: "Actualment en copiar una reunió  no es copiaran els elements associats a l'agenda de la reunió, només els detalls."
     copied: "Copiat de la reunió #%{id}"

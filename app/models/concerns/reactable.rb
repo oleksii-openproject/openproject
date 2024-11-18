@@ -94,10 +94,4 @@ module Reactable
       end
     end
   end
-
-  def available_emoji_reactions
-    (EmojiReaction.reactions.values - emoji_reactions.pluck(:reaction).uniq).index_by do |reaction|
-      EmojiReaction.emoji(reaction)
-    end.sort
-  end
 end

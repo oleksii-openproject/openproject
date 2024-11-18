@@ -63,9 +63,18 @@ RSpec.describe EmojiReaction do
     end
   end
 
-  describe ".available_emojis" do
-    it "returns the available emojis as HTML codes" do
-      expect(described_class.available_emojis).to eq(["👍", "👎", "😄", "😕", "❤️", "🎉", "🚀", "👀"])
+  describe ".available_emoji_reactions" do
+    it "returns a sorted list of available emoji reactions" do
+      expect(described_class.available_emoji_reactions).to eq(
+        [["❤️", :heart],
+         ["🎉", :party_popper],
+         ["👀", :eyes],
+         ["👍", :thumbs_up],
+         ["👎", :thumbs_down],
+         ["😄", :grinning_face_with_smiling_eyes],
+         ["😕", :confused_face],
+         ["🚀", :rocket]]
+      )
     end
   end
 

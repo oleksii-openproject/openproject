@@ -31,6 +31,8 @@
 module CustomFields
   module Hierarchy
     class UpdateItemContract < Dry::Validation::Contract
+      config.messages.backend = :i18n
+
       params do
         required(:item).filled(type?: CustomField::Hierarchy::Item)
         optional(:label).filled(:string)
@@ -38,21 +40,20 @@ module CustomFields
       end
 
       rule(:item) do
-        key.failure("must exist") if value.new_record?
-        key.failure("must not be a root item") if value.root?
+        key.failure(:not_persisted) if value.new_record?
+        key.failure(:root_item) if value.root?
       end
 
       rule(:label) do
-        next unless key?
+        next if schema_error?(:item)
 
-        label_already_exists = CustomField::Hierarchy::Item
-          .where(parent_id: values[:item].parent_id, label: value)
-          .where.not(id: values[:item].id)
-          .exists?
+        key.failure(:not_unique) if values[:item].siblings.exists?(label: value)
+      end
 
-        if label_already_exists
-          key.failure("must be unique at the same hierarchical level")
-        end
+      rule(:short) do
+        next if schema_error?(:item)
+
+        key.failure(:not_unique) if values[:item].siblings.exists?(short: value)
       end
     end
   end

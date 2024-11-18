@@ -91,6 +91,7 @@ module Pages
       subject.send_keys :enter
 
       sleep 1
+      wait_for_network_idle
 
       expect_card(list_name, card_title)
     end

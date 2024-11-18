@@ -53,7 +53,7 @@ RSpec.describe "Emoji reactions on work package activity", :js, :with_cuprite,
     end
 
     before do
-      first_comment
+      first_comment.emoji_reactions.destroy_all
 
       create(:emoji_reaction, user: admin, reactable: first_comment, reaction: :thumbs_down)
 
@@ -68,6 +68,18 @@ RSpec.describe "Emoji reactions on work package activity", :js, :with_cuprite,
 
       activity_tab.remove_emoji_reaction_for_journal(first_comment, "👎")
       activity_tab.expect_emoji_reactions_for_journal(first_comment, "👍" => 1, "👎" => 1)
+    end
+
+    it "can add or remove emoji reactions from overlay" do
+      activity_tab.add_emoji_reaction_in_overlay(first_comment, "🚀")
+      activity_tab.expect_emoji_reactions_for_journal(first_comment, "👎" => 1, "🚀" => 1)
+      activity_tab.expect_emoji_reactions_highlited_in_overlay(first_comment, "🚀") do
+        thumbs_down = page.find_test_selector("overlay-reaction-thumbs_down")
+        expect(thumbs_down).to have_no_css(".color-bg-accent")
+      end
+
+      activity_tab.within_emoji_reactions_overlay { click_on "🚀" }
+      activity_tab.expect_emoji_reactions_for_journal(first_comment, "👎" => 1)
     end
   end
 

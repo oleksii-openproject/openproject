@@ -35,122 +35,127 @@ module Admin
         include OpTurbo::ComponentStream
         include OpTurbo::DialogStreamHelper
 
-        layout "admin"
-
+        layout :admin_or_frame_layout
         model_object CustomField
 
-        before_action :require_admin
-        before_action :find_model_object, except: %i[destroy deletion_dialog]
-        before_action :find_custom_field_and_item, only: %i[destroy deletion_dialog edit update]
+        before_action :require_admin, :find_model_object, :find_active_item
 
         menu_item :custom_fields
 
+        # See https://github.com/hotwired/turbo-rails?tab=readme-ov-file#a-note-on-custom-layouts
+        def admin_or_frame_layout
+          return "turbo_rails/frame" if turbo_frame_request?
+
+          "admin"
+        end
+
         def index; end
 
+        def show
+          render action: :index
+        end
+
         def new
-          update_via_turbo_stream(component: ItemsComponent.new(custom_field: @custom_field,
-                                                                new_item_form_data: { show: true }))
-          respond_with_turbo_streams
+          @new_item = ::CustomField::Hierarchy::Item.new(parent: @active_item, sort_order: params[:position])
         end
 
-        def edit
-          update_via_turbo_stream(
-            component: ItemComponent.new(
-              custom_field: @custom_field,
-              hierarchy_item: @hierarchy_item,
-              edit_item_form_data: { show: true }
-            )
-          )
-
-          respond_with_turbo_streams
-        end
+        def edit; end
 
         def create
-          ::CustomFields::Hierarchy::HierarchicalItemService
-            .new
+          item_service
             .insert_item(**item_input)
             .either(
-              ->(_) do
-                update_via_turbo_stream(component: ItemsComponent.new(custom_field: @custom_field,
-                                                                      new_item_form_data: { show: true }))
+              lambda do |item|
+                redirect_to(
+                  new_child_custom_field_item_path(@custom_field, @active_item, position: item.sort_order + 1),
+                  status: :see_other
+                )
               end,
-              ->(validation_result) { add_errors_to_new_form(validation_result) }
+              lambda do |validation_result|
+                add_errors_to_form(validation_result)
+                render :new
+              end
             )
-
-          respond_with_turbo_streams
         end
 
         def update
-          ::CustomFields::Hierarchy::HierarchicalItemService
-            .new
-            .update_item(item: @hierarchy_item, label: item_input[:label], short: item_input[:short])
+          item_service
+            .update_item(item: @active_item, label: item_input[:label], short: item_input[:short])
             .either(
-              ->(_) do
-                update_via_turbo_stream(component: ItemComponent.new(custom_field: @custom_field,
-                                                                     hierarchy_item: @hierarchy_item))
+              lambda do |_|
+                redirect_to(custom_field_item_path(@custom_field, @active_item.parent), status: :see_other)
               end,
-              ->(validation_result) { add_errors_to_edit_form(validation_result) }
+              lambda do |validation_result|
+                add_errors_to_edit_form(validation_result)
+                render action: :edit
+              end
             )
+        end
 
-          respond_with_turbo_streams
+        def move
+          item_service
+            .reorder_item(item: @active_item, new_sort_order: params.require(:new_sort_order))
+
+          redirect_to(custom_field_item_path(@custom_field, @active_item.parent), status: :see_other)
         end
 
         def destroy
-          ::CustomFields::Hierarchy::HierarchicalItemService
-            .new
-            .delete_branch(item: @hierarchy_item)
+          item_service
+            .delete_branch(item: @active_item)
             .either(
-              ->(_) { update_via_turbo_stream(component: ItemsComponent.new(custom_field: @custom_field)) },
+              ->(_) { update_via_turbo_stream(component: ItemsComponent.new(item: @active_item.parent)) },
               ->(errors) { update_flash_message_via_turbo_stream(message: errors.full_messages, scheme: :danger) }
             )
 
-          respond_with_turbo_streams
+          respond_with_turbo_streams(&:html)
         end
 
         def deletion_dialog
-          respond_with_dialog DeleteItemDialogComponent.new(custom_field: @custom_field,
-                                                            hierarchy_item: @hierarchy_item)
+          respond_with_dialog DeleteItemDialogComponent.new(custom_field: @custom_field, hierarchy_item: @active_item)
         end
 
         private
 
+        def item_service
+          ::CustomFields::Hierarchy::HierarchicalItemService.new
+        end
+
         def item_input
-          input = { parent: @custom_field.hierarchy_root, label: params[:label] }
-          input[:short] = params[:short] unless params[:short].empty?
+          input = { parent: @active_item, label: params[:label] }
+          input[:short] = params[:short] if params[:short].present?
+          input[:sort_order] = params[:sort_order].to_i if params[:sort_order].present?
 
           input
         end
 
-        def add_errors_to_new_form(validation_result)
+        def add_errors_to_form(validation_result)
+          @new_item = ::CustomField::Hierarchy::Item.new(**item_input)
           validation_result.errors(full: true).to_h.each do |attribute, errors|
-            @custom_field.errors.add(attribute, errors.join(", "))
+            @new_item.errors.add(attribute, errors.join(", "))
           end
-
-          new_item_form_data = { show: true, label: validation_result[:label], short: validation_result[:short] }
-          update_via_turbo_stream(component: ItemsComponent.new(custom_field: @custom_field, new_item_form_data:),
-                                  status: :unprocessable_entity)
         end
 
         def add_errors_to_edit_form(validation_result)
+          @active_item.assign_attributes(**validation_result.to_h.slice(:label, :short))
+
           validation_result.errors(full: true).to_h.each do |attribute, errors|
-            @hierarchy_item.errors.add(attribute, errors.join(", "))
+            @active_item.errors.add(attribute, errors.join(", "))
           end
-
-          edit_item_form_data = { show: true, label: validation_result[:label], short: validation_result[:short] }
-          update_via_turbo_stream(
-            component: ItemComponent.new(custom_field: @custom_field, hierarchy_item: @hierarchy_item, edit_item_form_data:),
-            status: :unprocessable_entity
-          )
         end
 
-        def find_model_object(object_id = :custom_field_id)
-          super
+        def find_model_object
+          @object = CustomField.hierarchy_root_and_children.find(params[:custom_field_id])
           @custom_field = @object
+        rescue ActiveRecord::RecordNotFound
+          render_404
         end
 
-        def find_custom_field_and_item
-          @custom_field = CustomField.find(params[:custom_field_id])
-          @hierarchy_item = CustomField::Hierarchy::Item.find(params[:id])
+        def find_active_item
+          @active_item = if params[:id].present?
+                           CustomField::Hierarchy::Item.including_children.find(params[:id])
+                         else
+                           @object.hierarchy_root
+                         end
         rescue ActiveRecord::RecordNotFound
           render_404
         end

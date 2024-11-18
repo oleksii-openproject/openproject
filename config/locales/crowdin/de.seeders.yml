@@ -68,7 +68,7 @@ de:
         item_0:
           name: Mitarbeiter und Projektmanager
         item_1:
-          name: Standard global role
+          name: Globale Standardrolle
     standard:
       priorities:
         item_0:

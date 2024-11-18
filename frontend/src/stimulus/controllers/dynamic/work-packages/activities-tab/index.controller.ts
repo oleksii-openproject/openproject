@@ -4,7 +4,6 @@ import {
 } from 'core-app/shared/components/editor/components/ckeditor/ckeditor.types';
 import { TurboRequestsService } from 'core-app/core/turbo/turbo-requests.service';
 import { ApiV3Service } from 'core-app/core/apiv3/api-v3.service';
-import { IanCenterService } from 'core-app/features/in-app-notifications/center/state/ian-center.service';
 
 interface CustomEventWithIdParam extends Event {
   params:{
@@ -21,6 +20,8 @@ export default class IndexController extends Controller {
     userId: Number,
     workPackageId: Number,
     notificationCenterPathName: String,
+    lastServerTimestamp: String,
+    showConflictFlashMessageUrl: String,
   };
 
   static targets = ['journalsContainer', 'buttonRow', 'formRow', 'form', 'reactionButton'];
@@ -33,62 +34,46 @@ export default class IndexController extends Controller {
 
   declare updateStreamsUrlValue:string;
   declare sortingValue:string;
-  declare lastUpdateTimestamp:string;
+  declare lastServerTimestampValue:string;
   declare intervallId:number;
   declare pollingIntervalInMsValue:number;
   declare notificationCenterPathNameValue:string;
   declare filterValue:string;
   declare userIdValue:number;
   declare workPackageIdValue:number;
-  declare localStorageKey:string;
-
+  declare rescuedEditorDataKey:string;
+  declare latestKnownChangesetUpdatedAtKey:string;
+  declare showConflictFlashMessageUrlValue:string;
   private handleWorkPackageUpdateBound:EventListener;
   private handleVisibilityChangeBound:EventListener;
   private rescueEditorContentBound:EventListener;
 
   private onSubmitBound:EventListener;
   private adjustMarginBound:EventListener;
-  private hideEditorBound:EventListener;
+  private onBlurEditorBound:EventListener;
+  private onFocusEditorBound:EventListener;
 
   private saveInProgress:boolean;
   private updateInProgress:boolean;
   private turboRequests:TurboRequestsService;
 
   private apiV3Service:ApiV3Service;
-  private ianCenterService:IanCenterService;
 
   async connect() {
     const context = await window.OpenProject.getPluginContext();
     this.turboRequests = context.services.turboRequests;
     this.apiV3Service = context.services.apiV3Service;
-    this.ianCenterService = context.services.ianCenter;
 
-    this.setLocalStorageKey();
-    this.setLastUpdateTimestamp();
+    this.setLocalStorageKeys();
+    this.handleStemVisibility();
     this.setupEventListeners();
     this.handleInitialScroll();
-    this.startPolling();
     this.populateRescuedEditorContent();
     this.markAsConnected();
+    this.safeUpdateWorkPackageFormsWithStateChecks(); // required if switching back to the activities tab from another tab
 
-    // Towards using updateDisplayedWorkPackageAttributes here:
-    //
-    // this ideally only is triggered when switched back to the activities tab from e.g. the "Files" tab
-    // in order to make sure that the state of the displayed work package attributes is aligned with the state of the refreshed journal entries
-    //
-    // this is necessary because the polling for updates (and related work package attribute updates) only happens when the activity tab is connected
-    //
-    // without any further checks, this update is currently triggered even after the very first rendering of the activity tab
-    //
-    // this is not ideal but I don't want to introduce another hacky "ui-state-check" for now
-    this.updateDisplayedWorkPackageAttributes();
-
-    // something like below could be used to check for the ui state in the disconnect method
-    // in order to identify if the activity tab was connected at least once
-    // and then call updateDisplayedWorkPackageAttributes accordingly after an "implicit" tab change:
-    //
-    // const workPackageContainer = document.getElementsByTagName('wp-full-view-entry')[0] as HTMLElement;
-    // workPackageContainer.dataset.activityTabWasConnected = 'true';
+    this.setLatestKnownChangesetUpdatedAt();
+    this.startPolling();
   }
 
   disconnect() {
@@ -108,10 +93,11 @@ export default class IndexController extends Controller {
     (this.element as HTMLElement).dataset.stimulusControllerConnected = 'false';
   }
 
-  private setLocalStorageKey() {
+  private setLocalStorageKeys() {
     // scoped by user id in order to avoid data leakage when a user logs out and another user logs in on the same browser
     // TODO: when a user logs out, the data should be removed anyways in order to avoid data leakage
-    this.localStorageKey = `work-package-${this.workPackageIdValue}-rescued-editor-data-${this.userIdValue}`;
+    this.rescuedEditorDataKey = `work-package-${this.workPackageIdValue}-rescued-editor-data-${this.userIdValue}`;
+    this.latestKnownChangesetUpdatedAtKey = `work-package-${this.workPackageIdValue}-latest-known-changeset-updated-at-${this.userIdValue}`;
   }
 
   private setupEventListeners() {
@@ -120,12 +106,14 @@ export default class IndexController extends Controller {
     this.rescueEditorContentBound = () => { void this.rescueEditorContent(); };
 
     document.addEventListener('work-package-updated', this.handleWorkPackageUpdateBound);
+    document.addEventListener('work-package-notifications-updated', this.handleWorkPackageUpdateBound);
     document.addEventListener('visibilitychange', this.handleVisibilityChangeBound);
     document.addEventListener('beforeunload', this.rescueEditorContentBound);
   }
 
   private removeEventListeners() {
     document.removeEventListener('work-package-updated', this.handleWorkPackageUpdateBound);
+    document.removeEventListener('work-package-notifications-updated', this.handleWorkPackageUpdateBound);
     document.removeEventListener('visibilitychange', this.handleVisibilityChangeBound);
     document.removeEventListener('beforeunload', this.rescueEditorContentBound);
   }
@@ -137,6 +125,28 @@ export default class IndexController extends Controller {
       void this.updateActivitiesList();
       this.startPolling();
     }
+  }
+
+  private safeUpdateWorkPackageFormsWithStateChecks() {
+    const latestKnownChangesetIsOutdated = this.latestKnownChangesetOutdated();
+    const latestChangesetIsFromOtherUser = this.latestChangesetFromOtherUser();
+
+    if (latestKnownChangesetIsOutdated && latestChangesetIsFromOtherUser) {
+      this.safeUpdateWorkPackageForms();
+    }
+  }
+
+  private latestKnownChangesetOutdated():boolean {
+    const latestKnownChangesetUpdatedAt = this.getLatestKnownChangesetUpdatedAt();
+    const latestChangesetUpdatedAt = this.parseLatestChangesetUpdatedAtFromDom();
+
+    return !!(latestKnownChangesetUpdatedAt && latestChangesetUpdatedAt && (latestKnownChangesetUpdatedAt < latestChangesetUpdatedAt));
+  }
+
+  private latestChangesetFromOtherUser():boolean {
+    const latestChangesetUserId = this.parseLatestChangesetUserIdFromDom();
+
+    return !!(latestChangesetUserId && (latestChangesetUserId !== this.userIdValue));
   }
 
   private startPolling() {
@@ -153,6 +163,8 @@ export default class IndexController extends Controller {
   }
 
   handleWorkPackageUpdate(_event?:Event):void {
+    // wait statically as the events triggering this, fire when an async request was started, not ended
+    // I don't see a way to detect the end of the async requests reliably, thus the static wait
     setTimeout(() => this.updateActivitiesList(), 2000);
   }
 
@@ -165,11 +177,11 @@ export default class IndexController extends Controller {
     // otherwise the browser will perform an auto scroll to the before focused button after the stream update was applied
     this.unfocusReactionButtons();
 
-    const journalsContainerAtBottom = this.isJournalsContainerScrolledToBottom(this.journalsContainerTarget);
+    const journalsContainerAtBottom = this.isJournalsContainerScrolledToBottom();
 
     void this.performUpdateStreamsRequest(this.prepareUpdateStreamsUrl())
-    .then((html) => {
-      this.handleUpdateStreamsResponse(html as string, journalsContainerAtBottom);
+    .then(({ html, headers }) => {
+      this.handleUpdateStreamsResponse(html, headers, journalsContainerAtBottom);
     }).catch((error) => {
       console.error('Error updating activities list:', error);
     }).finally(() => {
@@ -185,29 +197,86 @@ export default class IndexController extends Controller {
     const url = new URL(this.updateStreamsUrlValue);
     url.searchParams.set('sortBy', this.sortingValue);
     url.searchParams.set('filter', this.filterValue);
-    url.searchParams.set('last_update_timestamp', this.lastUpdateTimestamp);
+    url.searchParams.set('last_update_timestamp', this.lastServerTimestampValue);
     return url.toString();
   }
 
-  private performUpdateStreamsRequest(url:string):Promise<unknown> {
+  private performUpdateStreamsRequest(url:string):Promise<{ html:string, headers:Headers }> {
     return this.turboRequests.request(url, {
       method: 'GET',
       headers: {
         'X-CSRF-Token': (document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement).content,
       },
-    });
+    }, true); // suppress error toast in polling to avoid spamming the user when having e.g. network issues
   }
 
-  private handleUpdateStreamsResponse(html:string, journalsContainerAtBottom:boolean) {
-    this.setLastUpdateTimestamp();
-    this.checkForAndHandleWorkPackageUpdate(html);
-    this.checkForNewNotifications(html);
-    this.performAutoScrolling(html, journalsContainerAtBottom);
+  private handleUpdateStreamsResponse(html:string, headers:Headers, journalsContainerAtBottom:boolean) {
+    // the timeout is require in order to give the Turb.renderStream method enough time to render the new journals
+    // the methods below partially rely on the DOM to be updated
+    // a specific signal would be way better than a static timeout, but I couldn't find a suitable one
+    setTimeout(() => {
+      this.handleStemVisibility();
+      this.setLastServerTimestampViaHeaders(headers);
+      this.checkForAndHandleWorkPackageUpdate(html);
+      this.checkForNewNotifications(html);
+      this.performAutoScrolling(html, journalsContainerAtBottom);
+      this.setLatestKnownChangesetUpdatedAt();
+    }, 100);
+  }
+
+  private getLatestKnownChangesetUpdatedAt():Date | null {
+    const latestKnownChangesetUpdatedAt = localStorage.getItem(this.latestKnownChangesetUpdatedAtKey);
+    return latestKnownChangesetUpdatedAt ? new Date(latestKnownChangesetUpdatedAt) : null;
+  }
+
+  private setLatestKnownChangesetUpdatedAt() {
+    const latestChangesetUpdatedAt = this.parseLatestChangesetUpdatedAtFromDom();
+
+    if (latestChangesetUpdatedAt) {
+      localStorage.setItem(this.latestKnownChangesetUpdatedAtKey, latestChangesetUpdatedAt.toString());
+    }
+  }
+
+  private parseLatestChangesetUpdatedAtFromDom():Date | null {
+    const elements = this.element.querySelectorAll('[data-journal-with-changeset-updated-at]');
+
+    const dates = Array.from(elements)
+      .map((element) => element.getAttribute('data-journal-with-changeset-updated-at'))
+      .filter((dateStr):dateStr is string => dateStr !== null)
+      .map((dateStr) => new Date(parseInt(dateStr, 10) * 1000))
+      .filter((date) => !Number.isNaN(date.getTime())); // filter out invalid dates
+
+    if (dates.length === 0) return null;
+
+    // find the latest date
+    return new Date(Math.max(...dates.map((date) => date.getTime())));
+  }
+
+  private parseLatestChangesetUserIdFromDom():number | null {
+    const latestChangesetUpdatedAt = this.parseLatestChangesetUpdatedAtFromDom();
+    if (!latestChangesetUpdatedAt) return null;
+
+    const railsTimestamp = latestChangesetUpdatedAt.getTime() / 1000;
+    const userId = this.element
+      .querySelector(`[data-journal-with-changeset-updated-at="${railsTimestamp}"]`)
+      ?.getAttribute('data-journal-with-changeset-user-id');
+
+    return userId ? parseInt(userId, 10) : null;
   }
 
   private checkForAndHandleWorkPackageUpdate(html:string) {
     if (html.includes('work-packages-activities-tab-journals-item-component-details--journal-detail-container')) {
-      this.updateDisplayedWorkPackageAttributes();
+      if (this.latestChangesetFromOtherUser()) {
+        this.safeUpdateWorkPackageForms();
+      }
+    }
+  }
+
+  private safeUpdateWorkPackageForms() {
+    if (this.anyInlineEditActiveInWpSingleView()) {
+      this.showConflictFlashMessage();
+    } else {
+      this.updateWorkPackageForms();
     }
   }
 
@@ -217,13 +286,30 @@ export default class IndexController extends Controller {
     }
   }
 
-  private updateDisplayedWorkPackageAttributes() {
+  private anyInlineEditActiveInWpSingleView():boolean {
+    const wpSingleViewElement = document.querySelector('wp-single-view');
+    if (wpSingleViewElement) {
+      return wpSingleViewElement.querySelector('.inline-edit--active-field') !== null;
+    }
+    return false;
+  }
+
+  private showConflictFlashMessage() {
+    // currently we do not have a programmatic way to show the primer flash messages
+    // so we just do a request to the server to show it
+    // should be refactored once we have a programmatic way to show the primer flash messages!
+    void this.turboRequests.request(`${this.showConflictFlashMessageUrlValue}?scheme=warning`, {
+      method: 'GET',
+    });
+  }
+
+  private updateWorkPackageForms() {
     const wp = this.apiV3Service.work_packages.id(this.workPackageIdValue);
     void wp.refresh();
   }
 
   private updateNotificationCenter() {
-    this.ianCenterService.updateImmediate();
+    document.dispatchEvent(new Event('ian-update-immediate'));
   }
 
   private performAutoScrolling(html:string, journalsContainerAtBottom:boolean) {
@@ -231,17 +317,15 @@ export default class IndexController extends Controller {
     if (!(html.includes('action="append"') || html.includes('action="prepend"') || html.includes('action="update"'))) {
       return;
     }
-    // the timeout is require in order to give the Turb.renderStream method enough time to render the new journals
-    setTimeout(() => {
-      if (this.sortingValue === 'asc' && journalsContainerAtBottom) {
-        // scroll to (new) bottom if sorting is ascending and journals container was already at bottom before a new activity was added
-        if (this.isMobile()) {
-          this.scrollInputContainerIntoView(300);
-        } else {
-          this.scrollJournalContainer(this.journalsContainerTarget, true, true);
-        }
+
+    if (this.sortingValue === 'asc' && journalsContainerAtBottom) {
+      // scroll to (new) bottom if sorting is ascending and journals container was already at bottom before a new activity was added
+      if (this.isMobile()) {
+        this.scrollInputContainerIntoView(300);
+      } else {
+        this.scrollJournalContainer(true, true);
       }
-    }, 100);
+    }
   }
 
   private rescueEditorContent() {
@@ -249,16 +333,16 @@ export default class IndexController extends Controller {
     if (ckEditorInstance) {
       const data = ckEditorInstance.getData({ trim: false });
       if (data.length > 0) {
-        localStorage.setItem(this.localStorageKey, data);
+        localStorage.setItem(this.rescuedEditorDataKey, data);
       }
     }
   }
 
   private populateRescuedEditorContent() {
-    const rescuedEditorContent = localStorage.getItem(this.localStorageKey);
+    const rescuedEditorContent = localStorage.getItem(this.rescuedEditorDataKey);
     if (rescuedEditorContent) {
       this.openEditorWithInitialData(rescuedEditorContent);
-      localStorage.removeItem(this.localStorageKey);
+      localStorage.removeItem(this.rescuedEditorDataKey);
     }
   }
 
@@ -272,7 +356,7 @@ export default class IndexController extends Controller {
   }
 
   private scrollToActivity(activityId:string) {
-    const scrollableContainer = jQuery(this.element).scrollParent()[0];
+    const scrollableContainer = this.getScrollableContainer();
     const activityElement = document.getElementById(`activity-anchor-${activityId}`);
 
     if (activityElement && scrollableContainer) {
@@ -281,7 +365,7 @@ export default class IndexController extends Controller {
   }
 
   private scrollToBottom() {
-    const scrollableContainer = jQuery(this.element).scrollParent()[0];
+    const scrollableContainer = this.getScrollableContainer();
     if (scrollableContainer) {
       scrollableContainer.scrollTop = scrollableContainer.scrollHeight;
     }
@@ -313,6 +397,19 @@ export default class IndexController extends Controller {
     return this.element.querySelector('.work-packages-activities-tab-journals-new-component');
   }
 
+  private getScrollableContainer():HTMLElement | null {
+    if (this.isWithinNotificationCenter() || this.isWithinSplitScreen()) {
+      // valid for both mobile and desktop
+      return document.querySelector('.work-package-details-tab') as HTMLElement;
+    }
+    if (this.isMobile()) {
+      return document.querySelector('#content-body') as HTMLElement;
+    }
+
+    // valid for desktop
+    return document.querySelector('.tabcontent') as HTMLElement;
+  }
+
   // Code Maintenance: Get rid of this JS based view port checks when activities are rendered in fully primierized activity tab in all contexts
   private isMobile():boolean {
     return window.innerWidth < 1279;
@@ -322,16 +419,22 @@ export default class IndexController extends Controller {
     return window.location.pathname.includes(this.notificationCenterPathNameValue);
   }
 
+  private isWithinSplitScreen():boolean {
+    return window.location.pathname.includes('work_packages/details');
+  }
+
   private addEventListenersToCkEditorInstance() {
     this.onSubmitBound = () => { void this.onSubmit(); };
     this.adjustMarginBound = () => { void this.adjustJournalContainerMargin(); };
-    this.hideEditorBound = () => { void this.hideEditorIfEmpty(); };
+    this.onBlurEditorBound = () => { void this.onBlurEditor(); };
+    this.onFocusEditorBound = () => { void this.onFocusEditor(); };
 
     const editorElement = this.getCkEditorElement();
     if (editorElement) {
       editorElement.addEventListener('saveRequested', this.onSubmitBound);
       editorElement.addEventListener('editorKeyup', this.adjustMarginBound);
-      editorElement.addEventListener('editorBlur', this.hideEditorBound);
+      editorElement.addEventListener('editorBlur', this.onBlurEditorBound);
+      editorElement.addEventListener('editorFocus', this.onFocusEditorBound);
     }
   }
 
@@ -340,7 +443,8 @@ export default class IndexController extends Controller {
     if (editorElement) {
       editorElement.removeEventListener('saveRequested', this.onSubmitBound);
       editorElement.removeEventListener('editorKeyup', this.adjustMarginBound);
-      editorElement.removeEventListener('editorBlur', this.hideEditorBound);
+      editorElement.removeEventListener('editorBlur', this.onBlurEditorBound);
+      editorElement.removeEventListener('editorFocus', this.onFocusEditorBound);
     }
   }
 
@@ -350,31 +454,25 @@ export default class IndexController extends Controller {
     this.journalsContainerTarget.style.marginBottom = `${this.formRowTarget.clientHeight + 29}px`;
   }
 
-  private isJournalsContainerScrolledToBottom(journalsContainer:HTMLElement) {
+  private isJournalsContainerScrolledToBottom() {
     let atBottom = false;
     // we have to handle different scrollable containers for different viewports/pages in order to idenfity if the user is at the bottom of the journals
     // DOM structure different for notification center and workpackage detail view as well
-    // seems way to hacky for me, but I couldn't find a better solution
-    if (this.isMobile() && !this.isWithinNotificationCenter()) {
-      const scrollableContainer = document.querySelector('#content-body') as HTMLElement;
-
-      atBottom = (scrollableContainer.scrollTop + scrollableContainer.clientHeight + 10) >= scrollableContainer.scrollHeight;
-    } else {
-      const scrollableContainer = jQuery(journalsContainer).scrollParent()[0];
-
+    const scrollableContainer = this.getScrollableContainer();
+    if (scrollableContainer) {
       atBottom = (scrollableContainer.scrollTop + scrollableContainer.clientHeight + 10) >= scrollableContainer.scrollHeight;
     }
 
     return atBottom;
   }
 
-  private scrollJournalContainer(journalsContainer:HTMLElement, toBottom:boolean, smooth:boolean = false) {
-    const scrollableContainer = jQuery(journalsContainer).scrollParent()[0];
+  private scrollJournalContainer(toBottom:boolean, smooth:boolean = false) {
+    const scrollableContainer = this.getScrollableContainer();
     if (scrollableContainer) {
       if (smooth) {
         scrollableContainer.scrollTo({
           top: toBottom ? scrollableContainer.scrollHeight : 0,
-        behavior: 'smooth',
+          behavior: 'smooth',
         });
       } else {
         scrollableContainer.scrollTop = toBottom ? scrollableContainer.scrollHeight : 0;
@@ -402,7 +500,7 @@ export default class IndexController extends Controller {
   }
 
   showForm() {
-    const journalsContainerAtBottom = this.isJournalsContainerScrolledToBottom(this.journalsContainerTarget);
+    const journalsContainerAtBottom = this.isJournalsContainerScrolledToBottom();
 
     this.buttonRowTarget.classList.add('d-none');
     this.formRowTarget.classList.remove('d-none');
@@ -411,22 +509,22 @@ export default class IndexController extends Controller {
     this.addEventListenersToCkEditorInstance();
 
     if (this.isMobile()) {
-      this.scrollInputContainerIntoView(300);
+      // timeout amount tested on mobile devices for best possible user experience
+      this.scrollInputContainerIntoView(100); // first bring the input container fully into view (before focusing!)
+      this.focusEditor(400); // wait before focusing to avoid interference with the auto scroll
     } else if (this.sortingValue === 'asc' && journalsContainerAtBottom) {
       // scroll to (new) bottom if sorting is ascending and journals container was already at bottom before showing the form
-      this.scrollJournalContainer(this.journalsContainerTarget, true);
-    }
-
-    const ckEditorInstance = this.getCkEditorInstance();
-    if (ckEditorInstance) {
-      setTimeout(() => ckEditorInstance.editing.view.focus(), 10);
+      this.scrollJournalContainer(true);
+      this.focusEditor();
+    } else {
+      this.focusEditor();
     }
   }
 
-  focusEditor() {
+  focusEditor(timeout:number = 10) {
     const ckEditorInstance = this.getCkEditorInstance();
     if (ckEditorInstance) {
-      setTimeout(() => ckEditorInstance.editing.view.focus(), 10);
+      setTimeout(() => ckEditorInstance.editing.view.focus(), timeout);
     }
   }
 
@@ -463,19 +561,41 @@ export default class IndexController extends Controller {
     const ckEditorInstance = this.getCkEditorInstance();
 
     if (ckEditorInstance && ckEditorInstance.getData({ trim: false }).length === 0) {
-      this.clearEditor(); // remove potentially empty lines
-      this.removeEventListenersFromCkEditorInstance();
-      this.buttonRowTarget.classList.remove('d-none');
-      this.formRowTarget.classList.add('d-none');
-
-      if (this.journalsContainerTarget) {
-        this.journalsContainerTarget.style.marginBottom = '';
-        this.journalsContainerTarget.classList.add('work-packages-activities-tab-index-component--journals-container_with-initial-input-compensation');
-        this.journalsContainerTarget.classList.remove('work-packages-activities-tab-index-component--journals-container_with-input-compensation');
-      }
-
-      if (this.isMobile()) { this.scrollInputContainerIntoView(300); }
+      this.hideEditor();
     }
+  }
+
+  hideEditor() {
+    this.clearEditor(); // remove potentially empty lines
+    this.removeEventListenersFromCkEditorInstance();
+    this.buttonRowTarget.classList.remove('d-none');
+    this.formRowTarget.classList.add('d-none');
+
+    if (this.journalsContainerTarget) {
+      this.journalsContainerTarget.style.marginBottom = '';
+      this.journalsContainerTarget.classList.add('work-packages-activities-tab-index-component--journals-container_with-initial-input-compensation');
+      this.journalsContainerTarget.classList.remove('work-packages-activities-tab-index-component--journals-container_with-input-compensation');
+    }
+
+    if (this.isMobile()) {
+      // wait for the keyboard to be fully down before scrolling further
+      // timeout amount tested on mobile devices for best possible user experience
+      this.scrollInputContainerIntoView(500);
+    }
+  }
+
+  onBlurEditor() {
+    const ckEditorInstance = this.getCkEditorInstance();
+
+    if (ckEditorInstance && ckEditorInstance.getData({ trim: false }).length === 0) {
+      this.hideEditor();
+    } else {
+      this.adjustJournalContainerMargin();
+    }
+  }
+
+  onFocusEditor() {
+    this.adjustJournalContainerMargin();
   }
 
   async onSubmit(event:Event | null = null) {
@@ -487,8 +607,8 @@ export default class IndexController extends Controller {
 
     const formData = this.prepareFormData();
     void this.submitForm(formData)
-      .then(() => {
-        this.handleSuccessfulSubmission();
+      .then(({ html, headers }) => {
+        this.handleSuccessfulSubmission(html, headers);
       })
       .catch((error) => {
         console.error('Error saving activity:', error);
@@ -503,62 +623,100 @@ export default class IndexController extends Controller {
     const data = ckEditorInstance ? ckEditorInstance.getData({ trim: false }) : '';
 
     const formData = new FormData(this.formTarget);
-    formData.append('last_update_timestamp', this.lastUpdateTimestamp);
+    formData.append('last_update_timestamp', this.lastServerTimestampValue);
     formData.append('filter', this.filterValue);
     formData.append('journal[notes]', data);
 
     return formData;
   }
 
-  private async submitForm(formData:FormData):Promise<unknown> {
+  private async submitForm(formData:FormData):Promise<{ html:string, headers:Headers }> {
     return this.turboRequests.request(this.formTarget.action, {
       method: 'POST',
       body: formData,
       headers: {
         'X-CSRF-Token': (document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement).content,
       },
-    });
+    }, true);
   }
 
-  private handleSuccessfulSubmission() {
-    this.setLastUpdateTimestamp();
+  private handleSuccessfulSubmission(html:string, headers:Headers) {
+    // extract server timestamp from response headers in order to be in sync with the server
+    this.setLastServerTimestampViaHeaders(headers);
 
     if (!this.journalsContainerTarget) return;
 
     this.clearEditor();
-    this.handleEditorVisibility();
-    this.adjustJournalsContainer();
+    this.hideEditor();
+    this.resetJournalsContainerMargins();
 
     setTimeout(() => {
-      this.scrollJournalContainer(
-        this.journalsContainerTarget,
-        this.sortingValue === 'asc',
-        true,
-      );
-      if (this.isMobile()) {
-        this.scrollInputContainerIntoView(300);
+      if (this.isMobile() && !this.isWithinNotificationCenter()) {
+        // wait for the keyboard to be fully down before scrolling further
+        // timeout amount tested on mobile devices for best possible user experience
+        this.scrollInputContainerIntoView(800);
+      } else {
+        this.scrollJournalContainer(
+          this.sortingValue === 'asc',
+          true,
+        );
       }
+      this.handleStemVisibility();
     }, 10);
 
     this.saveInProgress = false;
   }
 
-  private handleEditorVisibility():void {
-    if (this.isMobile()) {
-      this.hideEditorIfEmpty();
-    } else {
-      this.focusEditor();
-    }
-  }
-
-  private adjustJournalsContainer():void {
+  private resetJournalsContainerMargins():void {
     if (!this.journalsContainerTarget) return;
 
     this.journalsContainerTarget.style.marginBottom = '';
-    this.journalsContainerTarget.classList.add('work-packages-activities-tab-index-component--journals-container_with-input-compensation');
+    this.journalsContainerTarget.classList.add('work-packages-activities-tab-index-component--journals-container_with-initial-input-compensation');
   }
 
-  setLastUpdateTimestamp() {
-    this.lastUpdateTimestamp = new Date().toISOString();
+  private setLastServerTimestampViaHeaders(headers:Headers) {
+    if (headers.has('X-Server-Timestamp')) {
+      this.lastServerTimestampValue = headers.get('X-Server-Timestamp') as string;
+    }
+  }
+
+  // Towards the code below:
+  // Ideally the stem rendering would be correctly rendered for all UI states from the server
+  // but as we push single elements into the DOM via turbo-streams, the server-side rendered collection state gets stale quickly
+  // I've decided to go with a client-side rendering-correction approach for now
+  // as I don't want to introduce more complexity and queries (n+1 for position checks etc.) to the server-side rendering
+  private handleStemVisibility() {
+    this.handleStemVisibilityForMobile();
+    this.handleLastStemPartVisibility();
+  }
+
+  private handleStemVisibilityForMobile() {
+    if (this.isMobile()) {
+      if (this.sortingValue === 'asc') return;
+
+      const initialJournalContainer = this.element.querySelector('.work-packages-activities-tab-journals-item-component-details--journal-details-container[data-initial="true"]') as HTMLElement;
+
+      if (initialJournalContainer) {
+        initialJournalContainer.classList.add('work-packages-activities-tab-journals-item-component-details--journal-details-container--border-removed');
+      }
+    }
+  }
+
+  private handleLastStemPartVisibility() {
+    const emptyLines = this.element.querySelectorAll('.empty-line');
+
+    // make sure all are visible first
+    emptyLines.forEach((container) => {
+      container.classList.remove('work-packages-activities-tab-journals-item-component-details--journal-details-container--hidden');
+    });
+
+    if (this.sortingValue === 'asc' || this.filterValue === 'only_changes') return;
+
+    // then hide the last one again
+    if (emptyLines.length > 0) {
+      // take the parent container of the last empty line
+      const lastEmptyLineContainer = emptyLines[emptyLines.length - 1].parentElement as HTMLElement;
+      lastEmptyLineContainer.classList.add('work-packages-activities-tab-journals-item-component-details--journal-details-container--hidden');
+    }
   }
 }

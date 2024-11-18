@@ -81,6 +81,9 @@ export class CkeditorAugmentedTextareaComponent extends UntilDestroyedMixin impl
   // Output blur events
   @Output() editorBlur = new EventEmitter<void>();
 
+  // Output focus events
+  @Output() editorFocus = new EventEmitter<void>();
+
   // Which template to include
   public element:HTMLElement;
 

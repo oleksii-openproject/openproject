@@ -7,7 +7,7 @@ keywords: notifications settings
 ---
 # Notification settings
 
-You can configure how and for what events you wish to be notified through Notifications. To access these settings, you can either click on your avatar on the top right corner > *My account* > *Notification settings* or click on **Notification settings** on the top right corner of the Notifications center.
+You can configure how and for what events you wish to be notified through Notifications. To access these settings, you can either click on your avatar on the top right corner > *Account settings* > *Notification settings* or click on **Notification settings** on the top right corner of the Notifications center.
 
 ![A screenshot of Notification center with the Notification settings button highlighted](Notification-settings-12.4-fromNotificationCenter.png)
 
@@ -88,4 +88,4 @@ Once you do so, you will see a table with a column for that project and and the 
 
 ## Email reminders
 
-You can supplement these in-app notifications with email reminders, either at specific times of the day or immediately when someone mentions you. For more information, please read our guide on [Email reminders](../../../user-guide/my-account#email-reminders).
+You can supplement these in-app notifications with email reminders, either at specific times of the day or immediately when someone mentions you. For more information, please read our guide on [Email reminders](../../../user-guide/account-settings#email-reminders).

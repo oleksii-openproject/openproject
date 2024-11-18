@@ -77,6 +77,9 @@ export class OpCkeditorComponent extends UntilDestroyedMixin implements OnInit, 
   // Output blur events
   @Output() editorBlur = new EventEmitter<string>();
 
+  // Output focus events
+  @Output() editorFocus = new EventEmitter<string>();
+
   // View container of the replacement used to initialize CKEditor5
   @ViewChild('opCkeditorReplacementContainer', { static: true }) opCkeditorReplacementContainer:ElementRef;
 
@@ -300,6 +303,8 @@ export class OpCkeditorComponent extends UntilDestroyedMixin implements OnInit, 
           // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
           if (!editor.ui.focusTracker.isFocused) {
             this.editorBlur.emit();
+          } else {
+            this.editorFocus.emit();
           }
         }, 0);
       },

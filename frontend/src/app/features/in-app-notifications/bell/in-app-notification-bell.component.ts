@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, ElementRef, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, Input, OnInit, HostListener } from '@angular/core';
 import { combineLatest, merge, Observable, timer } from 'rxjs';
 import { filter, map, shareReplay, switchMap, throttleTime } from 'rxjs/operators';
 import { ActiveWindowService } from 'core-app/core/active-window/active-window.service';
@@ -31,6 +31,15 @@ export class InAppNotificationBellComponent implements OnInit {
     readonly pathHelper:PathHelperService,
   ) {
     populateInputsFromDataset(this);
+  }
+
+  // enable other parts of the application to trigger an immediate update
+  // e.g. a stimulus controller
+  // currently used by the new activities tab which does it's own polling
+  // and receives updates from the backend earlier than the polling in the bell component
+  @HostListener('document:ian-update-immediate')
+  triggerImmediateUpdate() {
+    this.storeService.fetchUnread().subscribe();
   }
 
   ngOnInit() {

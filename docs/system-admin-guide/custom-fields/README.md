@@ -56,12 +56,16 @@ You can [assign a custom field to a work package type](../manage-work-packages/w
 
 ![Add a custom field to a work package type](system-admin-add-field-to-wp-type.png)
 
+> [!IMPORTANT]
+>
+> Starting with OpenProject 15.0, when adding new custom fields to a type through the  form configuration, the added custom fields will not automatically be enabled in all projects that have this work package type currently enabled.
+
 ### Add a custom field to one or multiple projects
 
 You can activate the custom field for specific projects under the respective [project settings](../../user-guide/projects/project-settings/custom-fields/). 
 
->[!TIP]
->This is not relevant if the setting **For all projects** has been configured for the custom field.
+> [!TIP]
+> This is not relevant if the setting **For all projects** has been configured for the custom field.
 
 You can active a custom field for multiple projects at once by opening the custom field in question and selecting the *Projects* tab. Click the **Add projects** button.
 ![Add a custom field to multiple projects at once in OpenProject administration](openproject_system_guide_new_custom_field_add_to_projects.png)

@@ -47,6 +47,7 @@ module OpenProject
     ATTACHMENT_CREATED = "attachment_created"
 
     JOURNAL_CREATED = "journal_created"
+    JOURNAL_UPDATED = "journal_updated"
 
     MEMBER_CREATED = "member_created"
     MEMBER_UPDATED = "member_updated"

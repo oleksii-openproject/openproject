@@ -47,8 +47,8 @@ This will display the "New attribute" form with these options:
 
 - **Format**: You can pick from nine different types of fields: text, long text, integer, float, list, date, boolean, user and version.
 
-  > [!TIP]
-  > You cannot change this once the project attribute is created.
+> [!TIP]
+> You cannot change this once the project attribute is created.
 
 - **Format options:** Depending on the type you choose, you might have additional options, such as minimum and maximum width, default value or regular expressions for validation.
 
@@ -56,8 +56,8 @@ This will display the "New attribute" form with these options:
 
 - **Admin-only**: If you enable this, the project attribute will only be visible to administrators. All other users will not see it, even if it is activated in a project.
 
-  > [!TIP]
-  > This is enabled by default. Only disable this if you want this field to be invisible to non-admin users.
+> [!TIP]
+> This is enabled by default. Only disable this if you want this field to be invisible to non-admin users.
 
 - **Searchable**: Checking this makes this project attribute (and its value) available as a filter in project lists.
 
@@ -69,14 +69,13 @@ You can edit existing attributes under **Administration settings** → **Project
 
 Click on the  More icon to the right of each project attribute to edit, re-order or delete a project attribute.
 
->[!CAUTION]
->Deleting a project attribute will delete it and the corresponding values for it from all projects.
+> [!CAUTION]
+> Deleting a project attribute will delete it and the corresponding values for it from all projects.
 
 You can also use the drag handles to the left of each project attribute to drag and drop it to a new position.
 
->[!NOTE]
->
->Project admins can chose to enable or disable a project attribute from their project, but they cannot change the order. The order set in this page is the order in which they will appear in all projects.
+> [!NOTE]
+> Project admins can chose to enable or disable a project attribute from their project, but they cannot change the order. The order set in this page is the order in which they will appear in all projects.
 
 
 
@@ -111,13 +110,11 @@ You can group project attributes into sections to better organize them.
 You can click on more icon to the right of each section to rename it, delete it or change its order.
 
 > [!TIP]
->
 > A section can only be deleted if no project attributes were assigned to it.
 
 You can drag any existing project attribute into a section to move it there. You may also drag and drop entire sections up and down to re-order them.
 
->[!TIP]
->
->If a project attribute belongs to a section, it will be displayed within that section in _all_ projects.
+> [!TIP]
+> If a project attribute belongs to a section, it will be displayed within that section in _all_ projects.
 
 ![Edit project attribute sections in OpenProject administration](open_project_system_admin_guide_project_attributes_section_more_icon_menu.png)

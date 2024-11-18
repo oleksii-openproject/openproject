@@ -102,6 +102,8 @@ RSpec.describe "Copy work packages through Rails view", :js, :with_cuprite, with
           context_menu.choose "Bulk edit"
 
           select budget.subject, from: "work_package_budget_id"
+          wait_for_network_idle
+
           click_on "Submit"
           expect_and_dismiss_flash message: "Successful update."
 

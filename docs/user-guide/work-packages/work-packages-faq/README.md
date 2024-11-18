@@ -71,7 +71,7 @@ One possible solution: If you receive this error message when trying to create a
 
 ### How can I change the order of the activities/comments in the activity tab of a work package?
 
-You can change this in your account settings. Please find out more [here](../../../user-guide/my-account/#change-the-order-to-display-comments).
+You can change this in your account settings. Please find out more [here](../../../user-guide/account-settings/#change-the-order-to-display-comments).
 
 ### Why are changes on parent work packages which are triggered by making changes to a child work package not aggregated?
 
@@ -158,9 +158,7 @@ Please keep in mind that it may not be possible for a member of a different depa
 ## Move and duplicate
 
 > [!TIP]
->
 > In OpenProject 14.5 the term *Copy a work package* was replaced by *Duplicate a work package*.
->
 > *Change project* was replaced by *Move to another project*.
 
 ### Which permissions are necessary to move a work package from one project to another?
@@ -193,7 +191,6 @@ In the work package table: Right-click on the work package and choose **Move to 
 In the details view of the work package: Click on **More** (button with three dots in the upper right hand corner) and then on **Move to another project**. 
 
 > [!TIP]
->
 > If a work package you move has children work packages, they will be moved to the selected project as well.
 
 ### Can I group tasks into folders?
