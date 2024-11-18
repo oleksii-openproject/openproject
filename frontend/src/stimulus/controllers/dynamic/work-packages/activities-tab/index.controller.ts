@@ -398,7 +398,7 @@ export default class IndexController extends Controller {
   }
 
   private getScrollableContainer():HTMLElement | null {
-    if (this.isWithinNotificationCenter()) {
+    if (this.isWithinNotificationCenter() || this.isWithinSplitScreen()) {
       // valid for both mobile and desktop
       return document.querySelector('.work-package-details-tab') as HTMLElement;
     }
@@ -417,6 +417,10 @@ export default class IndexController extends Controller {
 
   private isWithinNotificationCenter():boolean {
     return window.location.pathname.includes(this.notificationCenterPathNameValue);
+  }
+
+  private isWithinSplitScreen():boolean {
+    return window.location.pathname.includes('work_packages/details');
   }
 
   private addEventListenersToCkEditorInstance() {
