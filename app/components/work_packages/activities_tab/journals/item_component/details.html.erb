@@ -20,17 +20,12 @@
         end
       else
         if journal.details.any?
-          if journal.notes.present?
-            render_details(details_container)
-          else
-            render_details_header(details_container)
-            render_details(details_container)
-          end
-        elsif journal.notes.present?
+          render_details_header(details_container) unless journal.notes.present?
           render_details(details_container)
-        else
-          # empty row to render the flex layout with its minimal height
+        elsif !journal.notes.present?
           render_empty_line(details_container)
+        else
+          render_details(details_container)
         end
       end
     end
