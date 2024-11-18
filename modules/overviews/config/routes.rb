@@ -9,5 +9,8 @@ Rails.application.routes.draw do
                                                                                 as: :project_custom_field_section_dialog
     put "projects/:project_id/update_project_custom_values/:section_id", to: "overviews/overviews#update_project_custom_values",
                                                                          as: :update_project_custom_values
+
+    get "projects/:project_id/project_life_cycles_sidebar", to: "overviews/overviews#project_life_cycles_sidebar",
+                                                            as: :project_life_cycles_sidebar
   end
 end
