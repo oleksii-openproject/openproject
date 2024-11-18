@@ -1,6 +1,6 @@
 <%= flex_layout(align_items: :center,
                 justify_content: :space_between) do |element_container|
-  element_container.with_column(mr: 1, style: "color: #{icon_color}") do
+  element_container.with_column(mr: 1, classes: icon_color_class) do
     render Primer::Beta::Octicon.new(icon: icon)
   end
   element_container.with_column do
