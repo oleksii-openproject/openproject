@@ -79,9 +79,9 @@ RSpec.describe WorkPackage::PDFExport::DocumentGenerator do
 
       it "contains correct data" do
         expected_result = [
-          "honorificabilitudinitatibus honorificabilitudinitatibus honorificabilitudinitatibus " +
-            "honorificabili ­ tudinitatibus honorificabilitudinitatibus honorificabilitudinitatibus " +
-            "honorificabilitudinitatibus honorificabilitudinitatibus honorificabilitudinitatibus honorificabilitudinitatibus",
+          "honorificabilitudinitatibus honorificabilitudinitatibus honorificabilitudinitatibus " \
+          "honorificabili ­ tudinitatibus honorificabilitudinitatibus honorificabilitudinitatibus " \
+          "honorificabilitudinitatibus honorificabilitudinitatibus honorificabilitudinitatibus honorificabilitudinitatibus",
           export_time_formatted,
           "Page 1 of 1"
         ]
