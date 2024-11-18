@@ -15,6 +15,7 @@ RSpec.describe OpenProject::AuthSaml do
       expect(subject[:assertion_consumer_service_url]).to eq "http://#{Setting.host_name}/auth/my-saml/callback"
       expect(subject[:idp_sso_service_url]).to eq "https://example.com/sso"
       expect(subject[:idp_slo_service_url]).to eq "https://example.com/slo"
+      expect(subject[:limit_self_registration]).to be true
 
       attributes = subject[:attribute_statements]
       expect(attributes[:email]).to eq Saml::Defaults::MAIL_MAPPING.split("\n")
@@ -29,6 +30,16 @@ RSpec.describe OpenProject::AuthSaml do
       expect(security[:authn_requests_signed]).to be false
       expect(security[:want_assertions_signed]).to be false
       expect(security[:want_assertions_encrypted]).to be false
+    end
+
+    context "with limit_self_registration: false" do
+      let!(:provider) do
+        create(:saml_provider, slug: "my-saml", limit_self_registration: false)
+      end
+
+      it "includes the false value in the auth hash" do
+        expect(subject[:limit_self_registration]).to be false
+      end
     end
   end
 end

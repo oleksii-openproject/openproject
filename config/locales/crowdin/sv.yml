@@ -282,7 +282,7 @@ sv:
     rules:
       depth: "Depth"
       item: "Item"
-      label: "Label"
+      label: "Etikett"
       short: "Short name"
       parent: "Parent"
   global_search:

@@ -92,7 +92,7 @@ After pressing **CREATE** you will see a following pop-up window.
    - On the next section, set **Client ID** and **Client Secret** (from step 2)
    - Enable **Limit self registration** option if you want users that create accounts with this provider to bypass the configured limit for self-registration.
 
-![Add a new OpenID Gogole provider in OpenProject administration](openproject_system-admin-guide_authentication_openid_provider_new_google.png)
+![Add a new OpenID Google provider in OpenProject administration](openproject_system-admin-guide_authentication_openid_provider_new_google.png)
 
 Press **Finish setup** to save the client and complete. If you go back to the index page of OpenID connect providers, the new provider should be visible.
 
@@ -281,7 +281,7 @@ The option takes a space-separated list of ACR values. This is functionally the 
 
 After entering Claims information, click **Finish setup** to complete the provider creation form.
 
-![Bildschirmfoto 2024-11-06 um 18.34.28](./custom-provider-claims.png)
+![Custom provider claims](./custom-provider-claims.png)
 
 
 
