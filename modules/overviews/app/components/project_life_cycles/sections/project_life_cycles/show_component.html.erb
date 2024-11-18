@@ -1,0 +1,23 @@
+<%=
+  flex_layout(align_items: :flex_start,
+              justify_content: :space_between,
+              classes: 'op-project-life-cycle-container',
+              data: {
+                test_selector: "project-life-cycle-#{@project_life_cycle.id}"
+              }) do |life_cycle_value_container|
+    # temporarily using inline styles in order to align the content as desired
+    life_cycle_container.with_row(mb: 1) do
+      render(Primer::Beta::Text.new(font_weight: :bold)) do
+        concat @project_life_cycle.name
+      end
+    end
+
+    life_cycle_container.with_row(w: :full) do
+      if not_set?
+        render(Primer::Beta::Text.new()) { t('placeholders.default') }
+      else
+        render_value
+      end
+    end
+  end
+%>

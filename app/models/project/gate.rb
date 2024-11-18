@@ -39,4 +39,8 @@ class Project::Gate < Project::LifeCycleStep
       errors.add(:base, :end_date_not_allowed)
     end
   end
+
+  def not_set?
+    date.blank?
+  end
 end

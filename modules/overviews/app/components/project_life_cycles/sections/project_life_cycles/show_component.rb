@@ -26,26 +26,38 @@
 # See COPYRIGHT and LICENSE files for more details.
 #++
 
-class Project::LifeCycleStep < ApplicationRecord
-  belongs_to :project, optional: false
-  belongs_to :definition,
-             optional: false,
-             class_name: "Project::LifeCycleStepDefinition"
-  has_many :work_packages, inverse_of: :project_life_cycle_step, dependent: :nullify
+module ProjectLifeCycles
+  module Sections
+    module ProjectLifeCycles
+      class ShowComponent < ApplicationComponent
+        include ApplicationHelper
+        include OpPrimer::ComponentHelpers
 
-  delegate :name, to: :life_cycle
+        def initialize(project_life_cycle:)
+          super
 
-  attr_readonly :definition_id, :type
+          @project_life_cycle = project_life_cycle
+        end
 
-  validates :type, inclusion: { in: %w[Project::Stage Project::Gate], message: :must_be_a_stage_or_gate }
+        private
 
-  def initialize(*args)
-    if instance_of? Project::LifeCycleStep
-      # Do not allow directly instantiating this class
-      raise NotImplementedError, "Cannot instantiate the base Project::LifeCycleStep class directly. " \
-                                 "Use Project::Stage or Project::Gate instead."
+        def not_set?
+          @project_life_cycle.not_set?
+        end
+
+        def render_value
+          case @project_life_cycle
+          when Project::Gate
+            render(Primer::Beta::Text.new) do
+              concat @project_life_cycle.date
+            end
+          when Project::Stage
+            render(Primer::Beta::Text.new) do
+              concat [@project_life_cycle.start_date, " - ", @project_life_cycle.end_date].join
+            end
+          end
+        end
+      end
     end
-
-    super
   end
 end

@@ -37,12 +37,5 @@ module ProjectLifeCycles
 
       @project = project
     end
-
-    private
-
-    def available_project_custom_fields_grouped_by_section
-      @available_project_custom_fields_grouped_by_section ||=
-        @project.available_custom_fields.group_by(&:project_custom_field_section)
-    end
   end
 end
