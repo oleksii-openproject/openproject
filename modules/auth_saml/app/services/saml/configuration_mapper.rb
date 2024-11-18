@@ -39,8 +39,9 @@ module Saml
       {
         "options" => options,
         "slug" => options.delete("name"),
+        "limit_self_registration" => ActiveModel::Type::Boolean.new.cast(options.delete("limit_self_registration")),
         "display_name" => options.delete("display_name") || "SAML"
-      }
+      }.compact
     end
 
     private
