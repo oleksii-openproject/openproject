@@ -8,6 +8,13 @@ def first_login_step
   wait_for_network_idle
 end
 
+def switch_two_factor_device(device)
+  within("#login-form") do
+    click_link_or_button I18n.t(:text_otp_not_receive)
+    click_link_or_button device.redacted_identifier
+  end
+end
+
 def two_factor_step(token)
   expect(page).to have_css("input#otp")
   fill_in "otp", with: token
