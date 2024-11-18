@@ -139,7 +139,7 @@ module WorkPackage::PDFExport::Generator::Generator
 
   private
 
-  def md_to_pdf_styling
+  def md_to_pdf_styling(styling_file)
     styling = YAML::load_file(File.join(styling_asset_path, styling_file))
     # overwrite the paper size if it is set in the options
     styling["page"]["page-size"] = options[:paper_size] if options[:paper_size].present?
