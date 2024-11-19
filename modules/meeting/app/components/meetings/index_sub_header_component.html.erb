@@ -23,15 +23,15 @@
           I18n.t(:label_meeting)
         end
 
-        menu.with_item(label: I18n.t("meeting.types.classic"),
-                       tag: :a,
-                       href: dynamic_path
-        )
-
         menu.with_item(label: I18n.t("meeting.types.structured"),
                        tag: :a,
                        href: new_dialog_meetings_path(project_id: @project&.id),
                        content_arguments: { data: { controller: "async-dialog" }}
+        )
+
+        menu.with_item(label: I18n.t("meeting.types.classic"),
+                       tag: :a,
+                       href: dynamic_path
         )
       end
     end
