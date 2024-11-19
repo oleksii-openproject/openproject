@@ -35,7 +35,7 @@ class GitlabIssue < ApplicationRecord
   has_and_belongs_to_many :work_packages
   belongs_to :gitlab_user, optional: true
 
-  enum state: {
+  enum :state, {
     opened: "opened",
     closed: "closed"
   }

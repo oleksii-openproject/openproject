@@ -29,7 +29,7 @@
 class Journal::MeetingAgendaItemJournal < Journal::BaseJournal
   self.table_name = "meeting_agenda_item_journals"
 
-  enum item_type: MeetingAgendaItem::ITEM_TYPES
+  enum :item_type, MeetingAgendaItem::ITEM_TYPES
 
   belongs_to :meeting
   belongs_to :work_package, optional: true

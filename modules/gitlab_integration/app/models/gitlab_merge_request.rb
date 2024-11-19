@@ -37,7 +37,7 @@ class GitlabMergeRequest < ApplicationRecord
   belongs_to :gitlab_user, optional: true
   belongs_to :merged_by, optional: true, class_name: "GitlabUser"
 
-  enum state: {
+  enum :state, {
     opened: "opened",
     merged: "merged",
     closed: "closed"
