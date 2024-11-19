@@ -50,6 +50,34 @@ RSpec.describe Saml::ConfigurationMapper, type: :model do
     end
   end
 
+  describe "limit_self_registration" do
+    subject { result["limit_self_registration"] }
+
+    context "when provided as string" do
+      let(:configuration) { { limit_self_registration: "1" } }
+
+      it { is_expected.to be(true) }
+    end
+
+    context "when provided as false boolean" do
+      let(:configuration) { { limit_self_registration: false } }
+
+      it { is_expected.to be(false) }
+    end
+
+    context "when provided as true boolean" do
+      let(:configuration) { { limit_self_registration: true } }
+
+      it { is_expected.to be(true) }
+    end
+
+    context "when not provided" do
+      let(:configuration) { {} }
+
+      it { is_expected.to be_nil }
+    end
+  end
+
   describe "slug" do
     subject { result["slug"] }
 
