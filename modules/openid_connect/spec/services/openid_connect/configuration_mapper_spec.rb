@@ -98,6 +98,28 @@ RSpec.describe OpenIDConnect::ConfigurationMapper, type: :model do
     end
   end
 
+  describe "scope" do
+    subject { result }
+
+    context "when provided" do
+      let(:configuration) { { scope: "custom" } }
+
+      it { is_expected.to include("scope" => "custom") }
+    end
+
+    context "when provided as array" do
+      let(:configuration) { { scope: ["foo", "bar"] } }
+
+      it { is_expected.to include("scope" => "foo bar") }
+    end
+
+    context "when not provided" do
+      let(:configuration) { { foo: "bar" } }
+
+      it { is_expected.not_to have_key("scope") }
+    end
+  end
+
   describe "issuer" do
     subject { result }
 
