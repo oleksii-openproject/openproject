@@ -88,13 +88,19 @@ de:
   label_meeting: "Besprechung"
   label_meeting_plural: "Besprechungen"
   label_meeting_new: "Neue Besprechung"
+  label_meeting_new_one_time: "Neue einmalige Besprechung"
+  label_meeting_create: "Besprechung erstellen"
+  label_meeting_copy: "Besprechung kopieren"
   label_meeting_edit: "Besprechung bearbeiten"
   label_meeting_agenda: "Agenda"
   label_meeting_minutes: "Protokoll"
   label_meeting_close: "Schließen"
   label_meeting_open: "Öffnen"
+  label_meeting_index_delete: "Löschen"
+  label_meeting_open_this_meeting: "Diese Besprechung öffnen"
   label_meeting_agenda_close: "Agenda schließen um mit dem Protokoll zu beginnen"
   label_meeting_date_time: "Datum/Uhrzeit"
+  label_meeting_date_and_time: "Datum und Zeit"
   label_meeting_diff: "Differenz"
   label_upcoming_meetings: "Zukünftige Meetings"
   label_past_meetings: "Vergangene Meetings"
@@ -119,11 +125,14 @@ de:
       attachments: "Anhänge kopieren"
       attachments_text: "Alle angehängten Dateien in die neue Besprechung kopieren"
       agenda: "Tagesordnung kopieren"
+      agenda_items: "Tagesordnungspunkte kopieren"
       agenda_text: "Tagesordnung der alten Besprechung kopieren"
+      participants: "Liste der Teilnehmer kopieren"
     email:
       send_emails: "E-Mail an Teilnehmer"
       send_invitation_emails: >
         Senden Sie sofort eine E-Mail Einladung an die oben ausgewählten Teilnehmer. Sie können dies auch jederzeit manuell durchführen.
+      send_invitation_emails_structured: "Sofortige E-Mail-Einladung an alle Teilnehmer senden. Sie können dies auch zu einem späteren Zeitpunkt manuell tun."
       open_meeting_link: "Besprechung öffnen"
       invited:
         summary: "%{actor} hat Ihnen eine Einladung für die folgende Besprechung gesendet: %{title}"
@@ -137,7 +146,7 @@ de:
     types:
       classic: "Klassisch"
       classic_text: "Organisieren Sie Ihr Meeting in einer formatierbaren textbasierter Agenda und zugehöriges Protokoll."
-      structured: "Dynamisch"
+      structured: "Einmalig"
       structured_text: "Organisieren Sie Ihr Meeting als strukturierte Liste von Einträgen und verknüpfen Sie diese optional mit einem Arbeitspaket."
       structured_text_copy: "Das Kopieren einer Besprechung kopiert derzeit nicht die zugehörigen Tagesordnungspunkte, sondern nur dessen Details"
     copied: "Kopiert von Meeting #%{id}"

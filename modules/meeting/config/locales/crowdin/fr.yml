@@ -88,13 +88,19 @@ fr:
   label_meeting: "Réunion"
   label_meeting_plural: "Réunions"
   label_meeting_new: "Nouvelle réunion"
+  label_meeting_new_one_time: "Nouvelle réunion ponctuelle"
+  label_meeting_create: "Créer une réunion"
+  label_meeting_copy: "Copier la réunion"
   label_meeting_edit: "Modifier la réunion"
   label_meeting_agenda: "Ordre du jour"
   label_meeting_minutes: "Compte-rendu"
   label_meeting_close: "Fermer"
   label_meeting_open: "Ouvrir"
+  label_meeting_index_delete: "Supprimer"
+  label_meeting_open_this_meeting: "Ouvrir cette réunion"
   label_meeting_agenda_close: "Fermer l'ordre du jour pour commencer les procès-verbaux"
   label_meeting_date_time: "Date/Heure"
+  label_meeting_date_and_time: "Date et heure"
   label_meeting_diff: "Différence"
   label_upcoming_meetings: "Réunions à venir"
   label_past_meetings: "Réunions passées"
@@ -119,11 +125,14 @@ fr:
       attachments: "Copier les fichiers"
       attachments_text: "Copiez tous les fichiers joints dans la nouvelle réunion."
       agenda: "Copier l'ordre du jour"
+      agenda_items: "Copier les points de l'ordre du jour"
       agenda_text: "Copier l'ordre du jour de l'ancienne réunion"
+      participants: "Copier la liste des participants"
     email:
       send_emails: "Envoyer un e-mail aux participants"
       send_invitation_emails: >
         Envoyez immédiatement une invitation par e-mail aux participants sélectionnés ci-dessus. Vous pouvez également le faire manuellement à tout moment par la suite.
+      send_invitation_emails_structured: "Envoyez immédiatement une invitation par e-mail à tous les participants. Vous pouvez également le faire manuellement à tout moment par la suite."
       open_meeting_link: "Ouvrir la réunion"
       invited:
         summary: "%{actor} vous a envoyé une invitation pour la réunion %{title}"
@@ -137,7 +146,7 @@ fr:
     types:
       classic: "Classique"
       classic_text: "Organisez votre réunion sous la forme d'un ordre du jour et d'un protocole en texte formatable."
-      structured: "Dynamique"
+      structured: "Unique"
       structured_text: "Organisez votre réunion sous la forme d'une liste de points à l'ordre du jour, en les reliant éventuellement à des lots de travaux."
       structured_text_copy: "Actuellement, la copie d'une réunion n'entraîne pas la copie des points de l'ordre du jour de la réunion, mais uniquement des détails."
     copied: "Copié depuis la réunion #%{id}"

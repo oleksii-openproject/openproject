@@ -90,13 +90,19 @@ pl:
   label_meeting: "Spotkanie"
   label_meeting_plural: "Spotkania"
   label_meeting_new: "Nowe spotkanie"
+  label_meeting_new_one_time: "Nowe spotkanie jednorazowe"
+  label_meeting_create: "Utwórz spotkanie"
+  label_meeting_copy: "Skopiuj spotkanie"
   label_meeting_edit: "Edycja spotkania"
   label_meeting_agenda: "Plan spotkania"
   label_meeting_minutes: "Protokół ze spotkania"
   label_meeting_close: "Zamknij"
   label_meeting_open: "Otwórz"
+  label_meeting_index_delete: "Usuń"
+  label_meeting_open_this_meeting: "Otwórz to spotkanie"
   label_meeting_agenda_close: "Zamknij agendę aby zacząć protokół ze spotkania"
   label_meeting_date_time: "Data/Czas"
+  label_meeting_date_and_time: "Data i godzina"
   label_meeting_diff: "Różnice"
   label_upcoming_meetings: "Nadchodzące spotkania"
   label_past_meetings: "Przeszłe spotkania"
@@ -121,11 +127,14 @@ pl:
       attachments: "Skopiuj załączniki"
       attachments_text: "Skopiuj wszystkie załączone pliki do nowego spotkania"
       agenda: "Kopiuj agendę spotkania"
+      agenda_items: "Skopiuj pozycje porządku obrad"
       agenda_text: "Skopiuj agendę starego spotkania"
+      participants: "Skopiuj listę uczestników"
     email:
       send_emails: "Wyślij wiadomość e-mail do uczestników"
       send_invitation_emails: >
         Natychmiast wyślij zaproszenie w wiadomości e-mail do uczestników wybranych powyżej. Możesz to również zrobić ręcznie w dowolnym momencie później.
+      send_invitation_emails_structured: "Natychmiast wyślij zaproszenie w wiadomości e-mail do wszystkich uczestników. Możesz to również zrobić ręcznie w dowolnym momencie później."
       open_meeting_link: "Spotkania otwarte"
       invited:
         summary: "Użytkownik %{actor} wysłał Ci zaproszenie na spotkanie %{title}"
@@ -139,7 +148,7 @@ pl:
     types:
       classic: "Klasyczny"
       classic_text: "Zorganizuj spotkanie w formatowanym tekstowym planie spotkania i protokole."
-      structured: "Dynamiczne"
+      structured: "Jednorazowe"
       structured_text: "Zorganizuj spotkanie jako listę punktów planu spotkania, opcjonalnie powiązując je z pakietem roboczym."
       structured_text_copy: "Skopiowanie spotkania nie powoduje obecnie skopiowania powiązanych pozycji planu spotkania, a jedynie szczegółów"
     copied: "Skopiowano ze spotkania #%{id}"

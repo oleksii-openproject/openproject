@@ -356,10 +356,10 @@ pt-PT:
           learn_about: "Saiba mais sobre os novos recursos"
           #Include the version to invalidate outdated translations in other locales.
           #Otherwise, e.g. chinese might still have the translations for 10.0 in the 12.0 release.
-          "14_6":
+          "15_0":
             standard:
               new_features_html: >
-                A versão traz várias funcionalidades e melhorias para si, por exemplo, <br> <ul class="%{list_styling_class}"> <li>Beneficie de relatórios de progresso mais flexíveis – graças ao feedback dos utilizadores.</li> <li>Receba uma notificação de atualização com opção de recarregamento para as reuniões.</li> <li>Ative um campo personalizado para vários projetos de uma só vez.</li> <li>Utilize macros de atributos de pacotes de trabalho relativos.</li> <li>Mostre linhas vazias em rich text guardado.</li> <li>Veja as reuniões anteriores incluídas no número junto ao separador Reuniões.</li> </ul>
+                A versão traz várias funcionalidades e melhorias para si, por exemplo, <br> <ul class="%{list_styling_class}"> <li>Melhore a sua comunicação com um separador Atividade melhor estruturado, mensagens e notificações de carregamento em tempo real, reações com emoji e muito mais.</li> <li>Beneficie de definições fáceis de autenticação Single Sign-On (Início de sessão único) com SAML e OIDC na sua administração do Enterprise Cloud.</li> <li>Utilize a nova "Função global padrão" e ative as permissões para visualizar endereços de e-mail.</li> <li>Desfrute de uma navegação mais fácil nas listas de projetos com cabeçalhos de tabela de ação rápida.</li> <li>Experimente configurações de design simplificadas com menos variáveis de design da barra lateral necessárias.</li> <li>Reduza a limpeza manual ao adicionar um campo personalizado a um tipo – já não se aplica automaticamente a todos os projetos.</li> <li>Beneficie de uma maior clareza de navegação – "A minha conta" foi renomeada para "Definições da conta".</li> </ul>
     ical_sharing_modal:
       title: "Subscrever o calendário"
       inital_setup_error_message: "Ocorreu um erro ao recuperar os dados."

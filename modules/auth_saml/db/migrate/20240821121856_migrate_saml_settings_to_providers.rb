@@ -20,7 +20,7 @@ class MigrateSamlSettingsToProviders < ActiveRecord::Migration[7.1]
 
   def migrate_provider!(name, options)
     puts "Trying to migrate SAML provider #{name} from previous settings format..."
-    call = ::Saml::SyncService.new(name, options).call
+    call = ::Saml::SyncService.new(name, options, contract_class: EmptyContract).call
 
     if call.success
       puts <<~SUCCESS

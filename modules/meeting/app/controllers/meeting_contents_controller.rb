@@ -58,7 +58,7 @@ class MeetingContentsController < ApplicationController
     render "meeting_contents/show"
   end
 
-  def update
+  def update # rubocop:disable Metrics/AbcSize
     call = attachable_update_call ::MeetingContents::UpdateService,
                                   model: @content,
                                   args: content_params
@@ -69,7 +69,7 @@ class MeetingContentsController < ApplicationController
     else
       flash.now[:error] = call.message
       params[:tab] ||= "minutes" if @meeting.agenda.present? && @meeting.agenda.locked?
-      render "meetings/show"
+      render "meetings/show", status: :unprocessable_entity
     end
   end
 

@@ -87,13 +87,19 @@ zh-CN:
   label_meeting: "会议"
   label_meeting_plural: "会议"
   label_meeting_new: "新增会议"
+  label_meeting_new_one_time: "新一次性会议"
+  label_meeting_create: "创建会议"
+  label_meeting_copy: "复制会议"
   label_meeting_edit: "编辑会议"
   label_meeting_agenda: "议程"
   label_meeting_minutes: "会议记录"
   label_meeting_close: "结束"
   label_meeting_open: "开始"
+  label_meeting_index_delete: "删除"
+  label_meeting_open_this_meeting: "打开本场会议"
   label_meeting_agenda_close: "确定议程以开始会议记录"
   label_meeting_date_time: "日期/时间"
+  label_meeting_date_and_time: "日期和时间"
   label_meeting_diff: "比较"
   label_upcoming_meetings: "即将进行的会议"
   label_past_meetings: "过去的会议"
@@ -118,11 +124,14 @@ zh-CN:
       attachments: "复制附件"
       attachments_text: "将所有附件复制到新会议"
       agenda: "复制议程"
+      agenda_items: "复制议程项目"
       agenda_text: "复制之前会议的议程"
+      participants: "复制与会者列表"
     email:
       send_emails: "电子邮件参与者"
       send_invitation_emails: >
         立即向上面选定的参加者发送电子邮件邀请。您也可以在之后随时手动发送。
+      send_invitation_emails_structured: "立即向所有与会者发送电子邮件邀请。您也可以在之后随时手动发送。"
       open_meeting_link: "打开会议"
       invited:
         summary: "%{actor} 已经向您发送了一个 %{title} 会议邀请"
@@ -136,7 +145,7 @@ zh-CN:
     types:
       classic: "经典"
       classic_text: "将您的会议以可格式化的文本议程和会议纪要的形式进行组织。"
-      structured: "动态"
+      structured: "一次性的"
       structured_text: "将您的会议组织为议程项目列表，并可选地将其与工作包链接。"
       structured_text_copy: "目前复制会议不会复制相关会议的议程项目，只会复制会议的详细信息。"
     copied: "从会议 #%{id} 复制"

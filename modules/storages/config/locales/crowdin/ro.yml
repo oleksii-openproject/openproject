@@ -44,7 +44,7 @@ ro:
   api_v3:
     errors:
       too_many_elements_created_at_once: Prea multe elemente create simultan. Se așteaptă cel mult %{max} , a luat %{actual}.
-  external_file_storages: External file storages
+  external_file_storages: Stocare fișiere externe
   permission_create_files: 'Automatically managed project folders: Create files'
   permission_create_files_explanation: This permission is only available for Nextcloud storages
   permission_delete_files: 'Automatically managed project folders: Delete files'

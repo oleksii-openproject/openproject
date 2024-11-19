@@ -46,8 +46,8 @@ We support all authentication providers that support the SAML and  OpenID Connec
 
 ## Is it possible to use a custom SSO provider (e.g. Keycloak) with the Enterprise cloud edition?
 
-It is possible to use Keycloak, but you can't configure it yourself at the moment as there's no user interface (UI) for custom SSO providers. We can set up the custom provider for you. Then you can access and edit it in the administration. You will be able to enter client ID and client secret via the OpenProject UI.
-For context: The connection of custom SSO providers is also described [here](../../../installation-and-operations/misc/custom-openid-connect-providers/#custom-openid-connect-providers) (however, we would enter this configuration for your Enterprise cloud environment).
+It is possible to use Keycloak, Okta, or other OpenID Connect providers with the user interface (UI) for custom SSO providers. 
+For context: The connection of custom SSO providers is also described [here](../openid-providers/).
 
 ## I want to connect AD and LDAP to OpenProject. Which attribute for authentication sources does OpenProject use?
 

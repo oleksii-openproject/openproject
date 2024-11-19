@@ -28,7 +28,7 @@
 
 class CustomValue::LinkStrategy < CustomValue::FormatStrategy
   def typed_value
-    formatted_value
+    formatted_value if value.present?
   end
 
   def parse_value(val)

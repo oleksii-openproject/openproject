@@ -1,12 +1,17 @@
 require_relative "../../spec_helper"
-require_relative "../shared_2fa_examples"
+require_relative "../shared_two_factor_examples"
 
-RSpec.describe "Login with 2FA remember cookie", :js, with_settings: {
-  plugin_openproject_two_factor_authentication: {
-    active_strategies: [:developer],
-    allow_remember_for_days: 30
-  }
-} do
+RSpec.describe "Login with 2FA remember cookie",
+               :js,
+               :with_cuprite,
+               with_settings: {
+                 plugin_openproject_two_factor_authentication: {
+                   active_strategies: [:developer],
+                   allow_remember_for_days: 30
+                 }
+               } do
+  include SharedTwoFactorExamples
+
   let(:user_password) do
     "user!user!"
   end
@@ -16,7 +21,7 @@ RSpec.describe "Login with 2FA remember cookie", :js, with_settings: {
   let!(:device) { create(:two_factor_authentication_device_sms, user:, active: true, default: true) }
 
   def login_with_cookie
-    page.driver.browser.manage.delete_all_cookies
+    page.driver.clear_cookies
 
     sms_token = nil
     allow_any_instance_of(OpenProject::TwoFactorAuthentication::TokenStrategy::Developer)

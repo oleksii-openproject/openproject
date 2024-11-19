@@ -402,5 +402,4 @@ global_roles:
     t_name: Standard global role
     position: 7
     builtin: :standard_global
-    permissions:
-      - :view_user_email
+    permissions: []

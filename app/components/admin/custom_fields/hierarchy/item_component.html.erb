@@ -35,7 +35,7 @@ See COPYRIGHT and LICENSE files for more details.
       flex_layout(align_items: :center, justify_content: :space_between, test_selector: "op-custom-fields--hierarchy-item") do |item_container|
         item_container.with_column(flex_layout: true) do |item_information|
           item_information.with_column(mr: 2) do
-            render(Primer::OpenProject::DragHandle.new)
+            render(Primer::OpenProject::DragHandle.new(draggable: true))
           end
           item_information.with_column(mr: 2) do
             render(Primer::Beta::Link.new(href: custom_field_item_path(@root.custom_field_id, model), underline: false)) do

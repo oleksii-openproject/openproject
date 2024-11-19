@@ -170,13 +170,20 @@ export function initializeUiRouterListeners(injector:Injector) {
   const currentProject:CurrentProjectService = injector.get(CurrentProjectService);
   const firstRoute:FirstRouteService = injector.get(FirstRouteService);
   const backRoutingService:BackRoutingService = injector.get(BackRoutingService);
+  const uiRouter = injector.get(UIRouter);
 
   // Check whether we are running within our complete app, or only within some other bootstrapped
   // component
-  const wpBase = document.querySelector(appBaseSelector);
+  let openprojectBaseApp = document.querySelector(appBaseSelector);
+
+  // Connect ui router to turbo drive
+  document.addEventListener('turbo:load', () => {
+    // Re-find the current app-base
+    openprojectBaseApp = document.querySelector(appBaseSelector);
+    uiRouter.urlService.sync();
+  });
 
   // Uncomment to trace route changes
-  // const uiRouter = injector.get(UIRouter);
   // uiRouter.trace.enable();
 
   // For some pages it makes no sense to display them on mobile (e.g. the split screen).
@@ -268,7 +275,7 @@ export function initializeUiRouterListeners(injector:Injector) {
     // The FirstRoute service remembers the first angular route we went to
     // but for pages without any angular routes, this will stay empty.
     // So we also allow routes to happen after some delay
-    if (wpBase === null) {
+    if (openprojectBaseApp === null) {
       // Get the current path and compare
       const path = window.location.pathname;
       const pathWithSearch = path + window.location.search;

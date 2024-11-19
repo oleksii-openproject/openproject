@@ -50,7 +50,8 @@ module CustomFields
             visually_hide_label: true,
             full_width: false,
             required: false,
-            placeholder: I18n.t("custom_fields.admin.items.placeholder.short")
+            placeholder: I18n.t("custom_fields.admin.items.placeholder.short"),
+            validation_message: validation_message_for(:short)
           )
         end
 

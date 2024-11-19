@@ -33,7 +33,7 @@ es:
           unmatched_private_key: "no pertenece al certificado dado"
   saml:
     menu_title: Proveedores SAML
-    delete_title: Delete SAML provider
+    delete_title: Eliminar proveedor SAML
     info:
       title: "Parámetros de configuración del protocolo SAML"
       description: >
@@ -98,7 +98,7 @@ es:
       display_name: >
         El nombre del proveedor. Aparecerá como botón de inicio de sesión y en la lista de proveedores.
       metadata_none: >
-        Your identity provider does not have a metadata endpoint or XML download option. You can configure it manually.
+        Su proveedor de identidad no dispone de un terminal de metadatos ni de una opción de descarga XML. Puede configurarlo manualmente.
       metadata_url: >
         Su proveedor de identidad proporciona una URL de metadatos.
       metadata_xml: >

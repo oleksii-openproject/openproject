@@ -72,6 +72,7 @@ module Pages
           within "thead" do
             click_link key
           end
+          wait_for_network_idle
         end
 
         def expect_no_delete_button_for_all_rows

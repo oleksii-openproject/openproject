@@ -27,5 +27,15 @@
 #++
 
 module Journals
-  class UpdateService < ::BaseServices::Update; end
+  class UpdateService < ::BaseServices::Update
+    protected
+
+    def after_perform(call)
+      OpenProject::Notifications.send(OpenProject::Events::JOURNAL_UPDATED,
+                                      journal: call.result,
+                                      send_notification: Journal::NotificationConfiguration.active?)
+
+      call
+    end
+  end
 end

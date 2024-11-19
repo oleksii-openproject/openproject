@@ -55,7 +55,7 @@ RSpec.describe API::V3::Utilities::ResourceLinkGenerator do
     end
 
     it "returns nil for unsupported records" do
-      record = create(:custom_field)
+      record = create(:oauth_client_token)
       expect(subject.make_link(record)).to be_nil
     end
 

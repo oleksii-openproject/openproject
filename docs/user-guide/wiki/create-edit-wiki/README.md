@@ -24,7 +24,6 @@ To create a new wiki page in a project, navigate to the wiki module in your proj
 ![Create a new wiki page in OpenProject](openproject_user_guide_create_wiki_page_button.png)
 
 > [!TIP]
->
 > If you do not see the wiki module in your project menu, you first have to [activate the module in your project settings](../../projects).
 
 The editor window will open, allowing you to enter title and content of the new page.
@@ -48,8 +47,7 @@ The text editor will be opened to make changes to the wiki page, as described ab
 
 Do not forget to **Save** your changes after you finished editing the page.
 
-> [!TIP] 
->
+> [!TIP]
 > Changes you made are saved locally. If you navigated away from page or could not save your changes due to a technical difficulty, you can access latest changes via the editor toolbar.
 
 ![Restore local backups in text editor in OpenProject](openproject_user_guide_wiki_autosave_icon.png)

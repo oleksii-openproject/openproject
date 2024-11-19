@@ -75,8 +75,8 @@ pt-BR:
       delete_all_are_you_sure: "Você tem certeza de que deseja excluir todos os dispositivos 2FA para este usuário?"
       button_delete_all_devices: "Excluir dispositivos 2FA registrados"
       button_register_mobile_phone_for_user: "Registrar telefone móvel"
-      text_2fa_enabled: "Em cada login, esse usuário será solicitado a inserir um token OTP de seu dispositivo 2FA padrão."
-      text_2fa_disabled: "O usuário não configurou um dispositivo 2FA na página \"Minha conta\""
+      text_2fa_enabled: "A cada login, o usuário deverá inserir um token OTP do dispositivo padrão de A2F."
+      text_2fa_disabled: "O usuário não configurou um dispositivo de A2F na página “Minha conta”"
       only_sms_allowed: "Apenas os usuários autorizados podem configurar a entrega de SMS."
     upsale:
       title: "Autenticação de dois fatores"

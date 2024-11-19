@@ -42,7 +42,8 @@ RSpec.describe "SAML provider callback",
            digest_method: "http://www.w3.org/2001/04/xmlenc#sha256",
            sp_entity_id: "https://foobar.org",
            idp_cert:,
-           idp_cert_fingerprint:)
+           idp_cert_fingerprint:,
+           limit_self_registration: false)
   end
 
   let(:idp_cert) { nil }

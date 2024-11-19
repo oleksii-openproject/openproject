@@ -38,7 +38,8 @@ module OpenProject
       possibleValues: [:only, %w[list]],
       regexp: [:except, %w[list bool date user version hierarchy]],
       searchable: [:except, %w[bool date float int user version]],
-      textOrientation: [:only, %w[text]]
+      textOrientation: [:only, %w[text]],
+      enterpriseBanner: [:only, %w[hierarchy]]
     }.freeze
 
     def self.stimulus_config

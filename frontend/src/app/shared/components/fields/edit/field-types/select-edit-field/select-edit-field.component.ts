@@ -26,19 +26,20 @@
 // See COPYRIGHT and LICENSE files for more details.
 //++
 
-import { Component, InjectFlags, OnInit, } from '@angular/core';
+import { ChangeDetectionStrategy, Component, InjectFlags, OnInit } from '@angular/core';
+import { StateService, UIRouterGlobals } from '@uirouter/core';
+import { from, Observable } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
+
 import { HalResource } from 'core-app/features/hal/resources/hal-resource';
-import {
-  SelectAutocompleterRegisterService
-} from 'core-app/shared/components/fields/edit/field-types/select-edit-field/select-autocompleter-register.service';
-import { from, Observable, } from 'rxjs';
-import { map, tap, } from 'rxjs/operators';
 import { InjectField } from 'core-app/shared/helpers/angular/inject-field.decorator';
 import {
-  CreateAutocompleterComponent
+  SelectAutocompleterRegisterService,
+} from 'core-app/shared/components/fields/edit/field-types/select-edit-field/select-autocompleter-register.service';
+import {
+  CreateAutocompleterComponent,
 } from 'core-app/shared/components/autocompleter/create-autocompleter/create-autocompleter.component';
 import { EditFormComponent } from 'core-app/shared/components/fields/edit/edit-form/edit-form.component';
-import { StateService, UIRouterGlobals } from '@uirouter/core';
 import { CollectionResource } from 'core-app/features/hal/resources/collection-resource';
 import { HalResourceNotificationService } from 'core-app/features/hal/services/hal-resource-notification.service';
 import { HalResourceSortingService } from 'core-app/features/hal/services/hal-resource-sorting.service';
@@ -52,6 +53,7 @@ export interface ValueOption {
 
 @Component({
   templateUrl: './select-edit-field.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SelectEditFieldComponent extends EditFieldComponent implements OnInit {
   @InjectField() selectAutocompleterRegister:SelectAutocompleterRegisterService;
@@ -151,7 +153,8 @@ export class SelectEditFieldComponent extends EditFieldComponent implements OnIn
   }
 
   private setValues(availableValues:HalResource[]) {
-    this.availableOptions = this.sortValues(availableValues);
+    const sortedValues = this.sortValues(availableValues);
+    this.availableOptions = this.filterInvalidValues(sortedValues);
     this.addEmptyOption();
   }
 
@@ -283,6 +286,10 @@ export class SelectEditFieldComponent extends EditFieldComponent implements OnIn
 
   protected sortValues(availableValues:HalResource[]) {
     return this.halSorting.sort(availableValues);
+  }
+
+  private filterInvalidValues(availableValues:HalResource[]) {
+    return availableValues.filter((value) => !!value.name);
   }
 
   // Subclasses shall be able to override the filters with which the

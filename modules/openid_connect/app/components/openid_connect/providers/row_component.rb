@@ -14,19 +14,24 @@ module OpenIDConnect
       end
 
       def name
-        link = render(
+        concat(provider_name)
+        unless provider.configured?
+          concat(incomplete_label)
+        end
+      end
+
+      def provider_name
+        render(
           Primer::Beta::Link.new(
-            href: url_for(action: :edit, id: provider.id),
+            href: url_for(action: :show, id: provider.id),
             font_weight: :bold,
             mr: 1
           )
         ) { provider.display_name }
-        if !provider.configured?
-          link.concat(
-            render(Primer::Beta::Label.new(scheme: :attention)) { I18n.t(:label_incomplete) }
-          )
-        end
-        link
+      end
+
+      def incomplete_label
+        render(Primer::Beta::Label.new(scheme: :attention)) { I18n.t(:label_incomplete) }
       end
 
       def type

@@ -253,24 +253,6 @@ RSpec.describe "Copy work packages through Rails view", :js, :with_cuprite do
     end
   end
 
-  describe "copying work package to clipboard" do
-    let(:current_user) { dev }
-    let(:wp_table_target) { Pages::WorkPackagesTable.new(project2) }
-
-    before do
-      wp_table.expect_work_package_count 2
-      context_menu.open_for work_package
-      context_menu.choose "Copy link to clipboard"
-    end
-
-    it "successfully copies the short url of the work package" do
-      # We cannot access the navigator.clipboard from a headless browser.
-      # This test makes sure the copy to clipboard logic is working,
-      # regardless of the browser permissions.
-      expect(page).to have_content("/wp/#{work_package.id}")
-    end
-  end
-
   describe "unsetting the assignee as the current assignee is not a member in the project" do
     let(:work_packages) { [work_package] }
     let(:current_user) { mover }

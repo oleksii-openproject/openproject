@@ -53,7 +53,6 @@ class Queries::WorkPackages::Selects::PropertySelect < Queries::WorkPackages::Se
     },
     parent: {
       association: "ancestors_relations",
-      default_order: "asc",
       sortable: false
     },
     status: {
@@ -96,18 +95,14 @@ class Queries::WorkPackages::Selects::PropertySelect < Queries::WorkPackages::Se
     version: {
       association: "version",
       sortable: "name",
-      default_order: "ASC",
-      null_handling: "NULLS LAST",
       groupable: "#{WorkPackage.table_name}.version_id"
     },
     start_date: {
-      sortable: "#{WorkPackage.table_name}.start_date",
-      null_handling: "NULLS LAST"
+      sortable: "#{WorkPackage.table_name}.start_date"
     },
     due_date: {
       highlightable: true,
-      sortable: "#{WorkPackage.table_name}.due_date",
-      null_handling: "NULLS LAST"
+      sortable: "#{WorkPackage.table_name}.due_date"
     },
     estimated_hours: {
       sortable: "#{WorkPackage.table_name}.estimated_hours",
@@ -135,15 +130,12 @@ class Queries::WorkPackages::Selects::PropertySelect < Queries::WorkPackages::Se
     shared_with_users: {
       sortable: false,
       groupable: false
-
     }
   }
 
   def self.instances(_context = nil)
-    property_selects.filter_map do |name, options|
-      next unless !options[:if] || options[:if].call
-
-      new(name, options.except(:if))
+    property_selects.map do |name, options|
+      new(name, options)
     end
   end
 end

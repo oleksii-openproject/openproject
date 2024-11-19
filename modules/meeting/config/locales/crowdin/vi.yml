@@ -87,13 +87,19 @@ vi:
   label_meeting: "Cuộc họp"
   label_meeting_plural: "Những cuộc họp"
   label_meeting_new: "Cuộc họp mới"
+  label_meeting_new_one_time: "New one-time meeting"
+  label_meeting_create: "Create meeting"
+  label_meeting_copy: "Copy meeting"
   label_meeting_edit: "Chỉnh sửa cuộc họp"
   label_meeting_agenda: "Chương trình nghị sự"
   label_meeting_minutes: "Biên bản cuộc họp"
   label_meeting_close: "Đóng"
   label_meeting_open: "Mở"
+  label_meeting_index_delete: "Delete"
+  label_meeting_open_this_meeting: "Open this meeting"
   label_meeting_agenda_close: "Đóng chương trình nghị sự để bắt đầu biên bản cuộc họp"
   label_meeting_date_time: "Ngày/Giờ"
+  label_meeting_date_and_time: "Date and time"
   label_meeting_diff: "Sự khác biệt"
   label_upcoming_meetings: "Các cuộc họp sắp tới"
   label_past_meetings: "Các cuộc họp đã qua"
@@ -118,11 +124,14 @@ vi:
       attachments: "Sao chép tệp đính kèm"
       attachments_text: "Sao chép tất cả các tệp đính kèm vào cuộc họp mới"
       agenda: "Sao chép chương trình nghị sự"
+      agenda_items: "Copy agenda items"
       agenda_text: "Sao chép chương trình nghị sự của cuộc họp cũ"
+      participants: "Copy list of participants"
     email:
       send_emails: "Gửi email cho người tham gia"
       send_invitation_emails: >
         Gửi lời mời qua email ngay lập tức đến những người tham gia được chọn ở trên. Bạn cũng có thể thực hiện thủ công bất kỳ lúc nào sau đó.
+      send_invitation_emails_structured: "Send an email invitation immediately to all participants. You can also do this manually at any time later."
       open_meeting_link: "Mở cuộc họp"
       invited:
         summary: "%{actor} đã gửi cho bạn một lời mời tham gia cuộc họp %{title}"
@@ -136,7 +145,7 @@ vi:
     types:
       classic: "Cổ điển"
       classic_text: "Tổ chức cuộc họp của bạn bằng một chương trình nghị sự và biên bản định dạng văn bản."
-      structured: "Dạng động"
+      structured: "One-time"
       structured_text: "Tổ chức cuộc họp của bạn dưới dạng danh sách các mục chương trình nghị sự, có thể liên kết chúng với một gói công việc."
       structured_text_copy: "Sao chép một cuộc họp hiện tại sẽ không sao chép các mục chương trình nghị sự liên quan, chỉ sao chép các chi tiết"
     copied: "Sao chép từ Cuộc họp #%{id}"

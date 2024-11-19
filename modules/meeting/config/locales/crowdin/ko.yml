@@ -87,13 +87,19 @@ ko:
   label_meeting: "미팅"
   label_meeting_plural: "미팅"
   label_meeting_new: "새 미팅"
+  label_meeting_new_one_time: "새로운 일회성 미팅"
+  label_meeting_create: "미팅 생성"
+  label_meeting_copy: "미팅 복사"
   label_meeting_edit: "미팅 편집"
   label_meeting_agenda: "의제"
   label_meeting_minutes: "의사록"
   label_meeting_close: "닫기"
   label_meeting_open: "열기"
+  label_meeting_index_delete: "삭제"
+  label_meeting_open_this_meeting: "이 미팅 열기"
   label_meeting_agenda_close: "의사록을 시작하려면 의제 닫기"
   label_meeting_date_time: "날짜/시간"
+  label_meeting_date_and_time: "날짜 및 시간"
   label_meeting_diff: "차이"
   label_upcoming_meetings: "다가오는 이벤트"
   label_past_meetings: "지난 미팅"
@@ -118,11 +124,14 @@ ko:
       attachments: "첨부 파일 복사"
       attachments_text: "첨부된 모든 파일을 새 미팅에 복사"
       agenda: "의제 복사"
+      agenda_items: "의제 항목 복사"
       agenda_text: "이전 미팅의 의제 복사"
+      participants: "참가자 목록 복사"
     email:
       send_emails: "참가자에게 이메일 보내기"
       send_invitation_emails: >
         위에서 선택한 참가자에게 즉시 이메일 초대를 보내세요. 나중에 언제든지 수동으로 할 수도 있습니다.
+      send_invitation_emails_structured: "모든 참가자에게 즉시 이메일 초대를 보내세요. 나중에 언제든지 수동으로 할 수도 있습니다."
       open_meeting_link: "미팅 열기"
       invited:
         summary: "%{actor} 님이 %{title} 미팅 초대장을 귀하에게 보냈습니다"
@@ -136,7 +145,7 @@ ko:
     types:
       classic: "클래식"
       classic_text: "서식 지정 가능한 텍스트 의제 및 프로토콜로 미팅을 구성하세요."
-      structured: "다이내믹"
+      structured: "일회성"
       structured_text: "미팅을 의제 항목 목록으로 구성하고, 선택적으로 작업 패키지에 연결합니다."
       structured_text_copy: "미팅을 복사하면 관련 미팅 의제 항목은 현재 복사되지 않고 세부 정보만 복사됩니다"
     copied: "미팅 #%{id}에서 복사됨"

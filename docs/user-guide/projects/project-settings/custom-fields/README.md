@@ -28,7 +28,6 @@ Before you can enable a custom field, it needs to be created in the [system admi
 4. **Create a new custom field** by clicking the **+ Custom field** button. 
 
    > [!TIP] 
-   >
    > Keep in mind that you have to be a system administrator in order to create new custom fields.
 
 5. Press the **Save** button to confirm your changes.

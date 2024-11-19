@@ -88,13 +88,19 @@ es:
   label_meeting: "Reunión"
   label_meeting_plural: "Reuniones"
   label_meeting_new: "Nueva reunión"
+  label_meeting_new_one_time: "Nueva reunión única"
+  label_meeting_create: "Crear reunión"
+  label_meeting_copy: "Copiar reunión"
   label_meeting_edit: "Editar reunión"
   label_meeting_agenda: "Agenda"
   label_meeting_minutes: "Minutas"
   label_meeting_close: "Cerrar"
   label_meeting_open: "Abrir"
+  label_meeting_index_delete: "Eliminar"
+  label_meeting_open_this_meeting: "Abrir esta reunión"
   label_meeting_agenda_close: "Cerrar la agenda para comenzar la minuta"
   label_meeting_date_time: "Fecha/hora"
+  label_meeting_date_and_time: "Fecha y hora"
   label_meeting_diff: "Diferencia"
   label_upcoming_meetings: "Próximas reuniones"
   label_past_meetings: "Reuniones anteriores"
@@ -119,11 +125,14 @@ es:
       attachments: "Copiar adjuntos"
       attachments_text: "Copie todos los archivos adjuntos a la nueva reunión"
       agenda: "Copiar agenda"
+      agenda_items: "Copiar elementos de agenda"
       agenda_text: "Copiar la agenda de la reunión anterior"
+      participants: "Copie la lista de participantes"
     email:
       send_emails: "Envíe un correo electrónico a los participantes"
       send_invitation_emails: >
         Envíe inmediatamente una invitación por correo electrónico a los participantes seleccionados anteriormente. También puede hacerlo manualmente en cualquier momento posterior.
+      send_invitation_emails_structured: "Envíe inmediatamente una invitación por correo electrónico a todos los participantes. También puede hacerlo manualmente en cualquier momento posterior."
       open_meeting_link: "Abrir reunión"
       invited:
         summary: "%{actor} te ha enviado una invitación para la reunión %{title}"
@@ -137,7 +146,7 @@ es:
     types:
       classic: "Clásico"
       classic_text: "Organice su reunión en un formato de agenda de texto y protocolos."
-      structured: "Dinámico"
+      structured: "Único"
       structured_text: "Organice su reunión como una lista de temas del orden del día, enlazándolos opcionalmente a un paquete de trabajo."
       structured_text_copy: "Copiar una reunión no copiará actualmente los elementos asociados de la agenda de la reunión, solo los detalles"
     copied: "Copiado de la reunión %{id}"
