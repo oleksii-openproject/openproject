@@ -35,7 +35,7 @@ class GithubPullRequest < ApplicationRecord
   belongs_to :github_user, optional: true
   belongs_to :merged_by, optional: true, class_name: "GithubUser"
 
-  enum state: {
+  enum :state, {
     open: "open",
     closed: "closed",
     deployed: "deployed"

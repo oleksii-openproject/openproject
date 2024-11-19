@@ -85,11 +85,11 @@ module Storages
 
     scope :in_project, ->(project_id) { joins(project_storages: :project).where(project_storages: { project_id: }) }
 
-    enum health_status: {
+    enum :health_status, {
       pending: "pending",
       healthy: "healthy",
       unhealthy: "unhealthy"
-    }.freeze, _prefix: :health
+    }, prefix: :health
 
     def self.shorten_provider_type(provider_type)
       case /Storages::(?'provider_name'.*)Storage/.match(provider_type)
