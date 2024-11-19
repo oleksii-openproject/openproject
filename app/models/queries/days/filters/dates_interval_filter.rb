@@ -49,7 +49,7 @@ class Queries::Days::Filters::DatesIntervalFilter < Queries::Days::Filters::DayF
       to = from.next_month.at_end_of_month
     end
 
-    model.from_sql(from:, to:)
+    model.from_range(from:, to:)
   end
 
   def type_strategy
@@ -57,6 +57,6 @@ class Queries::Days::Filters::DatesIntervalFilter < Queries::Days::Filters::DayF
   end
 
   def connection
-    ActiveRecord::Base::connection
+    nil
   end
 end

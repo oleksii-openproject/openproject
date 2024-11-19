@@ -26,62 +26,45 @@
 # See COPYRIGHT and LICENSE files for more details.
 #++
 
-class Day < ApplicationRecord
-  include Tableless
-
-  has_many :non_working_days,
-           inverse_of: false,
-           class_name: "NonWorkingDay",
-           foreign_key: :date,
-           primary_key: :date,
-           dependent: nil
-
+class Day < TablelessModel
+  attribute :id, :integer, default: nil
   attribute :date, :date, default: nil
   attribute :day_of_week, :integer, default: nil
-  attribute :working, :boolean, default: "t"
+  attribute :working, :boolean, default: true
 
   delegate :name, to: :week_day, allow_nil: true
 
-  scope :working, -> { where(working: true) }
-
-  def self.default_scope
-    today = Time.zone.today
-    from = today.at_beginning_of_month
-    to = today.next_month.at_end_of_month
-    from_range(from:, to:)
-    .includes(:non_working_days)
-    .order("days.id")
+  def non_working_days
+    @non_working_days ||= NonWorkingDay.where(date: date)
   end
 
-  def self.from_range(from:, to:)
-    from(Arel.sql(from_sql(from:, to:)))
-  end
+  class << self
+    def for_this_month
+      today = Time.zone.today
+      from = today.at_beginning_of_month
+      to = today.next_month.at_end_of_month
 
-  def self.from_sql(from:, to:)
-    from = from.to_date
-    to = to.to_date
-    <<~SQL.squish
-      (SELECT
-        to_char(dd, 'YYYYMMDD')::integer id,
-        date_trunc('day', dd)::date date,
-        extract(isodow from dd) day_of_week,
-        (COALESCE(POSITION(extract(isodow from dd)::text IN settings.value) > 0, TRUE)
-          AND non_working_days.id IS NULL)::bool working
-      FROM
-      generate_series( '#{from}'::timestamp,
-            '#{to}'::timestamp,
-            '1 day'::interval) dd
-      LEFT JOIN settings
-           ON settings.name = 'working_days'
-      LEFT JOIN non_working_days
-           ON dd = non_working_days.date
-      ) days
-    SQL
-  end
+      from_range(from: from, to: to)
+    end
 
-  def self.last_working
-    # Look up only from 8 days ago, because the Setting.working_days must have at least 1 working weekday.
-    from_range(from: 8.days.ago, to: Time.zone.yesterday).where(working: true).last
+    def from_range(from:, to:)
+      range = from.to_date..to.to_date
+      non_working_days = NonWorkingDay.where(date: range).pluck(:date)
+
+      range.map do |date|
+        new(
+          id: date.strftime("YYYYMMDD").to_i,
+          date: date,
+          day_of_week: date.wday,
+          working: date.wday.in?(Setting.working_days) && non_working_days.exclude?(date)
+        )
+      end
+    end
+
+    def last_working
+      # Look up only from 8 days ago, because the Setting.working_days must have at least 1 working weekday.
+      from_range(from: 8.days.ago, to: Time.zone.yesterday).reverse.find(&:working)
+    end
   end
 
   def week_day
