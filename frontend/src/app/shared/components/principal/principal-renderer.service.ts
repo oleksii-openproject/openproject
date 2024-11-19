@@ -108,6 +108,11 @@ export class PrincipalRendererService {
     container.classList.add('op-principal');
     const type = typeFromHref(hrefFromPrincipal(principal)) as PrincipalType;
 
+    // Only actual users provide a hover card with additional info
+    if (type === 'group') {
+      avatar.hoverCard = undefined;
+    }
+
     if (!avatar.hide) {
       const el = this.renderAvatar(principal, avatar, type);
       container.appendChild(el);
