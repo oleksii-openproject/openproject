@@ -58,6 +58,14 @@ GIT
       parallel_tests (>= 3.3.0, < 5)
       rspec (>= 3.10)
 
+GIT
+  remote: https://github.com/puma/puma.git
+  revision: fba741b91780224a1db1c456645335b2dd7f27dd
+  branch: master
+  specs:
+    puma (6.4.3)
+      nio4r (~> 2.0)
+
 PATH
   remote: modules/auth_plugins
   specs:
@@ -878,8 +886,6 @@ GEM
       eventmachine_httpserver
       http_parser.rb (~> 0.6.0)
       multi_json
-    puma (6.4.3)
-      nio4r (~> 2.0)
     puma-plugin-statsd (2.6.0)
       puma (>= 5.0, < 7)
     raabro (1.4.0)
@@ -909,7 +915,7 @@ GEM
     rack_session_access (0.2.0)
       builder (>= 2.0.0)
       rack (>= 1.0.0)
-    rackup (1.0.0)
+    rackup (1.0.1)
       rack (< 3)
       webrick
     rails (7.1.5)
@@ -1333,7 +1339,7 @@ DEPENDENCIES
   pry-rails (~> 0.3.6)
   pry-rescue (~> 1.6.0)
   puffing-billy (~> 4.0.0)
-  puma (~> 6.4)
+  puma!
   puma-plugin-statsd (~> 2.0)
   rack-attack (~> 6.7.0)
   rack-cors (~> 2.0.2)
@@ -1342,7 +1348,6 @@ DEPENDENCIES
   rack-test (~> 2.1.0)
   rack-timeout (~> 0.7.0)
   rack_session_access
-  rackup (= 1.0.0)
   rails (~> 7.1.3)
   rails-controller-testing (~> 1.0.2)
   rails-i18n (~> 7.0.0)

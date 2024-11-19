@@ -184,13 +184,12 @@ gem "rails-i18n", "~> 7.0.0"
 gem "sprockets", "~> 3.7.2" # lock sprockets below 4.0
 gem "sprockets-rails", "~> 3.5.1"
 
-gem "puma", "~> 6.4"
+# waiting for a release of puma to fix an issue with current rackup update
+# see https://github.com/puma/puma/pull/3532
+# gem "puma", "~> 6.4"
+gem "puma", github: "puma/puma", branch: "master"
 gem "puma-plugin-statsd", "~> 2.0"
 gem "rack-timeout", "~> 0.7.0", require: "rack/timeout/base"
-
-# pinned version until a new version of puma is released
-# see https://github.com/puma/puma/pull/3532
-gem "rackup", "= 1.0.0"
 
 gem "nokogiri", "~> 1.16.0"
 
