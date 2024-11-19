@@ -111,6 +111,7 @@ module AvatarHelper
     # The hover card will be triggered by hovering over the avatar (if enabled)
     hover_card = tag_options[:hover_card]
     if hover_card.fetch(:active, false)
+      inputs[:hoverCard] = true
       inputs[:hoverCardModalTarget] = hover_card.fetch(:target, :default)
 
       # Hardcoded properties for now:
