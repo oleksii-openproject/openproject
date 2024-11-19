@@ -19,6 +19,7 @@ module OpenIDConnect
         authorization_endpoint:,
         jwks_uri:,
         issuer:,
+        scope:,
         identifier: client_id,
         secret: client_secret,
         token_endpoint:,
