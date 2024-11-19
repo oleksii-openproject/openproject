@@ -55,7 +55,7 @@ module RakeJob
   ##
   # Load tasks if we don't find our task
   def load_task
-    Rails.application.load_rake_tasks unless task_loaded?
+    Rails.application.load_tasks unless task_loaded?
 
     task_loaded? && Rake::Task[task_name]
   end
