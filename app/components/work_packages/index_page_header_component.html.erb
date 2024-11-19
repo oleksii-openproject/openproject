@@ -87,6 +87,18 @@
         end
       end
 
+      if can_change_visibility?
+        menu.with_item(
+          label: t("js.label_visibility_settings"),
+          href: "TODO",
+          content_arguments: {
+            data: { "turbo-stream": true, method: :patch }
+          }
+        ) do |item|
+          item.with_leading_visual_icon(icon: :"eye")
+        end
+      end
+
       menu.with_item(
         tag: :a,
         label: t('js.label_export'),

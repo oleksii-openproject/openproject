@@ -69,6 +69,11 @@ class WorkPackages::IndexPageHeaderComponent < ApplicationComponent
     true
   end
 
+  def can_change_visibility?
+    # TODO
+    true
+  end
+
   def can_delete?
     # TODO
     true
