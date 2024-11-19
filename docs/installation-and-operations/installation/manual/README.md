@@ -96,8 +96,8 @@ Lastly, revert to the previous system user:
 
 ## Installation of Ruby
 
-The are several possibilities to install Ruby on your machine. 
-We will use [rbenv](https://github.com/rbenv/rbenv). 
+The are several possibilities to install Ruby on your machine.
+We will use [rbenv](https://github.com/rbenv/rbenv).
 Please be aware that the actual installation of a specific Ruby version takes some time to finish.
 
 ```shell
@@ -110,19 +110,19 @@ Please be aware that the actual installation of a specific Ruby version takes so
 ```
 
 We suggest you install the version we require in [.ruby-version](https://github.com/opf/openproject/blob/dev/.ruby-version).
-Read the first line e.g. `3.3.4` and install that version.
+Read the first line e.g. `3.3.6` and install that version.
 
 ```shell
-[openproject@host] rbenv install 3.3.4
+[openproject@host] rbenv install 3.3.6
 [openproject@host] rbenv rehash
-[openproject@host] rbenv global 3.3.4
+[openproject@host] rbenv global 3.3.6
 ```
 
 To check our Ruby installation we run `ruby --version`. It should output
 something very similar to:
 
 ```text
-ruby 3.3.4 (2024-07-09 revision be1089c8ec) [arm64-darwin23]
+ruby 3.3.6 (2024-11-05 revision 75015d4c1f) [arm64-darwin24]
 ```
 
 ## Installation of Node
