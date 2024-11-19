@@ -26,30 +26,18 @@
 # See COPYRIGHT and LICENSE files for more details.
 #++
 
-class Capability < TablelessModel
+class Capability < ApplicationRecord
+  include Tableless
   include Scopes::Scoped
 
   scopes :default
 
-  def context
-    @context ||= Project.find(context_id)
-  end
+  default_scope { default }
 
-  def context=(project)
-    @context = project
-    @context_id = project.id
-  end
+  belongs_to :context, class_name: "Project"
+  belongs_to :principal
 
-  def principal
-    @principal ||= User.find(principal_id)
-  end
-
-  def principal=(principal)
-    @principal = principal
-    @principal_id = principal.id
-  end
-
-  attribute :action, :string, default: nil
-  attribute :context_id, :integer, default: nil
-  attribute :principal_id, :integer, default: nil
+  define_attribute :action, ActiveRecord::Type.lookup(:text), default: nil
+  define_attribute :context_id, ActiveRecord::Type.lookup(:integer), default: nil
+  define_attribute :principal_id, ActiveRecord::Type.lookup(:integer), default: nil
 end

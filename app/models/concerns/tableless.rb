@@ -26,9 +26,8 @@
 # See COPYRIGHT and LICENSE files for more details.
 #++
 
-class TablelessModel
-  include ActiveModel::Model
-  include ActiveModel::Attributes
+module Tableless
+  extend ActiveSupport::Concern
 
   def persisted?
     false
@@ -36,5 +35,15 @@ class TablelessModel
 
   def readonly?
     true
+  end
+
+  class_methods do
+    def load_schema!
+      # noop
+    end
+
+    def columns_hash
+      @columns_hash ||= {}
+    end
   end
 end

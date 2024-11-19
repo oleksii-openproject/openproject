@@ -26,13 +26,16 @@
 # See COPYRIGHT and LICENSE files for more details.
 #++
 
-class Action < TablelessModel
+class Action < ApplicationRecord
+  include Tableless
   include Scopes::Scoped
 
   scopes :default
 
-  attribute :id, :string, default: nil
-  attribute :permission, :string, default: nil
-  attribute :global, :boolean, default: false
-  attribute :module, :string, default: false
+  default_scope { default }
+
+  define_attribute :id, ActiveRecord::Type.lookup(:text), default: nil
+  define_attribute :permission, ActiveRecord::Type.lookup(:text), default: nil
+  define_attribute :global, ActiveRecord::Type.lookup(:boolean), default: false
+  define_attribute :module, ActiveRecord::Type.lookup(:text), default: false
 end

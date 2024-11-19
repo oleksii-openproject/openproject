@@ -35,7 +35,7 @@ class Queries::Days::DayQuery
   end
 
   def default_scope
-    Day.for_this_month
+    Day.default_scope
   end
 
   ##
@@ -47,5 +47,9 @@ class Queries::Days::DayQuery
     from_clause_filter = filters.find(&:from)
     scope = scope.from(from_clause_filter.from) if from_clause_filter
     scope
+  end
+
+  def results
+    super.reorder(date: :asc)
   end
 end
