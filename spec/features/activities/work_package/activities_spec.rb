@@ -27,8 +27,11 @@
 #++
 
 require "spec_helper"
+require "support/flash/expectations"
 
 RSpec.describe "Work package activity", :js, :with_cuprite, with_flag: { primerized_work_package_activities: true } do
+  include Flash::Expectations
+
   let(:project) { create(:project) }
   let(:admin) { create(:admin) }
   let(:member_role) do
@@ -1240,6 +1243,113 @@ RSpec.describe "Work package activity", :js, :with_cuprite, with_flag: { primeri
 
           wp_page.expect_no_conflict_warning_banner
           wp_page.expect_no_conflict_error_banner
+        end
+      end
+    end
+  end
+
+  describe "error handling" do
+    let(:work_package) { create(:work_package, project:, author: admin) }
+
+    current_user { admin }
+
+    before do
+      wp_page.visit!
+      wp_page.wait_for_activity_tab
+    end
+
+    context "when adding a comment" do
+      context "when the creation call raises an unknown server error" do
+        before do
+          allow_any_instance_of(WorkPackages::ActivitiesTabController) # rubocop:disable RSpec/AnyInstance
+            .to receive(:create_journal_service_call)
+            .and_raise(StandardError.new("Test error"))
+        end
+
+        it "shows an error banner when the server returns an error" do
+          activity_tab.add_comment(text: "First comment by admin", save: false)
+
+          page.find_test_selector("op-submit-work-package-journal-form").click
+
+          expect_flash(message: "Test error", type: :error)
+
+          # expect the editor content not to be lost
+          within_test_selector("op-work-package-journal-form-element") do
+            editor = FormFields::Primerized::EditorFormField.new("notes", selector: "#work-package-journal-form-element")
+            editor.expect_value("First comment by admin")
+          end
+        end
+      end
+
+      context "when the creation call fails with a validation error" do
+        before do
+          allow_any_instance_of(AddWorkPackageNoteService) # rubocop:disable RSpec/AnyInstance
+            .to receive(:call)
+            .and_return(
+              ServiceResult.failure(errors: ActiveModel::Errors.new(Journal.new).tap do |e|
+                e.add(:notes, "Validation error")
+              end)
+            )
+        end
+
+        it "shows a validation error banner" do
+          activity_tab.add_comment(text: "First comment by admin", save: false)
+
+          page.find_test_selector("op-submit-work-package-journal-form").click
+
+          expect_flash(message: "Validation error", type: :error)
+
+          # expect the editor content not to be lost
+          within_test_selector("op-work-package-journal-form-element") do
+            editor = FormFields::Primerized::EditorFormField.new("notes", selector: "#work-package-journal-form-element")
+            editor.expect_value("First comment by admin")
+          end
+        end
+      end
+    end
+
+    context "when editing a comment" do
+      let!(:first_comment_by_admin) do
+        create(:work_package_journal, user: admin, notes: "First comment by admin", journable: work_package, version: 2)
+      end
+
+      context "when the update call raises an unknown server error" do
+        before do
+          allow_any_instance_of(WorkPackages::ActivitiesTabController) # rubocop:disable RSpec/AnyInstance
+            .to receive(:update_journal_service_call)
+            .and_raise(StandardError.new("Test error"))
+        end
+
+        it "shows an error banner" do
+          activity_tab.edit_comment(first_comment_by_admin, text: "First comment by admin edited", save: false)
+
+          page.within_test_selector("op-work-package-journal-form-element") do
+            page.find_test_selector("op-submit-work-package-journal-form").click
+          end
+
+          expect_flash(message: "Test error", type: :error)
+        end
+      end
+
+      context "when the update call fails with a validation error" do
+        before do
+          allow_any_instance_of(Journals::UpdateService) # rubocop:disable RSpec/AnyInstance
+            .to receive(:call)
+            .and_return(
+              ServiceResult.failure(errors: ActiveModel::Errors.new(Journal.new).tap do |e|
+                e.add(:notes, "Validation error")
+              end)
+            )
+        end
+
+        it "shows a validation error banner" do
+          activity_tab.edit_comment(first_comment_by_admin, text: "First comment by admin edited", save: false)
+
+          page.within_test_selector("op-work-package-journal-form-element") do
+            page.find_test_selector("op-submit-work-package-journal-form").click
+          end
+
+          expect_flash(message: "Validation error", type: :error)
         end
       end
     end

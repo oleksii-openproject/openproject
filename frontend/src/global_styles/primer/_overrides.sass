@@ -28,22 +28,9 @@
 
 // Re-apply the primer styles with higher specificity
 // as the OpenProject form styles override them.
-
-.Box
-  > ul:not(.op-uc-list)
-    margin-left: 0
-
-
 .FormControl
-  label
-    margin-bottom: 0
   input
     border-radius: var(--borderRadius-medium)
-
-action-menu
-  anchored-position
-    ul
-      margin-left: 0
 
 .UnderlineNav
   @include no-visible-scroll-bar
@@ -52,18 +39,20 @@ action-menu
   @media screen and (min-width: $breakpoint-sm)
     scroll-behavior: smooth
 
-ul.SegmentedControl
-  margin-left: 0
-
 /* Remove margin-left: 2rem from Breadcrumbs */
 #breadcrumb,
 page-header,
 sub-header,
 .op-work-package-details-tab-component,
 .tabnav,
-.Box-header
+.Box-header,
+action-menu anchored-position
   ol, ul
     margin-left: 0
+
+ul.SegmentedControl,
+.Box > ul:not(.op-uc-list)
+  margin-left: 0
 
 #breadcrumb
   .breadcrumb-item.breadcrumb-item-selected
@@ -114,10 +103,6 @@ sub-header,
     border-radius: 0px 0px var(--borderRadius-medium) var(--borderRadius-medium)
   .op-ckeditor--wrapper
     margin-bottom: 0px
-  
-// Todo: Remove once https://github.com/primer/view_components/pull/3087 is merged
-.FormControl-spacingWrapper
-  row-gap: var(--stack-gap-normal)
 
 // When our generic table uses the quick action menu, column headers are cut off and no longer fully readable.
 // This fix ensures that column headers are always displayed. An example for such a table is the project list.

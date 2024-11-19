@@ -5,14 +5,6 @@ module OpenIDConnect
         model
       end
 
-      def column_args(column)
-        if column == :name
-          { style: "grid-column: span 3" }
-        else
-          super
-        end
-      end
-
       def name
         concat(provider_name)
         unless provider.configured?

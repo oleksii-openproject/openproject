@@ -34,11 +34,17 @@ See COPYRIGHT and LICENSE files for more details.
     classes: "#{table.grid_class} #{row_css_class}",
   ) do %>
   <% columns.each do |column| %>
-   <%= render(Primer::BaseComponent.new(tag: :div, classes: column_css_class(column), **column_args(column))) { column_value(column) } %>
+    <%= render(Primer::BaseComponent.new(tag: :div, classes: grid_column_classes(column), **column_args(column))) do %>
+      <% label = mobile_label(column) %>
+      <% if label.present? %>
+        <%= render(Primer::Beta::Text.new(classes: "op-border-box-grid--row-label")) { "#{label}: " } %>
+      <% end %>
+      <%= column_value(column) %>
+    <% end %>
   <% end %>
 
   <% if table.has_actions? %>
-    <%= flex_layout(align_items: :center, justify_content: :flex_end) do |flex| %>
+    <%= flex_layout(classes: "op-border-box-grid--row-action") do |flex| %>
       <% button_links.each_with_index do |link, i| %>
         <% args = i == (button_links.count - 1) ? {} : { mr: 1 } %>
         <% flex.with_column(**args) { link } %>
