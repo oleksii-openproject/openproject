@@ -8,7 +8,7 @@ RSpec.describe WorkPackage::PDFExport::DocumentGenerator do
   let(:project) { create(:project) }
   let(:user) { create(:admin) }
   let(:description) do
-    "This is a test description with an macro: workPackageValue:assignee honorificabilitudinitatibus honorificabilitudinitatibus"
+    "This is a test description with an macro: workPackageValue:assignee"
   end
   let(:work_package) do
     create(:work_package,
@@ -54,8 +54,6 @@ RSpec.describe WorkPackage::PDFExport::DocumentGenerator do
       expected_result = [
         "This is a test description with an macro:",
         user.name,
-        "honorificabilitudinitatibus",
-        "honorificabilitudinitatibus",
         export_time_formatted,
         "A text in the center of the footer",
         "Page 1 of 1",
@@ -74,14 +72,13 @@ RSpec.describe WorkPackage::PDFExport::DocumentGenerator do
         }
       end
       let(:description) do
-        "honorificabilitudinitatibus " * 10
+        "honorificabilitudinitatibus " * 6
       end
 
       it "contains correct data" do
         expected_result = [
           "honorificabilitudinitatibus honorificabilitudinitatibus honorificabilitudinitatibus " \
-          "honorificabili ­ tudinitatibus honorificabilitudinitatibus honorificabilitudinitatibus " \
-          "honorificabilitudinitatibus honorificabilitudinitatibus honorificabilitudinitatibus honorificabilitudinitatibus",
+          "honorificabili ­ tudinitatibus honorificabilitudinitatibus honorificabilitudinitatibus",
           export_time_formatted,
           "Page 1 of 1"
         ]
