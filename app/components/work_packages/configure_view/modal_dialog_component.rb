@@ -51,36 +51,50 @@ module WorkPackages
           {
             id: "columns",
             name: I18n.t("js.label_columns"),
-            componentClass: "WpTableConfigurationColumnsTabComponent"
+            component: "opce-wp-table-configuration-tab",
+            inputs: {
+              tabId: "columns"
+            }
           },
           {
             id: "filters",
             name: I18n.t("js.work_packages.query.filters"),
-            componentClass: "WpTableConfigurationFiltersTab"
+            component: "opce-wp-table-configuration-tab",
+            inputs: {
+              tabId: "filters"
+            }
           },
           {
             id: "sort-by",
             name: I18n.t("js.label_sort_by"),
-            componentClass: "WpTableConfigurationSortByTabComponent"
+            component: "opce-wp-table-configuration-tab",
+            inputs: {
+              tabId: "sort-by"
+            }
           },
           {
             id: "baseline",
             name: I18n.t("js.baseline.toggle_title"),
-            component: "opce-baseline",
+            component: "opce-wp-table-configuration-tab",
             inputs: {
-              showHeaderText: false,
-              showActionBar: true
+              tabId: "baseline"
             }
           },
           {
             id: "display-settings",
             name: I18n.t("js.work_packages.table_configuration.display_settings"),
-            componentClass: "WpTableConfigurationDisplaySettingsTabComponent"
+            component: "opce-wp-table-configuration-tab",
+            inputs: {
+              tabId: "display-settings"
+            }
           },
           {
             id: "highlighting",
             name: I18n.t("js.work_packages.table_configuration.highlighting"),
-            componentClass: "WpTableConfigurationHighlightingTabComponent"
+            component: "opce-wp-table-configuration-tab",
+            inputs: {
+              tabId: "highlighting"
+            }
           }
         ]
       end

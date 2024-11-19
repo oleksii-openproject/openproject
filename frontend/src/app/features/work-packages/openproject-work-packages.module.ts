@@ -421,6 +421,7 @@ import { WorkPackageFullCopyEntryComponent } from 'core-app/features/work-packag
 import { WorkPackageFullCreateEntryComponent } from 'core-app/features/work-packages/routing/wp-full-create/wp-full-create-entry.component';
 import { WorkPackageFullViewEntryComponent } from 'core-app/features/work-packages/routing/wp-full-view/wp-full-view-entry.component';
 import { OpBaselineEntryComponent } from 'core-app/features/work-packages/components/wp-baseline/baseline/baseline-entry.component';
+import { WpTableConfigurationTabEntryComponent } from 'core-app/features/work-packages/components/wp-table/configuration-modal/tabs/tab-entry.component';
 
 @NgModule({
   imports: [
@@ -634,6 +635,7 @@ import { OpBaselineEntryComponent } from 'core-app/features/work-packages/compon
     WpTableConfigurationSortByTabComponent,
     WpTableConfigurationTimelinesTabComponent,
     WpTableConfigurationHighlightingTabComponent,
+    WpTableConfigurationTabEntryComponent,
     WpTableConfigurationRelationSelectorComponent,
     QuerySharingFormComponent,
     QuerySharingModalComponent,

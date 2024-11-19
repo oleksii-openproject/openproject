@@ -173,6 +173,7 @@ import { WorkPackageFullCreateEntryComponent } from 'core-app/features/work-pack
 import { WorkPackageFullViewEntryComponent } from 'core-app/features/work-packages/routing/wp-full-view/wp-full-view-entry.component';
 import { OpBaselineEntryComponent } from 'core-app/features/work-packages/components/wp-baseline/baseline/baseline-entry.component';
 import { OpIncludeProjectsEntryComponent } from 'core-app/shared/components/project-include/project-include-entry.component';
+import { WpTableConfigurationTabEntryComponent } from 'core-app/features/work-packages/components/wp-table/configuration-modal/tabs/tab-entry.component';
 
 export function initializeServices(injector:Injector) {
   return () => {
@@ -393,6 +394,7 @@ export class OpenProjectModule implements DoBootstrap {
     registerCustomElement('opce-wp-full-copy', WorkPackageFullCopyEntryComponent, { injector });
     registerCustomElement('opce-baseline', OpBaselineEntryComponent, { injector });
     registerCustomElement('opce-include-projects', OpIncludeProjectsEntryComponent, { injector });
+    registerCustomElement('opce-wp-table-configuration-tab', WpTableConfigurationTabEntryComponent, { injector });
     registerCustomElement('opce-timer-account-menu', TimerAccountMenuComponent, { injector });
     registerCustomElement('opce-remote-field-updater', RemoteFieldUpdaterComponent, { injector });
     registerCustomElement('opce-modal-single-date-picker', OpModalSingleDatePickerComponent, { injector });
