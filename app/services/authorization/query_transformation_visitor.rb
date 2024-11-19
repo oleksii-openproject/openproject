@@ -73,13 +73,11 @@ class Authorization::QueryTransformationVisitor < Arel::Visitors::Visitor
   end
 
   def visit_Arel_Nodes_Or(ast)
-    ast.left = replace_if_equals(ast.left)
+    ast.children.each_with_index do |_, i|
+      ast.children[i] = replace_if_equals(ast.children[i])
 
-    visit ast.left
-
-    ast.right = replace_if_equals(ast.right)
-
-    visit ast.right
+      visit ast.children[i]
+    end
   end
 
   def visit_Arel_Nodes_And(ast)
