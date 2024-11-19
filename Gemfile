@@ -188,6 +188,10 @@ gem "puma", "~> 6.4"
 gem "puma-plugin-statsd", "~> 2.0"
 gem "rack-timeout", "~> 0.7.0", require: "rack/timeout/base"
 
+# pinned version until a new version of puma is released
+# see https://github.com/puma/puma/pull/3532
+gem "rackup", "= 1.0.0"
+
 gem "nokogiri", "~> 1.16.0"
 
 gem "carrierwave", "~> 1.3.4"
