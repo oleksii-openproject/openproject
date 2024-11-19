@@ -71,10 +71,12 @@ RSpec.describe "work package PDF generator", :js, :selenium, with_flag: { genera
   end
 
   def mock_generating_pdf
-    allow(WorkPackage::PDFExport::DocumentGenerator).to
-    receive(:new)
-      .with(work_package, has_mandatory_params(expected_params))
-      .and_return(document_generator)
+    allow(WorkPackage::PDFExport::DocumentGenerator)
+      .to receive(:new)
+            .and_return(document_generator)
+    allow(document_generator)
+      .to receive(:initialize)
+            .with(work_package, has_mandatory_params(expected_params))
     allow(document_generator)
       .to receive(:export!)
             .and_return(
