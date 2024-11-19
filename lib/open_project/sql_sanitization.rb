@@ -37,6 +37,10 @@ module OpenProject
       ::ActiveRecord::Base.connection
     end
 
+    def self.with_connection(&)
+      ::ActiveRecord::Base.connection_pool.with_connection(&)
+    end
+
     ##
     # Shorthand for:
     # sanitize_sql_array [str, :param0, param1]
