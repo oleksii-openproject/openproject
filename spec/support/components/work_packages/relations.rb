@@ -102,7 +102,7 @@ module Components
         page.find("[data-test-selector='op-relation-row-#{actual_relatable.id}-delete-button']")
       end
 
-      def add_relation(type:, to:, description: nil)
+      def add_relation(type:, relatable:, description: nil)
         i18n_namespace = "#{WorkPackageRelationsTab::IndexComponent::I18N_NAMESPACE}.relations"
         # Open create form
 
@@ -123,7 +123,7 @@ module Components
         # Enter the query and select the child
         autocomplete_field = page.find("[data-test-selector='work-package-relation-form-to-id']")
         select_autocomplete(autocomplete_field,
-                            query: to.subject,
+                            query: relatable.subject,
                             results_selector: "body")
 
         if description.present?

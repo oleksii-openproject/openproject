@@ -32,59 +32,62 @@ RSpec.describe "Primerized work package relations tab",
                :js, :with_cuprite do
   include Components::Autocompleter::NgSelectAutocompleteHelpers
 
-  let(:user) { create(:admin) }
-  let(:project) { create(:project) }
-  let(:work_package) { create(:work_package, project:) }
+  shared_let(:user) { create(:admin) }
+  shared_let(:project) { create(:project) }
+
+  before_all do
+    set_factory_default(:user, user)
+    set_factory_default(:project, project)
+    set_factory_default(:project_with_types, project)
+  end
+
+  shared_let(:work_package) { create(:work_package, subject: "main") }
+  shared_let(:type1) { create(:type) }
+  shared_let(:type2) { create(:type) }
+
+  shared_let(:wp_predecessor) do
+    create(:work_package, type: type1, subject: "predecessor of main",
+                          start_date: Date.current, due_date: Date.current + 1.week)
+  end
+  shared_let(:wp_related) { create(:work_package, type: type2, subject: "related to main") }
+  shared_let(:wp_blocker) { create(:work_package, type: type1, subject: "blocks main") }
+
+  shared_let(:relation_follows) do
+    create(:relation,
+           from: work_package,
+           to: wp_predecessor,
+           relation_type: Relation::TYPE_FOLLOWS)
+  end
+  shared_let(:relation_relates) do
+    create(:relation,
+           from: work_package,
+           to: wp_related,
+           relation_type: Relation::TYPE_RELATES)
+  end
+  shared_let(:relation_blocked) do
+    create(:relation,
+           from: wp_blocker,
+           to: work_package,
+           relation_type: Relation::TYPE_BLOCKED)
+  end
+  shared_let(:child_wp) do
+    create(:work_package,
+           parent: work_package,
+           type: type1,
+           project: project)
+  end
+  shared_let(:not_yet_child_wp) do
+    create(:work_package,
+           type: type1,
+           project:)
+  end
+
   let(:full_wp_view) { Pages::FullWorkPackage.new(work_package) }
   let(:relations_tab) { Components::WorkPackages::Relations.new(work_package) }
   let(:relations_panel_selector) { ".detail-panel--relations" }
   let(:relations_panel) { find(relations_panel_selector) }
   let(:work_packages_page) { Pages::PrimerizedSplitWorkPackage.new(work_package) }
   let(:tabs) { Components::WorkPackages::PrimerizedTabs.new }
-
-  let(:type1) { create(:type) }
-  let(:type2) { create(:type) }
-
-  let(:to1) { create(:work_package, type: type1, project:, start_date: Date.current, due_date: Date.current + 1.week) }
-  let(:to2) { create(:work_package, type: type2, project:) }
-  let(:to3) { create(:work_package, type: type1, project:) }
-  let(:from1) { create(:work_package, type: type1, project:) }
-
-  let!(:relation1) do
-    create(:relation,
-           from: work_package,
-           to: to1,
-           relation_type: Relation::TYPE_FOLLOWS)
-  end
-  let!(:relation2) do
-    create(:relation,
-           from: work_package,
-           to: to2,
-           relation_type: Relation::TYPE_RELATES)
-  end
-  let!(:relation3) do
-    create(:relation,
-           from: from1,
-           to: work_package,
-           relation_type: Relation::TYPE_BLOCKED)
-  end
-  let!(:relation4) do
-    create(:relation,
-           from: to1,
-           to: from1,
-           relation_type: Relation::TYPE_FOLLOWS)
-  end
-  let!(:child_wp) do
-    create(:work_package,
-           parent: work_package,
-           type: type1,
-           project: project)
-  end
-  let!(:not_yet_child_wp) do
-    create(:work_package,
-           type: type1,
-           project:)
-  end
 
   current_user { user }
 
@@ -106,9 +109,9 @@ RSpec.describe "Primerized work package relations tab",
 
       tabs.expect_counter("relations", 4)
 
-      relations_tab.expect_relation(relation1)
-      relations_tab.expect_relation(relation2)
-      relations_tab.expect_relation(relation3)
+      relations_tab.expect_relation(relation_follows)
+      relations_tab.expect_relation(relation_relates)
+      relations_tab.expect_relation(relation_blocked)
     end
   end
 
@@ -116,9 +119,9 @@ RSpec.describe "Primerized work package relations tab",
     it "can delete relations" do
       scroll_to_element relations_panel
 
-      relations_tab.remove_relation(relation1)
+      relations_tab.remove_relation(relation_follows)
 
-      expect { relation1.reload }.to raise_error(ActiveRecord::RecordNotFound)
+      expect { relation_follows.reload }.to raise_error(ActiveRecord::RecordNotFound)
 
       tabs.expect_counter("relations", 3)
     end
@@ -137,9 +140,9 @@ RSpec.describe "Primerized work package relations tab",
     it "renders an edit form" do
       scroll_to_element relations_panel
 
-      relation_row = relations_tab.expect_relation(relation1)
+      relation_row = relations_tab.expect_relation(relation_follows)
 
-      relations_tab.add_description_to_relation(relation1, "Discovered relations have descriptions!")
+      relations_tab.add_description_to_relation(relation_follows, "Discovered relations have descriptions!")
 
       # Reflects new description
       expect(relation_row).to have_text("Discovered relations have descriptions!")
@@ -148,7 +151,7 @@ RSpec.describe "Primerized work package relations tab",
       tabs.expect_counter("relations", 4)
 
       # Edit again
-      relations_tab.edit_relation_description(relation1, "And they can be edited!")
+      relations_tab.edit_relation_description(relation_follows, "And they can be edited!")
 
       # Reflects new description
       expect(relation_row).to have_text("And they can be edited!")
@@ -170,40 +173,45 @@ RSpec.describe "Primerized work package relations tab",
   end
 
   describe "creating a relation" do
+    let(:wp_successor) { create(:work_package, type: type1, subject: "successor of main") }
+
     it "renders the new relation form for the selected type and creates the relation" do
       scroll_to_element relations_panel
 
-      relations_tab.add_relation(type: :follows, to: to3, description: "Discovered relations have descriptions!")
-      relations_tab.expect_relation(to3)
+      relations_tab.add_relation(type: :precedes, relatable: wp_successor,
+                                 description: "Discovered relations have descriptions!")
+      relations_tab.expect_relation(wp_successor)
 
       # Bumped by one
       tabs.expect_counter("relations", 5)
+      # Relation is created
+      expect(Relation.follows.where(from: wp_successor, to: work_package)).to exist
     end
 
     it "does not autocomplete unrelatable work packages" do
-      # to1 is already related to work_package as relation1
-      # in a successor relation, so it should not be autocompleteable anymore
-      # under the "Successor (after)" type
+      # wp_predecessor is already related to work_package as relation_follows
+      # in a predecessor relation, so it should not be autocompleteable anymore
+      # under the "Predecessor (before)" type
       scroll_to_element relations_panel
 
       relations_panel.find("[data-test-selector='new-relation-action-menu']").click
 
       within page.find_by_id("new-relation-action-menu-list") do # Primer appends "list" to the menu id automatically
-        click_link_or_button "Successor (after)"
+        click_link_or_button "Predecessor (before)"
       end
 
       wait_for_reload
 
       within "##{WorkPackageRelationsTab::WorkPackageRelationFormComponent::DIALOG_ID}" do
-        expect(page).to have_text("Add successor (after)")
+        expect(page).to have_text("Add predecessor (before)")
         expect(page).to have_button("Add description")
 
         autocomplete_field = page.find("[data-test-selector='work-package-relation-form-to-id']")
         search_autocomplete(autocomplete_field,
-                            query: to1.subject,
+                            query: wp_predecessor.subject,
                             results_selector: "body")
         expect_no_ng_option(autocomplete_field,
-                            to1.subject,
+                            wp_predecessor.subject,
                             results_selector: "body")
       end
     end

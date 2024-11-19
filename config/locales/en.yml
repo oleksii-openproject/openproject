@@ -715,18 +715,18 @@ en:
     label_edit_x: "Edit %{x}"
     label_add_description: "Add description"
     relations:
-      label_relates_to_plural: "related to"
+      label_relates_singular: "related to"
       label_relates_plural: "related to"
       label_relates_to_singular: "related to"
       label_relates_to_plural: "related to"
       relates_description: "Creates a visible link between the two work packages with no additional effect"
       relates_to_description: "Creates a visible link between the two work packages with no additional effect"
-      label_precedes_singular: "predecessor (before)"
-      label_precedes_plural: "predecessors (before)"
-      precedes_description: "The related work package necessarily needs to finish before this one can start"
-      label_follows_singular: "successor (after)"
-      label_follows_plural: "successors (after)"
-      follows_description: "The related work package necessarily needs to start after this one finishes"
+      label_precedes_singular: "successor (after)"
+      label_precedes_plural: "successors (after)"
+      precedes_description: "The related work package necessarily needs to start after this one finishes"
+      label_follows_singular: "predecessor (before)"
+      label_follows_plural: "predecessors (before)"
+      follows_description: "The related work package necessarily needs to finish before this one can start"
       label_child_singular: "child"
       label_child_plural: "children"
       child_description: "Makes the related a work package a sub-item of the current (parent) work package"
@@ -766,7 +766,7 @@ en:
 
       label_parent_singular: "parent"
       label_parent_plural: "parent"
-    
+
   label_invitation: Invitation
   account:
     delete: "Delete account"
@@ -1667,7 +1667,7 @@ en:
   create_new_page: "Wiki page"
 
   date:
-    abbr_day_names: [ "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" ]
+    abbr_day_names: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
     abbr_month_names:
       [
         ~,
@@ -3553,7 +3553,7 @@ en:
         If this option is active, login requests will redirect to the configured omniauth provider.
         The login dropdown and sign-in page will be disabled.
         <br/>
-        <strong>Note:</strong> Unless you also disable password logins, with this option enabled, 
+        <strong>Note:</strong> Unless you also disable password logins, with this option enabled,
         users can still log in internally by visiting the <code>%{internal_path}</code> login page.
     attachments:
       whitelist_text_html: >
