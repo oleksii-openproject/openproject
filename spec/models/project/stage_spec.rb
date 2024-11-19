@@ -40,12 +40,5 @@ RSpec.describe Project::Stage do
       valid_stage = build(:project_stage)
       expect(valid_stage).to be_valid
     end
-
-    it "adds an error when `date` is set" do
-      stage_with_date = build(:project_stage, date: Time.zone.today)
-
-      expect(stage_with_date).not_to be_valid
-      expect(stage_with_date.errors[:base]).to include("Cannot assign `date` to a Stage")
-    end
   end
 end

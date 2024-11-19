@@ -27,12 +27,14 @@
 #++
 
 class Project::Gate < Project::LifeCycle
-  validates :date, presence: true
-  validate :validate_restricted_attributes
+  alias_attribute :date, :start_date
 
-  def validate_restricted_attributes
-    if start_date.present? || end_date.present?
-      errors.add(:base, :date_range_not_allowed)
+  validates :date, presence: true
+  validate :end_date_not_allowed
+
+  def end_date_not_allowed
+    if end_date.present?
+      errors.add(:base, :end_date_not_allowed)
     end
   end
 end

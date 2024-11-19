@@ -1121,11 +1121,7 @@ en:
         project/gate:
           attributes:
             base:
-              date_range_not_allowed: "Cannot assign `start_date` or `end_date` to a Gate"
-        project/stage:
-          attributes:
-            base:
-              date_not_allowed: "Cannot assign `date` to a Stage"
+              end_date_not_allowed: "Cannot assign `end_date` to a Gate"
         query:
           attributes:
             project:

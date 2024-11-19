@@ -28,11 +28,4 @@
 
 class Project::Stage < Project::LifeCycle
   validates :start_date, :end_date, presence: true
-  validate :validate_restricted_attributes
-
-  def validate_restricted_attributes
-    if date.present?
-      errors.add(:base, :date_not_allowed)
-    end
-  end
 end
