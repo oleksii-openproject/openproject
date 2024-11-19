@@ -29,7 +29,27 @@
 #++
 
 class API::V3::FileLinks::WorkPackagesFileLinksAPI < API::OpenProjectAPI
-  # The `:resources` keyword defines the API namespace -> /api/v3/work_packages/:id/file_links/...
+  helpers do
+    def sync_and_convert_relation(file_links)
+      sync_result = ::Storages::FileLinkSyncService
+                      .new(user: current_user)
+                      .call(file_links)
+                      .result
+
+      value_list = sync_result
+                     .map { |file_link| "(#{file_link.id},'#{file_link.origin_status}')" }
+                     .join(",")
+
+      origin_status_attribute = <<-SQL.squish
+        LEFT JOIN (VALUES #{value_list}) AS origin_status (id,status) ON origin_status.id = file_links.id
+      SQL
+
+      ::Storages::FileLink.where(id: sync_result.map(&:id))
+                          .joins(origin_status_attribute)
+                          .select("file_links.*, origin_status.status AS origin_status")
+    end
+  end
+
   resources :file_links do
     get do
       query = ParamsToQueryService
@@ -43,19 +63,23 @@ class API::V3::FileLinks::WorkPackagesFileLinksAPI < API::OpenProjectAPI
         raise ::API::Errors::InvalidQuery.new(message)
       end
 
-      result = if current_user.allowed_in_project?(:view_file_links, @work_package.project)
-                 file_links = query.results.where(container_id: @work_package.id,
-                                                  container_type: "WorkPackage",
-                                                  storage: @work_package.project.storages)
-                 ::Storages::FileLinkSyncService
-                   .new(user: current_user)
-                   .call(file_links)
-                   .result
-               else
-                 []
-               end
+      relation = if current_user.allowed_in_project?(:view_file_links, @work_package.project)
+                   file_links = query.results.where(container_id: @work_package.id,
+                                                    container_type: "WorkPackage",
+                                                    storage: @work_package.project.storages)
+
+                   if params[:pageSize] == "0"
+                     file_links
+                   else
+                     sync_and_convert_relation(file_links)
+                   end
+                 else
+                   ::Storages::FileLink.none
+                 end
+
       ::API::V3::FileLinks::FileLinkCollectionRepresenter.new(
-        result,
+        relation,
+        per_page: params[:pageSize],
         self_link: api_v3_paths.file_links(@work_package.id),
         current_user:
       )
