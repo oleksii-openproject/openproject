@@ -1,4 +1,5 @@
-<%= flex_layout(direction: :column, style: "gap: 0.25rem;") do |flex|
+<%=
+flex_layout(direction: :column, style: "gap: 0.25rem;") do |flex|
   flex.with_row(flex_layout: true,
                 justify_content: :flex_start,
                 align_items: :center,
@@ -7,7 +8,7 @@
       render(WorkPackages::HighlightedTypeComponent.new(work_package: related_work_package, font_size: :small))
     end
     meta_information_row.with_column do
-      render(Primer::Beta::Text.new(font_size: :small,color: :muted)) { "##{related_work_package.id}" }
+      render(Primer::Beta::Text.new(font_size: :small, color: :muted)) { "##{related_work_package.id}" }
     end
     meta_information_row.with_column do
       render WorkPackages::StatusBadgeComponent.new(status: related_work_package.status)
@@ -27,39 +28,39 @@
     subject_line_row.with_column do
       render(Primer::Alpha::ActionMenu.new(test_selector: action_menu_test_selector)) do |menu|
         menu.with_show_button(icon: "kebab-horizontal",
-                              'aria-label': I18n.t(:label_agenda_item_actions),
+                              "aria-label": I18n.t(:label_agenda_item_actions),
                               scheme: :invisible,
                               ml: 2)
         # Children have nothing to edit as it's not a relation.
         unless parent_child_relationship?
           menu.with_item(label: "Edit relation",
-            href: edit_path,
-            test_selector: edit_button_test_selector,
-            content_arguments: {
-              data: { turbo_stream: true }
-            }) do |item|
+                         href: edit_path,
+                         test_selector: edit_button_test_selector,
+                         content_arguments: {
+                           data: { turbo_stream: true }
+                         }) do |item|
             item.with_leading_visual_icon(icon: :pencil)
           end
         end
 
         menu.with_item(label: "Delete relation",
-                      scheme: :danger,
-                      href: destroy_path,
-                      form_arguments: {
-                        method: :delete,
-                        data: {
-                          confirm: t("text_are_you_sure"),
-                         turbo_stream: true
-                        }
-                      },
-                      test_selector: delete_button_test_selector) do |item|
+                       scheme: :danger,
+                       href: destroy_path,
+                       form_arguments: {
+                         method: :delete,
+                         data: {
+                           confirm: t("text_are_you_sure"),
+                           turbo_stream: true
+                         }
+                       },
+                       test_selector: delete_button_test_selector) do |item|
           item.with_leading_visual_icon(icon: :trash)
         end
       end
     end
   end
 
-  if should_display_description? 
+  if should_display_description?
     flex.with_row(flex_layout: true, justify_content: :flex_start) do |description_row|
       description_row.with_column do
         render(Primer::Beta::Text.new(font_size: :small, color: :muted)) { format_text(relation, :description) }
@@ -85,4 +86,5 @@
       end
     end
   end
-end %>
+end
+%>
