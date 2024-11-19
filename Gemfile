@@ -39,7 +39,7 @@ gem "activemodel-serializers-xml", "~> 1.0.1"
 gem "activerecord-import", "~> 1.7.0"
 gem "activerecord-session_store", "~> 2.1.0"
 gem "ox"
-gem "rails", "~> 7.1.3"
+gem "rails", "~> 7.2.2"
 gem "responders", "~> 3.0"
 
 gem "ffi", "~> 1.15"
@@ -61,7 +61,7 @@ gem "friendly_id", "~> 5.5.0"
 
 gem "acts_as_list", "~> 1.2.0"
 gem "acts_as_tree", "~> 2.9.0"
-gem "awesome_nested_set", "~> 3.7.0"
+gem "awesome_nested_set", "~> 3.8.0"
 gem "closure_tree", "~> 7.4.0"
 gem "rubytree", "~> 2.1.0"
 # Only used in down migrations now.
@@ -382,7 +382,7 @@ platforms :mri, :mingw, :x64_mingw do
   end
 
   # Support application loading when no database exists yet.
-  gem "activerecord-nulldb-adapter", "~> 1.0.0"
+  gem "activerecord-nulldb-adapter", "~> 1.1.1"
 
   # Have application level locks on the database to have a mutex shared between workers/hosts.
   # We e.g. employ this to safeguard the creation of journals.
