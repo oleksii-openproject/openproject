@@ -46,11 +46,11 @@ class LdapAuthSource < ApplicationRecord
 
   prepend ::Mixins::UniqueFinder
 
-  enum tls_mode: {
+  enum :tls_mode, {
     plain_ldap: 0,
     simple_tls: 1,
     start_tls: 2
-  }.freeze, _default: :start_tls
+  }, default: :start_tls
   validates :tls_mode, inclusion: { in: tls_modes.keys }
 
   validates :host, :port, :attr_login, presence: true

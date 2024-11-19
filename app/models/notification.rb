@@ -43,8 +43,7 @@ class Notification < ApplicationRecord
     shared: 12
   }.freeze
 
-  enum reason: REASONS,
-       _prefix: true
+  enum :reason, REASONS, _prefix: true
 
   belongs_to :recipient, class_name: "User"
   belongs_to :actor, class_name: "User"

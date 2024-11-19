@@ -31,12 +31,12 @@ class Principal < ApplicationRecord
 
   # Account statuses
   # Disables enum scopes to include not_builtin (cf. Principals::Scopes::Status)
-  enum status: {
+  enum :status, {
     active: 1,
     registered: 2,
     locked: 3,
     invited: 4
-  }.freeze, _scopes: false
+  }, scopes: false
 
   self.table_name = "#{table_name_prefix}users#{table_name_suffix}"
 

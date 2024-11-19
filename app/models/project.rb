@@ -174,7 +174,7 @@ class Project < ApplicationRecord
   scopes :activated_time_activity,
          :visible_with_activated_time_activity
 
-  enum status_code: {
+  enum :status_code, {
     on_track: 0,
     at_risk: 1,
     off_track: 2,
