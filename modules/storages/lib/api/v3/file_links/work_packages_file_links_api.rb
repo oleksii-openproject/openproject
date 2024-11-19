@@ -28,74 +28,78 @@
 # See COPYRIGHT and LICENSE files for more details.
 #++
 
-class API::V3::FileLinks::WorkPackagesFileLinksAPI < API::OpenProjectAPI
-  helpers do
-    def sync_and_convert_relation(file_links)
-      sync_result = ::Storages::FileLinkSyncService
-                      .new(user: current_user)
-                      .call(file_links)
-                      .result
+module API
+  module V3
+    module FileLinks
+      class WorkPackagesFileLinksAPI < API::OpenProjectAPI
+        helpers do
+          def sync_and_convert_relation(file_links)
+            return ::Storages::FileLink.none if file_links.empty?
 
-      value_list = sync_result
-                     .map { |file_link| "(#{file_link.id},'#{file_link.origin_status}')" }
-                     .join(",")
+            sync_result = ::Storages::FileLinkSyncService
+                            .new(user: current_user)
+                            .call(file_links)
+                            .result
 
-      origin_status_attribute = <<-SQL.squish
-        LEFT JOIN (VALUES #{value_list}) AS origin_status (id,status) ON origin_status.id = file_links.id
-      SQL
+            id_status_map = {}
 
-      ::Storages::FileLink.where(id: sync_result.map(&:id))
-                          .joins(origin_status_attribute)
-                          .select("file_links.*, origin_status.status AS origin_status")
-    end
-  end
+            sync_result.each do |file_link|
+              id_status_map[file_link.id] = file_link.origin_status.to_s
+            end
 
-  resources :file_links do
-    get do
-      query = ParamsToQueryService
-                .new(::Storages::Storage,
-                     current_user,
-                     query_class: ::Queries::Storages::FileLinks::FileLinkQuery)
-                .call(params)
+            JoinOriginStatusToFileLinksRelation.create(id_status_map)
+          end
+        end
 
-      unless query.valid?
-        message = I18n.t("api_v3.errors.missing_or_malformed_parameter", parameter: "filters")
-        raise ::API::Errors::InvalidQuery.new(message)
-      end
+        resources :file_links do
+          get do
+            query = ParamsToQueryService
+                      .new(::Storages::Storage,
+                           current_user,
+                           query_class: ::Queries::Storages::FileLinks::FileLinkQuery)
+                      .call(params)
 
-      relation = if current_user.allowed_in_project?(:view_file_links, @work_package.project)
-                   file_links = query.results.where(container_id: @work_package.id,
-                                                    container_type: "WorkPackage",
-                                                    storage: @work_package.project.storages)
+            unless query.valid?
+              message = I18n.t("api_v3.errors.missing_or_malformed_parameter", parameter: "filters")
+              raise ::API::Errors::InvalidQuery.new(message)
+            end
 
-                   if params[:pageSize] == "0"
-                     file_links
-                   else
-                     sync_and_convert_relation(file_links)
-                   end
-                 else
-                   ::Storages::FileLink.none
-                 end
+            relation = if current_user.allowed_in_project?(:view_file_links, @work_package.project)
+                         file_links = query.results.where(container_id: @work_package.id,
+                                                          container_type: "WorkPackage",
+                                                          storage: @work_package.project.storages)
 
-      ::API::V3::FileLinks::FileLinkCollectionRepresenter.new(
-        relation,
-        per_page: params[:pageSize],
-        self_link: api_v3_paths.file_links(@work_package.id),
-        current_user:
-      )
-    end
+                         if params[:pageSize] == "0"
+                           file_links
+                         else
+                           sync_and_convert_relation(file_links)
+                         end
+                       else
+                         ::Storages::FileLink.none
+                       end
 
-    post &::API::V3::FileLinks::WorkPackagesFileLinksCreateEndpoint
-            .new(
-              model: ::Storages::FileLink,
-              parse_service: Storages::Peripherals::ParseCreateParamsService,
-              render_representer: ::API::V3::FileLinks::FileLinkCollectionRepresenter,
-              params_modifier: ->(params) do
-                params[:container_id] = work_package.id
-                params[:container_type] = work_package.class.name
-                params
-              end
+            FileLinkCollectionRepresenter.new(
+              relation,
+              per_page: params[:pageSize],
+              self_link: api_v3_paths.file_links(@work_package.id),
+              current_user:
             )
-            .mount
+          end
+
+          post &WorkPackagesFileLinksCreateEndpoint
+                  .new(
+                    model: ::Storages::FileLink,
+                    parse_service: ::Storages::Peripherals::ParseCreateParamsService,
+                    render_representer: FileLinkCollectionRepresenter,
+                    params_modifier: ->(params) do
+                      params[:container_id] = work_package.id
+                      params[:container_type] = work_package.class.name
+                      params
+                    end
+                  )
+                  .mount
+        end
+      end
+    end
   end
 end
