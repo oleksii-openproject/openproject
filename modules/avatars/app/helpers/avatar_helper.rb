@@ -45,8 +45,8 @@ module AvatarHelper
 
   # Returns the avatar image tag for the given +user+ if avatars are enabled
   # +user+ can be a User or a string that will be scanned for an email address (eg. 'joe <joe@foo.bar>')
-  def avatar(principal, size: "default", hide_name: true, name_classes: "", **)
-    build_principal_avatar_tag(principal, size:, hide_name:, name_classes:, **)
+  def avatar(principal, size: "default", hide_name: true, hover_card: { active: false, target: :default }, name_classes: "", **)
+    build_principal_avatar_tag(principal, size:, hide_name:, hover_card:, name_classes:, **)
   rescue StandardError => e
     Rails.logger.error "Failed to create avatar for #{principal}: #{e}"
     "".html_safe
@@ -99,26 +99,36 @@ module AvatarHelper
       id: user.id
     }
 
+    inputs = {
+      principal:,
+      link: tag_options[:link],
+      size: tag_options[:size],
+      hideName: tag_options[:hide_name],
+      nameClasses: tag_options[:name_classes],
+      title: tag_options.fetch(:title, "")
+    }
+
+    # The hover card will be triggered by hovering over the avatar (if enabled)
+    hover_card = tag_options[:hover_card]
+    if hover_card.fetch(:active, false)
+      inputs[:hoverCardModalTarget] = hover_card.fetch(:target, :default)
+
+      # Hardcoded properties for now:
+      inputs[:hoverCardUrl] = hover_card_user_path(user.id)
+      inputs[:hoverCardCloseDelay] = 250
+      inputs[:hoverCardAlignment] = "top"
+    end
+
     angular_component_tag "opce-principal",
                           class: tag_options[:class],
-                          inputs: {
-                            principal:,
-                            link: tag_options[:link],
-                            size: tag_options[:size],
-                            hideName: tag_options[:hide_name],
-                            nameClasses: tag_options[:name_classes],
-                            title: tag_options.fetch(:title, ""),
-                            avatarClasses: tag_options[:avatar_classes],
-                            hoverCardUrl: hover_card_user_path(user.id),
-                            hoverCardCloseDelay: tag_options[:hover_card_close_delay],
-                            hoverCardAlignment: tag_options[:hover_card_alignment]
-                          }
+                          inputs:
   end
 
   def merge_default_avatar_options(user, options)
     default_options = {
       size: "default",
-      hide_name: true
+      hide_name: true,
+      hover_card: {}
     }
 
     default_options[:title] = h(user.name) if user.respond_to?(:name)

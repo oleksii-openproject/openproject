@@ -33,7 +33,7 @@ module Users
     include OpPrimer::ComponentHelpers
 
     def initialize(user:, show_name: true, link: true, size: "default", classes: "", title: nil, name_classes: "",
-                   hover_card: false)
+                   hover_card: { active: false, target: :default })
       super
 
       @user = user
@@ -43,8 +43,6 @@ module Users
       @title = title
       @hover_card = hover_card
       @classes = classes
-      # The hover card will be triggered by hovering over the avatar (if enabled)
-      @avatar_classes = hover_card ? "op-hover-card--preview-trigger" : nil
       @name_classes = name_classes
     end
 
@@ -60,13 +58,8 @@ module Users
         title: @title,
         class: @classes,
         name_classes: @name_classes,
-        avatar_classes: @avatar_classes
+        hover_card: @hover_card
       }
-
-      if @hover_card
-        options[:hover_card_close_delay] = 250
-        options[:hover_card_alignment] = "top"
-      end
 
       helpers.avatar(
         @user,

@@ -40,14 +40,12 @@ import { PathHelperService } from 'core-app/core/path-helper/path-helper.service
 import { ApiV3Service } from 'core-app/core/apiv3/api-v3.service';
 
 import { TimezoneService } from 'core-app/core/datetime/timezone.service';
-import {
-  AvatarSize,
-  PrincipalRendererService,
-} from './principal-renderer.service';
+import { AvatarSize, HoverCardOptions, PrincipalRendererService } from './principal-renderer.service';
 import { PrincipalLike } from './principal-types';
 import { populateInputsFromDataset } from 'core-app/shared/components/dataset-inputs';
 import { PrincipalType } from 'core-app/shared/components/principal/principal-helper';
 import { PrincipalsResourceService } from 'core-app/core/state/principals/principals.service';
+import { PortalOutletTarget } from 'core-app/shared/components/modal/portal-outlet-target.enum';
 
 export const principalSelector = 'op-principal';
 
@@ -78,9 +76,10 @@ export class OpPrincipalComponent implements OnInit {
 
   @Input() avatarClasses? = '';
 
-  @Input() hoverCardUrl? = '';
-  @Input() hoverCardCloseDelay?:number;
-  @Input() hoverCardAlignment?:string;
+  @Input() hoverCardUrl= '';
+  @Input() hoverCardCloseDelay:number = 100;
+  @Input() hoverCardAlignment:string = 'top';
+  @Input() hoverCardModalTarget:string = 'default';
 
   @Input() title = '';
 
@@ -99,6 +98,14 @@ export class OpPrincipalComponent implements OnInit {
 
   ngOnInit() {
     if (this.principal.name) {
+      const hoverCardOptions:HoverCardOptions = {
+        url: this.hoverCardUrl,
+        closeDelay: this.hoverCardCloseDelay,
+        alignment: this.hoverCardAlignment,
+        modalTarget: this.hoverCardModalTarget === 'default'
+          ? PortalOutletTarget.Default : PortalOutletTarget.Custom,
+      };
+
       this.principalRenderer.render(
         this.elementRef.nativeElement as HTMLElement,
         this.principal,
@@ -110,10 +117,7 @@ export class OpPrincipalComponent implements OnInit {
         {
           hide: this.hideAvatar,
           size: this.size,
-          additionalClasses: this.avatarClasses,
-          hoverCardUrl: this.hoverCardUrl,
-          hoverCardCloseDelay: this.hoverCardCloseDelay,
-          hoverCardAlignment: this.hoverCardAlignment,
+          hoverCard: hoverCardOptions,
         },
         this.title === '' ? null : this.title,
       );

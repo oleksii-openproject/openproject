@@ -30,6 +30,7 @@ import { Injectable, Injector, NgZone } from '@angular/core';
 import { OpModalService } from 'core-app/shared/components/modal/modal.service';
 import { HoverCardComponent } from 'core-app/shared/components/modals/preview-modal/hover-card-modal/hover-card.modal';
 import { Placement } from '@floating-ui/dom';
+import { PortalOutletTarget } from 'core-app/shared/components/modal/portal-outlet-target.enum';
 
 @Injectable({ providedIn: 'root' })
 export class HoverCardTriggerService {
@@ -39,6 +40,8 @@ export class HoverCardTriggerService {
   private closeTimeout:number|null = null;
   private closeDelayInMs:number = 100;
   private modalAlignment:string|null = null;
+  // Set to custom when opening the hover card on top of another modal
+  private modalTarget:PortalOutletTarget = PortalOutletTarget.Default;
   private previousTarget:HTMLElement|null = null;
 
   constructor(
@@ -77,21 +80,20 @@ export class HoverCardTriggerService {
         this.closeTimeout = null;
       }
 
-      const delay = el.getAttribute('data-hover-card-close-delay');
-      if (delay) {
-        this.closeDelayInMs = parseInt(delay, 10);
-      }
-
-      this.modalAlignment = el.getAttribute('data-hover-card-alignment');
+      this.parseHoverCardOptions(el);
 
       this.opModalService.show(
         HoverCardComponent,
         this.injector,
         { turboFrameSrc: cleanedTurboFrameUrl, event: e },
         true,
+        false,
+        this.modalTarget,
       ).subscribe((previewModal) => {
         this.modalElement = previewModal.elementRef.nativeElement as HTMLElement;
         if (this.modalAlignment) {
+          // TOOD: we could also calculate this in the previewModal itself
+          // and be smart about the position?
           previewModal.alignment = this.modalAlignment as Placement;
         }
 
@@ -123,5 +125,21 @@ export class HoverCardTriggerService {
         }
       }, this.closeDelayInMs);
     });
+  }
+
+  private parseHoverCardOptions(el:HTMLElement) {
+    // Optional: configure the delay after that the card vanishes when the mouse pointer leaves it
+    const delay = el.getAttribute('data-hover-card-close-delay');
+    if (delay) {
+      this.closeDelayInMs = parseInt(delay, 10);
+    }
+
+    const modalTarget = el.getAttribute('data-hover-card-target');
+    if (modalTarget) {
+      this.modalTarget = parseInt(modalTarget, 10);
+    }
+
+    // Optional: configure the alignment of the card
+    this.modalAlignment = el.getAttribute('data-hover-card-alignment');
   }
 }

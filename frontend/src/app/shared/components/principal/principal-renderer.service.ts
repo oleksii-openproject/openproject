@@ -6,16 +6,21 @@ import idFromLink from 'core-app/features/hal/helpers/id-from-link';
 import { IPrincipal } from 'core-app/core/state/principals/principal.model';
 import { PrincipalLike } from './principal-types';
 import { hrefFromPrincipal, PrincipalType, typeFromHref } from './principal-helper';
+import { PortalOutletTarget } from 'core-app/shared/components/modal/portal-outlet-target.enum';
 
 export type AvatarSize = 'default'|'medium'|'mini';
+
+export interface HoverCardOptions {
+  url:string;
+  modalTarget:PortalOutletTarget;
+  closeDelay:number;
+  alignment:string;
+}
 
 export interface AvatarOptions {
   hide:boolean;
   size:AvatarSize;
-  additionalClasses?:string;
-  hoverCardUrl?:string;
-  hoverCardCloseDelay?:number;
-  hoverCardAlignment?:string;
+  hoverCard?:HoverCardOptions;
 }
 
 export interface NameOptions {
@@ -133,6 +138,8 @@ export class PrincipalRendererService {
     fallback.title = principal.name;
     fallback.textContent = userInitials;
 
+    this.setHoverCardAttributes(fallback, options, principal);
+
     if (type === 'placeholder_user' && colorMode !== colorModes.lightHighContrast) {
       fallback.style.color = colorCode;
       fallback.style.borderColor = colorCode;
@@ -148,7 +155,11 @@ export class PrincipalRendererService {
     return fallback;
   }
 
-  private renderUserAvatar(principal:PrincipalLike|IPrincipal, fallback:HTMLElement, options:AvatarOptions):void {
+  private renderUserAvatar(
+    principal:PrincipalLike|IPrincipal,
+    fallback:HTMLElement,
+    options:AvatarOptions,
+  ):void {
     const url = this.userAvatarUrl(principal);
 
     if (!url) {
@@ -160,23 +171,7 @@ export class PrincipalRendererService {
     image.classList.add('op-avatar');
     image.classList.add(`op-avatar_${options.size}`);
 
-    if (options.additionalClasses) {
-      options.additionalClasses.split(' ').forEach((c) => {
-        image.classList.add(c);
-      });
-    }
-
-    if (options.hoverCardUrl) {
-      image.setAttribute('data-hover-card-url', options.hoverCardUrl);
-    }
-
-    if (options.hoverCardCloseDelay) {
-      image.setAttribute('data-hover-card-close-delay', String(options.hoverCardCloseDelay));
-    }
-
-    if (options.hoverCardAlignment) {
-      image.setAttribute('data-hover-card-alignment', String(options.hoverCardAlignment));
-    }
+    this.setHoverCardAttributes(image, options, principal);
 
     image.src = url;
     image.title = principal.name;
@@ -191,6 +186,11 @@ export class PrincipalRendererService {
   private userAvatarUrl(principal:PrincipalLike|IPrincipal):string|null {
     const id = principal.id || idFromLink(hrefFromPrincipal(principal));
     return id ? this.apiV3Service.users.id(id).avatar.toString() : null;
+  }
+
+  private userHoverCardUrl(principal:PrincipalLike|IPrincipal):string|null {
+    const id = principal.id || idFromLink(hrefFromPrincipal(principal));
+    return id ? `/users/${id}/hover_card` : null;
   }
 
   private renderName(
@@ -248,5 +248,25 @@ export class PrincipalRendererService {
 
     const last = name[lastSpace + 1]?.toUpperCase();
     return [first, last].join('');
+  }
+
+  private setHoverCardAttributes(element:HTMLElement, options:AvatarOptions, principal:PrincipalLike|IPrincipal):void {
+    const hoverCard = options.hoverCard;
+
+    if (!hoverCard?.url) {
+      const url = this.userHoverCardUrl(principal);
+      if (hoverCard && url) {
+        hoverCard.url = url;
+      } else {
+        return;
+      }
+    }
+
+    element.classList.add('op-hover-card--preview-trigger');
+
+    element.setAttribute('data-hover-card-url', hoverCard.url);
+    element.setAttribute('data-hover-card-close-delay', String(hoverCard.closeDelay));
+    element.setAttribute('data-hover-card-alignment', hoverCard.alignment);
+    element.setAttribute('data-hover-card-target', String(hoverCard.modalTarget));
   }
 }

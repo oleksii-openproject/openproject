@@ -3,15 +3,19 @@
   overflow: hidden
 
   // Triangle pointing to the source of the hover card
+  // TODO: always points down, but the hover card might float south of the
+  // target... So this is not correct in all cases.
+  // Additionally, the shadow (aka border) is missing from this triangle.
   &::before
     content: ""
     width: 0
     height: 0
     border-left: 5px solid transparent
     border-right: 5px solid transparent
-    border-bottom: 5px solid var(--body-background)
+    border-top: 5px solid var(--body-background)
     position: absolute
-    top: -0.3rem
+    top: 100%
+    left: 49%
 
   .op-user-hover-card-user-info
     gap: 0.5rem
