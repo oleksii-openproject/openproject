@@ -28,12 +28,12 @@
 
 RSpec.shared_examples_for "a Project::LifeCycle event" do
   it "inherits from Project::LifeCycle" do
-    expect(described_class < Project::LifeCycle).to be true
+    expect(described_class).to be < Project::LifeCycle
   end
 
   describe "associations" do
-    it { is_expected.to belong_to(:project).required(true) }
-    it { is_expected.to belong_to(:life_cycle).required(true) }
+    it { is_expected.to belong_to(:project).required }
+    it { is_expected.to belong_to(:life_cycle).required }
     it { is_expected.to have_many(:work_packages) }
   end
 

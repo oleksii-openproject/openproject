@@ -68,19 +68,19 @@ RSpec.describe BasicData::LifeCycleSeeder do
       it "creates the corresponding life cycles with the given attributes" do
         expect(LifeCycle.count).to eq(5)
         expect(Stage.find_by(name: "Initiating")).to have_attributes(
-          color_id: Color.find_by(name: "Orange (dark)").id
+          color: have_attributes(name: "Orange (dark)")
         )
         expect(Gate.find_by(name: "Ready for Executing")).to have_attributes(
-          color_id: Color.find_by(name: "Purple").id
+          color: have_attributes(name: "Purple")
         )
         expect(Stage.find_by(name: "Planning")).to have_attributes(
-          color_id: Color.find_by(name: "Red (dark)").id
+          color: have_attributes(name: "Red (dark)")
         )
         expect(Stage.find_by(name: "Executing")).to have_attributes(
-          color_id: Color.find_by(name: "Magenta (light)").id
+          color: have_attributes(name: "Magenta (light)")
         )
         expect(Stage.find_by(name: "Closing")).to have_attributes(
-          color_id: Color.find_by(name: "Green Yellow").id
+          color: have_attributes(name: "Green Yellow")
         )
       end
 

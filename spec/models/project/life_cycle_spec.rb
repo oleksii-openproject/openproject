@@ -56,15 +56,13 @@ RSpec.describe Project::LifeCycle do
       subject { create :project_gate }
 
       it "does not allow updating the life_cycle" do
-        expect do
-          subject.life_cycle = build :gate
-        end.to raise_error ActiveRecord::ReadonlyAttributeError
+        expect(subject).to have_readonly_attribute(:life_cycle_id)
       end
     end
   end
 
   # For more specs see:
   # - spec/support/shared/project_life_cycle_helpers.rb
-  # - spec/models/projects/gate_spec.rb
-  # - spec/models/projects/stage_spec.rb
+  # - spec/models/project/gate_spec.rb
+  # - spec/models/project/stage_spec.rb
 end

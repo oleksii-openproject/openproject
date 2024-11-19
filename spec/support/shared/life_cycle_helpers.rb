@@ -28,13 +28,13 @@
 
 RSpec.shared_examples_for "a LifeCycle event" do
   it "inherits from LifeCycle" do
-    expect(described_class < LifeCycle).to be true
+    expect(described_class).to be < LifeCycle
   end
 
   describe "associations" do
     it { is_expected.to have_many(:project_life_cycles).dependent(:destroy) }
     it { is_expected.to have_many(:projects).through(:project_life_cycles) }
-    it { is_expected.to belong_to(:color).required(true) }
+    it { is_expected.to belong_to(:color).required }
   end
 
   describe "validations" do
