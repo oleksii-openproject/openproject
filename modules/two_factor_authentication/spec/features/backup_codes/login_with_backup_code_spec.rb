@@ -1,5 +1,5 @@
 require_relative "../../spec_helper"
-require_relative "../shared_2fa_examples"
+require_relative "../shared_two_factor_examples"
 
 RSpec.describe "Login with 2FA backup code",
                :js,
@@ -7,6 +7,8 @@ RSpec.describe "Login with 2FA backup code",
                with_settings: {
                  plugin_openproject_two_factor_authentication: { "active_strategies" => [:developer] }
                } do
+  include SharedTwoFactorExamples
+
   let(:user_password) { "bob!" * 4 }
   let(:user) do
     create(:user,

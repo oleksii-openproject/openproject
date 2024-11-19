@@ -72,7 +72,7 @@ RSpec.describe "Structured meetings CRUD",
     meetings_page.visit!
     expect(page).to have_current_path(meetings_page.path) # rubocop:disable RSpec/ExpectInHook
     meetings_page.click_on "add-meeting-button"
-    meetings_page.click_on "One-time"
+    meetings_page.click_on "Dynamic"
     meetings_page.set_title "Some title"
 
     meetings_page.set_start_date "2013-03-28"
