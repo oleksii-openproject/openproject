@@ -8,12 +8,12 @@ module Bim
       # not break the ancestor chain. Once this is fixed in rails, we can remove it.
       attribute :conversion_status, :integer
 
-      enum conversion_status: {
+      enum :conversion_status, {
         pending: 0,
         processing: 1,
         completed: 2,
         error: 3
-      }.freeze
+      }
 
       acts_as_attachable delete_permission: :manage_ifc_models,
                          add_permission: :manage_ifc_models,

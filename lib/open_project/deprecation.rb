@@ -63,7 +63,7 @@ module OpenProject::Deprecation
 
       MSG
 
-      ActiveSupport::Deprecation.warn message, called_from
+      ActiveSupport::Deprecation.new.warn message, called_from
     end
   end
 end
