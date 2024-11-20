@@ -315,7 +315,7 @@ jobs:
     needs: [setup, build, merge]
     permissions:
       contents: none
-    if: ${{ github.repository == 'opf/openproject' && inputs.tag != '' }}
+    if: ${{ github.repository == 'opf/openproject' }}
     runs-on: ubuntu-latest
     steps:
       - name: Trigger Helm charts release
