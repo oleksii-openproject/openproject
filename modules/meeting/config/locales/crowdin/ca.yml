@@ -88,7 +88,7 @@ ca:
   label_meeting: "Reunió"
   label_meeting_plural: "Reunions"
   label_meeting_new: "Nova reunió"
-  label_meeting_new_one_time: "New one-time meeting"
+  label_meeting_new_dynamic: "New dynamic meeting"
   label_meeting_create: "Create meeting"
   label_meeting_copy: "Copy meeting"
   label_meeting_edit: "Editar reunió"
@@ -146,7 +146,7 @@ ca:
     types:
       classic: "Clàssica"
       classic_text: "Organitzeu la vostra reunió en una agenda i un protocol de text formatejables."
-      structured: "One-time"
+      structured: "Dinàmica"
       structured_text: "Organitza la vostra reunió com una llista d'elements de l'agenda, enllaçant-los opcionalment a un paquet de treball."
       structured_text_copy: "Actualment en copiar una reunió  no es copiaran els elements associats a l'agenda de la reunió, només els detalls."
     copied: "Copiat de la reunió #%{id}"

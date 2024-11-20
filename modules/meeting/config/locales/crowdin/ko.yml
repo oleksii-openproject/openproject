@@ -87,7 +87,7 @@ ko:
   label_meeting: "미팅"
   label_meeting_plural: "미팅"
   label_meeting_new: "새 미팅"
-  label_meeting_new_one_time: "새로운 일회성 미팅"
+  label_meeting_new_dynamic: "New dynamic meeting"
   label_meeting_create: "미팅 생성"
   label_meeting_copy: "미팅 복사"
   label_meeting_edit: "미팅 편집"
@@ -145,7 +145,7 @@ ko:
     types:
       classic: "클래식"
       classic_text: "서식 지정 가능한 텍스트 의제 및 프로토콜로 미팅을 구성하세요."
-      structured: "일회성"
+      structured: "다이내믹"
       structured_text: "미팅을 의제 항목 목록으로 구성하고, 선택적으로 작업 패키지에 연결합니다."
       structured_text_copy: "미팅을 복사하면 관련 미팅 의제 항목은 현재 복사되지 않고 세부 정보만 복사됩니다"
     copied: "미팅 #%{id}에서 복사됨"

@@ -88,7 +88,7 @@ pt-PT:
   label_meeting: "Reunião"
   label_meeting_plural: "Reuniões"
   label_meeting_new: "Nova reunião"
-  label_meeting_new_one_time: "Nova reunião única"
+  label_meeting_new_dynamic: "New dynamic meeting"
   label_meeting_create: "Criar reunião"
   label_meeting_copy: "Copiar reunião"
   label_meeting_edit: "Editar a reunião"
@@ -146,7 +146,7 @@ pt-PT:
     types:
       classic: "Clássico"
       classic_text: "Organize a sua reunião numa agenda e protocolo de texto formatáveis."
-      structured: "Uma vez"
+      structured: "Dinâmico"
       structured_text: "Organize a sua reunião como uma lista de itens da agenda, associando-os opcionalmente a um pacote de trabalho."
       structured_text_copy: "Atualmente, a cópia de uma reunião não copia os itens associados da agenda da reunião, apenas os detalhes"
     copied: "Copiado da reunião #%{id}"
