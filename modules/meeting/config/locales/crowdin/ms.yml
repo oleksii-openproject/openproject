@@ -87,7 +87,7 @@ ms:
   label_meeting: "Mesyuarat"
   label_meeting_plural: "Mesyuarat-mesyuarat"
   label_meeting_new: "Mesyuarat Baharu"
-  label_meeting_new_one_time: "New one-time meeting"
+  label_meeting_new_dynamic: "New dynamic meeting"
   label_meeting_create: "Create meeting"
   label_meeting_copy: "Copy meeting"
   label_meeting_edit: "Edit Mesyuarat"
@@ -145,7 +145,7 @@ ms:
     types:
       classic: "Klasik"
       classic_text: "Aturkan mesyuarat anda dalam agenda teks yang boleh diformat dan diprotokol."
-      structured: "One-time"
+      structured: "Dinamik"
       structured_text: "Aturkan mesyuarat anda sebagai senarai butiran agenda, pautkannya ke pakej kerja secara pilihan."
       structured_text_copy: "Menyalin mesyuarat pada masa ini tidak akan menyalin item agenda mesyuarat yang berkaitan, hanya butiran sahaja"
     copied: "Disalin daripada Mesyuarat #%{id}"

@@ -90,7 +90,7 @@ uk:
   label_meeting: "Зустріч"
   label_meeting_plural: "Зустрічі"
   label_meeting_new: "Нова зустріч"
-  label_meeting_new_one_time: "Нова одноразова нарада"
+  label_meeting_new_dynamic: "New dynamic meeting"
   label_meeting_create: "Створити нараду"
   label_meeting_copy: "Копіювати нараду"
   label_meeting_edit: "Редагувати збори"
@@ -148,7 +148,7 @@ uk:
     types:
       classic: "Класична"
       classic_text: "Організуйте нараду у вигляді порядку денного й протоколу в текстовому форматі з підтримкою редагування."
-      structured: "Одноразова"
+      structured: "Динамічна"
       structured_text: "Організуйте нараду у вигляді переліку пунктів порядку денного, за бажанням пов’язавши їх із пакетом робіт."
       structured_text_copy: "Зараз копіювання наради стосується лише докладних даних про неї, але не пов’язаних пунктів її порядку денного"
     copied: "Скопійовано з наради #%{id} "

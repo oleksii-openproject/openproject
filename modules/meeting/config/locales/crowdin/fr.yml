@@ -88,7 +88,7 @@ fr:
   label_meeting: "Réunion"
   label_meeting_plural: "Réunions"
   label_meeting_new: "Nouvelle réunion"
-  label_meeting_new_one_time: "Nouvelle réunion ponctuelle"
+  label_meeting_new_dynamic: "New dynamic meeting"
   label_meeting_create: "Créer une réunion"
   label_meeting_copy: "Copier la réunion"
   label_meeting_edit: "Modifier la réunion"
@@ -146,7 +146,7 @@ fr:
     types:
       classic: "Classique"
       classic_text: "Organisez votre réunion sous la forme d'un ordre du jour et d'un protocole en texte formatable."
-      structured: "Unique"
+      structured: "Dynamique"
       structured_text: "Organisez votre réunion sous la forme d'une liste de points à l'ordre du jour, en les reliant éventuellement à des lots de travaux."
       structured_text_copy: "Actuellement, la copie d'une réunion n'entraîne pas la copie des points de l'ordre du jour de la réunion, mais uniquement des détails."
     copied: "Copié depuis la réunion #%{id}"

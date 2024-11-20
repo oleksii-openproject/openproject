@@ -88,7 +88,7 @@ de:
   label_meeting: "Besprechung"
   label_meeting_plural: "Besprechungen"
   label_meeting_new: "Neue Besprechung"
-  label_meeting_new_one_time: "Neue einmalige Besprechung"
+  label_meeting_new_dynamic: "New dynamic meeting"
   label_meeting_create: "Besprechung erstellen"
   label_meeting_copy: "Besprechung kopieren"
   label_meeting_edit: "Besprechung bearbeiten"
@@ -146,7 +146,7 @@ de:
     types:
       classic: "Klassisch"
       classic_text: "Organisieren Sie Ihr Meeting in einer formatierbaren textbasierter Agenda und zugehöriges Protokoll."
-      structured: "Einmalig"
+      structured: "Dynamisch"
       structured_text: "Organisieren Sie Ihr Meeting als strukturierte Liste von Einträgen und verknüpfen Sie diese optional mit einem Arbeitspaket."
       structured_text_copy: "Das Kopieren einer Besprechung kopiert derzeit nicht die zugehörigen Tagesordnungspunkte, sondern nur dessen Details"
     copied: "Kopiert von Meeting #%{id}"

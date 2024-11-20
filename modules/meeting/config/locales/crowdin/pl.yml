@@ -90,7 +90,7 @@ pl:
   label_meeting: "Spotkanie"
   label_meeting_plural: "Spotkania"
   label_meeting_new: "Nowe spotkanie"
-  label_meeting_new_one_time: "Nowe spotkanie jednorazowe"
+  label_meeting_new_dynamic: "New dynamic meeting"
   label_meeting_create: "Utwórz spotkanie"
   label_meeting_copy: "Skopiuj spotkanie"
   label_meeting_edit: "Edycja spotkania"
@@ -148,7 +148,7 @@ pl:
     types:
       classic: "Klasyczny"
       classic_text: "Zorganizuj spotkanie w formatowanym tekstowym planie spotkania i protokole."
-      structured: "Jednorazowe"
+      structured: "Dynamiczne"
       structured_text: "Zorganizuj spotkanie jako listę punktów planu spotkania, opcjonalnie powiązując je z pakietem roboczym."
       structured_text_copy: "Skopiowanie spotkania nie powoduje obecnie skopiowania powiązanych pozycji planu spotkania, a jedynie szczegółów"
     copied: "Skopiowano ze spotkania #%{id}"
