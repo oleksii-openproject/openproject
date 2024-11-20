@@ -45,6 +45,7 @@ RSpec.describe WorkPackage::PDFExport::DocumentGenerator do
 
   subject(:pdf) do
     content = export_pdf.content
+    # If you want to actually see the PDF for debugging, uncomment the following line
     # File.binwrite("WorkPackageDocumentGenerator-test-preview.pdf", content)
     PDF::Inspector::Text.analyze(content).strings
   end
