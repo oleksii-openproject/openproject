@@ -1605,7 +1605,7 @@ en:
   create_new_page: "Wiki page"
 
   date:
-    abbr_day_names: [ "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" ]
+    abbr_day_names: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
     abbr_month_names:
       [
         ~,
@@ -3490,7 +3490,7 @@ en:
         If this option is active, login requests will redirect to the configured omniauth provider.
         The login dropdown and sign-in page will be disabled.
         <br/>
-        <strong>Note:</strong> Unless you also disable password logins, with this option enabled, 
+        <strong>Note:</strong> Unless you also disable password logins, with this option enabled,
         users can still log in internally by visiting the <code>%{internal_path}</code> login page.
     attachments:
       whitelist_text_html: >
