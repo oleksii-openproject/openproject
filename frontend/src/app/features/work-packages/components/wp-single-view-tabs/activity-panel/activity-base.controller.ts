@@ -108,7 +108,7 @@ export class ActivityPanelBaseController extends UntilDestroyedMixin implements 
       .pipe(this.untilDestroyed())
       .subscribe((wp) => {
         this.workPackage = wp;
-        this.reloadActivities();
+        // this.reloadActivities();
       });
 
     this
@@ -119,7 +119,7 @@ export class ActivityPanelBaseController extends UntilDestroyedMixin implements 
         distinctUntilChanged(),
       )
       .subscribe(() => {
-        this.reloadActivities();
+        // this.reloadActivities();
       });
   }
 
