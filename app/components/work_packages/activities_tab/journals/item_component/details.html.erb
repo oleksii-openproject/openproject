@@ -20,10 +20,12 @@
         end
       else
         if has_details?
-          render_details_header(details_container) unless journal.notes.present?
-          render_details(details_container)
-        elsif !journal.notes.present?
-          render_empty_line(details_container)
+          if journal.notes.present?
+            render_details(details_container)
+          else
+            render_details_header(details_container)
+            render_details(details_container)
+          end
         else
           render_details(details_container)
         end

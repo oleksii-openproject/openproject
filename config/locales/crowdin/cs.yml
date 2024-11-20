@@ -33,7 +33,7 @@ cs:
         label_activity_show_only_changes: "Zobrazit pouze změny"
         label_sort_asc: "Nejnovější v dolní části"
         label_sort_desc: "Nejnovější nahoře"
-        label_type_to_comment: "Pro komentování pište zde"
+        label_type_to_comment: "Add a comment. Type @ to notify people."
         label_submit_comment: "Odeslat komentář"
         changed_on: "změněno dne"
         created_on: "created this on"

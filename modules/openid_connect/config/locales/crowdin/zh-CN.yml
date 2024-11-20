@@ -59,9 +59,10 @@ zh-CN:
       metadata_url: 我有一个发现端点网址
       client_id: 这是您的 OpenID Connect 提供商给您的客户端 ID
       client_secret: 这是您的 OpenID Connect 提供商给您的客户端密钥
-      limit_self_registration: 如果启用，用户只能在OpenID Connect提供商端的配置允许的情况下可使用此提供商注册。
-      display_name: OpenID Connect 提供商的名称。这将作为登录按钮和供应商列表的显示。
+      limit_self_registration: 如果启用，用户只能在提供商的配置允许的情况下使用该提供商进行注册。
+      display_name: 提供商的名称。这将显示为登录按钮以及提供商列表中的名称。
       tenant: '如果适用，请将默认租户替换为您自己的租户。请参阅<a href=" https://learn.microsoft.com/en-us/entra/identity-platform/v2-protocols-oidc#find-your-apps-openid-configuration-document-uri">此处</a>。'
+      scope: If you want to request custom scopes, you can add one or multiple scope values separated by spaces here. For more information, see the [OpenID Connect documentation](docs_url).
       post_logout_redirect_uri: OpenID Connect 提供商在注销请求后应重定向到的 URL。
       claims: >
         您可以请求用户信息和 Id 令牌端点的附加声明。有关更多信息，请参阅 [我们的 OpenID Connect 文档](docs_url)。
