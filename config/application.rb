@@ -80,6 +80,10 @@ module OpenProject
     # behavior would allow assignment but silently not persist changes to the
     # database.
     # This is a rails 7.1 behaviour.
+    # Ideally this should be defined in the `config/initializers/new_framework_defaults_7_1.rb`
+    # file, but since there is a bug, that file is not loaded correctly in the production environment.
+    # Once [the issue](https://community.openproject.org/wp/59474) is solved, this configuration can
+    # be moved to the `config/initializers/new_framework_defaults_7_1.rb`.
     #++
     config.active_record.raise_on_assign_to_attr_readonly = true
 
