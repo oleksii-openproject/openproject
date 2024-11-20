@@ -37,7 +37,7 @@ class Capability < ApplicationRecord
   belongs_to :context, class_name: "Project"
   belongs_to :principal
 
-  attribute :action, :text, default: nil
-  attribute :context_id, :integer, default: nil
-  attribute :principal_id, :integer, default: nil
+  define_attribute :action, ActiveRecord::Type.lookup(:text), default: nil
+  define_attribute :context_id, ActiveRecord::Type.lookup(:integer), default: nil
+  define_attribute :principal_id, ActiveRecord::Type.lookup(:integer), default: nil
 end

@@ -36,9 +36,9 @@ class Day < ApplicationRecord
            primary_key: :date,
            dependent: nil
 
-  attribute :date, :date, default: nil
-  attribute :day_of_week, :integer, default: nil
-  attribute :working, :boolean, default: "t"
+  define_attribute :date, ActiveRecord::Type.lookup(:date), default: nil
+  define_attribute :day_of_week, ActiveRecord::Type.lookup(:integer), default: nil
+  define_attribute :working, ActiveRecord::Type.lookup(:boolean), default: "t"
 
   delegate :name, to: :week_day, allow_nil: true
 

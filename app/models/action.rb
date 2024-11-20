@@ -34,8 +34,8 @@ class Action < ApplicationRecord
 
   default_scope { default }
 
-  attribute :id, :text, default: nil
-  attribute :permission, :text, default: nil
-  attribute :global, :boolean, default: false
-  attribute :module, :text, default: false
+  define_attribute :id, ActiveRecord::Type.lookup(:text), default: nil
+  define_attribute :permission, ActiveRecord::Type.lookup(:text), default: nil
+  define_attribute :global, ActiveRecord::Type.lookup(:boolean), default: false
+  define_attribute :module, ActiveRecord::Type.lookup(:text), default: false
 end
