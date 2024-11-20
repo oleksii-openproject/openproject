@@ -32,8 +32,69 @@ module OpPrimer
   class BorderBoxTableComponent < TableComponent
     include ComponentHelpers
 
+    class << self
+      # Declares columns to be shown in the mobile table
+      #
+      # Use it in subclasses like so:
+      #
+      #     columns :name, :description
+      #
+      #     mobile_columns :name
+      #
+      # This results in the description columns to be hidden on mobile
+      def mobile_columns(*names)
+        return @mobile_columns || columns if names.empty?
+
+        @mobile_columns = names.map(&:to_sym)
+      end
+
+      # Declares which columns to be rendered with a label
+      #
+      #     mobile_labels :name
+      #
+      # This results in the description columns to be hidden on mobile
+      def mobile_labels(*names)
+        return @mobile_labels if names.empty?
+
+        @mobile_labels = names.map(&:to_sym)
+      end
+
+      # Declare wide columns, that will result in a grid column span of 3
+      #
+      #     column_grid_span :title
+      #
+      def wide_columns(*names)
+        return Array(@wide_columns) if names.empty?
+
+        @wide_columns = names.map(&:to_sym)
+      end
+    end
+
+    delegate :mobile_columns, :mobile_labels,
+             to: :class
+
+    def wide_column?(column)
+      self.class.wide_columns.include?(column)
+    end
+
     def header_args(_column)
       {}
+    end
+
+    def column_title(name)
+      header = headers.find { |h| h[0] == name }
+      header ? header[1][:caption] : nil
+    end
+
+    def header_classes(column)
+      classes = [heading_class]
+      classes << "op-border-box-grid--wide-column" if wide_column?(column)
+
+      classes.join(" ")
+    end
+
+    def heading_class
+      "op-border-box-grid--heading"
     end
 
     # Default grid class with equal weights
@@ -55,6 +116,10 @@ module OpPrimer
         component.with_heading(tag: :h2) { blank_title }
         component.with_description { blank_description }
       end
+    end
+
+    def mobile_title
+      raise ArgumentError, "Need to provide a mobile table title"
     end
 
     def blank_title

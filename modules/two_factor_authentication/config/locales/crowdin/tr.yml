@@ -79,7 +79,7 @@ tr:
       text_2fa_disabled: "The user did not set up a 2FA device through their 'My account page'"
       only_sms_allowed: "Only SMS delivery can be set up for other users."
     upsale:
-      title: "İki faktörlü kimlik doğrulama"
+      title: "İki aşamalı kimlik doğrulama"
       description: "Tüm proje üyelerine iki faktörlü kimlik doğrulama sunarak (veya zorunlu kılarak) OpenProject bulut sunucunuzun güvenliğini güçlendirin."
     backup_codes:
       none_found: Bu hesap için yedek kod yok.

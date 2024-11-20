@@ -57,6 +57,7 @@ RSpec.describe "SAML administration CRUD",
       fill_in "Identity provider login endpoint", with: "https://example.com/sso"
       fill_in "Identity provider logout endpoint", with: "https://example.com/slo"
       fill_in "Public certificate of identity provider", with: CertificateHelper.valid_certificate.to_pem
+      check "Limit self registration"
 
       click_link_or_button "Continue"
 
@@ -68,11 +69,11 @@ RSpec.describe "SAML administration CRUD",
       click_link_or_button "Continue"
 
       # Mapping form
-      fill_in "Mapping for: Username", with: "login\nmail", fill_options: { clear: :backspace }
-      fill_in "Mapping for: Email", with: "mail", fill_options: { clear: :backspace }
-      fill_in "Mapping for: First name", with: "myName", fill_options: { clear: :backspace }
-      fill_in "Mapping for: Last name", with: "myLastName", fill_options: { clear: :backspace }
-      fill_in "Mapping for: Internal user id", with: "uid", fill_options: { clear: :backspace }
+      fill_in "Mapping for: Username", with: "login\nmail"
+      fill_in "Mapping for: Email", with: "mail"
+      fill_in "Mapping for: First name", with: "myName"
+      fill_in "Mapping for: Last name", with: "myLastName"
+      fill_in "Mapping for: Internal user id", with: "uid"
 
       click_link_or_button "Continue"
 
@@ -105,6 +106,7 @@ RSpec.describe "SAML administration CRUD",
       expect(provider.mapping_lastname).to eq "myLastName"
       expect(provider.mapping_uid).to eq "uid"
       expect(provider.authn_requests_signed).to be true
+      expect(provider.limit_self_registration).to be true
 
       click_link_or_button "Delete"
       # Confirm the deletion
@@ -174,6 +176,19 @@ RSpec.describe "SAML administration CRUD",
         click_link_or_button "Continue"
 
         expect(page).to have_text "Display name has already been taken."
+      end
+
+      it "can toggle limit_self_registration (Regression #59370)" do
+        visit "/admin/saml/providers"
+        click_link_or_button "My provider"
+
+        page.find_test_selector("saml_provider_configuration_edit").click
+        check "Limit self registration"
+        click_link_or_button "Update"
+        wait_for_network_idle
+
+        provider.reload
+        expect(provider.limit_self_registration).to be true
       end
     end
   end

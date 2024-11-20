@@ -1,5 +1,5 @@
 require_relative "../../spec_helper"
-require_relative "../shared_2fa_examples"
+require_relative "../shared_two_factor_examples"
 
 RSpec.describe "Login with 2FA remember cookie",
                :js,
@@ -10,6 +10,8 @@ RSpec.describe "Login with 2FA remember cookie",
                    allow_remember_for_days: 30
                  }
                } do
+  include SharedTwoFactorExamples
+
   let(:user_password) do
     "user!user!"
   end
