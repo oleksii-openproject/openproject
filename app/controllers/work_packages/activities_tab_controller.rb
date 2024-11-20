@@ -375,6 +375,7 @@ class WorkPackages::ActivitiesTabController < ApplicationController
     # alternative approach in order to bypass the notification join issue in relation with the sequence_version query
     Notification
       .where(journal_id: journals.pluck(:id))
+      .where(recipient_id: User.current.id)
       .where("notifications.updated_at > ?", last_update_timestamp)
       .find_each do |notification|
       update_item_show_component(
