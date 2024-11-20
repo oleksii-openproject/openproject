@@ -11,10 +11,10 @@ import { PortalOutletTarget } from 'core-app/shared/components/modal/portal-outl
 export type AvatarSize = 'default'|'medium'|'mini';
 
 export interface HoverCardOptions {
-  url:string;
-  modalTarget:PortalOutletTarget;
-  closeDelay:number;
-  alignment:string;
+  url?:string;
+  modalTarget?:PortalOutletTarget;
+  closeDelay?:number;
+  alignment?:string;
 }
 
 export interface AvatarOptions {
@@ -270,8 +270,8 @@ export class PrincipalRendererService {
     element.classList.add('op-hover-card--preview-trigger');
 
     element.setAttribute('data-hover-card-url', hoverCard.url);
-    element.setAttribute('data-hover-card-close-delay', String(hoverCard.closeDelay));
-    element.setAttribute('data-hover-card-alignment', hoverCard.alignment);
-    element.setAttribute('data-hover-card-target', String(hoverCard.modalTarget));
+    element.setAttribute('data-hover-card-close-delay', String(hoverCard.closeDelay) || '250');
+    element.setAttribute('data-hover-card-alignment', hoverCard.alignment || 'top');
+    element.setAttribute('data-hover-card-target', String(hoverCard.modalTarget || PortalOutletTarget.Default));
   }
 }
