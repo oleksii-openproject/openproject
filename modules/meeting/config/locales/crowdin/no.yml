@@ -88,7 +88,7 @@
   label_meeting: "Møte"
   label_meeting_plural: "Møter"
   label_meeting_new: "Nytt møte"
-  label_meeting_new_one_time: "New one-time meeting"
+  label_meeting_new_dynamic: "New dynamic meeting"
   label_meeting_create: "Create meeting"
   label_meeting_copy: "Copy meeting"
   label_meeting_edit: "Redigere møte"
@@ -146,7 +146,7 @@
     types:
       classic: "Klassisk"
       classic_text: "Organiser møtet ditt i en formattabel tekst agenda og protokoll."
-      structured: "One-time"
+      structured: "Dynamisk"
       structured_text: "Organiser møtet som en liste over saker, eventuelt knytte dem til en arbeidspakke."
       structured_text_copy: "Kopiering av et møte vil for tiden ikke kopiere de tilknyttede elementene på dagsordenen, bare detaljene"
     copied: "Kopiert fra møte #%{id}"

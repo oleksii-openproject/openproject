@@ -26,11 +26,8 @@
             render_details_header(details_container)
             render_details(details_container)
           end
-        elsif journal.notes.present?
-          render_details(details_container)
         else
-          # empty row to render the flex layout with its minimal height
-          render_empty_line(details_container)
+          render_details(details_container)
         end
       end
     end

@@ -62,6 +62,7 @@ zh-TW:
       limit_self_registration: 如果啟用，只有在提供商端的設定允許的情況下，使用者才能使用此提供商註冊。
       display_name: 提供商的名稱。這將會顯示在登入按鈕及提供商清單中。
       tenant: '如果適用，請用您自己的租戶取代預設租戶。請參閱<a href=" https://learn.microsoft.com/en-us/entra/identity-platform/v2-protocols-oidc#find-your-apps-openid-configuration-document-uri">此內容</a>。'
+      scope: If you want to request custom scopes, you can add one or multiple scope values separated by spaces here. For more information, see the [OpenID Connect documentation](docs_url).
       post_logout_redirect_uri: OpenID Connect 提供者應在登出請求後重定向至的 URL。
       claims: >
         您可以針對 使用者資訊 和 id token(權杖) 端點要求額外的資料。請參閱 [我們的 OpenID connect 文件](docs_url) 以取得更多資訊。

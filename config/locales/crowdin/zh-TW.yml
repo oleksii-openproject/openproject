@@ -33,7 +33,7 @@ zh-TW:
         label_activity_show_only_changes: "僅顯示差異"
         label_sort_asc: "最新的在最下面"
         label_sort_desc: "最新的在最上面"
-        label_type_to_comment: "在此留言"
+        label_type_to_comment: "Add a comment. Type @ to notify people."
         label_submit_comment: "留言"
         changed_on: "異動於"
         created_on: "新增於"

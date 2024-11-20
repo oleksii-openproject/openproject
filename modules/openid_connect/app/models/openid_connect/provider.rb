@@ -31,6 +31,7 @@ module OpenIDConnect
     store_attribute :options, :scheme, :string
     store_attribute :options, :port, :string
 
+    store_attribute :options, :scope, :string
     store_attribute :options, :claims, :string
     store_attribute :options, :acr_values, :string
 
