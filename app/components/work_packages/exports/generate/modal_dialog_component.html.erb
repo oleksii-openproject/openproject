@@ -8,8 +8,7 @@
     primer_form_with(
       url: generate_pdf_work_package_path(work_package),
       data: { turbo: false },
-      id: GENERATE_PDF_FORM_ID,
-      method: :get
+      id: GENERATE_PDF_FORM_ID
     ) do |form|
       flex_layout do |modal_body|
         generate_selects.each_with_index do |entry, index|
