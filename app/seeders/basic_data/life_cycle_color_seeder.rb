@@ -25,17 +25,20 @@
 #
 # See COPYRIGHT and LICENSE files for more details.
 #++
-module BasicData
-  class ColorSeeder < ModelSeeder
-    self.model_class = Color
-    self.seed_data_model_key = "colors"
-    self.attribute_names_for_lookups = %i[name]
 
-    def model_attributes(color_data)
-      {
-        name: color_data["name"],
-        hexcode: color_data["hexcode"]
-      }
+module BasicData
+  class LifeCycleColorSeeder < ColorSeeder
+    self.seed_data_model_key = "life_cycle_colors"
+
+    def applicable?
+      missing_color_names.any?
+    end
+
+    private
+
+    def missing_color_names
+      color_names = models_data.pluck("name")
+      color_names - Color.where(name: color_names).pluck(:name)
     end
   end
 end

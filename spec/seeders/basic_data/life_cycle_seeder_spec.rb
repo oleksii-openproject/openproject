@@ -31,11 +31,14 @@
 require "spec_helper"
 
 RSpec.describe BasicData::LifeCycleSeeder do
+  include_context "with basic seed data"
   subject(:seeder) { described_class.new(seed_data) }
 
-  let(:initial_seed_data) { Source::SeedData.new({}) }
-  let(:second_seed_initial_data) { initial_seed_data }
-  let(:seed_data) { initial_seed_data.merge(Source::SeedData.new(data_hash)) }
+  let(:seed_data) { basic_seed_data.merge(Source::SeedData.new(data_hash)) }
+
+  before do
+    seeder.seed!
+  end
 
   context "with some life cycles defined" do
     let(:data_hash) do
@@ -64,124 +67,62 @@ RSpec.describe BasicData::LifeCycleSeeder do
       SEEDING_DATA_YAML
     end
 
-    shared_examples_for "creates the life_cycles seeds" do
-      it "creates the corresponding life cycles with the given attributes" do
-        expect(LifeCycle.count).to eq(5)
-        expect(Stage.find_by(name: "Initiating")).to have_attributes(
-          color: have_attributes(name: "PM2 Orange")
-        )
-        expect(Gate.find_by(name: "Ready for Executing")).to have_attributes(
-          color: have_attributes(name: "PM2 Purple")
-        )
-        expect(Stage.find_by(name: "Planning")).to have_attributes(
-          color: have_attributes(name: "PM2 Red")
-        )
-        expect(Stage.find_by(name: "Executing")).to have_attributes(
-          color: have_attributes(name: "PM2 Magenta")
-        )
-        expect(Stage.find_by(name: "Closing")).to have_attributes(
-          color: have_attributes(name: "PM2 Green Yellow")
-        )
-      end
+    it "creates the corresponding life cycles with the given attributes" do
+      expect(LifeCycle.count).to eq(5)
+      expect(Stage.find_by(name: "Initiating")).to have_attributes(
+        color: have_attributes(name: "PM2 Orange")
+      )
+      expect(Gate.find_by(name: "Ready for Executing")).to have_attributes(
+        color: have_attributes(name: "PM2 Purple")
+      )
+      expect(Stage.find_by(name: "Planning")).to have_attributes(
+        color: have_attributes(name: "PM2 Red")
+      )
+      expect(Stage.find_by(name: "Executing")).to have_attributes(
+        color: have_attributes(name: "PM2 Magenta")
+      )
+      expect(Stage.find_by(name: "Closing")).to have_attributes(
+        color: have_attributes(name: "PM2 Green Yellow")
+      )
+    end
 
-      it "references the life cycles in the seed data" do
-        Stage.find_each do |expected_stage|
-          reference = :"default_life_cycle_#{expected_stage.name.downcase}"
-          expect(seed_data.find_reference(reference)).to eq(expected_stage)
-        end
-      end
-
-      context "when seeding a second time" do
-        subject(:second_seeder) { described_class.new(second_seed_data) }
-
-        let(:second_seed_data) { second_seed_initial_data.merge(Source::SeedData.new(data_hash)) }
-
-        before do
-          second_seeder.seed!
-        end
-
-        it "registers existing matching life cycles as references in the seed data" do
-          # using the first seed data as the expected value
-          expect(second_seed_data.find_reference(:default_life_cycle_initiating))
-            .to eq(seed_data.find_reference(:default_life_cycle_initiating))
-          expect(second_seed_data.find_reference(:default_life_cycle_ready_for_executing))
-            .to eq(seed_data.find_reference(:default_life_cycle_ready_for_executing))
-          expect(second_seed_data.find_reference(:default_life_cycle_planning))
-            .to eq(seed_data.find_reference(:default_life_cycle_planning))
-          expect(second_seed_data.find_reference(:default_life_cycle_executing))
-            .to eq(seed_data.find_reference(:default_life_cycle_executing))
-          expect(second_seed_data.find_reference(:default_life_cycle_closing))
-            .to eq(seed_data.find_reference(:default_life_cycle_closing))
-        end
+    it "references the life cycles in the seed data" do
+      Stage.find_each do |expected_stage|
+        reference = :"default_life_cycle_#{expected_stage.name.downcase}"
+        expect(seed_data.find_reference(reference)).to eq(expected_stage)
       end
     end
 
-    context "and colors seeded" do
-      include_context "with basic seed data"
-      let(:initial_seed_data) { basic_seed_data }
+    context "when seeding a second time" do
+      subject(:second_seeder) { described_class.new(second_seed_data) }
+
+      let(:second_seed_data) { basic_seed_data.merge(Source::SeedData.new(data_hash)) }
 
       before do
-        seeder.seed!
+        second_seeder.seed!
       end
 
-      it_behaves_like "creates the life_cycles seeds"
-    end
-
-    context "with some colors seeded" do
-      let(:colors_data) do
-        YAML.load <<~SEEDING_DATA_YAML
-          colors:
-          - reference: :default_color_pm2_orange
-            name: PM2 Orange
-            hexcode: "#F7983A"
-          - reference: :default_color_pm2_red
-            name: PM2 Red
-            hexcode: "#F05823"
-          - reference: :default_color_pm2_purple
-            name: PM2 Purple
-            hexcode: "#682D91"
-          - reference: :default_color_pm2_magenta
-            name: PM2 Magenta
-            hexcode: "#EC038A"
-          - reference: :default_color_pm2_green_yellow
-            name: PM2 Green Yellow
-            hexcode: "#B1D13A"
-        SEEDING_DATA_YAML
+      it "registers existing matching life cycles as references in the seed data" do
+        # using the first seed data as the expected value
+        expect(second_seed_data.find_reference(:default_life_cycle_initiating))
+          .to eq(seed_data.find_reference(:default_life_cycle_initiating))
+        expect(second_seed_data.find_reference(:default_life_cycle_ready_for_executing))
+          .to eq(seed_data.find_reference(:default_life_cycle_ready_for_executing))
+        expect(second_seed_data.find_reference(:default_life_cycle_planning))
+          .to eq(seed_data.find_reference(:default_life_cycle_planning))
+        expect(second_seed_data.find_reference(:default_life_cycle_executing))
+          .to eq(seed_data.find_reference(:default_life_cycle_executing))
+        expect(second_seed_data.find_reference(:default_life_cycle_closing))
+          .to eq(seed_data.find_reference(:default_life_cycle_closing))
       end
-      # Typical usecase for running the seeders after an upgrade: Some data exist from
-      # previous seed runs, and new seed data is added to the configuration YML.
-      let(:initial_seed_data) do
-        Color.create!(name: "PM2 Orange", hexcode: "#F7983A")
-        build_color_seeder_seed_data
-      end
-      let(:second_seed_initial_data) { build_color_seeder_seed_data }
-
-      def build_color_seeder_seed_data
-        color_seeder = BasicData::ColorSeeder.new(Source::SeedData.new(colors_data))
-        color_seeder.lookup_existing_references
-        color_seeder.seed_data
-      end
-
-      before do
-        seeder.seed!
-      end
-
-      it_behaves_like "creates the life_cycles seeds"
     end
   end
 
   context "without life cycles defined" do
-    include_context "with basic seed data"
-    let(:initial_seed_data) { basic_seed_data }
-
     let(:data_hash) do
       YAML.load <<~SEEDING_DATA_YAML
         nothing here: ''
       SEEDING_DATA_YAML
-    end
-
-    before do
-      seeder.seed!
     end
 
     it "creates no life cycles" do

@@ -69,6 +69,8 @@ colors:
   - reference: :default_color_black
     t_name: Black
     hexcode: "#000000"
+
+life_cycle_colors:
   - reference: :default_color_pm2_orange
     t_name: PM2 Orange
     hexcode: "#F7983A"
