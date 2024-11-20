@@ -31,7 +31,7 @@ class CreateLifeCycles < ActiveRecord::Migration[7.1]
     create_table :life_cycles do |t|
       t.string :type
       t.string :name
-      t.belongs_to :color, type: :int
+      t.references :color, foreign_key: true
 
       t.timestamps
     end
