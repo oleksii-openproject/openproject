@@ -27,18 +27,24 @@
 //++
 
 import {
-  ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewChild, ElementRef, AfterViewInit,
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  Input,
+  OnInit,
+  ViewChild,
 } from '@angular/core';
-import { I18nService } from 'core-app/core/i18n/i18n.service';
 import { WorkPackageResource } from 'core-app/features/hal/resources/work-package-resource';
-import { Observable, zip } from 'rxjs';
-import { take, takeUntil } from 'rxjs/operators';
+import {
+  debounceTime,
+  skip,
+  takeUntil,
+} from 'rxjs/operators';
 import { UntilDestroyedMixin } from 'core-app/shared/helpers/angular/until-destroyed.mixin';
 import { componentDestroyed } from '@w11k/ngx-componentdestroyed';
 import { ApiV3Service } from 'core-app/core/apiv3/api-v3.service';
-import { RelationResource } from 'core-app/features/hal/resources/relation-resource';
-import { RelationsStateValue, WorkPackageRelationsService } from './wp-relations.service';
-import { RelatedWorkPackagesGroup } from './wp-relations.interfaces';
+import { WorkPackageRelationsService } from './wp-relations.service';
 import { PathHelperService } from 'core-app/core/path-helper/path-helper.service';
 import { TurboRequestsService } from 'core-app/core/turbo/turbo-requests.service';
 import { renderStreamMessage } from '@hotwired/turbo';
@@ -52,31 +58,12 @@ import { HalEventsService } from 'core-app/features/hal/services/hal-events.serv
 export class WorkPackageRelationsComponent extends UntilDestroyedMixin implements OnInit, AfterViewInit {
   @Input() public workPackage:WorkPackageResource;
 
-  public relationGroups:RelatedWorkPackagesGroup = {};
-
   @ViewChild('frameElement') readonly relationTurboFrame:ElementRef<HTMLIFrameElement>;
-
-  public relationGroupKeys:string[] = [];
-
-  public relationsPresent = false;
-
-  public canAddRelation:boolean;
-
-  // By default, group by relation type
-  public groupByWorkPackageType = false;
-
-  public text = {
-    relations_header: this.I18n.t('js.work_packages.tabs.relations'),
-  };
-
-  public currentRelations:WorkPackageResource[] = [];
 
   turboFrameSrc:string;
 
   constructor(
-  private I18n:I18nService,
     private wpRelations:WorkPackageRelationsService,
-    private cdRef:ChangeDetectorRef,
     private apiV3Service:ApiV3Service,
     private halEvents:HalEventsService,
     private PathHelper:PathHelperService,
@@ -88,26 +75,6 @@ export class WorkPackageRelationsComponent extends UntilDestroyedMixin implement
   ngOnInit() {
     this.turboFrameSrc = `${this.PathHelper.staticBase}/work_packages/${this.workPackage.id}/relations_tab`;
 
-    this.canAddRelation = !!this.workPackage.addRelation;
-
-    this.wpRelations
-      .state(this.workPackage.id!)
-      .values$()
-      .pipe(
-        takeUntil(componentDestroyed(this)),
-      )
-      .subscribe((relations:RelationsStateValue) => {
-        this.loadedRelations(relations);
-        // Refresh the turbo frame
-        void this.turboRequests.requestStream(this.turboFrameSrc)
-          .then((html) => {
-            // eslint-disable-next-line no-self-assign
-            renderStreamMessage(html);
-          });
-      });
-
-    this.wpRelations.require(this.workPackage.id!);
-
     // Listen for changes to this WP.
     this
       .apiV3Service
@@ -115,15 +82,18 @@ export class WorkPackageRelationsComponent extends UntilDestroyedMixin implement
       .id(this.workPackage)
       .requireAndStream()
       .pipe(
+        skip(1),
         takeUntil(componentDestroyed(this)),
+        debounceTime(500),
       )
       .subscribe((wp:WorkPackageResource) => {
         this.workPackage = wp;
+
         void this.turboRequests.requestStream(this.turboFrameSrc)
-        .then((html) => {
-          // eslint-disable-next-line no-self-assign
-            renderStreamMessage(html);
-          });
+        .then((result) => {
+          renderStreamMessage(result.html);
+        });
+
         this.updateCounter();
       });
   }
@@ -167,77 +137,8 @@ export class WorkPackageRelationsComponent extends UntilDestroyedMixin implement
     });
   }
 
-  private getRelatedWorkPackages(workPackageIds:string[]):Observable<WorkPackageResource[]> {
-    const observablesToGetZipped:Observable<WorkPackageResource>[] = workPackageIds.map((wpId) => this
-      .apiV3Service
-      .work_packages
-      .id(wpId)
-      .get());
-
-    return zip(...observablesToGetZipped);
-  }
-
-  protected getRelatedWorkPackageId(relation:RelationResource):string {
-    const involved = relation.ids;
-    return (relation.to.href === this.workPackage.href) ? involved.from : involved.to;
-  }
-
-  public toggleGroupBy() {
-    this.groupByWorkPackageType = !this.groupByWorkPackageType;
-    this.buildRelationGroups();
-  }
-
-  protected buildRelationGroups() {
-    if (_.isNil(this.currentRelations)) {
-      return;
-    }
-
-    this.relationGroups = <RelatedWorkPackagesGroup>_.groupBy(
-this.currentRelations,
-      (wp:WorkPackageResource) => {
-        if (this.groupByWorkPackageType) {
-          return wp.type.name;
-        }
-        const normalizedType = (wp.relatedBy as RelationResource).normalizedType(this.workPackage);
-        return this.I18n.t(`js.relation_labels.${normalizedType}`);
-      },
-);
-    this.relationGroupKeys = _.keys(this.relationGroups);
-    this.relationsPresent = _.size(this.relationGroups) > 0;
-    this.cdRef.detectChanges();
-  }
-
   public updateCounter() {
     const url = this.PathHelper.workPackageUpdateCounterPath(this.workPackage.id!, 'relations');
     void this.turboRequests.request(url);
-  }
-
-  protected loadedRelations(stateValues:RelationsStateValue):void {
-    const relatedWpIds:string[] = [];
-    const relations:{ [wpId:string]:any } = [];
-
-    if (_.size(stateValues) === 0) {
-      this.currentRelations = [];
-      return this.buildRelationGroups();
-    }
-
-    _.each(stateValues, (relation:RelationResource) => {
-      const relatedWpId = this.getRelatedWorkPackageId(relation);
-      relatedWpIds.push(relatedWpId);
-      relations[relatedWpId] = relation;
-    });
-
-    this.getRelatedWorkPackages(relatedWpIds)
-      .pipe(
-        take(1),
-      )
-      .subscribe((relatedWorkPackages:WorkPackageResource[]) => {
-        this.currentRelations = relatedWorkPackages.map((wp:WorkPackageResource) => {
-          wp.relatedBy = relations[wp.id!];
-          return wp;
-        });
-
-        this.buildRelationGroups();
-      });
   }
 }
