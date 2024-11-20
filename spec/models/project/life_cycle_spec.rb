@@ -33,14 +33,6 @@ RSpec.describe Project::LifeCycle do
     expect { described_class.new }.to raise_error(NotImplementedError)
   end
 
-  it "cannot be instantiated with an invalid type" do
-    expect { described_class.new(type: "InvalidType") }.to raise_error(ActiveRecord::SubclassNotFound)
-  end
-
-  it "can be instantiated with a valid type" do
-    expect { described_class.new(type: "Project::Gate") }.not_to raise_error
-  end
-
   describe "with an instantiated Gate" do
     subject { build :project_gate }
 

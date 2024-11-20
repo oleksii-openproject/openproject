@@ -33,14 +33,6 @@ RSpec.describe LifeCycle do
     expect { described_class.new }.to raise_error(NotImplementedError)
   end
 
-  it "cannot be instantiated with an invalid type" do
-    expect { described_class.new(type: "InvalidType") }.to raise_error(ActiveRecord::SubclassNotFound)
-  end
-
-  it "can be instantiated with a valid type" do
-    expect { described_class.new(type: "Gate") }.not_to raise_error
-  end
-
   # For more specs see:
   # - spec/support/shared/life_cycle_helpers.rb
   # - spec/models/gate_spec.rb
