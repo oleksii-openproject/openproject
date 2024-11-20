@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #-- copyright
 # OpenProject is an open source project management software.
 # Copyright (C) the OpenProject GmbH
@@ -26,7 +28,7 @@
 # See COPYRIGHT and LICENSE files for more details.
 #++
 
-module WorkPackage::PDFExport::TableOfContents
+module WorkPackage::PDFExport::Export::TableOfContents
   def write_work_packages_toc!(work_packages, id_wp_meta_map)
     toc_list = build_toc_data_list work_packages, id_wp_meta_map
     with_margin(styles.toc_margins) do

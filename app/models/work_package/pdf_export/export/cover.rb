@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #-- copyright
 # OpenProject is an open source project management software.
 # Copyright (C) the OpenProject GmbH
@@ -26,7 +28,7 @@
 # See COPYRIGHT and LICENSE files for more details.
 #++
 
-module WorkPackage::PDFExport::Cover
+module WorkPackage::PDFExport::Export::Cover
   def write_cover_page!
     write_cover_logo
     write_cover_hr

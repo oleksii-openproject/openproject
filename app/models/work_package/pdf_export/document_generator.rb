@@ -28,59 +28,58 @@
 # See COPYRIGHT and LICENSE files for more details.
 #++
 
-class WorkPackage::PDFExport::WorkPackageToPdf < Exports::Exporter
+class WorkPackage::PDFExport::DocumentGenerator < Exports::Exporter
   include WorkPackage::PDFExport::Common::Common
-  include WorkPackage::PDFExport::Common::Logo
   include WorkPackage::PDFExport::Common::Attachments
-  include WorkPackage::PDFExport::Export::ExportCommon
-  include WorkPackage::PDFExport::Export::WorkPackageDetail
-  include WorkPackage::PDFExport::Export::Page
-  include WorkPackage::PDFExport::Export::Style
+  include WorkPackage::PDFExport::Common::Logo
+  include WorkPackage::PDFExport::Common::Macro
+  include WorkPackage::PDFExport::Generator::Generator
 
-  attr_accessor :pdf, :columns
+  attr_accessor :pdf
 
   self.model = WorkPackage
 
   alias :work_package :object
 
   def self.key
-    :pdf
+    :generate_pdf
   end
 
   def initialize(work_package, _options = {})
     super
 
-    self.columns = ::Query.available_columns(work_package.project)
     setup_page!
-  end
-
-  def export!
-    render_work_package
-    success(pdf.render)
-  rescue StandardError => e
-    Rails.logger.error { "Failed to generate PDF export: #{e} #{e.message}}." }
-    error(I18n.t(:error_pdf_failed_to_export, error: e.message))
   end
 
   def setup_page!
     self.pdf = get_pdf(current_language)
-    @page_count = 0
-    configure_page_size!(:portrait)
   end
 
-  def render_work_package
-    write_title!
-    write_work_package_detail_content!(work_package)
-    write_headers!
-    write_footers!
+  def export!
+    render_doc
+    success(pdf.render)
+  rescue StandardError => e
+    Rails.logger.error { "Failed to generate PDF: #{e} #{e.message}}." }
+    error(I18n.t(:error_pdf_failed_to_export, error: e.message))
+  end
+
+  def render_doc
+    generate_doc!(
+      apply_markdown_field_macros(work_package.description || "", work_package),
+      "contracts.yml"
+    )
+  end
+
+  def hyphenation_language
+    options[:hyphenation]
   end
 
   def heading
-    "#{work_package.type} ##{work_package.id} - #{work_package.subject}"
+    options[:header_text_right]
   end
 
   def footer_title
-    work_package.project.name
+    options[:footer_text_center]
   end
 
   def title

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #-- copyright
 # OpenProject is an open source project management software.
 # Copyright (C) the OpenProject GmbH
@@ -26,29 +28,33 @@
 # See COPYRIGHT and LICENSE files for more details.
 #++
 
-require "mini_magick"
+module WorkPackage::PDFExport::Export::MarkdownField
+  include WorkPackage::PDFExport::Export::Markdown
+  include WorkPackage::PDFExport::Common::Macro
 
-module WorkPackage::PDFExport::Attachments
-  def resize_image(file_path)
-    tmp_file = Tempfile.new(["temp_image", File.extname(file_path)])
-    @resized_images = [] if @resized_images.nil?
+  def write_markdown_field!(work_package, markdown, label)
+    return if markdown.blank?
 
-    @resized_images << tmp_file
-    resized_file_path = tmp_file.path
-
-    image = MiniMagick::Image.open(file_path)
-    image.resize("x800>")
-    image.write(resized_file_path)
-
-    resized_file_path
+    write_optional_page_break
+    write_markdown_field_label(label)
+    write_markdown_field_value(work_package, markdown)
   end
 
-  def pdf_embeddable?(content_type)
-    %w[image/jpeg image/png].include?(content_type)
+  private
+
+  def write_markdown_field_label(label)
+    with_margin(styles.wp_markdown_label_margins) do
+      pdf.formatted_text([styles.wp_markdown_label.merge({ text: label })])
+    end
   end
 
-  def delete_all_resized_images
-    @resized_images&.each(&:close!)
-    @resized_images = []
+  def write_markdown_field_value(work_package, markdown)
+    with_margin(styles.wp_markdown_margins) do
+      write_markdown!(
+        work_package,
+        apply_markdown_field_macros(markdown, work_package),
+        styles.wp_markdown_styling_yml
+      )
+    end
   end
 end

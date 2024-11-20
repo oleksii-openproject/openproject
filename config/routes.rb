@@ -574,6 +574,9 @@ Rails.application.routes.draw do
 
     get "hover_card" => "work_packages/hover_card#show", on: :member
 
+    get "generate_pdf_dialog" => "work_packages#generate_pdf_dialog", on: :member
+    post "generate_pdf" => "work_packages#generate_pdf", on: :member
+
     # move bulk of wps
     get "move/new" => "work_packages/moves#new", on: :collection, as: "new_move"
     post "move" => "work_packages/moves#create", on: :collection, as: "move"

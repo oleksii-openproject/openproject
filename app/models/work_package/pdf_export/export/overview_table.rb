@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #-- copyright
 # OpenProject is an open source project management software.
 # Copyright (C) the OpenProject GmbH
@@ -26,7 +28,7 @@
 # See COPYRIGHT and LICENSE files for more details.
 #++
 
-module WorkPackage::PDFExport::OverviewTable
+module WorkPackage::PDFExport::Export::OverviewTable
   def write_work_packages_overview!(work_packages)
     if query.grouped?
       write_grouped!(work_packages)
