@@ -33,7 +33,7 @@ de:
         label_activity_show_only_changes: "Nur Änderungen anzeigen"
         label_sort_asc: "Neueste unten"
         label_sort_desc: "Neueste oben"
-        label_type_to_comment: "Tippen Sie hier, um zu kommentieren"
+        label_type_to_comment: "Add a comment. Type @ to notify people."
         label_submit_comment: "Kommentar absenden"
         changed_on: "geändert am"
         created_on: "erstellte dies am"
