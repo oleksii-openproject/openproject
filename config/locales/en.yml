@@ -999,6 +999,7 @@ en:
         not_an_integer: "is not an integer."
         not_an_iso_date: "is not a valid date. Required format: YYYY-MM-DD."
         not_same_project: "doesn't belong to the same project."
+        datetime_must_be_in_future: "must be in the future."
         odd: "must be odd."
         regex_match_failed: "does not match the regular expression %{expression}."
         regex_invalid: "could not be validated with the associated regular expression."
@@ -3108,6 +3109,7 @@ en:
   permission_select_project_modules: "Select project modules"
   permission_share_work_packages: "Share work packages"
   permission_manage_types: "Select types"
+  permission_manage_own_reminders: "Create own reminders"
   permission_view_project: "View projects"
   permission_view_changesets: "View repository revisions in OpenProject"
   permission_view_commit_author_statistics: "View commit author statistics"
@@ -3490,7 +3492,7 @@ en:
         If this option is active, login requests will redirect to the configured omniauth provider.
         The login dropdown and sign-in page will be disabled.
         <br/>
-        <strong>Note:</strong> Unless you also disable password logins, with this option enabled, 
+        <strong>Note:</strong> Unless you also disable password logins, with this option enabled,
         users can still log in internally by visiting the <code>%{internal_path}</code> login page.
     attachments:
       whitelist_text_html: >
