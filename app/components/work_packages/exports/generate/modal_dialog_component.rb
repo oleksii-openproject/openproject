@@ -77,34 +77,35 @@ module WorkPackages
           # https://rubygems.org/gems/text-hyphen
           # The labels are the language names in the language itself (NOT to be put I18n)
           supported_languages = [
-            { value: "ca", label: "Català" },
-            { value: "cs", label: "Čeština" },
-            { value: "da", label: "Dansk" },
-            { value: "de", label: "Deutsch" },
-            { value: "en_uk", label: "English (UK)" },
-            { value: "en_us", label: "English (USA)" },
-            { value: "es", label: "Español" },
-            { value: "et", label: "Eesti" },
-            { value: "eu", label: "Euskara" },
-            { value: "fi", label: "Suomi" },
-            { value: "fr", label: "Français" },
-            { value: "ga", label: "Gaeilge" },
-            { value: "hr", label: "Hrvatski" },
-            { value: "hu", label: "Magyar" },
-            { value: "ia", label: "Interlingua" },
-            { value: "id", label: "Indonesia" },
-            { value: "is", label: "Ísland" },
-            { value: "it", label: "Italiano" },
-            { value: "mn", label: "Монгол" },
-            { value: "ms", label: "Melayu" },
-            { value: "nl", label: "Nederlands" },
-            { value: "no", label: "Norsk" },
-            { value: "pl", label: "Polski" },
-            { value: "pt", label: "Português" },
-            { value: "ru", label: "Русский" },
-            { value: "sk", label: "Slovenčina" },
-            { value: "sv", label: "Svenska" }
-          ].sort_by { |item| item[:label] }
+            { label: "Català", value: "ca" },
+            { label: "Dansk", value: "da" },
+            { label: "Deutsch", value: "de" },
+            { label: "Eesti", value: "et" },
+            { label: "English (UK)", value: "en_uk" },
+            { label: "English (USA)", value: "en_us" },
+            { label: "Español", value: "es" },
+            { label: "Euskara", value: "eu" },
+            { label: "Français", value: "fr" },
+            { label: "Gaeilge", value: "ga" },
+            { label: "Hrvatski", value: "hr" },
+            { label: "Indonesia", value: "id" },
+            { label: "Interlingua", value: "ia" },
+            { label: "Italiano", value: "it" },
+            { label: "Magyar", value: "hu" },
+            { label: "Melayu", value: "ms" },
+            { label: "Nederlands", value: "nl" },
+            { label: "Norsk", value: "no" },
+            { label: "Polski", value: "pl" },
+            { label: "Português", value: "pt" },
+            { label: "Slovenčina", value: "sk" },
+            { label: "Suomi", value: "fi" },
+            { label: "Svenska", value: "sv" },
+            { label: "Ísland", value: "is" },
+            { label: "Čeština", value: "cs" },
+            { label: "Монгол", value: "mn" },
+            { label: "Русский", value: "ru" }
+          ]
+
           [{ value: "", label: "Off", default: true }].concat(supported_languages)
         end
 
