@@ -126,6 +126,7 @@ en:
   label_rate_plural: "Rates"
   label_status_finished: "Finished"
   label_show: "Show"
+  label_track_start_and_end_times: "Time records with start and end time"
   label_units: "Cost units"
   label_user: "User"
   label_until: "until"
@@ -135,7 +136,7 @@ en:
   notice_something_wrong: "Something went wrong. Please try again."
   notice_successful_restore: "Successful restore."
   notice_successful_lock: "Locked successfully."
-  notice_cost_logged_successfully: 'Unit cost logged successfully.'
+  notice_cost_logged_successfully: "Unit cost logged successfully."
 
   permission_edit_cost_entries: "Edit booked unit costs"
   permission_edit_own_cost_entries: "Edit own booked unit costs"

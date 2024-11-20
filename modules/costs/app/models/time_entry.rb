@@ -101,6 +101,11 @@ class TimeEntry < ApplicationRecord
       (user_id == usr.id && usr.allowed_in_project?(:view_own_hourly_rate, project))
   end
 
+  def self.can_track_start_and_end_time?
+    OpenProject::FeatureDecisions.track_start_and_end_times_for_time_entries_active? &&
+    ActiveRecord::Type::Boolean.new.cast(Setting.plugin_costs["costs_currency"])
+  end
+
   private
 
   def cost_attribute

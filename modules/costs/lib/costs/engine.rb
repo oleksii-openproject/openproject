@@ -38,7 +38,11 @@ module Costs
              author_url: "https://www.openproject.org",
              bundled: true,
              settings: {
-               default: { "costs_currency" => "EUR", "costs_currency_format" => "%n %u" },
+               default: {
+                 "costs_currency" => "EUR",
+                 "costs_currency_format" => "%n %u",
+                 "track_start_and_end_times" => "false"
+               },
                partial: "settings/costs",
                page_title_key: :label_setting_plural,
                breadcrumb_elements: -> {
@@ -130,6 +134,11 @@ module Costs
            if: ->(*) { User.current.admin? },
            parent: :admin_costs,
            caption: :label_cost_type_plural
+    end
+
+    initializer "costs.feature_decisions" do
+      OpenProject::FeatureDecisions.add :track_start_and_end_times_for_time_entries,
+                                        description: "Allows admins to enable tracking start and end times for time entries"
     end
 
     activity_provider :time_entries, class_name: "Activities::TimeEntryActivityProvider", default: false

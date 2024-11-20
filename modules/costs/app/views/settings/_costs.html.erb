@@ -41,3 +41,13 @@ See COPYRIGHT and LICENSE files for more details.
     <%=  styled_text_field_tag 'settings[costs_currency_format]', @settings['costs_currency_format'], container_class: '-xslim' %>
   </div>
 </div>
+
+<%- if OpenProject::FeatureDecisions.track_start_and_end_times_for_time_entries_active? %>
+  <div class="form--field">
+    <%= styled_label_tag :label_track_start_and_end_times, t(:label_track_start_and_end_times) %>
+    <div class="form--field-container">
+      <%= hidden_field_tag "settings[track_start_and_end_times]", 'false' %>
+      <%= styled_check_box_tag "settings[track_start_and_end_times]", 'true', ActiveRecord::Type::Boolean.new.cast(@settings['track_start_and_end_times']) %>
+    </div>
+  </div>
+<%- end %>
