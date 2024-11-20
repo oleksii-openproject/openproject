@@ -106,7 +106,7 @@ RSpec.describe API::V3::Notifications::PropertyFactory do
       end
     end
 
-    (Notification::REASONS.keys - %i[date_alert_start_date date_alert_due_date]).each do |possible_reason|
+    (Notification::REASONS.keys - %i[date_alert_start_date date_alert_due_date reminder]).each do |possible_reason|
       context "for a #{possible_reason} notification" do
         let(:reason) { possible_reason }
 

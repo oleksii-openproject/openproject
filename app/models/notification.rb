@@ -40,11 +40,11 @@ class Notification < ApplicationRecord
     responsible: 9,
     date_alert_start_date: 10,
     date_alert_due_date: 11,
-    shared: 12
+    shared: 12,
+    reminder: 13
   }.freeze
 
-  enum reason: REASONS,
-       _prefix: true
+  enum :reason, REASONS, prefix: true
 
   belongs_to :recipient, class_name: "User"
   belongs_to :actor, class_name: "User"

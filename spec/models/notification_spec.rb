@@ -28,6 +28,30 @@
 require "spec_helper"
 
 RSpec.describe Notification do
+  describe "Enums" do
+    it do
+      expect(subject).to define_enum_for(:reason)
+        .with_values(
+          mentioned: 0,
+          assigned: 1,
+          watched: 2,
+          subscribed: 3,
+          commented: 4,
+          created: 5,
+          processed: 6,
+          prioritized: 7,
+          scheduled: 8,
+          responsible: 9,
+          date_alert_start_date: 10,
+          date_alert_due_date: 11,
+          shared: 12,
+          reminder: 13
+        )
+        .with_prefix
+        .backed_by_column_of_type(:integer)
+    end
+  end
+
   describe ".save" do
     context "for a non existing journal (e.g. because it has been deleted)" do
       let(:notification) { build(:notification) }
