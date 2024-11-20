@@ -63,34 +63,48 @@ module WorkPackages
           journal_sorting == "desc"
         end
 
-        def journals
+        def base_journals
           work_package
             .journals
-            .includes(:user, :notifications)
+            .includes(
+              :user,
+              :customizable_journals,
+              :attachable_journals,
+              :storable_journals,
+              :notifications
+            )
             .reorder(version: journal_sorting)
             .with_sequence_version
         end
 
+        def journals
+          API::V3::Activities::ActivityEagerLoadingWrapper.wrap(base_journals)
+        end
+
         def recent_journals
-          if journal_sorting_desc?
-            journals.first(MAX_RECENT_JOURNALS)
-          else
-            journals.last(MAX_RECENT_JOURNALS)
-          end
+          recent_ones = if journal_sorting_desc?
+                          base_journals.first(MAX_RECENT_JOURNALS)
+                        else
+                          base_journals.last(MAX_RECENT_JOURNALS)
+                        end
+
+          API::V3::Activities::ActivityEagerLoadingWrapper.wrap(recent_ones)
         end
 
         def older_journals
-          if journal_sorting_desc?
-            journals.offset(MAX_RECENT_JOURNALS)
-          else
-            total = journals.count
-            limit = [total - MAX_RECENT_JOURNALS, 0].max
-            journals.limit(limit)
-          end
+          older_ones = if journal_sorting_desc?
+                         base_journals.offset(MAX_RECENT_JOURNALS)
+                       else
+                         total = base_journals.count
+                         limit = [total - MAX_RECENT_JOURNALS, 0].max
+                         base_journals.limit(limit)
+                       end
+
+          API::V3::Activities::ActivityEagerLoadingWrapper.wrap(older_ones)
         end
 
         def journal_with_notes
-          journals.where.not(notes: "")
+          base_journals.where.not(notes: "")
         end
 
         def wp_journals_grouped_emoji_reactions
