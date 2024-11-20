@@ -72,6 +72,6 @@ module WorkPackage::PDFExport::Common::Attachments
 
   def attachment_by_api_content_src(work_package, src)
     # find attachment by api-path
-    work_package.attachments.detect { |a| api_url_helpers.attachment_content(a.id) == src }
+    work_package.attachments.find { |a| api_url_helpers.attachment_content(a.id) == src }
   end
 end
