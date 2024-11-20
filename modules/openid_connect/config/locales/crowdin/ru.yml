@@ -8,7 +8,7 @@ ru:
     attributes:
       openid_connect/provider:
         name: Имя
-        slug: Unique identifier
+        slug: Уникальный идентификатор
         display_name: Отображаемое имя
         client_id: ID клиента
         client_secret: Закрытый ключ клиента
@@ -27,7 +27,7 @@ ru:
         icon: Пользовательская иконка
         claims: Претензии
         acr_values: Значения ACR
-        redirect_url: Redirect URL
+        redirect_url: URL переадресации
   activerecord:
     errors:
       models:
@@ -53,14 +53,14 @@ ru:
     menu_title: Провайдеры OpenID
     delete_title: "Удалить провайдера OpenID Connect"
     instructions:
-      redirect_url: This is the redirect URL that the OpenID Connect provider should use to redirect back to OpenProject after a successful login.
+      redirect_url: Это URL, который провайдер OpenID Connect должен использовать для перенаправления обратно на OpenProject после успешного входа в систему.
       endpoint_url: URL-адрес конечной точки, указанный поставщиком OpenID Connect
       metadata_none: У меня нет этой информации
       metadata_url: У меня есть URL конечной точки обнаружения
       client_id: Это идентификатор клиента, присвоенный вам провайдером OpenID Connect
       client_secret: Это ключ клиента, предоставленный вам провайдером OpenID Connect
-      limit_self_registration: If enabled, users can only register using this provider if configuration on the provider's end allows it.
-      display_name: The name of the provider. This will be displayed as the login button and in the list of providers.
+      limit_self_registration: Если эта опция включена, пользователи смогут регистрироваться у этого провайдера только в том случае, если конфигурация провайдера позволяет это делать.
+      display_name: Это имя провайдера. Оно будет отображаться как кнопка входа и в списке провайдеров.
       tenant: 'Пожалуйста, замените владельца по умолчанию на своего собственного, если это применимо. См. <a href=" https://learn.microsoft.com/en-us/entra/identity-platform/v2-protocols-oidc#find-your-apps-openid-configuration-document-uri">это</a>.'
       post_logout_redirect_uri: URL-адрес, на который провайдер OpenID Connect должен перенаправить Вас после запроса на выход из системы.
       claims: >

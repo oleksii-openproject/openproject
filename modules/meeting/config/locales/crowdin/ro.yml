@@ -62,7 +62,7 @@ ro:
       meeting_section: "Section"
   activity:
     filter:
-      meeting: "Reuniuni"
+      meeting: "Întâlniri"
     item:
       meeting_agenda_item:
         duration:

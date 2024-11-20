@@ -29,6 +29,8 @@
 module OpenIDConnect
   module Providers
     class ClientDetailsForm < BaseForm
+      include Redmine::I18n
+
       form do |f|
         %i[client_id client_secret].each do |attr|
           f.text_field(
@@ -44,6 +46,20 @@ module OpenIDConnect
           name: :post_logout_redirect_uri,
           label: I18n.t("activemodel.attributes.openid_connect/provider.post_logout_redirect_uri"),
           caption: I18n.t("openid_connect.instructions.post_logout_redirect_uri"),
+          disabled: provider.seeded_from_env?,
+          required: false,
+          input_width: :large
+        )
+        f.text_field(
+          name: :scope,
+          label: I18n.t("activemodel.attributes.openid_connect/provider.scope"),
+          placeholder: "openid email profile",
+          caption: link_translate(
+            "openid_connect.instructions.scope",
+            links: {
+              docs_url: "https://openid.net/specs/openid-connect-basic-1_0.html#Scopes"
+            }
+          ),
           disabled: provider.seeded_from_env?,
           required: false,
           input_width: :large

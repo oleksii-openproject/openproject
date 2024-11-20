@@ -73,7 +73,7 @@ In addition to the in-app notifications, you will also get a once-a-day summary 
 
 Click on the **Mark as read** button represented by the envelope icon on the right side of the notification row. This will mark all the notifications for that work package (indicated by the number on the blue badge) as read. You can also use the **Mark as Read** button at the bottom of the split-screen view of a work package to achieve the same result.
 
-![Mark notifications as read in OpenProject noticification center](openproject_user_guide_notification_center_mark_read_envelope.png)
+![Mark notifications as read in OpenProject notifications center](openproject_user_guide_notification_center_mark_read_envelope.png)
 
 Additionally, you can mark notifications as read in the work package full screen view by clicking on the envelope icon in the upper right corner of the details view.
 

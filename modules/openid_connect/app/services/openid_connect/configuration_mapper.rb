@@ -53,6 +53,7 @@ module OpenIDConnect
         "limit_self_registration" => options["limit_self_registration"],
         "use_graph_api" => options["use_graph_api"],
         "acr_values" => options["acr_values"],
+        "scope" => extract_scope(options["scope"]),
         "authorization_endpoint" => extract_url(options, "authorization_endpoint"),
         "token_endpoint" => extract_url(options, "token_endpoint"),
         "userinfo_endpoint" => extract_url(options, "userinfo_endpoint"),
@@ -67,6 +68,17 @@ module OpenIDConnect
     end
 
     private
+
+    def extract_scope(value)
+      return if value.blank?
+
+      case value
+      when Array
+        value.join(" ")
+      else
+        value
+      end
+    end
 
     def oidc_provider(options)
       case options["name"]

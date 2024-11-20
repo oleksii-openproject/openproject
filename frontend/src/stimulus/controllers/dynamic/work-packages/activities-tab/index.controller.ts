@@ -398,7 +398,7 @@ export default class IndexController extends Controller {
   }
 
   private getScrollableContainer():HTMLElement | null {
-    if (this.isWithinNotificationCenter()) {
+    if (this.isWithinNotificationCenter() || this.isWithinSplitScreen()) {
       // valid for both mobile and desktop
       return document.querySelector('.work-package-details-tab') as HTMLElement;
     }
@@ -417,6 +417,10 @@ export default class IndexController extends Controller {
 
   private isWithinNotificationCenter():boolean {
     return window.location.pathname.includes(this.notificationCenterPathNameValue);
+  }
+
+  private isWithinSplitScreen():boolean {
+    return window.location.pathname.includes('work_packages/details');
   }
 
   private addEventListenersToCkEditorInstance() {
@@ -633,7 +637,7 @@ export default class IndexController extends Controller {
       headers: {
         'X-CSRF-Token': (document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement).content,
       },
-    });
+    }, true);
   }
 
   private handleSuccessfulSubmission(html:string, headers:Headers) {
@@ -643,8 +647,8 @@ export default class IndexController extends Controller {
     if (!this.journalsContainerTarget) return;
 
     this.clearEditor();
-    this.handleEditorVisibility();
-    this.adjustJournalsContainer();
+    this.hideEditor();
+    this.resetJournalsContainerMargins();
 
     setTimeout(() => {
       if (this.isMobile() && !this.isWithinNotificationCenter()) {
@@ -663,19 +667,11 @@ export default class IndexController extends Controller {
     this.saveInProgress = false;
   }
 
-  private handleEditorVisibility():void {
-    if (this.isMobile()) {
-      this.hideEditorIfEmpty();
-    } else {
-      this.focusEditor();
-    }
-  }
-
-  private adjustJournalsContainer():void {
+  private resetJournalsContainerMargins():void {
     if (!this.journalsContainerTarget) return;
 
     this.journalsContainerTarget.style.marginBottom = '';
-    this.journalsContainerTarget.classList.add('work-packages-activities-tab-index-component--journals-container_with-input-compensation');
+    this.journalsContainerTarget.classList.add('work-packages-activities-tab-index-component--journals-container_with-initial-input-compensation');
   }
 
   private setLastServerTimestampViaHeaders(headers:Headers) {
