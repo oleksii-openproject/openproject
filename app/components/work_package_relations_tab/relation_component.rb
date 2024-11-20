@@ -26,6 +26,27 @@ class WorkPackageRelationsTab::RelationComponent < ApplicationComponent
 
   def parent_child_relationship? = @child.present?
 
+  def should_render_edit_option?
+    # Children have nothing to edit as it's not a relation.
+    !parent_child_relationship? && allowed_to_manage_relations?
+  end
+
+  def should_render_action_menu?
+    if parent_child_relationship?
+      allowed_to_manage_subtasks?
+    else
+      allowed_to_manage_relations?
+    end
+  end
+
+  def allowed_to_manage_subtasks?
+    helpers.current_user.allowed_in_project?(:manage_subtasks, @work_package.project)
+  end
+
+  def allowed_to_manage_relations?
+    helpers.current_user.allowed_in_project?(:manage_work_package_relations, @work_package.project)
+  end
+
   def underlying_resource_id
     @underlying_resource_id ||= if parent_child_relationship?
                                   @child.id

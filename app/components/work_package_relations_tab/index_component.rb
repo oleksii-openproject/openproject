@@ -34,8 +34,8 @@ class WorkPackageRelationsTab::IndexComponent < ApplicationComponent
     helpers.current_user.allowed_in_project?(:manage_work_package_relations, @work_package.project)
   end
 
-  def should_only_render_add_child?
-    should_render_add_child? && !should_render_add_relations?
+  def should_render_create_button?
+    should_render_add_child? || should_render_add_relations?
   end
 
   def group_relations_by_directional_context

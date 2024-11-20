@@ -1,6 +1,6 @@
 <%= component_wrapper(tag: "turbo-frame") do %>
   <%=
-    if should_render_add_relations?
+    if should_render_create_button?
       flex_layout(justify_content: :space_between,
                   align_items: :center,
                   mb: 4,
@@ -10,26 +10,30 @@
             t("#{I18N_NAMESPACE}.index.action_bar_title")
           end
         end
+
         # Prevent the menu from overflowing on Safari
         action_bar.with_column(style: "flex: 0 0 auto;") do
           render(Primer::Alpha::ActionMenu.new(test_selector: NEW_RELATION_ACTION_MENU,
-                                              menu_id: NEW_RELATION_ACTION_MENU)) do |menu|
+                                               menu_id: NEW_RELATION_ACTION_MENU)) do |menu|
             menu.with_show_button do |button|
               button.with_leading_visual_icon(icon: :"plus")
               button.with_trailing_action_icon(icon: :"triangle-down")
               t(:label_relation)
             end
-            Relation::TYPES.each do |relation_type, type_configuration_hash|
-              label_key = "#{I18N_NAMESPACE}.relations.#{type_configuration_hash[:name]}_singular"
-              menu.with_item(
-                label: t(label_key).capitalize,
-                href: new_relation_path(relation_type:),
-                test_selector: new_button_test_selector(relation_type:),
-                content_arguments: {
-                  data: { turbo_stream: true }
-                }
-              ) do |item|
-                item.with_description.with_content(t("#{I18N_NAMESPACE}.relations.#{relation_type}_description"))
+
+            if should_render_add_relations?
+              Relation::TYPES.each do |relation_type, type_configuration_hash|
+                label_key = "#{I18N_NAMESPACE}.relations.#{type_configuration_hash[:name]}_singular"
+                menu.with_item(
+                  label: t(label_key).capitalize,
+                  href: new_relation_path(relation_type:),
+                  test_selector: new_button_test_selector(relation_type:),
+                  content_arguments: {
+                    data: { turbo_stream: true }
+                  }
+                ) do |item|
+                  item.with_description.with_content(t("#{I18N_NAMESPACE}.relations.#{relation_type}_description"))
+                end
               end
             end
 
@@ -48,38 +52,9 @@
           end
         end
       end
-    elsif should_only_render_add_child?
-      flex_layout(justify_content: :space_between, align_items: :center, mb: 4) do |action_bar|
-        action_bar.with_column do
-          render(Primer::Beta::Text.new(color: :muted)) do
-            t("#{I18N_NAMESPACE}.index.action_bar_title")
-          end
-        end
-        # Prevent the menu from overflowing on Safari
-        action_bar.with_column(style: "flex: 0 0 auto;") do
-          render(Primer::Alpha::ActionMenu.new(test_selector: NEW_RELATION_ACTION_MENU,
-                                              menu_id: NEW_RELATION_ACTION_MENU)) do |menu|
-            menu.with_show_button do |button|
-              button.with_leading_visual_icon(icon: :"plus")
-              button.with_trailing_action_icon(icon: :"triangle-down")
-              t(:label_relation)
-            end
-
-            menu.with_item(
-              label: t("#{I18N_NAMESPACE}.relations.label_child_singular").capitalize,
-              href: new_work_package_child_path(@work_package),
-              test_selector: new_button_test_selector(relation_type: :child),
-              content_arguments: {
-                data: { turbo_stream: true }
-              }
-            ) do |item|
-              item.with_description.with_content(t("#{I18N_NAMESPACE}.relations.child_description"))
-            end
-          end
-        end
-      end
     end
   %>
+
   <%=
     flex_layout(classes: "work-package-relations-tab--list-container", mb: 3) do |flex|
       if any_relations?
