@@ -62,6 +62,7 @@ fr:
       limit_self_registration: If enabled, users can only register using this provider if configuration on the provider's end allows it.
       display_name: The name of the provider. This will be displayed as the login button and in the list of providers.
       tenant: 'Veuillez remplacer le locataire par défaut par le vôtre, le cas échéant. Vous pouvez en savoir plus <a href=" https://learn.microsoft.com/en-us/entra/identity-platform/v2-protocols-oidc#find-your-apps-openid-configuration-document-uri">ici</a>.'
+      scope: If you want to request custom scopes, you can add one or multiple scope values separated by spaces here. For more information, see the [OpenID Connect documentation](docs_url).
       post_logout_redirect_uri: L'URL vers laquelle le fournisseur OpenID Connect doit rediriger le client après une demande de déconnexion.
       claims: >
         Vous pouvez demander des réclamations supplémentaires pour les points de terminaison userinfo et id token. Veuillez consulter [notre documentation OpenID Connect](docs_url) pour obtenir plus d'informations.

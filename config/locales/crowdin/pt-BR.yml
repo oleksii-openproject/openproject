@@ -33,7 +33,7 @@ pt-BR:
         label_activity_show_only_changes: "Exibir apenas alterações"
         label_sort_asc: "Mais recentes embaixo"
         label_sort_desc: "Mais recentes em cima"
-        label_type_to_comment: "Digite aqui para comentar"
+        label_type_to_comment: "Add a comment. Type @ to notify people."
         label_submit_comment: "Enviar comentário"
         changed_on: "alterado em"
         created_on: "criou em"

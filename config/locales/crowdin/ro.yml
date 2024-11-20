@@ -33,7 +33,7 @@ ro:
         label_activity_show_only_changes: "Arată doar modificările"
         label_sort_asc: "Cele mai noi jos"
         label_sort_desc: "Cele mai noi sus"
-        label_type_to_comment: "Tastează aici pentru a comenta"
+        label_type_to_comment: "Add a comment. Type @ to notify people."
         label_submit_comment: "Submit comment"
         changed_on: "changed on"
         created_on: "a creat-o pe"
