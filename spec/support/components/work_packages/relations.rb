@@ -54,6 +54,10 @@ module Components
         end
       end
 
+      def expect_add_relation_button
+        expect(page).to have_test_selector("new-relation-action-menu")
+      end
+
       def expect_no_add_relation_button
         expect(page).not_to have_test_selector("new-relation-action-menu")
       end
@@ -97,9 +101,29 @@ module Components
         page.find_test_selector("op-relation-row-#{actual_relatable.id}-action-menu")
       end
 
+      def expect_relatable_action_menu(relatable)
+        actual_relatable = find_relatable(relatable)
+        expect(page).to have_test_selector("op-relation-row-#{actual_relatable.id}-action-menu")
+      end
+
+      def expect_no_relatable_action_menu(relatable)
+        actual_relatable = find_relatable(relatable)
+        expect(page).not_to have_test_selector("op-relation-row-#{actual_relatable.id}-action-menu")
+      end
+
       def relatable_delete_button(relatable)
         actual_relatable = find_relatable(relatable)
         page.find_test_selector("op-relation-row-#{actual_relatable.id}-delete-button")
+      end
+
+      def expect_relatable_delete_button(relatable)
+        actual_relatable = find_relatable(relatable)
+        expect(page).to have_test_selector("op-relation-row-#{actual_relatable.id}-delete-button")
+      end
+
+      def expect_no_relatable_delete_button(relatable)
+        actual_relatable = find_relatable(relatable)
+        expect(page).not_to have_test_selector("op-relation-row-#{actual_relatable.id}-delete-button")
       end
 
       def add_relation(type:, relatable:, description: nil)
@@ -225,8 +249,8 @@ module Components
 
       def expect_parent(work_package)
         expect(page).to have_test_selector "op-wp-breadcrumb-parent",
-                                 text: work_package.subject,
-                                 wait: 10
+                                           text: work_package.subject,
+                                           wait: 10
       end
 
       def expect_no_parent
@@ -244,7 +268,7 @@ module Components
 
           SeleniumHubWaiter.wait
           page.find_test_selector("op-wp-inline-create-reference",
-               text: I18n.t("js.relation_buttons.add_existing_child")).click
+                                  text: I18n.t("js.relation_buttons.add_existing_child")).click
 
           # Security check to be sure that the autocompleter has finished loading
           page.find ".wp-relations--children .ng-input input"

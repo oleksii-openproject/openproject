@@ -230,4 +230,67 @@ RSpec.describe "Primerized work package relations tab",
       tabs.expect_counter("relations", 5)
     end
   end
+
+  describe "with limited permissions" do
+    let(:no_permissions_role) { create(:project_role, permissions: %i[view_work_packages]) }
+    let(:user_without_permissions) do
+      create(:user,
+             member_with_roles: { project => no_permissions_role })
+    end
+    let(:current_user) { user_without_permissions }
+
+    it "does not show options to add or edit relations" do
+      scroll_to_element relations_panel
+
+      tabs.expect_counter("relations", 4)
+
+      relations_tab.expect_no_add_relation_button
+      relations_tab.expect_no_relatable_action_menu(wp_related)
+      relations_tab.expect_no_relatable_action_menu(child_wp)
+    end
+
+    context "with manage_relations permissions" do
+      let(:no_permissions_role) do
+        create(:project_role, permissions: %i(view_work_packages edit_work_packages manage_work_package_relations))
+      end
+
+      it "does not show the option to delete the child" do
+        scroll_to_element relations_panel
+
+        tabs.expect_counter("relations", 4)
+
+        # The menu is shown as the user can add a relation
+        relations_tab.expect_add_relation_button
+
+        # The relation can be edited and deleted
+        relations_tab.expect_relatable_action_menu(wp_related)
+        relations_tab.relatable_action_menu(wp_related).click
+        relations_tab.expect_relatable_delete_button(wp_related)
+
+        # The child cannot be changed
+        relations_tab.expect_no_relatable_action_menu(child_wp)
+      end
+    end
+
+    context "with manage_subtasks permissions" do
+      let(:no_permissions_role) { create(:project_role, permissions: %i(view_work_packages edit_work_packages manage_subtasks)) }
+
+      it "does not show the option to edit the relation but only the child" do
+        scroll_to_element relations_panel
+
+        tabs.expect_counter("relations", 4)
+
+        # The menu is shown as the user can add a child
+        relations_tab.expect_add_relation_button
+
+        # The relation cannot be edited
+        relations_tab.expect_no_relatable_action_menu(wp_related)
+
+        # The child can be removed
+        relations_tab.expect_relatable_action_menu(child_wp)
+        relations_tab.relatable_action_menu(child_wp).click
+        relations_tab.expect_relatable_delete_button(child_wp)
+      end
+    end
+  end
 end
