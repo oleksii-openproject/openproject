@@ -55,12 +55,12 @@ module Components
       end
 
       def expect_no_add_relation_button
-        expect(page).to have_no_css("[data-test-selector='new-relation-action-menu']")
+        expect(page).not_to have_test_selector("new-relation-action-menu")
       end
 
       def find_row(relatable)
         actual_relatable = find_relatable(relatable)
-        page.find("[data-test-selector='op-relation-row-#{actual_relatable.id}']")
+        page.find_test_selector("op-relation-row-#{actual_relatable.id}")
       end
 
       def find_some_row(text:)
@@ -73,7 +73,7 @@ module Components
 
       def expect_no_row(relatable)
         actual_relatable = find_relatable(relatable)
-        expect(page).to have_no_css("[data-test-selector='op-relation-row-#{actual_relatable.id}']")
+        expect(page).not_to have_test_selector("op-relation-row-#{actual_relatable.id}")
       end
 
       def remove_relation(relatable)
@@ -94,12 +94,12 @@ module Components
 
       def relatable_action_menu(relatable)
         actual_relatable = find_relatable(relatable)
-        page.find("[data-test-selector='op-relation-row-#{actual_relatable.id}-action-menu']")
+        page.find_test_selector("op-relation-row-#{actual_relatable.id}-action-menu")
       end
 
       def relatable_delete_button(relatable)
         actual_relatable = find_relatable(relatable)
-        page.find("[data-test-selector='op-relation-row-#{actual_relatable.id}-delete-button']")
+        page.find_test_selector("op-relation-row-#{actual_relatable.id}-delete-button")
       end
 
       def add_relation(type:, relatable:, description: nil)
@@ -107,7 +107,7 @@ module Components
         # Open create form
 
         SeleniumHubWaiter.wait
-        page.find("[data-test-selector='new-relation-action-menu']").click
+        page.find_test_selector("new-relation-action-menu").click
 
         label_text_for_relation_type = I18n.t("#{i18n_namespace}.label_#{type}_singular")
         within page.find_by_id("new-relation-action-menu-list") do # Primer appends "list" to the menu id automatically
@@ -121,7 +121,7 @@ module Components
         expect(page).to have_text(modal_heading_label)
 
         # Enter the query and select the child
-        autocomplete_field = page.find("[data-test-selector='work-package-relation-form-to-id']")
+        autocomplete_field = page.find_test_selector("work-package-relation-form-to-id")
         select_autocomplete(autocomplete_field,
                             query: relatable.subject,
                             results_selector: "body")
@@ -150,8 +150,10 @@ module Components
         actual_relatable = find_relatable(relatable)
         relation_row = find_row(actual_relatable)
 
-        relation_row.find("[data-test-selector='op-relation-row-#{actual_relatable.id}-action-menu']").click
-        relation_row.find("[data-test-selector='op-relation-row-#{actual_relatable.id}-edit-button']").click
+        within relation_row do
+          page.find_test_selector("op-relation-row-#{actual_relatable.id}-action-menu").click
+          page.find_test_selector("op-relation-row-#{actual_relatable.id}-edit-button").click
+        end
 
         wait_for_reload if using_cuprite?
 
@@ -176,8 +178,10 @@ module Components
         actual_relatable = find_relatable(relatable)
         relation_row = find_row(actual_relatable)
 
-        relation_row.find("[data-test-selector='op-relation-row-#{actual_relatable.id}-action-menu']").click
-        relation_row.find("[data-test-selector='op-relation-row-#{actual_relatable.id}-edit-button']").click
+        within relation_row do
+          page.find_test_selector("op-relation-row-#{actual_relatable.id}-action-menu").click
+          page.find_test_selector("op-relation-row-#{actual_relatable.id}-edit-button").click
+        end
 
         wait_for_reload if using_cuprite?
 
@@ -212,7 +216,7 @@ module Components
 
         # Enter the query and select the child
         SeleniumHubWaiter.wait
-        autocomplete = find("[data-test-selector='wp-relations-autocomplete']")
+        autocomplete = page.find_test_selector("wp-relations-autocomplete")
         select_autocomplete autocomplete,
                             query:,
                             results_selector: ".ng-dropdown-panel-items",
@@ -220,13 +224,13 @@ module Components
       end
 
       def expect_parent(work_package)
-        expect(page).to have_css '[data-test-selector="op-wp-breadcrumb-parent"]',
+        expect(page).to have_test_selector "op-wp-breadcrumb-parent",
                                  text: work_package.subject,
                                  wait: 10
       end
 
       def expect_no_parent
-        expect(page).to have_no_css '[data-test-selector="op-wp-breadcrumb-parent"]', wait: 10
+        expect(page).not_to have_test_selector "op-wp-breadcrumb-parent", wait: 10
       end
 
       def remove_parent
@@ -239,7 +243,7 @@ module Components
           next if page.has_selector?(".wp-relations--children .ng-input input")
 
           SeleniumHubWaiter.wait
-          find('[data-test-selector="op-wp-inline-create-reference"]',
+          page.find_test_selector("op-wp-inline-create-reference",
                text: I18n.t("js.relation_buttons.add_existing_child")).click
 
           # Security check to be sure that the autocompleter has finished loading
@@ -248,14 +252,14 @@ module Components
       end
 
       def children_table
-        page.find("[data-test-selector='op-relation-group-children']")
+        page.find_test_selector("op-relation-group-children")
       end
 
       def add_existing_child(work_package)
         SeleniumHubWaiter.wait
 
         retry_block do
-          page.find("[data-test-selector='new-relation-action-menu']").click
+          page.find_test_selector("new-relation-action-menu").click
 
           within page.find_by_id("new-relation-action-menu-list") do # Primer appends "list" to the menu id automatically
             click_link_or_button "Child"
@@ -263,7 +267,7 @@ module Components
         end
 
         within "##{WorkPackageRelationsTab::AddWorkPackageChildFormComponent::DIALOG_ID}" do
-          autocomplete_field = page.find("[data-test-selector='work-package-child-form-id']")
+          autocomplete_field = page.find_test_selector("work-package-child-form-id")
           select_autocomplete(autocomplete_field,
                               query: work_package.subject,
                               results_selector: "body")
