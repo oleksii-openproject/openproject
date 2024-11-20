@@ -121,7 +121,7 @@ RSpec.describe API::V3::CustomFields::Hierarchy::HierarchyItemRepresenter, "rend
       it_behaves_like "has a titled link" do
         let(:link) { "self" }
         let(:href) { api_v3_paths.custom_field_item(item.id) }
-        let(:title) { item.label }
+        let(:title) { "#{item.label} (#{item.short})" }
       end
 
       it_behaves_like "has a titled link" do
@@ -171,7 +171,7 @@ RSpec.describe API::V3::CustomFields::Hierarchy::HierarchyItemRepresenter, "rend
       it_behaves_like "has a titled link" do
         let(:link) { "self" }
         let(:href) { api_v3_paths.custom_field_item(item.id) }
-        let(:title) { item.label }
+        let(:title) { "#{item.label} (#{item.short})" }
       end
 
       it_behaves_like "has a titled link" do
