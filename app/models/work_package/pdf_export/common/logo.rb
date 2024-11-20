@@ -5,9 +5,7 @@ module WorkPackage::PDFExport::Common::Logo
   end
 
   def logo_image_filename
-    image_file = custom_logo_image_filename
-    image_file = Rails.root.join("app/assets/images/logo_openproject.png") if image_file.nil?
-    image_file
+    custom_logo_image_filename || Rails.root.join("app/assets/images/logo_openproject.png")
   end
 
   def custom_logo_image_filename
