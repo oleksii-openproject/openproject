@@ -60,7 +60,7 @@ module BasicData
 
     def missing_colors
       # Build map for color names and references for a reverse lookup
-      # ie: { "Orange (dark)" => :default_color_orange_dark, "Red (dark)"=>:default_color_red_dark }
+      # ie: { "PM2 Orange" => :default_color_pm2_orange, "PM2 Red"=>:default_color_pm2_red }
       required_colors = models_data.pluck("color_name")
       required_color_map = required_colors.each_with_object({}) do |reference, colors|
         color_name = color_seeder.mapped_models_data.dig(reference, :name) or

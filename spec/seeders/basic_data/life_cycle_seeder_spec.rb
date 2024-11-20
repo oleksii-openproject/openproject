@@ -44,23 +44,23 @@ RSpec.describe BasicData::LifeCycleSeeder do
         - reference: :default_life_cycle_initiating
           name: Initiating
           type: Stage
-          color_name: :default_color_orange_dark
+          color_name: :default_color_pm2_orange
         - reference: :default_life_cycle_ready_for_executing
           name: Ready for Executing
           type: Gate
-          color_name: :default_color_purple
+          color_name: :default_color_pm2_purple
         - reference: :default_life_cycle_planning
           name: Planning
           type: Stage
-          color_name: :default_color_red_dark
+          color_name: :default_color_pm2_red
         - reference: :default_life_cycle_executing
           name: Executing
           type: Stage
-          color_name: :default_color_magenta_light
+          color_name: :default_color_pm2_magenta
         - reference: :default_life_cycle_closing
           name: Closing
           type: Stage
-          color_name: :default_color_green_yellow
+          color_name: :default_color_pm2_green_yellow
       SEEDING_DATA_YAML
     end
 
@@ -68,19 +68,19 @@ RSpec.describe BasicData::LifeCycleSeeder do
       it "creates the corresponding life cycles with the given attributes" do
         expect(LifeCycle.count).to eq(5)
         expect(Stage.find_by(name: "Initiating")).to have_attributes(
-          color: have_attributes(name: "Orange (dark)")
+          color: have_attributes(name: "PM2 Orange")
         )
         expect(Gate.find_by(name: "Ready for Executing")).to have_attributes(
-          color: have_attributes(name: "Purple")
+          color: have_attributes(name: "PM2 Purple")
         )
         expect(Stage.find_by(name: "Planning")).to have_attributes(
-          color: have_attributes(name: "Red (dark)")
+          color: have_attributes(name: "PM2 Red")
         )
         expect(Stage.find_by(name: "Executing")).to have_attributes(
-          color: have_attributes(name: "Magenta (light)")
+          color: have_attributes(name: "PM2 Magenta")
         )
         expect(Stage.find_by(name: "Closing")).to have_attributes(
-          color: have_attributes(name: "Green Yellow")
+          color: have_attributes(name: "PM2 Green Yellow")
         )
       end
 
@@ -131,27 +131,27 @@ RSpec.describe BasicData::LifeCycleSeeder do
       let(:colors_data) do
         YAML.load <<~SEEDING_DATA_YAML
           colors:
-          - reference: :default_color_orange_dark
-            name: Orange (dark)
+          - reference: :default_color_pm2_orange
+            name: PM2 Orange
             hexcode: "#F7983A"
-          - reference: :default_color_red_dark
-            name: Red (dark)
+          - reference: :default_color_pm2_red
+            name: PM2 Red
             hexcode: "#F05823"
-          - reference: :default_color_purple
-            name: Purple
+          - reference: :default_color_pm2_purple
+            name: PM2 Purple
             hexcode: "#682D91"
-          - reference: :default_color_magenta_light
-            name: Magenta (light)
+          - reference: :default_color_pm2_magenta
+            name: PM2 Magenta
             hexcode: "#EC038A"
-          - reference: :default_color_green_yellow
-            name: Green Yellow
+          - reference: :default_color_pm2_green_yellow
+            name: PM2 Green Yellow
             hexcode: "#B1D13A"
         SEEDING_DATA_YAML
       end
       # Typical usecase for running the seeders after an upgrade: Some data exist from
       # previous seed runs, and new seed data is added to the configuration YML.
       let(:initial_seed_data) do
-        Color.create!(name: "Orange (dark)", hexcode: "#F7983A")
+        Color.create!(name: "PM2 Orange", hexcode: "#F7983A")
         build_color_seeder_seed_data
       end
       let(:second_seed_initial_data) { build_color_seeder_seed_data }
