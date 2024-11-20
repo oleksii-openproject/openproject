@@ -33,4 +33,18 @@ RSpec.describe Reminder do
     it { is_expected.to belong_to(:remindable) }
     it { is_expected.to belong_to(:creator).class_name("User") }
   end
+
+  describe "#scheduled?" do
+    context "when job_id is present" do
+      subject { build(:reminder, :scheduled) }
+
+      it { is_expected.to be_scheduled }
+    end
+
+    context "when job_id is not present" do
+      subject { build(:reminder) }
+
+      it { is_expected.not_to be_scheduled }
+    end
+  end
 end

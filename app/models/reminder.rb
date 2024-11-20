@@ -29,4 +29,8 @@
 class Reminder < ApplicationRecord
   belongs_to :remindable, polymorphic: true
   belongs_to :creator, class_name: "User"
+
+  def scheduled?
+    job_id.present?
+  end
 end

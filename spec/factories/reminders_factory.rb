@@ -28,9 +28,13 @@
 
 FactoryBot.define do
   factory :reminder do
-    remindable factory: :work_package_journal
+    remindable factory: :work_package
     creator factory: :user
     remind_at { 1.day.from_now }
     notes { "This is a reminder" }
+
+    trait :scheduled do
+      job_id { SecureRandom.uuid }
+    end
   end
 end
