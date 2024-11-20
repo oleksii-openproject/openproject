@@ -32,6 +32,7 @@ class Meeting::ProjectAutocompleter < ApplicationForm
       name: "project_id",
       id: "project_id",
       label: Project.model_name.human,
+      required: true,
       data: {
         "test-selector": "project_id"
       },
