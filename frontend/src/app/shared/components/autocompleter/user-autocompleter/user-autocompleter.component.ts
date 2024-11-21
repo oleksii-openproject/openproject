@@ -87,6 +87,8 @@ export interface IUserAutocompleteItem {
 export class UserAutocompleterComponent extends OpAutocompleterComponent<IUserAutocompleteItem> implements OnInit, ControlValueAccessor {
   @Input() public inviteUserToProject:string|undefined;
 
+  @Input() public isOpenedInModal:boolean = false;
+
   @Input() public url:string = this.apiV3Service.users.path;
 
   @Output() public userInvited = new EventEmitter<HalResource>();
@@ -98,7 +100,10 @@ export class UserAutocompleterComponent extends OpAutocompleterComponent<IUserAu
   ngOnInit():void {
     super.ngOnInit();
 
-    this.applyTemplates(UserAutocompleterTemplateComponent, { inviteUserToProject: this.inviteUserToProject });
+    this.applyTemplates(UserAutocompleterTemplateComponent, {
+      inviteUserToProject: this.inviteUserToProject,
+      isOpenedInModal: this.isOpenedInModal,
+    });
 
     this
       .opInviteUserModalService

@@ -8,7 +8,7 @@
     [principal]="item"
     [hideName]="true"
     [hoverCard]="true"
-    [hoverCardModalTarget]="custom"
+    [hoverCardModalTarget]="isOpenedInModal ? 'custom' : 'default'"
     size="mini"
   ></op-principal>
   <span [opSearchHighlight]="search"

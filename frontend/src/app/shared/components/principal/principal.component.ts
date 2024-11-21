@@ -80,7 +80,7 @@ export class OpPrincipalComponent implements OnInit {
   @Input() hoverCardUrl= '';
   @Input() hoverCardCloseDelay:number = 100;
   @Input() hoverCardAlignment:string = 'top';
-  @Input() hoverCardModalTarget:string = 'default';
+  @Input() hoverCardModalTarget:'default'|'custom' = 'default';
 
   @Input() title = '';
 
