@@ -36,7 +36,7 @@ ruby File.read(File.expand_path(".ruby-version", __dir__)).strip
 
 gem "actionpack-xml_parser", "~> 2.0.0"
 gem "activemodel-serializers-xml", "~> 1.0.1"
-gem "activerecord-import", "~> 1.7.0"
+gem "activerecord-import", "~> 1.8.0"
 gem "activerecord-session_store", "~> 2.1.0"
 gem "ox"
 gem "rails", "~> 7.1.3"
@@ -46,7 +46,7 @@ gem "ffi", "~> 1.15"
 
 gem "rdoc", ">= 2.4.2"
 
-gem "doorkeeper", "~> 5.7.0"
+gem "doorkeeper", "~> 5.8.0"
 # Maintain our own omniauth due to relative URL root issues
 # see upstream PR: https://github.com/omniauth/omniauth/pull/903
 gem "omniauth", git: "https://github.com/opf/omniauth", ref: "fe862f986b2e846e291784d2caa3d90a658c67f0"
@@ -93,7 +93,7 @@ gem "deckar01-task_list", "~> 2.3.1"
 # Requires escape-utils for faster escaping
 gem "escape_utils", "~> 1.3"
 # Syntax highlighting used in html-pipeline with rouge
-gem "rouge", "~> 4.4.0"
+gem "rouge", "~> 4.5.1"
 # HTML sanitization used for html-pipeline
 gem "sanitize", "~> 6.1.0"
 # HTML autolinking for mails and urls (replaces autolink)
@@ -250,7 +250,7 @@ group :test do
   gem "rack_session_access"
   gem "rspec", "~> 3.13.0"
   # also add to development group, so 'spec' rake task gets loaded
-  gem "rspec-rails", "~> 7.0.0", group: :development
+  gem "rspec-rails", "~> 7.1.0", group: :development
 
   # Retry failures within the same environment
   gem "retriable", "~> 3.1.1"
