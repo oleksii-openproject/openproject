@@ -39,8 +39,8 @@ module TableHelpers
         value.to_s
       end
 
-      def cell_format(value, size)
-        format(value).send(text_align, size)
+      def align(text, size)
+        text.send(text_align, size)
       end
 
       def parse(raw_value)

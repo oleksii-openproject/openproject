@@ -44,11 +44,11 @@ module TableHelpers::ColumnType
       end
     end
 
-    describe "#cell_format" do
+    describe "#align" do
       it "renders the value on the left side of the cell" do
-        expect(column_type.cell_format("hello", 0)).to eq "hello"
-        expect(column_type.cell_format("hello", 10)).to eq "hello     "
-        expect(column_type.cell_format("hello", 20)).to eq "hello               "
+        expect(column_type.align("hello", 0)).to eq "hello"
+        expect(column_type.align("hello", 10)).to eq "hello     "
+        expect(column_type.align("hello", 20)).to eq "hello               "
       end
     end
   end

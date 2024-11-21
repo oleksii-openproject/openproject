@@ -54,11 +54,11 @@ module TableHelpers::ColumnType
       end
     end
 
-    describe "#cell_format" do
+    describe "#align" do
       it "renders the duration on the right side of the cell" do
-        expect(column_type.cell_format(3.5, 0)).to eq "3.5h"
-        expect(column_type.cell_format(3.5, 10)).to eq "      3.5h"
-        expect(column_type.cell_format(3.5, 20)).to eq "                3.5h"
+        expect(column_type.align("3.5h", 0)).to eq "3.5h"
+        expect(column_type.align("3.5h", 10)).to eq "      3.5h"
+        expect(column_type.align("3.5h", 20)).to eq "                3.5h"
       end
     end
   end

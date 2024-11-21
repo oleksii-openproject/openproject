@@ -34,6 +34,8 @@ require_relative "column_type/with_identifier_metadata"
 require_relative "column_type/duration"
 require_relative "column_type/hierarchy"
 require_relative "column_type/percentage"
+require_relative "column_type/properties"
+require_relative "column_type/schedule"
 require_relative "column_type/status"
 require_relative "column_type/subject"
 
@@ -49,6 +51,8 @@ module TableHelpers
       done_ratio: ColumnType::Percentage,
       derived_done_ratio: ColumnType::Percentage,
       hierarchy: ColumnType::Hierarchy,
+      properties: ColumnType::Properties,
+      schedule: ColumnType::Schedule,
       status: ColumnType::Status,
       subject: ColumnType::Subject,
       __fallback__: ColumnType::Generic
@@ -82,6 +86,10 @@ module TableHelpers
         :derived_done_ratio
       when /end date/i
         :due_date
+      when /.*MTWTFSS.*/
+        :schedule
+      when /\s*properties\s*/
+        :properties
       when /status/, /hierarchy/
         to_identifier(header)
       else
@@ -103,7 +111,7 @@ module TableHelpers
       @column_type ||= COLUMN_TYPES.fetch(attribute, COLUMN_TYPES[:__fallback__]).new
     end
 
-    delegate :format, :cell_format, to: :column_type
+    delegate :format, :align, to: :column_type
 
     def attributes_for_work_package(work_package)
       column_type.attributes_for_work_package(attribute, work_package)

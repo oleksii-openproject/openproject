@@ -26,7 +26,7 @@
 # See COPYRIGHT and LICENSE files for more details.
 #++
 
-require 'active_support/core_ext/integer/time'
+require "active_support/core_ext/integer/time"
 
 # The test environment is used exclusively to run your application's
 # test suite. You never need to work with it otherwise. Remember that
@@ -52,7 +52,7 @@ Rails.application.configure do
 
   # Configure public file server for tests with Cache-Control for performance.
   config.public_file_server.enabled = true
-  config.public_file_server.headers = { 'Cache-Control' => 'public, max-age=3600' }
+  config.public_file_server.headers = { "Cache-Control" => "public, max-age=3600" }
 
   # Show full error reports and disable caching.
   config.consider_all_requests_local       = true
@@ -75,11 +75,11 @@ Rails.application.configure do
   config.action_mailer.delivery_method = :test
 
   # Silence deprecations early on for testing on CI
-  deprecators.silenced = ENV['CI'].present?
+  deprecators.silenced = ENV["CI"].present?
 
   # Print deprecation notices to the stderr.
   config.active_support.deprecation =
-    if ENV['CI']
+    if ENV["CI"]
       :silence
     else
       :stderr
@@ -111,10 +111,14 @@ Rails.application.configure do
 
   config.cache_store = :file_store, Rails.root.join("tmp", "cache", "paralleltests#{ENV.fetch('TEST_ENV_NUMBER', nil)}")
 
+  # Spring reloads, and therefore needs the application to not cache classes so
+  # that relaoding can work.
+  config.cache_classes = false
+
   # Use in-memory store for testing
   Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new
 
-  if ENV['TEST_ENV_NUMBER']
+  if ENV["TEST_ENV_NUMBER"]
     assets_cache_path = Rails.root.join("tmp/cache/assets/paralleltests#{ENV['TEST_ENV_NUMBER']}")
     config.assets.cache = Sprockets::Cache::FileStore.new(assets_cache_path)
   end

@@ -51,11 +51,11 @@ module TableHelpers::ColumnType
       end
     end
 
-    describe "#cell_format" do
+    describe "#align" do
       it "renders the percentage on the right side of the cell" do
-        expect(column_type.cell_format(20, 0)).to eq "20%"
-        expect(column_type.cell_format(35, 10)).to eq "       35%"
-        expect(column_type.cell_format(57, 20)).to eq "                 57%"
+        expect(column_type.align("20%", 0)).to eq "20%"
+        expect(column_type.align("35%", 10)).to eq "       35%"
+        expect(column_type.align("57%", 20)).to eq "                 57%"
       end
     end
   end
