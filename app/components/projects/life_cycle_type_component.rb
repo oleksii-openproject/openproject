@@ -51,7 +51,7 @@ module Projects
     end
 
     def text_options
-      { color: :muted }.merge(options)
+      { color: :muted, font_size: :small }.merge(options)
     end
   end
 end
