@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2024 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -26,13 +26,11 @@
 # See COPYRIGHT and LICENSE files for more details.
 #++
 
-class Reminder < ApplicationRecord
-  belongs_to :remindable, polymorphic: true
-  belongs_to :creator, class_name: "User"
+require "spec_helper"
 
-  has_many :reminder_notifications, dependent: :destroy
-
-  def scheduled?
-    job_id.present?
+RSpec.describe ReminderNotification do
+  describe "Associations" do
+    it { is_expected.to belong_to(:reminder) }
+    it { is_expected.to belong_to(:notification) }
   end
 end

@@ -38,6 +38,7 @@ module Reminders
       return if reminder.scheduled?
 
       create_notification_from_reminder(reminder)
+        .on_success { |service_result| ReminderNotification.create!(reminder:, notification: service_result.result) }
     end
 
     private

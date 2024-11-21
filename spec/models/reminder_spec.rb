@@ -32,6 +32,7 @@ RSpec.describe Reminder do
   describe "Associations" do
     it { is_expected.to belong_to(:remindable) }
     it { is_expected.to belong_to(:creator).class_name("User") }
+    it { is_expected.to have_many(:reminder_notifications).dependent(:destroy) }
   end
 
   describe "#scheduled?" do
