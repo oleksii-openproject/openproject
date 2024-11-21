@@ -43,9 +43,10 @@ RSpec.describe API::V3::Activities::ActivityEagerLoadingWrapper, with_settings: 
       wrapped_journals = described_class.wrap(journals)
 
       expect(wrapped_journals.size).to eq(journals.size)
+      expected_associations_cached = %i[journable data]
       wrapped_journals.each do |loaded_journal|
         expect(loaded_journal.__getobj__.instance_variables).to include(:@predecessor, :@unread_notifications)
-        %i[journable data].each do |association|
+        expected_associations_cached.each do |association|
           expect(loaded_journal.association_cached?(association)).to be true
         end
       end
