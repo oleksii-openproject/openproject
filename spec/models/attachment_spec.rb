@@ -298,7 +298,7 @@ RSpec.describe Attachment do
     describe "for an HTML file" do
       let(:attachment) { described_class.new }
 
-      it "assumes it to be inlineable" do
+      it "assumes it not to be inlineable" do
         attachment.content_type = "text/html"
         expect(attachment).to be_is_html
         expect(attachment).not_to be_is_text
