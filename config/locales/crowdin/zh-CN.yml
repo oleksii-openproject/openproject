@@ -33,7 +33,7 @@ zh-CN:
         label_activity_show_only_changes: "仅显示更改"
         label_sort_asc: "时间升序"
         label_sort_desc: "时间降序"
-        label_type_to_comment: "Add a comment. Type @ to notify people."
+        label_type_to_comment: "添加评论。输入 @ 以通知他人。"
         label_submit_comment: "提交评论"
         changed_on: "更改于"
         created_on: "创建于"
