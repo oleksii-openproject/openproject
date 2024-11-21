@@ -78,7 +78,7 @@ RSpec.describe WorkPackages::UpdateAncestorsService,
                 set_attributes_on(child, field => value)
                 call_update_ancestors_service(child)
 
-                expect_work_packages([parent, child], <<~TABLE)
+                expect_work_packages_after_reload([parent, child], <<~TABLE)
                   | subject | status | work | ∑ work | remaining work | ∑ remaining work | % complete | ∑ % complete |
                   | parent  | Open   |  10h |    15h |            10h |              10h |         0% |          33% |
                   |   child | Closed |   5h |        |             0h |                  |       100% |              |
@@ -95,7 +95,7 @@ RSpec.describe WorkPackages::UpdateAncestorsService,
           end
 
           it "still recomputes child remaining work and updates ancestors total % complete excluding it" do
-            expect_work_packages([parent, child], <<~TABLE)
+            expect_work_packages_after_reload([parent, child], <<~TABLE)
               | subject | status   | work | ∑ work | remaining work | ∑ remaining work | % complete | ∑ % complete |
               | parent  | Open     |  10h |    10h |            10h |              10h |         0% |           0% |
               |   child | Rejected |   5h |        |             4h |                  |        20% |              |
@@ -119,7 +119,7 @@ RSpec.describe WorkPackages::UpdateAncestorsService,
           end
 
           it "sets parent total % complete to 100% and its total remaining work to 0h" do
-            expect_work_packages(table_work_packages, <<~TABLE)
+            expect_work_packages_after_reload(table_work_packages, <<~TABLE)
               hierarchy | status | work | ∑ work | remaining work | ∑ remaining work | % complete | ∑ % complete
               parent    | Open   |      |    15h |                |               0h |         0% |         100%
                 child1  | Closed |  10h |        |             0h |                  |       100% |
@@ -386,7 +386,7 @@ RSpec.describe WorkPackages::UpdateAncestorsService,
 
       it "updates the totals of the ancestors" do
         subject
-        expect_work_packages([grandparent, parent, sibling, work_package], <<~TABLE)
+        expect_work_packages_after_reload([grandparent, parent, sibling, work_package], <<~TABLE)
           hierarchy        | work | remaining work | % complete | ∑ work | ∑ remaining work | ∑ % complete
           grandparent      |   3h |           1.5h |        50% |    13h |               5h |          62%
             parent         |   3h |             0h |       100% |    10h |             3.5h |          65%
@@ -447,7 +447,7 @@ RSpec.describe WorkPackages::UpdateAncestorsService,
 
         it "updates the totals of the ancestors" do
           subject
-          expect_work_packages([grandparent, parent, work_package], <<~TABLE)
+          expect_work_packages_after_reload([grandparent, parent, work_package], <<~TABLE)
             hierarchy        | work | remaining work | % complete | ∑ work | ∑ remaining work | ∑ % complete
             grandparent      |      |                |            |    10h |               5h |          50%
               parent         |   3h |           1.5h |        50% |    10h |               5h |          50%
@@ -494,7 +494,7 @@ RSpec.describe WorkPackages::UpdateAncestorsService,
 
       it "updates the totals of the new parent and the former parent" do
         subject
-        expect_work_packages([grandparent, old_parent, new_parent, work_package], <<~TABLE)
+        expect_work_packages_after_reload([grandparent, old_parent, new_parent, work_package], <<~TABLE)
           hierarchy        | work | remaining work | % complete | ∑ work | ∑ remaining work | ∑ % complete
           grandparent      |      |                |            |    10h |               2h |          80%
             old parent     |      |                |            |        |                  |
@@ -597,7 +597,7 @@ RSpec.describe WorkPackages::UpdateAncestorsService,
         it "does not update the parent total work" do
           expect(call_result).to be_success
           expect(call_result.dependent_results).to be_empty
-          expect_work_packages([parent.reload], <<~TABLE)
+          expect_work_packages_after_reload([parent], <<~TABLE)
             subject | total work |
             parent  |            |
           TABLE
@@ -693,7 +693,7 @@ RSpec.describe WorkPackages::UpdateAncestorsService,
         it "does not update the parent total remaining work" do
           expect(call_result).to be_success
           expect(call_result.dependent_results).to be_empty
-          expect_work_packages([parent.reload], <<~TABLE)
+          expect_work_packages_after_reload([parent], <<~TABLE)
             subject | total remaining work
             parent  |
           TABLE

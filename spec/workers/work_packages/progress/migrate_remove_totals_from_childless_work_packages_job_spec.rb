@@ -46,7 +46,7 @@ RSpec.describe WorkPackages::Progress::MigrateRemoveTotalsFromChildlessWorkPacka
   def expect_performing_job_changes(from:, to:)
     table = create_table(from)
     job.perform_now
-    expect_work_packages(table.work_packages.map(&:reload), to)
+    expect_work_packages_after_reload(table.work_packages, to)
     table.work_packages
   end
 
