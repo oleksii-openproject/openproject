@@ -28,6 +28,13 @@
 require "spec_helper"
 
 RSpec.describe Notification do
+  describe "Associations" do
+    it { is_expected.to belong_to(:journal) }
+    it { is_expected.to belong_to(:resource) }
+    it { is_expected.to belong_to(:actor).class_name("User") }
+    it { is_expected.to belong_to(:recipient).class_name("User") }
+  end
+
   describe "Enums" do
     it do
       expect(subject).to define_enum_for(:reason)
