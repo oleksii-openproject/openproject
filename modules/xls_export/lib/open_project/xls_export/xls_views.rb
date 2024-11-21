@@ -61,7 +61,7 @@ class OpenProject::XlsExport::XlsViews
   end
 
   def currency_format
-    "#,##0.00 [$#{Setting.plugin_costs['costs_currency']}]"
+    "#,##0.00 [$#{Setting.costs_currency}]"
   end
 
   def number_format

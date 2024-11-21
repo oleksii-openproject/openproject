@@ -118,7 +118,7 @@ module Costs
       # Menu extensions
       menu :admin_menu,
            :admin_costs,
-           { controller: "costs_settings", action: :show },
+           { controller: "/costs_settings", action: :show },
            if: Proc.new { User.current.admin? },
            caption: :project_module_costs,
            after: :enterprise,
@@ -126,7 +126,7 @@ module Costs
 
       menu :admin_menu,
            :costs_settings,
-           { controller: "costs_settings", action: :show },
+           { controller: "/costs_settings", action: :show },
            if: Proc.new { User.current.admin? },
            caption: :label_setting_plural,
            parent: :admin_costs

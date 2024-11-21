@@ -27,13 +27,13 @@ See COPYRIGHT and LICENSE files for more details.
 
 ++#%>
 
-<% html_title t(:label_administration), t(:label_costs) %>
+<% html_title t(:label_administration), t("plugin_costs.name") %>
 
 <%=
   render(Primer::OpenProject::PageHeader.new) do |header|
-    header.with_title { t(:label_costs) }
+    header.with_title { t("plugin_costs.name") }
     header.with_breadcrumbs([{ href: admin_index_path, text: t("label_administration") },
-                             t(:label_costs)])
+                             t("plugin_costs.name")])
   end
 %>
 
