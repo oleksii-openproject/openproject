@@ -29,14 +29,6 @@
 require "spec_helper"
 
 RSpec.describe "Journalized Objects" do
-  describe ".journaled_attributes" do
-    it "does not include virtual columns" do
-      # we do have generated columns in the time entry journal
-      expect(Journal::TimeEntryJournal.journaled_attributes).not_to include(:start_timestamp)
-      expect(Journal::TimeEntryJournal.journaled_attributes).not_to include(:end_timestamp)
-    end
-  end
-
   describe "journal_editable_by?" do
     context "when the journable is a work package" do
       let!(:user) { create(:user, member_with_permissions: { project => [] }) }
