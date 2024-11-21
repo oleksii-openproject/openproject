@@ -37,14 +37,7 @@ module Costs
     register "costs",
              author_url: "https://www.openproject.org",
              bundled: true,
-             settings: {
-               partial: "settings/costs",
-               page_title_key: :label_setting_plural,
-               breadcrumb_elements: -> {
-                 [{ href: admin_settings_show_plugin_path(:costs), text: I18n.t(:project_module_costs) }]
-               },
-               menu_item: :costs_setting
-             } do
+             settings: { menu_item: :costs_settings } do
       project_module :costs do
         permission :view_time_entries,
                    {},
