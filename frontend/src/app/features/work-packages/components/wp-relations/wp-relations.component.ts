@@ -38,17 +38,20 @@ import {
 import { WorkPackageResource } from 'core-app/features/hal/resources/work-package-resource';
 import {
   debounceTime,
-  skip,
   takeUntil,
 } from 'rxjs/operators';
 import { UntilDestroyedMixin } from 'core-app/shared/helpers/angular/until-destroyed.mixin';
 import { componentDestroyed } from '@w11k/ngx-componentdestroyed';
 import { ApiV3Service } from 'core-app/core/apiv3/api-v3.service';
-import { WorkPackageRelationsService } from './wp-relations.service';
+import {
+  RelationsStateValue,
+  WorkPackageRelationsService,
+} from './wp-relations.service';
 import { PathHelperService } from 'core-app/core/path-helper/path-helper.service';
 import { TurboRequestsService } from 'core-app/core/turbo/turbo-requests.service';
 import { renderStreamMessage } from '@hotwired/turbo';
 import { HalEventsService } from 'core-app/features/hal/services/hal-events.service';
+import { merge } from 'rxjs';
 
 @Component({
   selector: 'wp-relations',
@@ -74,31 +77,29 @@ export class WorkPackageRelationsComponent extends UntilDestroyedMixin implement
 
   ngOnInit() {
     this.turboFrameSrc = `${this.PathHelper.staticBase}/work_packages/${this.workPackage.id}/relations_tab`;
+  }
 
-    // Listen for changes to this WP.
-    this
-      .apiV3Service
-      .work_packages
-      .id(this.workPackage)
-      .requireAndStream()
-      .pipe(
-        skip(1),
-        takeUntil(componentDestroyed(this)),
-        debounceTime(500),
-      )
-      .subscribe((wp:WorkPackageResource) => {
-        this.workPackage = wp;
+  ngAfterViewInit() {
+    // Listen to changes to this WP or relations
+    merge(
+      this.wpRelations.state(this.workPackage.id!).values$(),
+      this.apiV3Service.work_packages.id(this.workPackage).requireAndStream(),
+    ).pipe(
+      takeUntil(componentDestroyed(this)),
+      debounceTime(500),
+    ).subscribe((res:WorkPackageResource|RelationsStateValue) => {
+      if (res.$isHal) {
+        this.workPackage = <WorkPackageResource>res;
+      }
 
-        void this.turboRequests.requestStream(this.turboFrameSrc)
+      void this.turboRequests.requestStream(this.turboFrameSrc)
         .then((result) => {
           renderStreamMessage(result.html);
         });
 
-        this.updateCounter();
-      });
-  }
+      this.updateCounter();
+    });
 
-  ngAfterViewInit() {
     /*
     We globally listen for turbo:submit-end events to know when a form submission ends.
     If the form action URL contains 'relation' or 'child', we know it is a relation or child creation/update.
