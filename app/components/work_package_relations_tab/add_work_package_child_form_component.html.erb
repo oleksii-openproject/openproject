@@ -13,9 +13,6 @@
           end
         end
         flex.with_row do
-          i18n_namespace = I18N_NAMESPACE
-          dialog_id = DIALOG_ID
-          id_field_test_selector = ID_FIELD_TEST_SELECTOR
           render_inline_form(f) do |my_form|
             my_form.work_package_autocompleter(
               name: :id,
@@ -27,8 +24,8 @@
                 openDirectly: false,
                 focusDirectly: false,
                 dropdownPosition: 'bottom',
-                appendTo: "##{dialog_id}",
-                data: { test_selector: id_field_test_selector }
+                appendTo: "##{DIALOG_ID}",
+                data: { test_selector: ID_FIELD_TEST_SELECTOR }
               }
             )
           end

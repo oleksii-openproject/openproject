@@ -16,12 +16,7 @@
           # These are not available inside the render_inline_form block
           # so we need to re-define them here. Figure out solution for this.
           relation = @relation
-          work_package = @work_package
-          target_work_package = related_work_package
-          i18n_namespace = I18N_NAMESPACE
-          dialog_id = DIALOG_ID
-          to_id_field_test_selector = TO_ID_FIELD_TEST_SELECTOR
-          to_id_field_value = relation.to.present? ? "#{target_work_package.type.name.upcase} ##{target_work_package.id} - #{target_work_package.subject}" : nil
+          to_id_field_value = relation.to.present? ? "#{related_work_package.type.name.upcase} ##{related_work_package.id} - #{related_work_package.subject}" : nil
           url = ::API::V3::Utilities::PathHelper::ApiV3Path.work_package_available_relation_candidates(@work_package.id, type: relation.relation_type_for(@work_package))
           render_inline_form(f) do |my_form|
             if relation.persisted?
@@ -49,8 +44,8 @@
                   openDirectly: false,
                   focusDirectly: false,
                   dropdownPosition: 'bottom',
-                  appendTo: "##{dialog_id}",
-                  data: { test_selector: to_id_field_test_selector}
+                  appendTo: "##{DIALOG_ID}",
+                  data: { test_selector: TO_ID_FIELD_TEST_SELECTOR}
                 }
               )
             end
