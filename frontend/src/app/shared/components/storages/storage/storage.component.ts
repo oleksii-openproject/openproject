@@ -84,6 +84,7 @@ import { IUploadLink } from 'core-app/core/state/storage-files/upload-link.model
 import { IStorageFile } from 'core-app/core/state/storage-files/storage-file.model';
 import { TimezoneService } from 'core-app/core/datetime/timezone.service';
 import { PathHelperService } from 'core-app/core/path-helper/path-helper.service';
+import { WorkPackageResource } from 'core-app/features/hal/resources/work-package-resource';
 import {
   UploadConflictModalComponent,
 } from 'core-app/shared/components/storages/upload-conflict-modal/upload-conflict-modal.component';
@@ -546,8 +547,8 @@ export class StorageComponent extends UntilDestroyedMixin implements OnInit, OnD
   }
 
   private fileLinkSelfLink(storage:IStorage):string {
-    const fileLinks = this.resource.fileLinks as { href:string };
-    return `${fileLinks.href}?filters=[{"storage":{"operator":"=","values":["${storage.id}"]}}]`;
+    const fileLinks = (this.resource as WorkPackageResource).$links.fileLinks;
+    return `${fileLinks?.href}?pageSize=-1&filters=[{"storage":{"operator":"=","values":["${storage.id}"]}}]`;
   }
 
   public onDropFiles(event:DragEvent):void {
