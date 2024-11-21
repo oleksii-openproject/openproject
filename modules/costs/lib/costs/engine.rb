@@ -38,11 +38,6 @@ module Costs
              author_url: "https://www.openproject.org",
              bundled: true,
              settings: {
-               default: {
-                 "costs_currency" => "EUR",
-                 "costs_currency_format" => "%n %u",
-                 "track_start_and_end_times" => "false"
-               },
                partial: "settings/costs",
                page_title_key: :label_setting_plural,
                breadcrumb_elements: -> {
@@ -134,6 +129,12 @@ module Costs
            if: ->(*) { User.current.admin? },
            parent: :admin_costs,
            caption: :label_cost_type_plural
+    end
+
+    initializer "costs.settings" do
+      ::Settings::Definition.add "costs_currency", default: "EUR", format: :string
+      ::Settings::Definition.add "costs_currency_format", default: "%n %u", format: :string
+      ::Settings::Definition.add "allow_tracking_start_and_end_times", default: false, format: :boolean
     end
 
     initializer "costs.feature_decisions" do
