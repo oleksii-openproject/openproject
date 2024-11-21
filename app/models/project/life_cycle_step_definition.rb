@@ -32,11 +32,12 @@ class Project::LifeCycleStepDefinition < ApplicationRecord
            foreign_key: :definition_id,
            dependent: :destroy
   has_many :projects, through: :life_cycle_steps
-
   belongs_to :color, optional: false
 
   validates :name, presence: true
   validates :type, inclusion: { in: %w[Project::StageDefinition Project::GateDefinition], message: :must_be_a_stage_or_gate }
+
+  acts_as_list
 
   def initialize(*args)
     if instance_of? Project::LifeCycleStepDefinition

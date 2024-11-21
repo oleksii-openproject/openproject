@@ -31,6 +31,7 @@ class CreateProjectLifeCycleStepDefinitions < ActiveRecord::Migration[7.1]
     create_table :project_life_cycle_step_definitions do |t|
       t.string :type
       t.string :name
+      t.integer :position, default: 1, null: true
       t.references :color, foreign_key: true
 
       t.timestamps
