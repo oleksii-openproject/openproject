@@ -88,7 +88,7 @@ de:
   label_meeting: "Besprechung"
   label_meeting_plural: "Besprechungen"
   label_meeting_new: "Neue Besprechung"
-  label_meeting_new_dynamic: "New dynamic meeting"
+  label_meeting_new_dynamic: "Neue dynamische Besprechung"
   label_meeting_create: "Besprechung erstellen"
   label_meeting_copy: "Besprechung kopieren"
   label_meeting_edit: "Besprechung bearbeiten"

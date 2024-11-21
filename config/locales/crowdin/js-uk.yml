@@ -105,6 +105,7 @@ uk:
     button_update: "Оновити"
     button_export-pdf: "Завантажити PDF"
     button_export-atom: "Завантажити Atom"
+    button_generate_pdf: "Generate PDF"
     button_create: "Створити"
     card:
       add_new: "Додати нову картку"
@@ -575,7 +576,7 @@ uk:
         members: "Запросіть нових <b>учасників</b> до свого проєкту."
         quick_add_button: "Натисніть на значок плюса (+) на панелі заголовків, щоб <b>створити новий проєкт</b> або <b>запросити колег</b>."
         sidebar_arrow: "Використовуйте стрілку повернення у верхньому лівому куті, щоб повернутися в <b>головне меню</b> проєкту."
-        welcome: "Здійсніть трихвилинний ознайомчий огляд для вивчення <b>найважливішого функціоналу</b>. <br> Ми рекомендуємо пройти всі кроки до завершення огляду. Ви можете повернутися до цього огляду повторно в будь-який час."
+        welcome: "Take a three-minute introduction tour to learn the most <b>important features</b>. <br> We recommend completing the steps until the end. You can restart the tour any time."
         wiki: "У межах <b>Wiki</b> ви можете документувати знання та обмінюватися ними зі своєю командою."
         backlogs:
           overview: "Керуйте своєю роботою в поданні <b>Backlogs</b>."

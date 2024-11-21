@@ -105,6 +105,7 @@ ru:
     button_update: "Обновление"
     button_export-pdf: "Скачать PDF"
     button_export-atom: "Скачать Atom"
+    button_generate_pdf: "Generate PDF"
     button_create: "Создать"
     card:
       add_new: "Добавить новую карту"
@@ -574,7 +575,7 @@ ru:
         members: "Пригласите в ваш проект <b>новых участников</b>."
         quick_add_button: "Нажмите на значок плюс (+) в заголовке навигации, чтобы <b>создать новый проект</b> или <b>пригласить коллег</b>."
         sidebar_arrow: "Используйте стрелку возврата в левом верхнем углу, чтобы вернуться в <b>главное меню</b> проекта."
-        welcome: "Совершите вводный трехминутный тур для знакомства с наиболее <b>важными особенностями</b>. <br>Рекомендуем пройти все шаги до конца. Пройти вводный тур повторно можно в любое время."
+        welcome: "Take a three-minute introduction tour to learn the most <b>important features</b>. <br> We recommend completing the steps until the end. You can restart the tour any time."
         wiki: "В пределах <b>wiki</b> возможно документирование и обмен знаниями в вашей команде."
         backlogs:
           overview: "Управляйте своей работой в представлении <b>backlogs</b>."

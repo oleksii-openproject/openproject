@@ -105,6 +105,7 @@ zh-TW:
     button_update: "更新"
     button_export-pdf: "下載 PDF"
     button_export-atom: "下載 Atom"
+    button_generate_pdf: "Generate PDF"
     button_create: "建立"
     card:
       add_new: "新增卡片"
@@ -573,7 +574,7 @@ zh-TW:
         members: "邀請新 <b>會員</b> 加入您的專案。"
         quick_add_button: "於頁首點按 (+) 鍵 <b>來建立新的專案</b> 或 <b>來邀請隊員</b>."
         sidebar_arrow: "用左上方的返回鍵，返回至專案的 <b>主選單</b>."
-        welcome: "觀看三分鐘的介紹導覽, 以瞭解最多 <b>重要功能</b>。 <br> 我們建議完成所有步驟直到結束。您可以隨時重新開始導覽。"
+        welcome: "Take a three-minute introduction tour to learn the most <b>important features</b>. <br> We recommend completing the steps until the end. You can restart the tour any time."
         wiki: "在 <b>wiki</b> 中, 您可以與您的團隊一起記錄和分享知識。"
         backlogs:
           overview: " 在<b>backlogs</b> 檢視中，管理您的工作。"

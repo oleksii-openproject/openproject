@@ -105,6 +105,7 @@ ms:
     button_update: "Kemas kini"
     button_export-pdf: "Muat turun PDF"
     button_export-atom: "Muat Turun Atom"
+    button_generate_pdf: "Generate PDF"
     button_create: "Cipta"
     card:
       add_new: "Tambah kad baharu"
@@ -575,7 +576,7 @@ ms:
         members: "Jemput <b>ahli</b> baharu untuk sertai projek anda."
         quick_add_button: "Klik ikon tambah (+) dalam navigasi pengepala untuk <b>cipta projek baharu</b> atau untuk <b>jemput rakan sekerja</b>."
         sidebar_arrow: "Guna anak panah kembali di sudut kiri atas untuk kembali ke <b>menu utama</b> projek."
-        welcome: "Ambil lawatan pengenalan 3 minit untuk belajar <b>fitur-fitur penting</b> dengan banyak. <br> Kami sarankan melengkapi langkah-langkah tersebut sehingga ke akhirnya. Anda boleh mula semula lawatan bila-bila masa."
+        welcome: "Take a three-minute introduction tour to learn the most <b>important features</b>. <br> We recommend completing the steps until the end. You can restart the tour any time."
         wiki: "Dalam <b>wiki</b> anda boleh mendokumentasikan dan kongsi pengetahuan bersama pasukan anda."
         backlogs:
           overview: "Kendalikan kerja anda dalam paparan <b>tunggakan</b>."
