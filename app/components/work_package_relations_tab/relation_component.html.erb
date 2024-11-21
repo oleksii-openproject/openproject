@@ -29,7 +29,7 @@ flex_layout(direction: :column, style: "gap: 0.25rem;") do |flex|
       subject_line_row.with_column do
         render(Primer::Alpha::ActionMenu.new(test_selector: action_menu_test_selector)) do |menu|
           menu.with_show_button(icon: "kebab-horizontal",
-                                "aria-label": I18n.t(:label_agenda_item_actions),
+                                "aria-label": I18n.t(:label_relation_actions),
                                 scheme: :invisible,
                                 ml: 2)
 
