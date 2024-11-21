@@ -36,7 +36,7 @@ RSpec.describe Reminders::CreateService, type: :model do
     let(:factory) { :reminder }
 
     before do
-      allow(model_instance).to receive(:update!).and_return(true)
+      allow(model_instance).to receive(:update_column).and_return(true)
     end
 
     it "schedules a reminder job" do
@@ -46,7 +46,7 @@ RSpec.describe Reminders::CreateService, type: :model do
 
       subject
 
-      expect(model_instance).to have_received(:update!).with(job_id: 1)
+      expect(model_instance).to have_received(:update_column).with(:job_id, 1)
     end
   end
 end

@@ -31,7 +31,7 @@ module Reminders
     def after_perform(service_call)
       reminder = service_call.result
       job = Reminders::ScheduleReminderJob.schedule(reminder)
-      reminder.update!(job_id: job.job_id)
+      reminder.update_column(:job_id, job.job_id)
 
       service_call
     end
