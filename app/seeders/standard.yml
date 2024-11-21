@@ -29,31 +29,31 @@
 life_cycles:
   - reference: :default_life_cycle_initiating
     t_name: Initiating
-    type: Stage
+    type: Project::StageDefinition
     color_name: :default_color_pm2_orange
   - reference: :default_life_cycle_ready_for_planning
     t_name: Ready for Planning
-    type: Gate
+    type: Project::GateDefinition
     color_name: :default_color_pm2_purple
   - reference: :default_life_cycle_planning
     t_name: Planning
-    type: Stage
+    type: Project::StageDefinition
     color_name: :default_color_pm2_red
   - reference: :default_life_cycle_ready_for_executing
     t_name: Ready for Executing
-    type: Gate
+    type: Project::GateDefinition
     color_name: :default_color_pm2_purple
   - reference: :default_life_cycle_executing
     t_name: Executing
-    type: Stage
+    type: Project::StageDefinition
     color_name: :default_color_pm2_magenta
   - reference: :default_life_cycle_ready_for_closing
     t_name: Ready for Closing
-    type: Gate
+    type: Project::GateDefinition
     color_name: :default_color_pm2_purple
   - reference: :default_life_cycle_closing
     t_name: Closing
-    type: Stage
+    type: Project::StageDefinition
     color_name: :default_color_pm2_green_yellow
 
 priorities:

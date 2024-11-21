@@ -26,16 +26,15 @@
 # See COPYRIGHT and LICENSE files for more details.
 #++
 
-FactoryBot.define do
-  factory :life_cycle do
-    color
+require "rails_helper"
 
-    factory :gate, class: "Gate" do
-      sequence(:name) { |n| "Gate No. #{n}" }
-    end
-
-    factory :stage, class: "Stage" do
-      sequence(:name) { |n| "Stage No. #{n}" }
-    end
+RSpec.describe Project::LifeCycleStepDefinition do
+  it "cannot be instantiated" do
+    expect { described_class.new }.to raise_error(NotImplementedError)
   end
+
+  # For more specs see:
+  # - spec/support/shared/project_life_cycle_helpers.rb
+  # - spec/models/project/gate_definition_spec.rb
+  # - spec/models/project/stage_definition_spec.rb
 end

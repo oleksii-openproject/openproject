@@ -123,7 +123,11 @@ RSpec.describe BasicData::LifeCycleColorSeeder do
     end
 
     it "creates no life cycle colors" do
-      expect(LifeCycle.count).to eq(0)
+      expect(Color.find_by(name: "PM2 Orange")).to be_nil
+      expect(Color.find_by(name: "PM2 Red")).to be_nil
+      expect(Color.find_by(name: "PM2 Purple")).to be_nil
+      expect(Color.find_by(name: "PM2 Magenta")).to be_nil
+      expect(Color.find_by(name: "PM2 Green Yellow")).to be_nil
     end
   end
 end

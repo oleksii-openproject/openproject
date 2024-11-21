@@ -26,7 +26,7 @@
 # See COPYRIGHT and LICENSE files for more details.
 #++
 
-class Project::Gate < Project::LifeCycle
+class Project::Gate < Project::LifeCycleStep
   alias_attribute :date, :start_date
 
   validates :date, presence: true

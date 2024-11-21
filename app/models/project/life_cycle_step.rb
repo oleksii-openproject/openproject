@@ -26,20 +26,25 @@
 # See COPYRIGHT and LICENSE files for more details.
 #++
 
-FactoryBot.define do
-  factory :project_life_cycle, class: "Project::LifeCycle" do
-    project
-    active { true }
+class Project::LifeCycleStep < ApplicationRecord
+  belongs_to :project, optional: false
+  belongs_to :definition,
+             optional: false,
+             class_name: "Project::LifeCycleStepDefinition"
 
-    factory :project_stage, class: "Project::Stage" do
-      life_cycle factory: :stage
-      start_date { Date.current - 2.days }
-      end_date { Date.current + 2.days }
+  has_many :work_packages, inverse_of: :life_cycle_step, dependent: :nullify
+
+  attr_readonly :definition_id
+
+  validates :type, inclusion: { in: %w[Project::Stage Project::Gate], message: :must_be_a_stage_or_gate }
+
+  def initialize(*args)
+    if instance_of? Project::LifeCycleStep
+      # Do not allow directly instantiating this class
+      raise NotImplementedError, "Cannot instantiate the base Project::LifeCycleStep class directly. " \
+                                 "Use Project::Stage or Project::Gate instead."
     end
 
-    factory :project_gate, class: "Project::Gate" do
-      life_cycle factory: :gate
-      date { Date.current + 2.days }
-    end
+    super
   end
 end

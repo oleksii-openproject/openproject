@@ -30,7 +30,7 @@ require "rails_helper"
 require "support/shared/project_life_cycle_helpers"
 
 RSpec.describe Project::Stage do
-  it_behaves_like "a Project::LifeCycle event"
+  it_behaves_like "a Project::LifeCycleStep event"
 
   describe "validations" do
     it { is_expected.to validate_presence_of(:start_date) }

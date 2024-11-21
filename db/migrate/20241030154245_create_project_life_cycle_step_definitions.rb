@@ -26,9 +26,14 @@
 # See COPYRIGHT and LICENSE files for more details.
 #++
 
-require "rails_helper"
-require "support/shared/life_cycle_helpers"
+class CreateProjectLifeCycleStepDefinitions < ActiveRecord::Migration[7.1]
+  def change
+    create_table :project_life_cycle_step_definitions do |t|
+      t.string :type
+      t.string :name
+      t.references :color, foreign_key: true
 
-RSpec.describe Stage do
-  it_behaves_like "a LifeCycle event"
+      t.timestamps
+    end
+  end
 end

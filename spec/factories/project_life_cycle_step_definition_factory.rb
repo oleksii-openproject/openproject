@@ -26,9 +26,16 @@
 # See COPYRIGHT and LICENSE files for more details.
 #++
 
-require "rails_helper"
-require "support/shared/life_cycle_helpers"
+FactoryBot.define do
+  factory :project_life_cycle_step_definition, class: "Project::LifeCycleStepDefinition" do
+    color
 
-RSpec.describe Gate do
-  it_behaves_like "a LifeCycle event"
+    factory :project_gate_definition, class: "Project::GateDefinition" do
+      sequence(:name) { |n| "Gate Definition No. #{n}" }
+    end
+
+    factory :project_stage_definition, class: "Project::StageDefinition" do
+      sequence(:name) { |n| "Stage Definition No. #{n}" }
+    end
+  end
 end

@@ -26,5 +26,25 @@
 # See COPYRIGHT and LICENSE files for more details.
 #++
 
-class Gate < LifeCycle
+class Project::LifeCycleStepDefinition < ApplicationRecord
+  has_many :life_cycle_steps,
+           class_name: "Project::LifeCycleStep",
+           foreign_key: :definition_id,
+           dependent: :destroy
+  has_many :projects, through: :life_cycle_steps
+
+  belongs_to :color, optional: false
+
+  validates :name, presence: true
+  validates :type, inclusion: { in: %w[Project::StageDefinition Project::GateDefinition], message: :must_be_a_stage_or_gate }
+
+  def initialize(*args)
+    if instance_of? Project::LifeCycleStepDefinition
+      # Do not allow directly instantiating this class
+      raise NotImplementedError, "Cannot instantiate the base Project::LifeCycleStepDefinition class directly. " \
+                                 "Use Project::StageDefinition or Project::GateDefinition instead."
+    end
+
+    super
+  end
 end

@@ -26,22 +26,9 @@
 # See COPYRIGHT and LICENSE files for more details.
 #++
 
-class Project::LifeCycle < ApplicationRecord
-  belongs_to :project, optional: false
-  belongs_to :life_cycle, optional: false, class_name: "::LifeCycle"
-  has_many :work_packages, inverse_of: :project_life_cycle, dependent: :nullify
+require "rails_helper"
+require "support/shared/project_life_cycle_helpers"
 
-  attr_readonly :life_cycle_id
-
-  validates :type, inclusion: { in: %w[Project::Stage Project::Gate], message: :must_be_a_stage_or_gate }
-
-  def initialize(*args)
-    if instance_of? Project::LifeCycle
-      # Do not allow directly instantiating this class
-      raise NotImplementedError, "Cannot instantiate the base Project::LifeCycle class directly. " \
-                                 "Use Project::Stage or Project::Gate instead."
-    end
-
-    super
-  end
+RSpec.describe Project::StageDefinition do
+  it_behaves_like "a Project::LifeCycleStepDefinition event"
 end

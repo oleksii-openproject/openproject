@@ -30,7 +30,7 @@ require "rails_helper"
 require "support/shared/project_life_cycle_helpers"
 
 RSpec.describe Project::Gate do
-  it_behaves_like "a Project::LifeCycle event"
+  it_behaves_like "a Project::LifeCycleStep event"
 
   describe "validations" do
     it { is_expected.to validate_presence_of(:date) }
@@ -39,7 +39,8 @@ RSpec.describe Project::Gate do
       gate_with_end_date = build(:project_gate, end_date: Time.zone.today)
 
       expect(gate_with_end_date).not_to be_valid
-      expect(gate_with_end_date.errors[:base]).to include("Cannot assign `end_date` to a Gate")
+      expect(gate_with_end_date.errors[:base])
+        .to include("Cannot assign `end_date` to a Project::Gate")
     end
 
     it "is valid if `end_date` is not present" do

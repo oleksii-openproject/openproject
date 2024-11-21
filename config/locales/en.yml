@@ -1071,10 +1071,6 @@ en:
             name:
               blank: "is mandatory. Please select a name."
               not_unique: "is already in use. Please select another name."
-        life_cycle:
-          attributes:
-            type:
-              must_be_a_stage_or_gate: "must be either Stage or Gate"
         meeting:
           error_conflict: "Unable to save because the meeting was updated by someone else in the meantime. Please reload the page."
         notifications:
@@ -1114,14 +1110,18 @@ en:
           attributes:
             project_ids:
               blank: "Please select a project."
-        project/life_cycle:
+        project/life_cycle_step_definition:
+          attributes:
+            type:
+              must_be_a_stage_or_gate: "must be either Project::StageDefinition or Project::GateDefinition"
+        project/life_cycle_step:
           attributes:
             type:
               must_be_a_stage_or_gate: "must be either Project::Stage or Project::Gate"
         project/gate:
           attributes:
             base:
-              end_date_not_allowed: "Cannot assign `end_date` to a Gate"
+              end_date_not_allowed: "Cannot assign `end_date` to a Project::Gate"
         query:
           attributes:
             project:

@@ -25,22 +25,21 @@
 #
 # See COPYRIGHT and LICENSE files for more details.
 #++
-module BasicData
-  class LifeCycleSeeder < ModelSeeder
-    self.model_class = LifeCycle
-    self.seed_data_model_key = "life_cycles"
-    self.needs = [
-      BasicData::LifeCycleColorSeeder
-    ]
 
-    self.attribute_names_for_lookups = %i[name type]
+FactoryBot.define do
+  factory :project_life_cycle_step, class: "Project::LifeCycleStep" do
+    project
+    active { true }
 
-    def model_attributes(life_cyle_data)
-      {
-        name: life_cyle_data["name"],
-        type: life_cyle_data["type"],
-        color_id: color_id(life_cyle_data["color_name"])
-      }
+    factory :project_stage, class: "Project::Stage" do
+      definition factory: :project_stage_definition
+      start_date { Date.current - 2.days }
+      end_date { Date.current + 2.days }
+    end
+
+    factory :project_gate, class: "Project::Gate" do
+      definition factory: :project_gate_definition
+      date { Date.current + 2.days }
     end
   end
 end

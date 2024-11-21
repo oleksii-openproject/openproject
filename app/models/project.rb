@@ -86,7 +86,7 @@ class Project < ApplicationRecord
   has_many :notification_settings, dependent: :destroy
   has_many :project_storages, dependent: :destroy, class_name: "Storages::ProjectStorage"
   has_many :storages, through: :project_storages
-  has_many :project_life_cycles, class_name: "Project::LifeCycle", dependent: :destroy
+  has_many :life_cycle_steps, class_name: "Project::LifeCycleStep", dependent: :destroy
 
   store_attribute :settings, :deactivate_work_package_attachments, :boolean
 

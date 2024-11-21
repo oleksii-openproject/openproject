@@ -27,20 +27,8 @@
 #++
 
 require "rails_helper"
+require "support/shared/project_life_cycle_helpers"
 
-RSpec.describe Project::LifeCycle do
-  it "cannot be instantiated" do
-    expect { described_class.new }.to raise_error(NotImplementedError)
-  end
-
-  describe "with an instantiated Gate" do
-    subject { build :project_gate }
-
-    it { is_expected.to have_readonly_attribute(:life_cycle_id) }
-  end
-
-  # For more specs see:
-  # - spec/support/shared/project_life_cycle_helpers.rb
-  # - spec/models/project/gate_spec.rb
-  # - spec/models/project/stage_spec.rb
+RSpec.describe Project::GateDefinition do
+  it_behaves_like "a Project::LifeCycleStepDefinition event"
 end

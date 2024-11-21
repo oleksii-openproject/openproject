@@ -26,6 +26,6 @@
 # See COPYRIGHT and LICENSE files for more details.
 #++
 
-class Project::Stage < Project::LifeCycle
+class Project::Stage < Project::LifeCycleStep
   validates :start_date, :end_date, presence: true
 end
