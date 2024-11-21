@@ -30,5 +30,6 @@ class Project::GateDefinition < Project::LifeCycleStepDefinition
   has_many :gates, # Alias for life_cycle_steps
            class_name: "Project::Gate",
            foreign_key: :definition_id,
+           inverse_of: :definition,
            dependent: :destroy
 end

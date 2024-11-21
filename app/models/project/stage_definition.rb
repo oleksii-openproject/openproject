@@ -30,5 +30,6 @@ class Project::StageDefinition < Project::LifeCycleStepDefinition
   has_many :stages, # Alias for life_cycle_steps
            class_name: "Project::Stage",
            foreign_key: :definition_id,
+           inverse_of: :definition,
            dependent: :destroy
 end

@@ -31,4 +31,13 @@ require "support/shared/project_life_cycle_helpers"
 
 RSpec.describe Project::StageDefinition do
   it_behaves_like "a Project::LifeCycleStepDefinition event"
+
+  describe "associations" do
+    it "has many stages" do
+      expect(subject).to have_many(:stages).class_name("Project::Stage")
+                        .with_foreign_key(:definition_id)
+                        .inverse_of(:definition)
+                        .dependent(:destroy)
+    end
+  end
 end

@@ -31,4 +31,13 @@ require "support/shared/project_life_cycle_helpers"
 
 RSpec.describe Project::GateDefinition do
   it_behaves_like "a Project::LifeCycleStepDefinition event"
+
+  describe "associations" do
+    it "has many gates" do
+      expect(subject).to have_many(:gates).class_name("Project::Gate")
+                        .with_foreign_key(:definition_id)
+                        .inverse_of(:definition)
+                        .dependent(:destroy)
+    end
+  end
 end
