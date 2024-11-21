@@ -7,8 +7,9 @@ module OpenIDConnect
 
       def name
         concat(provider_name)
+
         unless provider.configured?
-          concat(incomplete_label)
+          incomplete_label
         end
       end
 
