@@ -61,4 +61,11 @@ Rails.application.routes.draw do
 
   # TODO: this is a duplicate from a route defined under project/:project_id, check whether we really want to do that
   resources :hourly_rates, only: %i[edit update]
+
+  scope :admin do
+    resource :costs,
+             only: %i[show update],
+             controller: :costs_settings,
+             as: "admin_costs_settings"
+  end
 end

@@ -132,7 +132,7 @@ See COPYRIGHT and LICENSE files for more details.
                            value: @cost_entry.overridden_costs ? unitless_currency_number(@cost_entry.overridden_costs).strip : '',
                            placeholder: t(:label_example_placeholder, decimal: unitless_currency_number(1000.50)),
                            no_label: true,
-                           suffix: Setting.plugin_costs['costs_currency'],
+                           suffix: Setting.costs_currency,
                            id: 'cost_entry_cost_value',
                            container_class: '-middle',
                            size: 7 %>
