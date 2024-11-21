@@ -36,7 +36,6 @@ class WorkPackageRelationsTab::WorkPackageRelationFormComponent < ApplicationCom
   DIALOG_ID = "work-package-relation-dialog"
   FORM_ID = "work-package-relation-form"
   TO_ID_FIELD_TEST_SELECTOR = "work-package-relation-form-to-id"
-  STIMULUS_CONTROLLER = "work-packages--relations-tab--relation-form"
   I18N_NAMESPACE = "work_package_relations_tab"
 
   def initialize(work_package:, relation:, base_errors: nil)

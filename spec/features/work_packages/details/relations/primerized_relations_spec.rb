@@ -204,7 +204,6 @@ RSpec.describe "Primerized work package relations tab",
 
       within "##{WorkPackageRelationsTab::WorkPackageRelationFormComponent::DIALOG_ID}" do
         expect(page).to have_text("Add predecessor (before)")
-        expect(page).to have_button("Add description")
 
         autocomplete_field = page.find("[data-test-selector='work-package-relation-form-to-id']")
         search_autocomplete(autocomplete_field,

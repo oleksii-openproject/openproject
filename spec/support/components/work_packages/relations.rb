@@ -151,8 +151,6 @@ module Components
                             results_selector: "body")
 
         if description.present?
-          click_link_or_button "Add description"
-
           fill_in "Description", with: description
         end
 
@@ -183,11 +181,6 @@ module Components
 
         within "##{WorkPackageRelationsTab::WorkPackageRelationDialogComponent::DIALOG_ID}" do
           expect(page).to have_field("Work package", readonly: true)
-          expect(page).to have_button("Add description")
-          expect(page).to have_field("Description", visible: :hidden)
-
-          click_link_or_button "Add description"
-
           expect(page).to have_field("Description")
 
           fill_in "Description", with: description

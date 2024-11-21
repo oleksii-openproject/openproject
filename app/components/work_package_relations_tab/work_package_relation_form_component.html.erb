@@ -3,9 +3,7 @@
     id: FORM_ID,
       model: @relation,
       **submit_url_options,
-      data: { turbo: true,
-              controller: STIMULUS_CONTROLLER,
-              application_target: "dynamic" }
+      data: { turbo: true }
     ) do |f| %>
     <%# Form fields section %>
     <%= flex_layout(my: 3) do |flex|
@@ -20,7 +18,6 @@
           relation = @relation
           work_package = @work_package
           target_work_package = related_work_package
-          stimulus_controller = STIMULUS_CONTROLLER
           i18n_namespace = I18N_NAMESPACE
           dialog_id = DIALOG_ID
           to_id_field_test_selector = TO_ID_FIELD_TEST_SELECTOR
@@ -61,25 +58,7 @@
             my_form.text_field(
               name: :description,
               label: Relation.human_attribute_name(:description),
-              hidden: relation.description.blank?,
-              data: { "#{stimulus_controller}-target": "descriptionField" }
             )
-          end
-        end
-      end %>
-    <%# Actions section %>
-    <%= flex_layout(my: 3) do |flex|
-        flex.with_row do
-          if @relation.description.blank?
-            render(Primer::Beta::Button.new(
-              scheme: :secondary,
-              title: I18n.t("#{I18N_NAMESPACE}.label_add_description"),
-              data: { action: "#{STIMULUS_CONTROLLER}#toggleDescriptionField",
-                     "#{STIMULUS_CONTROLLER}-target": "descriptionButton" }
-            )) do |button|
-              button.with_leading_visual_icon(icon: :plus)
-              I18n.t("#{I18N_NAMESPACE}.label_add_description")
-            end
           end
         end
       end %>
