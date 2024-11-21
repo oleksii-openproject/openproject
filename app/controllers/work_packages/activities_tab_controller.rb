@@ -44,7 +44,7 @@ class WorkPackages::ActivitiesTabController < ApplicationController
         work_package: @work_package,
         filter: @filter,
         last_server_timestamp: get_current_server_timestamp,
-        deferred: params[:deferred] == "true"
+        deferred: ActiveRecord::Type::Boolean.new.cast(params[:deferred])
       ),
       layout: false
     )
