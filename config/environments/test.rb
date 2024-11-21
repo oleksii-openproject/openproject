@@ -111,10 +111,6 @@ Rails.application.configure do
 
   config.cache_store = :file_store, Rails.root.join("tmp", "cache", "paralleltests#{ENV.fetch('TEST_ENV_NUMBER', nil)}")
 
-  # Spring reloads, and therefore needs the application to not cache classes so
-  # that relaoding can work.
-  config.cache_classes = false
-
   # Use in-memory store for testing
   Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new
 
