@@ -103,8 +103,8 @@ export class OpPrincipalComponent implements OnInit {
         url: this.hoverCardUrl,
         closeDelay: this.hoverCardCloseDelay,
         alignment: this.hoverCardAlignment,
-        modalTarget: this.hoverCardModalTarget === 'default'
-          ? PortalOutletTarget.Default : PortalOutletTarget.Custom,
+        modalTarget: this.hoverCardModalTarget === 'custom'
+          ? PortalOutletTarget.Custom : PortalOutletTarget.Default,
       };
 
       const avatarOptions:AvatarOptions = {
