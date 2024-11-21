@@ -44,6 +44,23 @@ class TimeEntry < ApplicationRecord
   validates_presence_of :hours, if: -> { !ongoing? }
   validates_numericality_of :hours, allow_nil: true, message: :invalid
 
+  validates :start_time, :end_time,
+            presence: true,
+            if: -> { TimeEntry.must_track_start_and_end_time? }
+
+  validates :start_time,
+            numericality: { only_integer: true, greater_than_or_equal_to: 0, less_than_or_equal_to: 60 * 24 },
+            allow_blank: true
+
+  validates :end_time,
+            numericality: {
+              only_integer: true,
+              greater_than: ->(te) { te.start_time.to_i },
+              less_than_or_equal_to: 60 * 24
+              # TODO: nice error message
+            },
+            allow_blank: true
+
   scope :on_work_packages, ->(work_packages) { where(work_package_id: work_packages) }
 
   extend ::TimeEntries::TimeEntryScopes
