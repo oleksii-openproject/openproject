@@ -36,6 +36,9 @@ class TimeEntry < ApplicationRecord
   belongs_to :rate, -> { where(type: %w[HourlyRate DefaultHourlyRate]) }, class_name: "Rate"
   belongs_to :logged_by, class_name: "User"
 
+  MIN_TIME = 0 # => 00:00
+  MAX_TIME = (60 * 24) - 1 # => 23:59
+
   acts_as_customizable
 
   acts_as_journalized
@@ -49,14 +52,14 @@ class TimeEntry < ApplicationRecord
             if: -> { TimeEntry.must_track_start_and_end_time? }
 
   validates :start_time,
-            numericality: { only_integer: true, greater_than_or_equal_to: 0, less_than_or_equal_to: 60 * 24 },
+            numericality: { only_integer: true, greater_than_or_equal_to: MIN_TIME, less_than_or_equal_to: MAX_TIME },
             allow_blank: true
 
   validates :end_time,
             numericality: {
               only_integer: true,
               greater_than: ->(te) { te.start_time.to_i },
-              less_than_or_equal_to: 60 * 24
+              less_than_or_equal_to: MAX_TIME
               # TODO: nice error message
             },
             allow_blank: true

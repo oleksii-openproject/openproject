@@ -441,9 +441,14 @@ RSpec.describe TimeEntry do
         expect(time_entry).to be_valid
       end
 
-      it "allows integer values between 0 and 1440" do
+      it "allows integer values between 0 and 1439" do
         time_entry.end_time = 1337
         expect(time_entry).to be_valid
+      end
+
+      it "does not allow values > 1439" do
+        time_entry.end_time = 1440
+        expect(time_entry).not_to be_valid
       end
 
       it "does not allow non integer values" do
