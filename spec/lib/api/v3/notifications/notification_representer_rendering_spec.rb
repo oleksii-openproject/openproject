@@ -103,7 +103,7 @@ RSpec.describe API::V3::Notifications::NotificationRepresenter, "rendering" do
     end
 
     describe "reason" do
-      (Notification::REASONS.keys - %i[date_alert_start_date date_alert_due_date reminder]).each do |notification_reason|
+      (Notification::REASONS.keys - %i[date_alert_start_date date_alert_due_date]).each do |notification_reason|
         context "for a #{notification_reason} reason" do
           let(:reason) { notification_reason }
 
