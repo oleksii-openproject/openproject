@@ -101,6 +101,10 @@ export class InAppNotificationCenterComponent implements OnInit {
       key: 'shared',
       title: this.I18n.t('js.notifications.reasons.shared'),
     },
+    {
+      key: 'reminder',
+      title: this.I18n.t('js.notifications.reasons.reminder'),
+    },
   ];
 
   selectedFilter = this.reasonMenuItems.find((item) => item.key === this.urlParams.get('name'))?.title;
