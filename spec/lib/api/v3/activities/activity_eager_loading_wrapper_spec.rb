@@ -33,6 +33,7 @@ RSpec.describe API::V3::Activities::ActivityEagerLoadingWrapper, with_settings: 
   shared_let(:project) { create(:project) }
   shared_let(:work_package) { create(:work_package, project:, author: user) }
   shared_let(:meeting) { create(:meeting, project:, author: user) }
+  shared_let(:notifications) { create_list(:notification, 3, recipient: user, resource: work_package) }
 
   describe ".wrap" do
     it "returns wrapped journals with relations eager loaded" do
@@ -43,7 +44,7 @@ RSpec.describe API::V3::Activities::ActivityEagerLoadingWrapper, with_settings: 
 
       expect(wrapped_journals.size).to eq(journals.size)
       wrapped_journals.each do |loaded_journal|
-        expect(loaded_journal.__getobj__.instance_variables).to include(:@predecessor)
+        expect(loaded_journal.__getobj__.instance_variables).to include(:@predecessor, :@unread_notifications)
         %i[journable data].each do |association|
           expect(loaded_journal.association_cached?(association)).to be true
         end
