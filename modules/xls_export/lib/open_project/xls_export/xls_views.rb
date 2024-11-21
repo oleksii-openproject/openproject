@@ -32,7 +32,7 @@ class OpenProject::XlsExport::XlsViews
   def cost_type_unit_label(cost_type_id, cost_type_inst = nil, plural = true)
     case cost_type_id
     when -1 then l_hours(2).split[1..-1].join(" ") # get the plural for hours
-    when 0  then Setting.plugin_costs["costs_currency"]
+    when 0  then Setting.costs_currency
     else cost_type_label(cost_type_id, cost_type_inst, plural)
     end
   end

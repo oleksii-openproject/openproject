@@ -74,7 +74,7 @@ RSpec.describe TimeEntry do
            comments: "lorem")
   end
 
-  def is_member(project, user, permissions)
+  def ensure_membership(project, user, permissions)
     create(:member,
            project:,
            user:,
@@ -296,7 +296,7 @@ RSpec.describe TimeEntry do
       describe "WHEN the time_entry is assigned to the user " \
                "WHEN the user has the view_own_hourly_rate permission" do
         before do
-          is_member(project, user, [:view_own_hourly_rate])
+          ensure_membership(project, user, [:view_own_hourly_rate])
 
           time_entry.user = user
         end
@@ -307,7 +307,7 @@ RSpec.describe TimeEntry do
       describe "WHEN the time_entry is assigned to the user " \
                "WHEN the user lacks permissions" do
         before do
-          is_member(project, user, [])
+          ensure_membership(project, user, [])
 
           time_entry.user = user
         end
@@ -318,7 +318,7 @@ RSpec.describe TimeEntry do
       describe "WHEN the time_entry is assigned to another user " \
                "WHEN the user has the view_hourly_rates permission" do
         before do
-          is_member(project, user2, [:view_hourly_rates])
+          ensure_membership(project, user2, [:view_hourly_rates])
 
           time_entry.user = user
         end
@@ -329,7 +329,7 @@ RSpec.describe TimeEntry do
       describe "WHEN the time_entry is assigned to another user " \
                "WHEN the user has the view_hourly_rates permission in another project" do
         before do
-          is_member(project2, user2, [:view_hourly_rates])
+          ensure_membership(project2, user2, [:view_hourly_rates])
 
           time_entry.user = user
         end
@@ -342,7 +342,7 @@ RSpec.describe TimeEntry do
   describe "visible_by?" do
     context "when not having the necessary permissions" do
       before do
-        is_member(project, user, [])
+        ensure_membership(project, user, [])
       end
 
       it "is visible" do
@@ -352,7 +352,7 @@ RSpec.describe TimeEntry do
 
     context "when having the view_time_entries permission" do
       before do
-        is_member(project, user, [:view_time_entries])
+        ensure_membership(project, user, [:view_time_entries])
       end
 
       it "is visible" do
@@ -363,7 +363,7 @@ RSpec.describe TimeEntry do
     context "when having the view_own_time_entries permission " \
             "and being the owner of the time entry" do
       before do
-        is_member(project, user, [:view_own_time_entries])
+        ensure_membership(project, user, [:view_own_time_entries])
 
         time_entry.user = user
       end
@@ -376,13 +376,35 @@ RSpec.describe TimeEntry do
     context "when having the view_own_time_entries permission " \
             "and not being the owner of the time entry" do
       before do
-        is_member(project, user, [:view_own_time_entries])
+        ensure_membership(project, user, [:view_own_time_entries])
 
         time_entry.user = build :user
       end
 
       it "is visible" do
         expect(time_entry.visible_by?(user)).to be_falsey
+      end
+    end
+  end
+
+  describe ".can_track_start_and_end_time?" do
+    context "with the feature flag enabled", with_flag: { track_start_and_end_times_for_time_entries: true } do
+      context "with the setting enabled", with_settings: { allow_tracking_start_and_end_times: true } do
+        it { expect(described_class).to be_can_track_start_and_end_time }
+      end
+
+      context "with the setting disabled", with_settings: { allow_tracking_start_and_end_times: false } do
+        it { expect(described_class).not_to be_can_track_start_and_end_time }
+      end
+    end
+
+    context "with the feature flag disabled", with_flag: { track_start_and_end_times_for_time_entries: false } do
+      context "with the setting enabled", with_settings: { allow_tracking_start_and_end_times: true } do
+        it { expect(described_class).not_to be_can_track_start_and_end_time }
+      end
+
+      context "with the setting disabled", with_settings: { allow_tracking_start_and_end_times: false } do
+        it { expect(described_class).not_to be_can_track_start_and_end_time }
       end
     end
   end

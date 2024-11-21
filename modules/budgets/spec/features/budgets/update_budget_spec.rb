@@ -205,13 +205,7 @@ RSpec.describe "updating a budget", :js do
         expect(material_budget_item_2.costs).to eq(543.0)
       end
 
-      context "with a reversed currency format" do
-        before do
-          allow(Setting)
-            .to receive(:plugin_costs)
-            .and_return({ costs_currency_format: "%u %n", costs_currency: "USD" }.with_indifferent_access)
-        end
-
+      context "with a reversed currency format", with_settings: { costs_currency_format: "%u %n", costs_currency: "USD" } do
         it "can still update budgets (Regression test #32664)" do
           budget_page.visit!
           click_on "Update"
@@ -282,13 +276,7 @@ RSpec.describe "updating a budget", :js do
         expect(labor_budget_item_2.costs).to eq(987.0)
       end
 
-      context "with a reversed currency format" do
-        before do
-          allow(Setting)
-            .to receive(:plugin_costs)
-            .and_return({ costs_currency_format: "%u %n", costs_currency: "USD" }.with_indifferent_access)
-        end
-
+      context "with a reversed currency format", with_settings: { costs_currency_format: "%u %n", costs_currency: "USD" } do
         it "can still update budgets (Regression test #32664)" do
           budget_page.visit!
           click_on "Update"
