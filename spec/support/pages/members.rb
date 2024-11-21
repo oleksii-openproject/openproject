@@ -40,12 +40,6 @@ module Pages
       @project_identifier = project_identifier
     end
 
-    def visit!
-      super
-
-      self
-    end
-
     def path
       "/projects/#{project_identifier}/members"
     end

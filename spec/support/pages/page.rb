@@ -47,8 +47,6 @@ module Pages
       raise "No path defined" unless path
 
       visit path
-
-      self
     end
 
     def reload!
