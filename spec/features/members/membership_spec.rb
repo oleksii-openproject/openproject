@@ -138,6 +138,22 @@ RSpec.describe "Administrating memberships via the project settings", :js, :with
       expect(members_page).not_to have_group group.name
     end
 
+    it "shows more information when hovering over an avatar" do
+      members_page.in_user_row(peter) do |row|
+        # Hover over the avatar of peter to open the hover card
+        row.find(".op-principal--avatar").hover
+      end
+
+      members_page.in_user_hover_card do |card|
+        card.find(".op-user-hover-card-user-info", text: peter.name)
+        card.find(".op-user-hover-card-user-info", text: peter.mail)
+        card.find(".op-user-hover-card-group-list", text: "Member of #{peter.groups.first.name}")
+
+        button = card.find(".Button", text: "Open profile")
+        expect(button["href"]).to eq(user_url(peter))
+      end
+    end
+
     context "as a member" do
       current_user { peter }
 

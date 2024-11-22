@@ -82,6 +82,10 @@ module Pages
       page.within(".principal-#{user.id}", &)
     end
 
+    def in_user_hover_card(&)
+      page.within("#op-hover-card-body .op-user-hover-card", &)
+    end
+
     ##
     # Adds the given user to this project.
     #
