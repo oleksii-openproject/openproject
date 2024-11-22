@@ -119,5 +119,19 @@ RSpec.describe Reminders::BaseContract do
     end
   end
 
+  describe "validate note length" do
+    context "when note is too long" do
+      before { reminder.note = "a" * (described_class::MAX_NOTE_CHARS_LENGTH + 1) }
+
+      it_behaves_like "contract is invalid", note: :too_long
+    end
+
+    context "when note is within the limit" do
+      before { reminder.note = "a" * described_class::MAX_NOTE_CHARS_LENGTH }
+
+      it_behaves_like "contract is valid"
+    end
+  end
+
   include_examples "contract reuses the model errors"
 end

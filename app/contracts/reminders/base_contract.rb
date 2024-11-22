@@ -28,6 +28,8 @@
 
 module Reminders
   class BaseContract < ::ModelContract
+    MAX_NOTE_CHARS_LENGTH = 80
+
     attribute :creator_id
     attribute :remindable_id
     attribute :remindable_type
@@ -39,6 +41,7 @@ module Reminders
     validate :validate_remindable_exists
     validate :validate_manage_reminders_permissions
     validate :validate_remind_at_is_in_future
+    validate :validate_note_length
 
     def self.model = Reminder
 
@@ -59,6 +62,12 @@ module Reminders
     def validate_remind_at_is_in_future
       if model.remind_at.present? && model.remind_at < Time.current
         errors.add :remind_at, :datetime_must_be_in_future
+      end
+    end
+
+    def validate_note_length
+      if model.note.present? && model.note.length > MAX_NOTE_CHARS_LENGTH
+        errors.add :note, :too_long, count: MAX_NOTE_CHARS_LENGTH
       end
     end
 
