@@ -26,23 +26,10 @@
 // See COPYRIGHT and LICENSE files for more details.
 //++
 
-import { DisplayField } from 'core-app/shared/components/fields/display/display-field.module';
-import { HalResource } from 'core-app/features/hal/resources/hal-resource';
-import isArrayOf from 'core-app/core/state/is-array-of';
-
-export class TextDisplayField extends DisplayField {
-  public get valueString():string {
-    // render a text representation for the assigned attribute, independent of the attribute being a resource,
-    // an array of resources or a single text value.
-
-    if (this.value instanceof HalResource) {
-      return this.value.name;
-    }
-
-    if (isArrayOf(this.value, HalResource)) {
-      return this.value.map((r) => r.name).join(', ');
-    }
-
-    return this.value as string;
+export default function isArrayOf<T>(array:unknown, type:new (...args:never[]) => T):array is T[] {
+  if (!Array.isArray(array)) {
+    return false;
   }
+
+  return array.every((item):item is T => item instanceof type);
 }

@@ -48,6 +48,8 @@ class CustomValue::HierarchyStrategy < CustomValue::ARObjectStrategy
     item = CustomField::Hierarchy::Item.find_by(id: value.to_s)
     if item.nil?
       "#{value} #{I18n.t(:label_not_found)}"
+    elsif item.short.present?
+      "#{item.label} (#{item.short})"
     else
       item.label
     end
