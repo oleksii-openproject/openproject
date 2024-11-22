@@ -32,7 +32,7 @@ RSpec.shared_examples_for "a Project::LifeCycleStepDefinition event" do
   end
 
   describe "associations" do
-    it { is_expected.to have_many(:life_cycle_steps).dependent(:destroy) }
+    it { is_expected.to have_many(:life_cycle_steps).inverse_of(:definition).dependent(:destroy) }
     it { is_expected.to have_many(:projects).through(:life_cycle_steps) }
     it { is_expected.to belong_to(:color).required }
   end

@@ -30,6 +30,7 @@ class Project::LifeCycleStepDefinition < ApplicationRecord
   has_many :life_cycle_steps,
            class_name: "Project::LifeCycleStep",
            foreign_key: :definition_id,
+           inverse_of: :definition,
            dependent: :destroy
   has_many :projects, through: :life_cycle_steps
   belongs_to :color, optional: false
