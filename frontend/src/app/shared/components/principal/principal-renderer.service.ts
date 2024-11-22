@@ -109,7 +109,7 @@ export class PrincipalRendererService {
     const type = typeFromHref(hrefFromPrincipal(principal)) as PrincipalType;
 
     // Only actual users provide a hover card with additional info
-    if (type === 'group') {
+    if (type !== 'user') {
       avatar.hoverCard = undefined;
     }
 
