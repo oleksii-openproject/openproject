@@ -42,7 +42,7 @@ See COPYRIGHT and LICENSE files for more details.
 
             if show_email?
               f.with_column do
-                render(Primer::Beta::Text.new(color: :muted)) { @user.mail } # TODO: only with permission
+                render(Primer::Beta::Text.new(color: :muted)) { @user.mail }
               end
             end
           end
@@ -70,8 +70,7 @@ See COPYRIGHT and LICENSE files for more details.
     else
       render Primer::Beta::Blankslate.new(border: false, narrow: true) do |component|
         component.with_visual_icon(icon: "x-circle")
-        # TODO: fix 404 string
-        component.with_heading(tag: :h3).with_content(I18n.t("api_v3.errors.not_found.work_package"))
+        component.with_heading(tag: :h3).with_content(I18n.t("api_v3.errors.not_found.user"))
       end
     end
 %>
