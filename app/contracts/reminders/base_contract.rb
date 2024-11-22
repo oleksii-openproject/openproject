@@ -32,7 +32,7 @@ module Reminders
     attribute :remindable_id
     attribute :remindable_type
     attribute :remind_at
-    attribute :notes
+    attribute :note
 
     validate :validate_creator_exists
     validate :validate_acting_user
