@@ -93,7 +93,7 @@
         flex.with_row do
           render Primer::Beta::Blankslate.new(border: true) do |component|
             component.with_visual_icon(icon: "package-dependents")
-            component.with_heading(tag: :h2).with_content(t("#{I18N_NAMESPACE}.index.blankslate_heading"))
+            component.with_heading(tag: :h4).with_content(t("#{I18N_NAMESPACE}.index.blankslate_heading"))
             component.with_description { t("#{I18N_NAMESPACE}.index.blankslate_description") }
           end
         end
