@@ -270,8 +270,13 @@ export class PrincipalRendererService {
     element.classList.add('op-hover-card--preview-trigger');
 
     element.setAttribute('data-hover-card-url', hoverCard.url);
-    element.setAttribute('data-hover-card-close-delay', String(hoverCard.closeDelay) || '250');
-    element.setAttribute('data-hover-card-alignment', hoverCard.alignment || 'top');
     element.setAttribute('data-hover-card-target', String(hoverCard.modalTarget || PortalOutletTarget.Default));
+
+    if (hoverCard.closeDelay) {
+      element.setAttribute('data-hover-card-close-delay', String(hoverCard.closeDelay));
+    }
+    if (hoverCard.alignment) {
+      element.setAttribute('data-hover-card-alignment', hoverCard.alignment);
+    }
   }
 }

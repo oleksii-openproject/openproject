@@ -92,8 +92,6 @@ export class HoverCardTriggerService {
       ).subscribe((previewModal) => {
         this.modalElement = previewModal.elementRef.nativeElement as HTMLElement;
         if (this.modalAlignment) {
-          // TOOD: we could also calculate this in the previewModal itself
-          // and be smart about the position?
           previewModal.alignment = this.modalAlignment as Placement;
         }
 
