@@ -54,7 +54,7 @@ class WorkPackage < ApplicationRecord
   belongs_to :assigned_to, class_name: "Principal", optional: true
   belongs_to :responsible, class_name: "Principal", optional: true
   belongs_to :version, optional: true
-  belongs_to :life_cycle_step, class_name: "Project::LifeCycleStep", optional: true
+  belongs_to :project_life_cycle_step, class_name: "Project::LifeCycleStep", optional: true
   belongs_to :priority, class_name: "IssuePriority"
   belongs_to :category, class_name: "Category", optional: true
 

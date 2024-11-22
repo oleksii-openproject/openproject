@@ -31,7 +31,7 @@ class Project::LifeCycleStep < ApplicationRecord
   belongs_to :definition,
              optional: false,
              class_name: "Project::LifeCycleStepDefinition"
-  has_many :work_packages, inverse_of: :life_cycle_step, dependent: :nullify
+  has_many :work_packages, inverse_of: :project_life_cycle_step, dependent: :nullify
 
   attr_readonly :definition_id
 
