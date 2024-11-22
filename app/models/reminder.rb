@@ -29,9 +29,7 @@
 class Reminder < ApplicationRecord
   belongs_to :remindable, polymorphic: true
   belongs_to :creator, class_name: "User"
+  belongs_to :notification, optional: true
 
-  has_many :reminder_notifications, dependent: :destroy
-
-  def notified?  = notified_at.present?
-  def scheduled? = job_id.present?
+  enum :status, { pending: 0, scheduled: 1, notified: 2, done: 9 }
 end

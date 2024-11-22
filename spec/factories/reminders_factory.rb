@@ -38,7 +38,9 @@ FactoryBot.define do
     end
 
     trait :notified do
-      notified_at { remind_at + 1.second }
+      job_id { SecureRandom.uuid }
+      status { :notified }
+      notification factory: :notification
     end
   end
 end

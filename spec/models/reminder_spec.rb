@@ -32,34 +32,14 @@ RSpec.describe Reminder do
   describe "Associations" do
     it { is_expected.to belong_to(:remindable) }
     it { is_expected.to belong_to(:creator).class_name("User") }
-    it { is_expected.to have_many(:reminder_notifications).dependent(:destroy) }
+    it { is_expected.to belong_to(:notification).optional }
   end
 
-  describe "#notified?" do
-    context "when notified_at is present" do
-      subject { build(:reminder, :notified) }
-
-      it { is_expected.to be_notified }
-    end
-
-    context "when notified_at is not present" do
-      subject { build(:reminder) }
-
-      it { is_expected.not_to be_notified }
-    end
-  end
-
-  describe "#scheduled?" do
-    context "when job_id is present" do
-      subject { build(:reminder, :scheduled) }
-
-      it { is_expected.to be_scheduled }
-    end
-
-    context "when job_id is not present" do
-      subject { build(:reminder) }
-
-      it { is_expected.not_to be_scheduled }
+  describe "Enums" do
+    it do
+      expect(subject).to define_enum_for(:status)
+        .with_values({ pending: 0, scheduled: 1, notified: 2, done: 9 })
+        .backed_by_column_of_type(:integer)
     end
   end
 end

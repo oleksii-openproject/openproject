@@ -40,8 +40,7 @@ module Reminders
       create_notification_service = create_notification_from_reminder(reminder)
 
       create_notification_service.on_success do |service_result|
-        ReminderNotification.create!(reminder:, notification: service_result.result)
-        reminder.update_column(:notified_at, Time.current)
+        reminder.update_columns(status: :notified, notification_id: service_result.result.id)
       end
 
       create_notification_service.on_failure do |service_result|
