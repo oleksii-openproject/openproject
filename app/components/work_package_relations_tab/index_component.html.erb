@@ -1,18 +1,14 @@
 <%= component_wrapper(tag: "turbo-frame") do %>
   <%=
     if should_render_create_button?
-      flex_layout(justify_content: :space_between,
-                  align_items: :center,
-                  mb: 4,
-                  style: "gap: 1rem;") do |action_bar|
+      flex_layout(justify_content: :space_between, mb: 4) do |action_bar|
         action_bar.with_column do
           render(Primer::Beta::Text.new(color: :muted)) do
             t("#{I18N_NAMESPACE}.index.action_bar_title")
           end
         end
 
-        # Prevent the menu from overflowing on Safari
-        action_bar.with_column(style: "flex: 0 0 auto;") do
+        action_bar.with_column(flex_shrink: 0) do
           render(Primer::Alpha::ActionMenu.new(test_selector: NEW_RELATION_ACTION_MENU,
                                                menu_id: NEW_RELATION_ACTION_MENU)) do |menu|
             menu.with_show_button do |button|
@@ -56,7 +52,7 @@
   %>
 
   <%=
-    flex_layout(classes: "work-package-relations-tab--list-container", mb: 3) do |flex|
+    flex_layout(mb: 3) do |flex|
       if any_relations?
         key_namespace = "#{I18N_NAMESPACE}.relations"
 
@@ -64,7 +60,7 @@
         directionally_aware_grouped_relations.each do |relation_type, relations_of_type|
           base_key = "#{key_namespace}.label_#{relation_type}"
 
-          flex.with_row do
+          flex.with_row(mb: 4) do
             render_relation_group(
               title: t("#{base_key}_plural").capitalize,
               relation_type:,
