@@ -30,8 +30,7 @@ require "support/pages/page"
 
 module Pages
   module Projects
-    # TODO: Ideally this would be turned into a module but it would require having the other settings pages being split up.
-    class Settings
+    module Settings
       class LifeCycle < Pages::Page
         attr_accessor :project
 

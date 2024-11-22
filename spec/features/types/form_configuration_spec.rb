@@ -274,7 +274,7 @@ RSpec.describe "form configuration", :js do
     end
 
     describe "custom fields" do
-      let(:project_settings_page) { Pages::Projects::Settings.new(project) }
+      let(:project_cf_settings_page) { Pages::Projects::Settings::WorkPackageCustomFields.new(project) }
 
       let(:custom_fields) { [custom_field] }
       let(:custom_field) { create(:issue_custom_field, :integer, name: "MyNumber") }
@@ -315,7 +315,7 @@ RSpec.describe "form configuration", :js do
           wp_page.expect_attribute_hidden(cf_identifier_api)
 
           # Enable in project, should then be visible
-          project_settings_page.visit_tab!("custom_fields")
+          project_cf_settings_page.visit!
           expect(page).to have_css(".custom-field-#{custom_field.id} td", text: "MyNumber")
           expect(page).to have_css(".custom-field-#{custom_field.id} td", text: type.name)
 
@@ -356,7 +356,7 @@ RSpec.describe "form configuration", :js do
           end
 
           # Ensure CF is checked
-          project_settings_page.visit_tab!("custom_fields")
+          project_cf_settings_page.visit!
           expect(page).to have_css(".custom-field-#{custom_field.id} td", text: "MyNumber")
           expect(page).to have_css(".custom-field-#{custom_field.id} td", text: type.name)
           expect(page).to have_css("#project_work_package_custom_field_ids_#{custom_field.id}[checked]")

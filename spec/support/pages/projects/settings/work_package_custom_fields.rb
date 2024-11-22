@@ -1,6 +1,6 @@
-#-- copyright
+# -- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) the OpenProject GmbH
+# Copyright (C) 2010-2024 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -24,40 +24,47 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
 # See COPYRIGHT and LICENSE files for more details.
-#++
+# ++
 
-require "spec_helper"
-require_relative "../support/pages/projects/settings/backlogs"
+require "support/pages/page"
 
-RSpec.describe "Resolved status" do
-  let!(:project) do
-    create(:project,
-           enabled_module_names: %w(backlogs))
-  end
-  let!(:status) { create(:status, is_default: true) }
-  let(:role) do
-    create(:project_role,
-           permissions: %i[select_done_statuses])
-  end
-  let!(:current_user) do
-    create(:user,
-           member_with_roles: { project => role })
-  end
-  let(:settings_page) { Pages::Projects::Settings::Backlogs.new(project) }
+module Pages
+  module Projects
+    module Settings
+      class WorkPackageCustomFields < Pages::Page
+        attr_accessor :project
 
-  before do
-    login_as current_user
-  end
+        def initialize(project)
+          super()
 
-  it "allows setting a status as done although it is not closed" do
-    settings_page.visit!
+          self.project = project
+        end
 
-    check status.name
-    click_button "Save"
+        def path
+          "/projects/#{project.identifier}/settings/custom_fields"
+        end
 
-    expect_flash(type: :success, message: "Successful update")
+        def expect_active(custom_field)
+          expect_field(custom_field, active: true)
+        end
 
-    expect(page)
-      .to have_checked_field(status.name)
+        def expect_inactive(custom_field)
+          expect_field(custom_field, active: false)
+        end
+
+        def activate(custom_field)
+          check custom_field.name
+        end
+
+        def expect_field(custom_field, active: true)
+          expect(page)
+            .to have_field(custom_field.name, checked: active)
+        end
+
+        def save!
+          click_link_or_button "Save"
+        end
+      end
+    end
   end
 end

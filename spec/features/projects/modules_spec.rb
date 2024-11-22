@@ -34,7 +34,7 @@ RSpec.describe "Projects module administration" do
   end
 
   let(:permissions) { %i(edit_project select_project_modules view_work_packages) }
-  let(:settings_page) { Pages::Projects::Settings.new(project) }
+  let(:modules_settings_page) { Pages::Projects::Settings::Modules.new(project) }
 
   current_user do
     create(:user, member_with_permissions: { project => permissions })
@@ -43,7 +43,7 @@ RSpec.describe "Projects module administration" do
   it "allows adding and removing modules" do
     project_work_packages_menu_link_selector = '//ul[contains(@class, "menu_root")]//span[text()="Work packages"]'
 
-    settings_page.visit_tab!("modules")
+    modules_settings_page.visit!
 
     expect(page).to have_unchecked_field "Activity"
     expect(page).to have_unchecked_field "Calendar"
@@ -95,10 +95,11 @@ RSpec.describe "Projects module administration" do
       create(:user,
              member_with_permissions: { project => %i(edit_project) })
     end
+    let(:general_settings_page) { Pages::Projects::Settings::General.new(project) }
 
     before do
       login_as user_without_permission
-      settings_page.visit_tab!("general")
+      general_settings_page.visit!
     end
 
     it "I can't see the modules menu item" do
