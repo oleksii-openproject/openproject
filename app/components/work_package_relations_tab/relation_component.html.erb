@@ -1,18 +1,7 @@
 <%=
 flex_layout(direction: :column, style: "gap: 0.25rem;") do |flex|
-  flex.with_row(flex_layout: true,
-                justify_content: :flex_start,
-                align_items: :center,
-                style: "gap: 0.5rem;") do |meta_information_row|
-    meta_information_row.with_column do
-      render(WorkPackages::HighlightedTypeComponent.new(work_package: related_work_package, font_size: :small))
-    end
-    meta_information_row.with_column do
-      render(Primer::Beta::Text.new(font_size: :small, color: :muted)) { "##{related_work_package.id}" }
-    end
-    meta_information_row.with_column do
-      render WorkPackages::StatusBadgeComponent.new(status: related_work_package.status)
-    end
+  flex.with_row do
+    render(WorkPackages::InfoLineComponent.new(work_package: related_work_package))
   end
 
   flex.with_row(flex_layout: true, justify_content: :space_between, align_items: :center) do |subject_line_row|
