@@ -28,7 +28,7 @@
 # See COPYRIGHT and LICENSE files for more details.
 #++
 class Users::HoverCardController < ApplicationController
-  before_action :authorize_global
+  no_authorization_required! :show
 
   def show
     @id = params[:id]
