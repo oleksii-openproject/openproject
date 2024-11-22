@@ -1,10 +1,10 @@
 <%=
-flex_layout(direction: :column, style: "gap: 0.25rem;") do |flex|
-  flex.with_row do
+flex_layout do |flex|
+  flex.with_row(mb: 1) do
     render(WorkPackages::InfoLineComponent.new(work_package: related_work_package))
   end
 
-  flex.with_row(flex_layout: true, justify_content: :space_between, align_items: :center) do |subject_line_row|
+  flex.with_row(flex_layout: true, justify_content: :space_between, align_items: :center, mb: 1) do |subject_line_row|
     subject_line_row.with_column do
       render(Primer::Beta::Link.new(href: work_package_path(related_work_package),
                                     color: :default,
@@ -53,7 +53,7 @@ flex_layout(direction: :column, style: "gap: 0.25rem;") do |flex|
   end
 
   if should_display_description?
-    flex.with_row(flex_layout: true, justify_content: :flex_start) do |description_row|
+    flex.with_row(flex_layout: true, mb: 1) do |description_row|
       description_row.with_column do
         render(Primer::Beta::Text.new(font_size: :small, color: :muted)) { format_text(relation, :description) }
       end
@@ -61,8 +61,8 @@ flex_layout(direction: :column, style: "gap: 0.25rem;") do |flex|
   end
 
   if should_display_start_and_end_dates?
-    flex.with_row(flex_layout: true, justify_content: :flex_start, align_items: :center, style: "gap: 0.25rem;") do |start_and_end_dates_row|
-      start_and_end_dates_row.with_column do
+    flex.with_row(flex_layout: true, align_items: :center, mb: 1) do |start_and_end_dates_row|
+      start_and_end_dates_row.with_column(mr: 1) do
         icon = if follows?
                  :calendar
                elsif precedes?
