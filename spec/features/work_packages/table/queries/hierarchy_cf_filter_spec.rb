@@ -28,7 +28,7 @@
 
 require "spec_helper"
 
-RSpec.describe "Work package filtering by user custom field", :js do
+RSpec.describe "Work package filtering by hierarchy custom field", :js do
   let(:project) { create(:project) }
   let(:type) { project.types.first }
   let(:wp_table) { Pages::WorkPackagesTable.new(project) }
