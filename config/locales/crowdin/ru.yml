@@ -33,7 +33,7 @@ ru:
         label_activity_show_only_changes: "Показать только изменения"
         label_sort_asc: "Новые внизу"
         label_sort_desc: "Новые вверху"
-        label_type_to_comment: "Add a comment. Type @ to notify people."
+        label_type_to_comment: "Добавить комментарий. Введите @ для уведомления пользователей."
         label_submit_comment: "Отправить комментарий"
         changed_on: "изменено"
         created_on: "создано в"

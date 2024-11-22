@@ -36,7 +36,7 @@ cs:
         label_type_to_comment: "Add a comment. Type @ to notify people."
         label_submit_comment: "Odeslat komentář"
         changed_on: "změněno dne"
-        created_on: "created this on"
+        created_on: "toto vytvořil/a dne"
         changed: "změněno"
         created: "vytvořeno"
         commented: "komentováno"
@@ -266,7 +266,7 @@ cs:
           filled?: "must be filled"
           not_unique: "must be unique within the same hierarchy level"
     rules:
-      label: "Label"
+      label: "Popisek"
   global_search:
     placeholder: "Hledat v %{app_title}"
     overwritten_tabs:
