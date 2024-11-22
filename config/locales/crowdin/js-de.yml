@@ -105,7 +105,7 @@ de:
     button_update: "Aktualisieren"
     button_export-pdf: "PDF-Download"
     button_export-atom: "Atom-Download"
-    button_generate_pdf: "Generate PDF"
+    button_generate_pdf: "PDF generieren"
     button_create: "Anlegen"
     card:
       add_new: "Neue Karte hinzufügen"

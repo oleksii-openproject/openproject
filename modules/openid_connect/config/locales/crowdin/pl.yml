@@ -83,6 +83,7 @@ pl:
       metadata_url: Mam adres URL punktu końcowego odkrywania
       endpoint_url: Adres URL punktu końcowego
     providers:
+      label_providers: "Providers"
       seeded_from_env: "Ten dostawca został zainicjowany z konfiguracji środowiska. Nie można go edytować."
       google:
         name: Google

@@ -83,6 +83,7 @@ es:
       metadata_url: Tengo una URL del terminal de descubrimiento
       endpoint_url: URL del terminal
     providers:
+      label_providers: "Providers"
       seeded_from_env: "Este proveedor fue sembrado desde la configuración del entorno. No puede editarse."
       google:
         name: Google

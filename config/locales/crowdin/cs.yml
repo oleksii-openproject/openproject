@@ -36,7 +36,7 @@ cs:
         label_type_to_comment: "Add a comment. Type @ to notify people."
         label_submit_comment: "Odeslat komentář"
         changed_on: "změněno dne"
-        created_on: "created this on"
+        created_on: "toto vytvořil/a dne"
         changed: "změněno"
         created: "vytvořeno"
         commented: "komentováno"
@@ -224,7 +224,7 @@ cs:
         actions: "Akce položky"
         blankslate:
           root:
-            title: "Your list of items is empty"
+            title: "Váš seznam položek je prázdný"
             description: "Start by adding items to the custom field of type hierarchy. Each item can be used to create a hierarchy bellow it. To navigate and create sub-items inside a hierarchy click on the created item."
           item:
             title: This item doesn't have any hierarchy level below
@@ -265,8 +265,8 @@ cs:
     single: "nebo"
   dry_validation:
     errors:
-      int?: "must be an integer."
-      filled?: "must be filled."
+      int?: "musí být celé číslo"
+      filled?: "musí být vyplněno"
       greater_or_equal_zero: "must be greater or equal to 0."
       not_found: "not found."
       rules:
@@ -280,11 +280,11 @@ cs:
         parent:
           not_descendant: "must be a descendant of the hierarchy root."
     rules:
-      depth: "Depth"
-      item: "Item"
-      label: "Label"
-      short: "Short name"
-      parent: "Parent"
+      depth: "Hloubka"
+      item: "Položka"
+      label: "Popisek"
+      short: "Krátký název"
+      parent: "Nadřazený"
   global_search:
     placeholder: "Hledat v %{app_title}"
     overwritten_tabs:

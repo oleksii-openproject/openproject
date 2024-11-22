@@ -33,7 +33,7 @@ ru:
         label_activity_show_only_changes: "Показать только изменения"
         label_sort_asc: "Новые внизу"
         label_sort_desc: "Новые вверху"
-        label_type_to_comment: "Add a comment. Type @ to notify people."
+        label_type_to_comment: "Добавить комментарий. Введите @ для уведомления пользователей."
         label_submit_comment: "Отправить комментарий"
         changed_on: "изменено"
         created_on: "создано в"
@@ -226,8 +226,8 @@ ru:
             title: "Ваш список пунктов пуст"
             description: "Start by adding items to the custom field of type hierarchy. Each item can be used to create a hierarchy bellow it. To navigate and create sub-items inside a hierarchy click on the created item."
           item:
-            title: This item doesn't have any hierarchy level below
-            description: Add items to this list to create sub-items inside another one
+            title: Этот элемент не имеет уровня иерархии ниже
+            description: Добавьте элементы в этот список, чтобы создать подпункты внутри другого списка
         placeholder:
           label: "Название элемента"
           short: "Краткое имя"
@@ -264,20 +264,20 @@ ru:
     single: "или"
   dry_validation:
     errors:
-      int?: "must be an integer."
-      filled?: "must be filled."
-      greater_or_equal_zero: "must be greater or equal to 0."
-      not_found: "not found."
+      int?: "должно быть целым числом."
+      filled?: "должно быть заполнено."
+      greater_or_equal_zero: "должно быть больше или равно 0."
+      not_found: "не найдено."
       rules:
         item:
-          root_item: "cannot be a root item."
-          not_persisted: "must be an already existing item."
+          root_item: "не может быть корневым элементом."
+          not_persisted: "должно быть уже существующим элементом."
         label:
-          not_unique: "must be unique within the same hierarchy level."
+          not_unique: "должно быть уникальным в пределах одного уровня иерархии."
         short:
-          not_unique: "must be unique within the same hierarchy level."
+          not_unique: "должно быть уникальным в пределах одного уровня иерархии."
         parent:
-          not_descendant: "must be a descendant of the hierarchy root."
+          not_descendant: "должно быть потомком корневого уровня иерархии."
     rules:
       depth: "Глубина"
       item: "Элемент"
@@ -1895,22 +1895,22 @@ ru:
       hours: ч
       days: д
   pdf_generator:
-    page_nr_footer: "Page %{page} of %{total}"
+    page_nr_footer: "Страница %{page} из %{total}"
     dialog:
-      title: Generate PDF
-      submit: Generate
+      title: Создать PDF
+      submit: Создать
       header_right:
-        label: Header right
-        caption: Text to be displayed in the right of the header
+        label: Заголовок справа
+        caption: Текст, отображаемый справа от заголовка
       footer_center:
-        label: Footer center
-        caption: Text to be displayed in the center of the footer
+        label: Нижний колонтитул по центру
+        caption: Текст, отображаемый в центре нижнего колонтитула
       hyphenation:
-        label: Hyphenation
-        caption: Break words between lines to improve text justification and readability.
+        label: Расстановка переносов
+        caption: Разрыв слов между строками для улучшения выравнивания и читаемости текста.
       paper_size:
-        label: Paper size
-        caption: The size of the paper to use for the PDF.
+        label: Размер бумаги
+        caption: Размер бумаги, используемый в PDF.
   extraction:
     available:
       pdftotext: "Pdftotext доступно (опционально)"

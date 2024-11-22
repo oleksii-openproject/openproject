@@ -1785,22 +1785,22 @@ zh-TW:
       hours: 小時
       days: 日
   pdf_generator:
-    page_nr_footer: "Page %{page} of %{total}"
+    page_nr_footer: "頁面 %{page} of %{total}"
     dialog:
-      title: Generate PDF
-      submit: Generate
+      title: 產生PDF檔案
+      submit: 產生
       header_right:
-        label: Header right
-        caption: Text to be displayed in the right of the header
+        label: 標題右側
+        caption: 要顯示在標頭右側的文字
       footer_center:
-        label: Footer center
-        caption: Text to be displayed in the center of the footer
+        label: 頁尾中心
+        caption: 要顯示在頁尾中央的文字
       hyphenation:
-        label: Hyphenation
-        caption: Break words between lines to improve text justification and readability.
+        label: 連字符
+        caption: 在行與行之間分隔字詞，以改善文字的正確性和可讀性。
       paper_size:
-        label: Paper size
-        caption: The size of the paper to use for the PDF.
+        label: 紙張大小
+        caption: PDF 要使用的紙張尺寸。
   extraction:
     available:
       pdftotext: "Pdftotext 可用 (非必要)"
