@@ -37,6 +37,7 @@ RSpec.describe Project::LifeCycleStep do
     subject { build :project_gate }
 
     it { is_expected.to have_readonly_attribute(:definition_id) }
+    it { is_expected.to have_readonly_attribute(:type) }
   end
 
   # For more specs see:

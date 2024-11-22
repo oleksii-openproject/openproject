@@ -34,17 +34,18 @@ RSpec.describe Project::Gate do
 
   describe "validations" do
     it { is_expected.to validate_presence_of(:date) }
+    it { is_expected.to validate_inclusion_of(:type).in_array(["Project::Gate"]).with_message(:must_be_a_gate) }
 
     it "is invalid if `end_date` is present" do
-      gate_with_end_date = build(:project_gate, end_date: Time.zone.today)
+      subject.end_date = Time.zone.today
 
-      expect(gate_with_end_date).not_to be_valid
-      expect(gate_with_end_date.errors[:base])
+      expect(subject).not_to be_valid
+      expect(subject.errors[:base])
         .to include("Cannot assign `end_date` to a Project::Gate")
     end
 
     it "is valid if `end_date` is not present" do
-      valid_gate = build(:project_gate)
+      valid_gate = build(:project_gate, end_date: nil)
       expect(valid_gate).to be_valid
     end
   end

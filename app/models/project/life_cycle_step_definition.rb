@@ -38,6 +38,8 @@ class Project::LifeCycleStepDefinition < ApplicationRecord
   validates :name, presence: true
   validates :type, inclusion: { in: %w[Project::StageDefinition Project::GateDefinition], message: :must_be_a_stage_or_gate }
 
+  attr_readonly :type
+
   acts_as_list
 
   def initialize(*args)

@@ -35,6 +35,7 @@ RSpec.describe Project::Stage do
   describe "validations" do
     it { is_expected.to validate_presence_of(:start_date) }
     it { is_expected.to validate_presence_of(:end_date) }
+    it { is_expected.to validate_inclusion_of(:type).in_array(["Project::Stage"]).with_message(:must_be_a_stage) }
 
     it "is valid when `start_date` and `end_date` are present" do
       valid_stage = build(:project_stage)

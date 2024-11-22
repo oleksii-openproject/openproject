@@ -27,5 +27,7 @@
 #++
 
 class Project::Stage < Project::LifeCycleStep
+  # This ensures the type cannot be changed after initialising the class.
+  validates :type, inclusion: { in: %w[Project::Stage], message: :must_be_a_stage }
   validates :start_date, :end_date, presence: true
 end
