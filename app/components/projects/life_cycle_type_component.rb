@@ -51,7 +51,10 @@ module Projects
     end
 
     def text_options
-      { color: :muted, font_size: :small }.merge(options)
+      # The tag: :div is is a hack to fix the line height difference
+      # caused by font_size: :small. That line height difference
+      # would otherwise lead to the text being not on the same height as the icon
+      { color: :muted, font_size: :small, tag: :div }.merge(options)
     end
   end
 end
