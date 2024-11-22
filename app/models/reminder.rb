@@ -32,7 +32,6 @@ class Reminder < ApplicationRecord
 
   has_many :reminder_notifications, dependent: :destroy
 
-  def scheduled?
-    job_id.present?
-  end
+  def notified?  = notified_at.present?
+  def scheduled? = job_id.present?
 end

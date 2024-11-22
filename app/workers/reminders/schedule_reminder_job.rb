@@ -35,10 +35,20 @@ module Reminders
     end
 
     def perform(reminder)
-      return if reminder.scheduled?
+      return if reminder.notified?
 
-      create_notification_from_reminder(reminder)
-        .on_success { |service_result| ReminderNotification.create!(reminder:, notification: service_result.result) }
+      create_notification_service = create_notification_from_reminder(reminder)
+
+      create_notification_service.on_success do |service_result|
+        ReminderNotification.create!(reminder:, notification: service_result.result)
+        reminder.update_column(:notified_at, Time.current)
+      end
+
+      create_notification_service.on_failure do |service_result|
+        Rails.logger.error do
+          "Failed to create notification for reminder #{reminder.id}: #{service_result.message}"
+        end
+      end
     end
 
     private

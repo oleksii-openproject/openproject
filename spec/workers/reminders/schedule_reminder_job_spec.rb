@@ -59,11 +59,15 @@ RSpec.describe Reminders::ScheduleReminderJob do
         expect(notification.resource).to eq(reminder.remindable)
         expect(notification.reason).to eq("reminder")
       end
+
+      aggregate_failures "marks the reminder as notified" do
+        expect(reminder.reload).to be_notified
+      end
     end
 
-    context "when the reminder is already scheduled" do
+    context "when the reminder is already notified" do
       before do
-        reminder.update_column(:job_id, SecureRandom.uuid)
+        reminder.update_column(:notified_at, Time.current)
       end
 
       it "does not create a notification from the reminder" do

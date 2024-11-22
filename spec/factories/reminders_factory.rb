@@ -36,5 +36,9 @@ FactoryBot.define do
     trait :scheduled do
       job_id { SecureRandom.uuid }
     end
+
+    trait :notified do
+      notified_at { remind_at + 1.second }
+    end
   end
 end

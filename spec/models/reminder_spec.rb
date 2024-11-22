@@ -35,6 +35,20 @@ RSpec.describe Reminder do
     it { is_expected.to have_many(:reminder_notifications).dependent(:destroy) }
   end
 
+  describe "#notified?" do
+    context "when notified_at is present" do
+      subject { build(:reminder, :notified) }
+
+      it { is_expected.to be_notified }
+    end
+
+    context "when notified_at is not present" do
+      subject { build(:reminder) }
+
+      it { is_expected.not_to be_notified }
+    end
+  end
+
   describe "#scheduled?" do
     context "when job_id is present" do
       subject { build(:reminder, :scheduled) }

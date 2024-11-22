@@ -37,15 +37,15 @@ RSpec.describe Reminders::CreateService, type: :model do
 
     before do
       allow(model_instance).to receive(:update_column).and_return(true)
-    end
-
-    it "schedules a reminder job" do
       allow(Reminders::ScheduleReminderJob).to receive(:schedule)
         .with(model_instance)
         .and_return(instance_double(Reminders::ScheduleReminderJob, job_id: 1))
+    end
 
+    it "schedules a reminder job" do
       subject
 
+      expect(Reminders::ScheduleReminderJob).to have_received(:schedule).with(model_instance)
       expect(model_instance).to have_received(:update_column).with(:job_id, 1)
     end
   end
