@@ -4,6 +4,10 @@
   z-index: 9600
   position: absolute
 
+// Correct the z-index of the modal container so that it is above user auto completers
+.spot-modal-overlay:has(.op-user-hover-card)
+  z-index: 9600
+
 .op-user-hover-card
   gap: 1rem
   overflow: hidden
