@@ -36,21 +36,7 @@ RSpec.describe Project::LifeCycle do
   describe "with an instantiated Gate" do
     subject { build :project_gate }
 
-    it "allows setting a life_cycle" do
-      expected_life_cycle = create :gate
-      subject.life_cycle = expected_life_cycle
-
-      expect(subject.save).to be(true)
-      expect(subject.reload.life_cycle).to eq(expected_life_cycle)
-    end
-
-    context "when the Gate is already saved" do
-      subject { create :project_gate }
-
-      it "does not allow updating the life_cycle" do
-        expect(subject).to have_readonly_attribute(:life_cycle_id)
-      end
-    end
+    it { is_expected.to have_readonly_attribute(:life_cycle_id) }
   end
 
   # For more specs see:
