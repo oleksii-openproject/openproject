@@ -35,13 +35,13 @@ See COPYRIGHT and LICENSE files for more details.
         end
 
         flex.with_row do
-          flex_layout(classes: 'op-user-hover-card-user-info') do |f|
-            f.with_column do
+          flex_layout(classes: 'op-user-hover-card--info') do |f|
+            f.with_column(classes: 'op-user-hover-card--name') do
               render(Primer::Beta::Text.new(font_weight: :semibold)) { @user.name }
             end
 
             if show_email?
-              f.with_column do
+              f.with_column(classes: 'op-user-hover-card--email') do
                 render(Primer::Beta::Text.new(font_size: :small, color: :muted)) { @user.mail }
               end
             end
@@ -49,7 +49,7 @@ See COPYRIGHT and LICENSE files for more details.
         end
 
         flex.with_row do
-          flex_layout(classes: 'op-user-hover-card-group-list') do |f|
+          flex_layout(classes: 'op-user-hover-card--group-list') do |f|
             f.with_column do
               render(Primer::Beta::Octicon.new(icon: :people))
             end

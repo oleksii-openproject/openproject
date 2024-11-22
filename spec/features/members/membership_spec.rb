@@ -145,9 +145,9 @@ RSpec.describe "Administrating memberships via the project settings", :js, :with
       end
 
       members_page.in_user_hover_card do |card|
-        card.find(".op-user-hover-card-user-info", text: peter.name)
-        card.find(".op-user-hover-card-user-info", text: peter.mail)
-        card.find(".op-user-hover-card-group-list", text: "Member of #{peter.groups.first.name}")
+        card.find(".op-user-hover-card--name", text: peter.name)
+        card.find(".op-user-hover-card--email", text: peter.mail)
+        card.find(".op-user-hover-card--group-list", text: "Member of #{peter.groups.first.name}")
 
         button = card.find(".Button", text: "Open profile")
         expect(button["href"]).to eq(user_url(peter))
