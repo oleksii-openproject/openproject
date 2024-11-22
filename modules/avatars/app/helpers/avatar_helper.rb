@@ -108,14 +108,7 @@ module AvatarHelper
       title: tag_options.fetch(:title, "")
     }
 
-    # The hover card will be triggered by hovering over the avatar (if enabled)
-    hover_card = tag_options[:hover_card]
-    if hover_card.fetch(:active, false)
-      inputs[:hoverCard] = true
-      inputs[:hoverCardModalTarget] = hover_card.fetch(:target, :default)
-
-      inputs[:hoverCardUrl] = hover_card_user_path(user.id)
-    end
+    inputs = hover_card_options(user, inputs, tag_options)
 
     angular_component_tag "opce-principal",
                           class: tag_options[:class],
@@ -147,5 +140,20 @@ module AvatarHelper
     if object.respond_to?(:mail)
       object.mail
     end
+  end
+
+  private
+
+  def hover_card_options(user, inputs = {}, tag_options = {})
+    # The hover card will be triggered by hovering over the avatar (if enabled)
+    hover_card = tag_options[:hover_card]
+    if hover_card.fetch(:active, false)
+      inputs[:hoverCard] = true
+      inputs[:hoverCardModalTarget] = hover_card.fetch(:target, :default)
+
+      inputs[:hoverCardUrl] = hover_card_user_path(user.id)
+    end
+
+    inputs
   end
 end
