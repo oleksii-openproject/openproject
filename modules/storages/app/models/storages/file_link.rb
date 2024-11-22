@@ -37,11 +37,7 @@ class Storages::FileLink < ApplicationRecord
   validates :container_type, inclusion: { in: ["WorkPackage", nil] }
   validates :origin_id, presence: true
 
-  attr_writer :origin_status
-
-  def origin_status
-    @origin_status || nil
-  end
+  attribute :origin_status
 
   delegate :project, to: :container
 
