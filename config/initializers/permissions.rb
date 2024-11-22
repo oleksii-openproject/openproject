@@ -138,7 +138,8 @@ Rails.application.reloader.to_prepare do
                        "projects/settings/life_cycles": %i[show toggle]
                      },
                      permissible_on: :project,
-                     require: :member
+                     require: :member,
+                     visible: -> { OpenProject::FeatureDecisions.stages_and_gates_active? }
 
       map.permission :manage_members,
                      {

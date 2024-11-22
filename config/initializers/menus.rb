@@ -624,24 +624,24 @@ Redmine::MenuManager.map :project_menu do |menu|
             allow_deeplink: true
 
   project_menu_items = {
-    general: :label_information_plural,
-    life_cycles: :label_life_cycle_plural,
-    project_custom_fields: :label_project_attributes_plural,
-    modules: :label_module_plural,
-    types: :label_work_package_types,
-    custom_fields: :label_custom_field_plural,
-    versions: :label_version_plural,
-    categories: :label_work_package_category_plural,
-    repository: :label_repository,
-    time_entry_activities: :enumeration_activities,
-    storage: :label_required_disk_storage
+    general: { caption: :label_information_plural },
+    life_cycles: { caption: :label_life_cycle_plural, if: ->(*) { OpenProject::FeatureDecisions.stages_and_gates_active? } },
+    project_custom_fields: { caption: :label_project_attributes_plural },
+    modules: { caption: :label_module_plural },
+    types: { caption: :label_work_package_types },
+    custom_fields: { caption: :label_custom_field_plural },
+    versions: { caption: :label_version_plural },
+    categories: { caption: :label_work_package_category_plural },
+    repository: { caption: :label_repository },
+    time_entry_activities: { caption: :enumeration_activities },
+    storage: { caption: :label_required_disk_storage }
   }
 
-  project_menu_items.each do |key, caption|
+  project_menu_items.each do |key, options|
     menu.push :"settings_#{key}",
               { controller: "/projects/settings/#{key}", action: "show" },
-              caption:,
-              parent: :settings
+              parent: :settings,
+              **options
   end
 end
 

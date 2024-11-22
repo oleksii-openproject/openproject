@@ -28,7 +28,7 @@
 
 require "spec_helper"
 
-RSpec.describe "Projects life cycle settings", :js, :with_cuprite do
+RSpec.describe "Projects life cycle settings", :js, :with_cuprite, with_flag: { stages_and_gates: true } do
   shared_let(:project) { create(:project) }
 
   shared_let(:user_with_permission) do

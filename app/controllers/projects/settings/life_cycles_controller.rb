@@ -29,6 +29,8 @@
 class Projects::Settings::LifeCyclesController < Projects::SettingsController
   include OpTurbo::ComponentStream
 
+  before_action :deny_access_on_feature_flag
+
   before_action :load_life_cycle_elements, only: %i[show]
   before_action :load_or_create_life_cycle_element, only: %i[toggle]
 
@@ -59,5 +61,9 @@ class Projects::Settings::LifeCyclesController < Projects::SettingsController
             end
 
     @life_cycle_element = klass.find_or_create_by(element_params)
+  end
+
+  def deny_access_on_feature_flag
+    deny_access unless OpenProject::FeatureDecisions.stages_and_gates_active?
   end
 end
