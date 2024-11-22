@@ -57,7 +57,6 @@ module Reminders
       Notifications::CreateService
         .new(user: reminder.creator)
         .call(
-          actor_id: reminder.creator_id,
           recipient_id: reminder.creator_id,
           resource: reminder.remindable,
           reason: :reminder

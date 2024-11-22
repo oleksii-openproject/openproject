@@ -54,7 +54,6 @@ RSpec.describe Reminders::ScheduleReminderJob do
       aggregate_failures "notification attributes" do
         notification = notification_svc.result
 
-        expect(notification.actor_id).to eq(reminder.creator_id)
         expect(notification.recipient_id).to eq(reminder.creator_id)
         expect(notification.resource).to eq(reminder.remindable)
         expect(notification.reason).to eq("reminder")
