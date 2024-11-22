@@ -3,7 +3,10 @@
     id: FORM_ID,
     model: WorkPackage.new,
     **submit_url_options,
-    data: { turbo: true }
+    data: {
+      turbo: true,
+      update_work_package: true
+    }
     ) do |f| %>
     <%# Form fields section %>
     <%= flex_layout(my: 3) do |flex|

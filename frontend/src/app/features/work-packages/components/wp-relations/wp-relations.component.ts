@@ -62,6 +62,12 @@ export class WorkPackageRelationsComponent extends UntilDestroyedMixin implement
 
   turboFrameSrc:string;
 
+  // This is some sort of hack due to the mixing of Angular and rails. The component has two event listeners on WP and relation changes.
+  // Everytime one of the triggers, the tab is re-rendered. However, when the inside the turboFrame a form was successfully submitted, we also update the WP and the relation to keep Angular informed about the changes in the frame.
+  // To avoid that the tab is then rendered multiple times, I introduced these flags.
+  wpChangeManuallyTriggered = false;
+  relationChangeManuallyTriggered = false;
+
   constructor(
     private wpRelations:WorkPackageRelationsService,
     private apiV3Service:ApiV3Service,
@@ -85,7 +91,12 @@ export class WorkPackageRelationsComponent extends UntilDestroyedMixin implement
       takeUntil(componentDestroyed(this)),
       debounceTime(500),
     ).subscribe(() => {
-      this.updateRelationsTab();
+      // When the change was triggered by the turbo:submit-end listener below, we will not udpate the tab again
+      if (this.relationChangeManuallyTriggered) {
+        this.relationChangeManuallyTriggered = false;
+      } else {
+        this.updateRelationsTab();
+      }
     });
 
     // Listen to changes to this WP
@@ -98,7 +109,12 @@ export class WorkPackageRelationsComponent extends UntilDestroyedMixin implement
       ).subscribe((wp:WorkPackageResource) => {
         this.workPackage = wp;
 
-        this.updateRelationsTab();
+        // When the change was triggered by the turbo:submit-end listener below, we will not udpate the tab again
+        if (this.wpChangeManuallyTriggered) {
+          this.wpChangeManuallyTriggered = false;
+        } else {
+          this.updateRelationsTab();
+        }
       });
 
     /*
@@ -114,23 +130,21 @@ export class WorkPackageRelationsComponent extends UntilDestroyedMixin implement
     */
     document.addEventListener('turbo:submit-end', (event:CustomEvent) => {
       const form = event.target as HTMLFormElement;
-      const requestIsWithinFrame = form.action?.includes('relation') || form.action?.includes('child');
+      const updateWorkPackage = !!form.dataset?.updateWorkPackage;
 
-      if (requestIsWithinFrame) {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        const { fetchResponse } = event.detail;
-
+      if (updateWorkPackage) {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        if (fetchResponse?.succeeded) {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-
+        if (event.detail && event.detail.success) {
           // Update the work package
+          this.wpChangeManuallyTriggered = true;
           void this.apiV3Service
             .work_packages
             .id(this.workPackage.id!)
             .refresh();
           this.halEvents.push(this.workPackage, { eventType: 'updated' });
+
           // Refetch relations
+          this.relationChangeManuallyTriggered = true;
           void this.wpRelations.require(this.workPackage.id!, true);
 
           this.updateCounter();

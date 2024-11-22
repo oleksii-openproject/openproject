@@ -51,7 +51,8 @@ flex_layout(direction: :column, style: "gap: 0.25rem;") do |flex|
                            method: :delete,
                            data: {
                              confirm: t("text_are_you_sure"),
-                             turbo_stream: true
+                             turbo_stream: true,
+                             update_work_package: true
                            }
                          },
                          test_selector: delete_button_test_selector) do |item|
