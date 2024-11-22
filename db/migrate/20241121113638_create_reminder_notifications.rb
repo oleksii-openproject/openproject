@@ -6,5 +6,9 @@ class CreateReminderNotifications < ActiveRecord::Migration[7.1]
 
       t.timestamps
     end
+
+    add_index :reminder_notifications, :notification_id,
+              unique: true,
+              name: "index_reminder_notifications_unique"
   end
 end
