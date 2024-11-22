@@ -114,10 +114,7 @@ module AvatarHelper
       inputs[:hoverCard] = true
       inputs[:hoverCardModalTarget] = hover_card.fetch(:target, :default)
 
-      # Hardcoded properties for now:
       inputs[:hoverCardUrl] = hover_card_user_path(user.id)
-      inputs[:hoverCardCloseDelay] = 250
-      inputs[:hoverCardAlignment] = "top"
     end
 
     angular_component_tag "opce-principal",

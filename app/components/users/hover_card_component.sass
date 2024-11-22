@@ -1,31 +1,16 @@
 // When displaying the hover card on top of an existing modal, we must
 // set the z-index so that the hover card stays in the front.
 .op-user-share-modal-overlay
-  z-index: 9600
   position: absolute
+  z-index: 9600
 
-// Correct the z-index of the modal container so that it is above user auto completers
+// Correct the z-index of the regular hover card container so that it is above user auto completers
 .spot-modal-overlay:has(.op-user-hover-card)
   z-index: 9600
 
 .op-user-hover-card
   gap: 1rem
   overflow: hidden
-
-  // Triangle pointing to the source of the hover card
-  // TODO: always points down, but the hover card might float south of the
-  // target... So this is not correct in all cases.
-  // Additionally, the shadow (aka border) is missing from this triangle.
-  &::before
-    content: ""
-    width: 0
-    height: 0
-    border-left: 5px solid transparent
-    border-right: 5px solid transparent
-    border-top: 5px solid var(--body-background)
-    position: absolute
-    top: 100%
-    left: 49%
 
   .op-user-hover-card-user-info
     gap: 0.5rem

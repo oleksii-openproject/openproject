@@ -78,7 +78,7 @@ export class OpPrincipalComponent implements OnInit {
 
   @Input() hoverCard= false;
   @Input() hoverCardUrl= '';
-  @Input() hoverCardCloseDelay:number = 100;
+  @Input() hoverCardCloseDelay:number = 500;
   @Input() hoverCardAlignment:string = 'top';
   @Input() hoverCardModalTarget:'default'|'custom' = 'default';
 
