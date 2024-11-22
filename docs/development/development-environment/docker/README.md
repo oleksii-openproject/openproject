@@ -218,6 +218,16 @@ you want to see what the browsers are doing. `gvncviewer` or `vinagre` on Linux 
 the `docker-compose.override.yml` to access a container of a specific browser. As a default, the `chrome` container is
 exposed on port 5900. The password is `secret` for all.
 
+Bear in mind that overriding the network for `backend-test`, might cause issues with selenium connecting to the browser.
+
+```
+Selenium::WebDriver::Error::UnknownError:
+  unknown error: net::ERR_CONNECTION_REFUSED
+    (Session info: chrome=130.0.6723.91)
+```
+
+If this happend just comment out the network overrides
+
 ## TLS support
 
 Within `docker/dev/tls` compose files are provided, that elevate the development stack to be run under full TLS
