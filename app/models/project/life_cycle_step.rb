@@ -37,8 +37,6 @@ class Project::LifeCycleStep < ApplicationRecord
 
   validates :type, inclusion: { in: %w[Project::Stage Project::Gate], message: :must_be_a_stage_or_gate }
 
-  acts_as_list
-
   def initialize(*args)
     if instance_of? Project::LifeCycleStep
       # Do not allow directly instantiating this class
