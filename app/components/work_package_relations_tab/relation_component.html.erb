@@ -1,6 +1,6 @@
 <%=
 flex_layout do |flex|
-  flex.with_row(mb: 1) do
+  flex.with_row(mb: 1, mt: 1) do
     render(WorkPackages::InfoLineComponent.new(work_package: related_work_package))
   end
 
