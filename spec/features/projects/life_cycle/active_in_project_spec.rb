@@ -40,11 +40,11 @@ RSpec.describe "Projects life cycle settings", :js, :with_cuprite do
            })
   end
 
-  shared_let(:initiating_stage) { create(:stage, name: "Initiating") }
-  shared_let(:ready_to_execute_gate) { create(:gate, name: "Ready to Execute") }
-  shared_let(:executing_stage) { create(:stage, name: "Executing") }
-  shared_let(:ready_to_close_gate) { create(:gate, name: "Ready to Close") }
-  shared_let(:closing_stage) { create(:stage, name: "Closing") }
+  shared_let(:initiating_stage) { create(:project_stage_definition, name: "Initiating") }
+  shared_let(:ready_to_execute_gate) { create(:project_gate_definition, name: "Ready to Execute") }
+  shared_let(:executing_stage) { create(:project_stage_definition, name: "Executing") }
+  shared_let(:ready_to_close_gate) { create(:project_gate_definition, name: "Ready to Close") }
+  shared_let(:closing_stage) { create(:project_stage_definition, name: "Closing") }
 
   let(:project_lifecycle_page) { Pages::Projects::Settings::LifeCycle.new(project) }
 

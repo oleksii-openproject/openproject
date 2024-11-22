@@ -43,16 +43,16 @@ class Projects::Settings::LifeCyclesController < Projects::SettingsController
   private
 
   def load_life_cycle_elements
-    @life_cycle_elements = LifeCycle.all
+    @life_cycle_elements = Project::LifeCycleStepDefinition.all
   end
 
   def load_or_create_life_cycle_element
-    element_params = params.require(:project_life_cycle).permit(:life_cycle_id, :project_id, :type)
+    element_params = params.require(:project_life_cycle).permit(:definition_id, :project_id, :type)
 
     klass = case element_params.delete(:type)
-            when Stage.name
+            when Project::StageDefinition.name
               Project::Stage
-            when Gate.name
+            when Project::GateDefinition.name
               Project::Gate
             else
               raise NotImplementedError, "Unknown life cycle element type"

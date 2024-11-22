@@ -37,9 +37,9 @@ module Projects
 
     def icon
       case model
-      when Stage
+      when Project::StageDefinition
         :"git-commit"
-      when Gate
+      when Project::GateDefinition
         :diamond
       else
         raise NotImplementedError, "Unknown model #{model.class} to render a LifeCycleTypeComponent with"

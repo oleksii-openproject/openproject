@@ -1402,7 +1402,6 @@ en:
       custom_field: "Custom field"
       "doorkeeper/application": "OAuth application"
       forum: "Forum"
-      gate: "Gate"
       global_role: "Global role"
       group: "Group"
       member: "Member"
@@ -1412,6 +1411,8 @@ en:
         other: "Notifications"
       placeholder_user: "Placeholder user"
       project: "Project"
+      project/gate_definition: "Gate"
+      project/stage_definition: "Stage"
       project_query:
         one: "Project list"
         other: "Project lists"
@@ -1420,7 +1421,6 @@ en:
         one: "Role"
         other: "Roles"
       status: "Work package status"
-      stage: "Stage"
       token/api:
         one: Access token
         other: Access tokens

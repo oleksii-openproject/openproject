@@ -46,8 +46,8 @@ module Projects
 
         def active_in_project?
           project
-            .project_life_cycles
-            .detect { |project_lc| project_lc.life_cycle_id == element.id }
+            .life_cycle_steps
+            .detect { |project_lc| project_lc.definition_id == element.id }
             &.active
         end
 
