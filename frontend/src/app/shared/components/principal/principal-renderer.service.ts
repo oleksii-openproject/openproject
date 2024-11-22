@@ -259,6 +259,8 @@ export class PrincipalRendererService {
     const hoverCard = options.hoverCard;
 
     if (!hoverCard?.url) {
+      // In some cases, there is no URL given although a hover card is expected. For example when the principle
+      // is rendered from an angular template. We try to infer the URL here.
       const url = this.userHoverCardUrl(principal);
       if (hoverCard && url) {
         hoverCard.url = url;
