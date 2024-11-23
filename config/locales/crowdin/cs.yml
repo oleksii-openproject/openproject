@@ -239,6 +239,8 @@ cs:
           zero: žádné dílčí položky
           one: 1 dílčí položka
           other: "%{count} dílčí položky"
+    upsale:
+      custom_field_format_hierarchy: "Need a hierarchy in your custom fields for work packages?"
     text_add_new_custom_field: >
       Chcete-li přidat nová vlastní pole do projektu, musíte je nejprve vytvořit, než je budete moci přidat do tohoto projektu.
     is_enabled_globally: "Globálně povoleno"

@@ -239,6 +239,8 @@ tr:
           zero: alt öğe yok
           one: 1 alt öğe
           other: "%{count} alt öğe"
+    upsale:
+      custom_field_format_hierarchy: "Need a hierarchy in your custom fields for work packages?"
     text_add_new_custom_field: >
       Bir projeye yeni özel alanlar eklemeden önce onları oluşturmalısınız.
     is_enabled_globally: "Genel için etkinleştirildi"

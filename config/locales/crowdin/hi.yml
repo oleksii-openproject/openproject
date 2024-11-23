@@ -239,6 +239,8 @@ hi:
           zero: no sub-items
           one: 1 sub-item
           other: "%{count} sub-items"
+    upsale:
+      custom_field_format_hierarchy: "Need a hierarchy in your custom fields for work packages?"
     text_add_new_custom_field: >
       परियोजना में नई custom fields जोडनें हेतु, पहले आपको उनका सृजन करना पडेगा, तत्पष्चात ही आप उन्हें परियोजना में जोड सकेंगे.
     is_enabled_globally: "Is enabled globally"

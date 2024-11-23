@@ -239,6 +239,8 @@ sk:
           zero: no sub-items
           one: 1 sub-item
           other: "%{count} sub-items"
+    upsale:
+      custom_field_format_hierarchy: "Need a hierarchy in your custom fields for work packages?"
     text_add_new_custom_field: >
       Ak chcete priradiť nové vlastné pole do projektu, je potrebné ich vytvoriť ako prvé. Následne je ich možné pridať v tomto projekte.
     is_enabled_globally: "Je povolené globálne"

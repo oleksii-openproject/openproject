@@ -239,6 +239,8 @@ fil:
           zero: no sub-items
           one: 1 sub-item
           other: "%{count} sub-items"
+    upsale:
+      custom_field_format_hierarchy: "Need a hierarchy in your custom fields for work packages?"
     text_add_new_custom_field: >
       Upang magdagdag ng mga kustom na patlang sa isang proyekto kinakailangan mo muna likhain bago ka muna sila idagdag sa proyektong ito.
     is_enabled_globally: "Ay pinagana pandaigdigan"

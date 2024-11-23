@@ -224,7 +224,7 @@ ru:
         blankslate:
           root:
             title: "Ваш список пунктов пуст"
-            description: "Start by adding items to the custom field of type hierarchy. Each item can be used to create a hierarchy bellow it. To navigate and create sub-items inside a hierarchy click on the created item."
+            description: "Начните с добавления элементов в иерархическое настраиваемое поле. Каждый элемент может быть использован для создания иерархии ниже его. Чтобы переместить и создать подпункты внутри иерархии, нажмите на созданный элемент."
           item:
             title: Этот элемент не имеет уровня иерархии ниже
             description: Добавьте элементы в этот список, чтобы создать подпункты внутри другого списка
@@ -238,6 +238,8 @@ ru:
           zero: нет подпунктов
           one: 1 подпункт
           other: "%{count} подпунктов"
+    upsale:
+      custom_field_format_hierarchy: "Need a hierarchy in your custom fields for work packages?"
     text_add_new_custom_field: >
       Прежде чем добавлять настраиваемые поля в проект, нужно создать их.
     is_enabled_globally: "Разрешено в глобальном масштабе"
@@ -1210,7 +1212,7 @@ ru:
               special: "спецсимволы (например, \"%\")"
               reused:
                 one: "уже использовался ранее. Пожалуйста, укажите другое значение."
-                few: "уже использовалось ранее. Пожалуйста, укажите другое значение."
+                few: "уже использовался ранее. Пожалуйста, укажите отличающийся пароль от %{count} использованных ранее."
                 many: "уже использовались ранее. Пожалуйста, укажите значения отличающиеся от %{count}."
                 other: "уже использовалось ранее. Пожалуйста, укажите значения отличающиеся от ваших последних %{count}."
               match:
