@@ -188,8 +188,8 @@ fr:
           without_type: "Créer un lot de travaux"
           with_type: "Créer un lot de travaux (Type : %{typename})"
         embedded_table:
-          button: "Tableau intégré de lots de travaux"
-          text: "[Placeholder] Tableau intégré de lots de travaux"
+          button: "Intégrer le lot de travaux"
+          text: "[Placeholder] Tableau du lot de travaux intégré"
         embedded_calendar:
           text: "[Placeholder] Calendrier embarqué"
     admin:
