@@ -13,8 +13,6 @@ export type AvatarSize = 'default'|'medium'|'mini';
 export interface HoverCardOptions {
   url?:string;
   modalTarget?:PortalOutletTarget;
-  closeDelay?:number;
-  alignment?:string;
 }
 
 export interface AvatarOptions {
@@ -273,12 +271,5 @@ export class PrincipalRendererService {
 
     element.setAttribute('data-hover-card-url', hoverCard.url);
     element.setAttribute('data-hover-card-target', String(hoverCard.modalTarget || PortalOutletTarget.Default));
-
-    if (hoverCard.closeDelay) {
-      element.setAttribute('data-hover-card-close-delay', String(hoverCard.closeDelay));
-    }
-    if (hoverCard.alignment) {
-      element.setAttribute('data-hover-card-alignment', hoverCard.alignment);
-    }
   }
 }

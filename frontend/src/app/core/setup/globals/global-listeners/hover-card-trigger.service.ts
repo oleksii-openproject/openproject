@@ -29,7 +29,6 @@
 import { Injectable, Injector, NgZone } from '@angular/core';
 import { OpModalService } from 'core-app/shared/components/modal/modal.service';
 import { HoverCardComponent } from 'core-app/shared/components/modals/preview-modal/hover-card-modal/hover-card.modal';
-import { Placement } from '@floating-ui/dom';
 import { PortalOutletTarget } from 'core-app/shared/components/modal/portal-outlet-target.enum';
 
 @Injectable({ providedIn: 'root' })
@@ -39,11 +38,14 @@ export class HoverCardTriggerService {
   private mouseInModal = false;
   private hoverTimeout:number|null = null;
   private closeTimeout:number|null = null;
-  private closeDelayInMs:number = 100;
-  private modalAlignment:string|null = null;
   // Set to custom when opening the hover card on top of another modal
   private modalTarget:PortalOutletTarget = PortalOutletTarget.Default;
   private previousTarget:HTMLElement|null = null;
+
+  // The time you need to keep hovering over a trigger before the hover card is shown
+  OPEN_DELAY_IN_MS = 1000;
+  // The time you need to keep away from trigger/hover card before an opened card is closed
+  CLOSE_DELAY_IN_MS = 250;
 
   constructor(
     readonly opModalService:OpModalService,
@@ -94,13 +96,10 @@ export class HoverCardTriggerService {
           this.modalTarget,
         ).subscribe((previewModal) => {
           this.modalElement = previewModal.elementRef.nativeElement as HTMLElement;
-          if (this.modalAlignment) {
-            previewModal.alignment = this.modalAlignment as Placement;
-          }
 
           void previewModal.reposition(this.modalElement, el);
         });
-      }, 1000);
+      }, this.OPEN_DELAY_IN_MS);
     });
 
     jQuery(document.body).on('mouseleave', '.op-hover-card--preview-trigger', () => {
@@ -135,23 +134,14 @@ export class HoverCardTriggerService {
           // Allow opening this target once more, since it has been orderly closed
           this.previousTarget = null;
         }
-      }, this.closeDelayInMs);
+      }, this.CLOSE_DELAY_IN_MS);
     });
   }
 
   private parseHoverCardOptions(el:HTMLElement) {
-    // Optional: configure the delay after that the card vanishes when the mouse pointer leaves it
-    const delay = el.getAttribute('data-hover-card-close-delay');
-    if (delay) {
-      this.closeDelayInMs = parseInt(delay, 10);
-    }
-
     const modalTarget = el.getAttribute('data-hover-card-target');
     if (modalTarget) {
       this.modalTarget = parseInt(modalTarget, 10);
     }
-
-    // Optional: configure the alignment of the card
-    this.modalAlignment = el.getAttribute('data-hover-card-alignment');
   }
 }
