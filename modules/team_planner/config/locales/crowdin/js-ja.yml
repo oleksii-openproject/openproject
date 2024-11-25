@@ -14,14 +14,14 @@ ja:
       one_week: '1-week'
       four_weeks: '4-week'
       eight_weeks: '8-week'
-      work_week: 'Work week'
+      work_week: ''
       today: '今日'
-      drag_here_to_remove: 'Drag here to remove assignee and start and end dates.'
+      drag_here_to_remove: ''
       cannot_drag_here: 'Cannot remove the work package due to permissions or editing restrictions.'
       cannot_drag_to_non_working_day: 'This work package cannot start/finish on a non-working day.'
       quick_add:
         empty_state: 'Use the search field to find work packages and drag them to the planner to assign it to someone and define start and end dates.'
-        search_placeholder: 'Search...'
+        search_placeholder: '検索'
       modify:
         errors:
           permission_denied: 'You do not have the necessary permissions to modify this.'

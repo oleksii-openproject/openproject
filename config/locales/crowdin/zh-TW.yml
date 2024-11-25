@@ -239,7 +239,7 @@ zh-TW:
           one: 1 個子項目
           other: "%{count} 子項目"
     upsale:
-      custom_field_format_hierarchy: "Need a hierarchy in your custom fields for work packages?"
+      custom_field_format_hierarchy: "工作項目的自訂欄位需要分層嗎？"
     text_add_new_custom_field: >
       要加入客製欄位至一個專案，您必須先建立欄位才能將它們加入至此專案。
     is_enabled_globally: "已全域啟用"
