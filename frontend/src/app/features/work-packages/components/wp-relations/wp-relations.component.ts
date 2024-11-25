@@ -38,17 +38,18 @@ import {
 import { WorkPackageResource } from 'core-app/features/hal/resources/work-package-resource';
 import {
   debounceTime,
-  skip,
-  takeUntil,
+  filter,
 } from 'rxjs/operators';
 import { UntilDestroyedMixin } from 'core-app/shared/helpers/angular/until-destroyed.mixin';
-import { componentDestroyed } from '@w11k/ngx-componentdestroyed';
 import { ApiV3Service } from 'core-app/core/apiv3/api-v3.service';
 import { WorkPackageRelationsService } from './wp-relations.service';
 import { PathHelperService } from 'core-app/core/path-helper/path-helper.service';
 import { TurboRequestsService } from 'core-app/core/turbo/turbo-requests.service';
 import { renderStreamMessage } from '@hotwired/turbo';
-import { HalEventsService } from 'core-app/features/hal/services/hal-events.service';
+import {
+  HalEventsService,
+  RelatedWorkPackageEvent,
+} from 'core-app/features/hal/services/hal-events.service';
 
 @Component({
   selector: 'wp-relations',
@@ -61,12 +62,6 @@ export class WorkPackageRelationsComponent extends UntilDestroyedMixin implement
   @ViewChild('frameElement') readonly relationTurboFrame:ElementRef<HTMLIFrameElement>;
 
   turboFrameSrc:string;
-
-  // This is some sort of hack due to the mixing of Angular and rails. The component has two event listeners on WP and relation changes.
-  // Everytime one of the triggers, the tab is re-rendered. However, when the inside the turboFrame a form was successfully submitted, we also update the WP and the relation to keep Angular informed about the changes in the frame.
-  // To avoid that the tab is then rendered multiple times, I introduced these flags.
-  wpChangeManuallyTriggered = false;
-  relationChangeManuallyTriggered = false;
 
   constructor(
     private wpRelations:WorkPackageRelationsService,
@@ -83,38 +78,19 @@ export class WorkPackageRelationsComponent extends UntilDestroyedMixin implement
   }
 
   ngAfterViewInit() {
-    // Listen to changes on relations (e.g. by inline creating a child)
-    this.wpRelations
-      .state(this.workPackage.id!)
-      .values$()
+    // Listen to any changes to the relations and update the frame
+    this
+      .halEvents
+      .events$
       .pipe(
-      takeUntil(componentDestroyed(this)),
-      debounceTime(500),
-    ).subscribe(() => {
-      // When the change was triggered by the turbo:submit-end listener below, we will not udpate the tab again
-      if (this.relationChangeManuallyTriggered) {
-        this.relationChangeManuallyTriggered = false;
-      } else {
-        this.updateRelationsTab();
-      }
-    });
-
-    // Listen to changes to this WP
-    this.apiV3Service.work_packages.id(this.workPackage)
-      .requireAndStream()
-      .pipe(
-        skip(1),
-        takeUntil(componentDestroyed(this)),
+        filter((e:RelatedWorkPackageEvent) => {
+          return e.eventType === 'association' && e.id.toString() === this.workPackage.id?.toString();
+        }),
         debounceTime(500),
-      ).subscribe((wp:WorkPackageResource) => {
-        this.workPackage = wp;
-
-        // When the change was triggered by the turbo:submit-end listener below, we will not udpate the tab again
-        if (this.wpChangeManuallyTriggered) {
-          this.wpChangeManuallyTriggered = false;
-        } else {
-          this.updateRelationsTab();
-        }
+        this.untilDestroyed(),
+      )
+      .subscribe(() => {
+        this.updateRelationsTab();
       });
 
     /*
@@ -136,7 +112,6 @@ export class WorkPackageRelationsComponent extends UntilDestroyedMixin implement
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         if (event.detail && event.detail.success) {
           // Update the work package
-          this.wpChangeManuallyTriggered = true;
           void this.apiV3Service
             .work_packages
             .id(this.workPackage.id!)
@@ -144,7 +119,6 @@ export class WorkPackageRelationsComponent extends UntilDestroyedMixin implement
           this.halEvents.push(this.workPackage, { eventType: 'updated' });
 
           // Refetch relations
-          this.relationChangeManuallyTriggered = true;
           void this.wpRelations.require(this.workPackage.id!, true);
 
           this.updateCounter();
