@@ -40,13 +40,22 @@ module CustomFields
       end
 
       rule(:parent) do
+        next if schema_error?(:parent)
+
         key.failure("must exist") unless value.persisted?
       end
 
       rule(:label) do
-        if CustomField::Hierarchy::Item.exists?(parent_id: values[:parent], label: value)
-          key.failure(:not_unique)
-        end
+        next if schema_error?(:parent)
+
+        key.failure(:not_unique) if values[:parent].children.exists?(label: value)
+      end
+
+      rule(:short) do
+        next if schema_error?(:parent)
+        next unless key?
+
+        key.failure(:not_unique) if values[:parent].children.exists?(short: value)
       end
     end
   end

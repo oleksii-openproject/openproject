@@ -105,6 +105,7 @@ ckb-IR:
     button_update: "Update"
     button_export-pdf: "Download PDF"
     button_export-atom: "Download Atom"
+    button_generate_pdf: "Generate PDF"
     button_create: "Create"
     card:
       add_new: "Add new card"
@@ -575,7 +576,7 @@ ckb-IR:
         members: "Invite new <b>members</b> to join your project."
         quick_add_button: "Click on the plus (+) icon in the header navigation to <b>create a new project</b> or to <b>invite coworkers</b>."
         sidebar_arrow: "Use the return arrow in the top left corner to return to the project’s <b>main menu</b>."
-        welcome: "Take a three minutes introduction tour to learn the most <b>important features</b>. <br> We recommend completing the steps until the end. You can restart the tour any time."
+        welcome: "Take a three-minute introduction tour to learn the most <b>important features</b>. <br> We recommend completing the steps until the end. You can restart the tour any time."
         wiki: "Within the <b>wiki</b> you can document and share knowledge together with your team."
         backlogs:
           overview: "Manage your work in the <b>backlogs</b> view."

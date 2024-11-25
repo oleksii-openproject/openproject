@@ -69,7 +69,7 @@ RSpec.describe RemoveTotalsFromChildlessWorkPackages, type: :model do
       end
 
       it "removes totals from childless work packages" do
-        expect_work_packages(table_work_packages.map(&:reload), <<~TABLE)
+        expect_work_packages_after_reload(table_work_packages, <<~TABLE)
           hierarchy               | work | remaining work | % complete | ∑ work | ∑ remaining work | ∑ % complete
           wp totals set           |   5h |             3h |        40% |        |                  |
           wp only pc set          |      |                |        60% |        |                  |

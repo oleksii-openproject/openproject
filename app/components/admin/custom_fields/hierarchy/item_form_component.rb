@@ -34,10 +34,29 @@ module Admin
       class ItemFormComponent < ApplicationComponent
         include OpTurbo::Streamable
 
-        def initialize(target_item:, url:, method:)
-          super(target_item)
-          @url = url
-          @method = method
+        def item_options
+          options = { url:, method: http_verb, data: { test_selector: "op-custom-fields--new-item-form" } }
+          options[:data][:turbo_frame] = ItemsComponent.wrapper_key if model.new_record?
+
+          options
+        end
+
+        def http_verb
+          model.new_record? ? :post : :put
+        end
+
+        def url
+          if model.new_record?
+            new_child_custom_field_item_path(root.custom_field_id, model.parent, position: model.sort_order)
+          else
+            custom_field_item_path(root.custom_field_id, model)
+          end
+        end
+
+        private
+
+        def root
+          @root ||= model.new_record? ? model.parent.root : model.root
         end
       end
     end

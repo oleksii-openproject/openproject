@@ -35,8 +35,8 @@ RSpec.describe CustomFields::Hierarchy::HierarchicalItemService do
   let(:invalid_custom_field) { create(:custom_field, field_format: "text", hierarchy_root: nil) }
 
   let!(:root) { service.generate_root(custom_field).value! }
-  let!(:luke) { service.insert_item(parent: root, label: "luke").value! }
-  let!(:leia) { service.insert_item(parent: luke, label: "leia").value! }
+  let!(:luke) { service.insert_item(parent: root, label: "luke", short: "LS").value! }
+  let!(:mara) { service.insert_item(parent: luke, label: "mara").value! }
 
   subject(:service) { described_class.new }
 
@@ -72,6 +72,7 @@ RSpec.describe CustomFields::Hierarchy::HierarchicalItemService do
     context "with valid parameters" do
       it "inserts an item successfully without short" do
         result = service.insert_item(parent: luke, label:)
+
         expect(result).to be_success
         expect(luke.reload.children.count).to eq(2)
       end
@@ -79,6 +80,14 @@ RSpec.describe CustomFields::Hierarchy::HierarchicalItemService do
       it "inserts an item successfully with short" do
         result = service.insert_item(parent: root, label:, short:)
         expect(result).to be_success
+      end
+
+      it "insert an item into a specific sort_order" do
+        leia = service.insert_item(parent: root, label: "leia").value!
+        expect(root.reload.children).to contain_exactly(luke, leia)
+
+        bob = service.insert_item(parent: root, label: "Bob", sort_order: 1).value!
+        expect(root.reload.children).to contain_exactly(luke, bob, leia)
       end
     end
 
@@ -105,11 +114,12 @@ RSpec.describe CustomFields::Hierarchy::HierarchicalItemService do
       let!(:leia) { service.insert_item(parent: root, label: "leia").value! }
 
       it "refuses to update the item with new attributes" do
-        result = service.update_item(item: luke, label: "leia", short: "LS")
+        result = service.update_item(item: leia, label: "luke", short: "LS")
         expect(result).to be_failure
 
         errors = result.failure.errors
-        expect(errors.to_h).to eq({ label: ["must be unique at the same hierarchical level"] })
+        expect(errors[:label]).to eq(["must be unique within the same hierarchy level."])
+        expect(errors[:short]).to eq(["must be unique within the same hierarchy level."])
       end
     end
   end
@@ -136,13 +146,13 @@ RSpec.describe CustomFields::Hierarchy::HierarchicalItemService do
   describe "#get_branch" do
     context "with a non-root node" do
       it "returns all the ancestors to that item" do
-        result = service.get_branch(item: leia)
+        result = service.get_branch(item: mara)
         expect(result).to be_success
 
         ancestors = result.value!
         expect(ancestors.size).to eq(3)
-        expect(ancestors).to contain_exactly(root, luke, leia)
-        expect(ancestors.last).to eq(leia)
+        expect(ancestors).to contain_exactly(root, luke, mara)
+        expect(ancestors.last).to eq(mara)
       end
     end
 
@@ -159,27 +169,97 @@ RSpec.describe CustomFields::Hierarchy::HierarchicalItemService do
     let(:lando) { service.insert_item(parent: root, label: "lando").value! }
 
     it "move the node to the new parent" do
-      expect { service.move_item(item: leia, new_parent: lando) }.to change { leia.reload.ancestors.first }.to(lando)
+      expect { service.move_item(item: mara, new_parent: lando) }.to change { mara.reload.ancestors.first }.to(lando)
     end
 
     it "all child nodes follow" do
       service.move_item(item: luke, new_parent: lando)
 
       expect(luke.reload.ancestors).to contain_exactly(root, lando)
-      expect(leia.reload.ancestors).to contain_exactly(root, lando, luke)
+      expect(mara.reload.ancestors).to contain_exactly(root, lando, luke)
     end
   end
 
-  describe "reorder_item" do
+  describe "#reorder_item" do
     let!(:lando) { service.insert_item(parent: root, label: "lando").value! }
     let!(:chewbacca) { service.insert_item(parent: root, label: "AWOOO").value! }
 
-    it "moves the note to the requested position" do
+    it "reorders the item to the target position" do
       service.reorder_item(item: chewbacca, new_sort_order: 1)
 
       expect(luke.reload.sort_order).to eq(0)
       expect(chewbacca.reload.sort_order).to eq(1)
       expect(lando.reload.sort_order).to eq(2)
+    end
+
+    it "reorders the item even if sort order is a string" do
+      service.reorder_item(item: chewbacca, new_sort_order: "1")
+
+      expect(luke.reload.sort_order).to eq(0)
+      expect(chewbacca.reload.sort_order).to eq(1)
+      expect(lando.reload.sort_order).to eq(2)
+    end
+
+    it "reorders the item to the last position" do
+      service.reorder_item(item: lando, new_sort_order: root.children.length)
+
+      expect(luke.reload.sort_order).to eq(0)
+      expect(chewbacca.reload.sort_order).to eq(1)
+      expect(lando.reload.sort_order).to eq(2)
+    end
+
+    it "reorders the item to the first position" do
+      service.reorder_item(item: chewbacca, new_sort_order: 0)
+
+      expect(chewbacca.reload.sort_order).to eq(0)
+      expect(luke.reload.sort_order).to eq(1)
+      expect(lando.reload.sort_order).to eq(2)
+    end
+
+    it "does not reorder before first" do
+      service.reorder_item(item: lando, new_sort_order: -10)
+
+      expect(lando.reload.sort_order).to eq(0)
+      expect(luke.reload.sort_order).to eq(1)
+      expect(chewbacca.reload.sort_order).to eq(2)
+    end
+
+    it "does not reorder after last" do
+      service.reorder_item(item: chewbacca, new_sort_order: 99)
+
+      expect(luke.reload.sort_order).to eq(0)
+      expect(lando.reload.sort_order).to eq(1)
+      expect(chewbacca.reload.sort_order).to eq(2)
+    end
+
+    it "does not reorder when changing self" do
+      service.reorder_item(item: lando, new_sort_order: lando.sort_order)
+
+      expect(luke.reload.sort_order).to eq(0)
+      expect(lando.reload.sort_order).to eq(1)
+      expect(chewbacca.reload.sort_order).to eq(2)
+    end
+  end
+
+  describe "#hashed_subtree" do
+    let!(:lando) { service.insert_item(parent: root, label: "lando").value! }
+    let!(:chewbacca) { service.insert_item(parent: root, label: "AWOOO").value! }
+    let!(:lowbacca) { service.insert_item(parent: chewbacca, label: "ARWWWW").value! }
+
+    it "produces a hash version of the tree" do
+      subtree = service.hashed_subtree(item: root, depth: -1)
+
+      expect(subtree.value!).to be_a(Hash)
+      expect(subtree.value![root].size).to eq(3)
+      expect(subtree.value![root][lando]).to be_empty
+      expect(subtree.value![root][chewbacca][lowbacca]).to be_empty
+    end
+
+    it "produces a hash version of a sub tree with limited depth" do
+      subtree = service.hashed_subtree(item: chewbacca, depth: 0)
+
+      expect(subtree.value!).to be_a(Hash)
+      expect(subtree.value![chewbacca]).to be_empty
     end
   end
 end

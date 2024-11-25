@@ -51,13 +51,42 @@ module TableHelpers
 
     # Expect the given work packages to match a visual table representation.
     #
+    # It uses +match_table+ internally. It does not reload the work packages
+    # before comparing. To reload, use `expect_work_packages_after_reload`
+    #
+    # For instance:
+    #
+    #   it 'is scheduled' do
+    #     expect_work_packages(work_packages, <<~TABLE)
+    #       subject | work | derived work |
+    #       parent  |   1h |           3h |
+    #       child   |   2h |           2h |
+    #     TABLE
+    #   end
+    #
+    # is equivalent to:
+    #
+    #   it 'is scheduled' do
+    #     expect(work_packages).to match_table(<<~TABLE)
+    #       subject | work | derived work |
+    #       parent  |   1h |           3h |
+    #       child   |   2h |           2h |
+    #     TABLE
+    #   end
+    def expect_work_packages(work_packages, table_representation)
+      expect(work_packages).to match_table(table_representation)
+    end
+
+    # Expect the given work packages to match a visual table representation
+    # after being reloaded.
+    #
     # It uses +match_table+ internally and reloads the work packages from
     # database before comparing.
     #
     # For instance:
     #
     #   it 'is scheduled' do
-    #     expect_work_packages(work_packages, <<~TABLE)
+    #     expect_work_packages_after_reload(work_packages, <<~TABLE)
     #       subject | work | derived work |
     #       parent  |   1h |           3h |
     #       child   |   2h |           2h |
@@ -74,9 +103,9 @@ module TableHelpers
     #       child   |   2h |           2h |
     #     TABLE
     #   end
-    def expect_work_packages(work_packages, table_representation)
+    def expect_work_packages_after_reload(work_packages, table_representation)
       work_packages.each(&:reload)
-      expect(work_packages).to match_table(table_representation)
+      expect_work_packages(work_packages, table_representation)
     end
   end
 end

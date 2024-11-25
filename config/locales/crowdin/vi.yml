@@ -225,8 +225,12 @@ vi:
       items:
         actions: "Item actions"
         blankslate:
-          title: "Your list of items is empty"
-          description: "Start by adding items to the custom field of type hierarchy. Each item can be used to create a hierarchy bellow it. To navigate and create sub-items inside a hierarchy click on the created item."
+          root:
+            title: "Your list of items is empty"
+            description: "Start by adding items to the custom field of type hierarchy. Each item can be used to create a hierarchy bellow it. To navigate and create sub-items inside a hierarchy click on the created item."
+          item:
+            title: This item doesn't have any hierarchy level below
+            description: Add items to this list to create sub-items inside another one
         placeholder:
           label: "Item label"
           short: "Short name"
@@ -237,6 +241,8 @@ vi:
           zero: no sub-items
           one: 1 sub-item
           other: "%{count} sub-items"
+    upsale:
+      custom_field_format_hierarchy: "Need a hierarchy in your custom fields for work packages?"
     text_add_new_custom_field: >
       Để thêm các trường tùy chỉnh mới vào một dự án, trước tiên bạn cần tạo chúng trước khi có thể thêm vào dự án này.
     is_enabled_globally: "Được bật toàn cầu"
@@ -263,12 +269,26 @@ vi:
     single: "hoặc"
   dry_validation:
     errors:
+      int?: "must be an integer."
+      filled?: "must be filled."
+      greater_or_equal_zero: "must be greater or equal to 0."
+      not_found: "not found."
       rules:
+        item:
+          root_item: "cannot be a root item."
+          not_persisted: "must be an already existing item."
         label:
-          filled?: "must be filled"
-          not_unique: "must be unique within the same hierarchy level"
+          not_unique: "must be unique within the same hierarchy level."
+        short:
+          not_unique: "must be unique within the same hierarchy level."
+        parent:
+          not_descendant: "must be a descendant of the hierarchy root."
     rules:
+      depth: "Depth"
+      item: "Item"
       label: "Label"
+      short: "Short name"
+      parent: "Parent"
   global_search:
     placeholder: "Tìm kiếm trong %{app_title}"
     overwritten_tabs:
@@ -1363,6 +1383,9 @@ vi:
   button_actions: "Hành động"
   button_add: "Thêm"
   button_add_comment: "Thêm bình luận"
+  button_add_item_above: "Add item above"
+  button_add_item_below: "Add item below"
+  button_add_sub_item: "Add sub-item"
   button_add_member: Thêm thành viên
   button_add_watcher: "Thêm người theo dõi"
   button_annotate: "Chú giải"
@@ -1768,6 +1791,23 @@ vi:
     units:
       hours: h
       days: d
+  pdf_generator:
+    page_nr_footer: "Page %{page} of %{total}"
+    dialog:
+      title: Generate PDF
+      submit: Generate
+      header_right:
+        label: Header right
+        caption: Text to be displayed in the right of the header
+      footer_center:
+        label: Footer center
+        caption: Text to be displayed in the center of the footer
+      hyphenation:
+        label: Hyphenation
+        caption: Break words between lines to improve text justification and readability.
+      paper_size:
+        label: Paper size
+        caption: The size of the paper to use for the PDF.
   extraction:
     available:
       pdftotext: "Pdftotext có sẵn (không bắt buộc)"
@@ -2147,7 +2187,7 @@ vi:
   label_filter: "Bộ lọc"
   label_filter_add: "Thêm bộ lọc"
   label_filter_by: "Filter by"
-  label_filter_plural: "Các bộ lọc"
+  label_filter_plural: "Bộ lọc"
   label_filters_toggle: "Hiển thị/ẩn bộ lọc"
   label_float: "Số thực"
   label_folder: "Thư mục"

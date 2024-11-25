@@ -105,11 +105,13 @@ export function initializeCoreEditFields(editFieldService:EditFieldService, sele
         'TimeEntriesActivity',
         'Category',
         'CustomOption',
+        'CustomField::Hierarchy::Item',
       ])
       .addFieldType(MultiSelectEditFieldComponent, 'multi-select', [
         '[]CustomOption',
         '[]User',
         '[]Version',
+        '[]CustomField::Hierarchy::Item',
       ])
       .addFieldType(FloatEditFieldComponent, 'float', ['Float'])
       .addFieldType(WorkPackageEditFieldComponent, 'workPackage', ['WorkPackage'])

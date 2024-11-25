@@ -3,16 +3,14 @@ module Saml
     class TableComponent < ::OpPrimer::BorderBoxTableComponent
       columns :name, :users, :creator, :created_at
 
+      mobile_columns :name, :users
+
+      mobile_labels :users
+
+      wide_columns :name
+
       def initial_sort
         %i[id asc]
-      end
-
-      def header_args(column)
-        if column == :name
-          { style: "grid-column: span 3" }
-        else
-          super
-        end
       end
 
       def sortable?
@@ -21,6 +19,10 @@ module Saml
 
       def empty_row_message
         I18n.t "saml.providers.no_results_table"
+      end
+
+      def mobile_title
+        I18n.t("saml.providers.plural")
       end
 
       def headers

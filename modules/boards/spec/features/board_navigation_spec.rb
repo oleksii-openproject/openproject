@@ -30,7 +30,10 @@ require "spec_helper"
 require_relative "support/board_index_page"
 require_relative "support/board_page"
 
-RSpec.describe "Work Package boards spec", :js, with_ee: %i[board_view] do
+RSpec.describe "Work Package boards spec",
+               :js,
+               :with_cuprite,
+               with_ee: %i[board_view] do
   let(:user) do
     create(:user,
            member_with_roles: { project => role })
@@ -66,8 +69,9 @@ RSpec.describe "Work Package boards spec", :js, with_ee: %i[board_view] do
     wp = WorkPackage.last
     expect(wp.subject).to eq "Task 1"
     # Double click leads to the full view
-    click_target = page.find_test_selector("op-wp-single-card--content-type")
-    page.driver.browser.action.double_click(click_target.native).perform
+    page
+      .find_test_selector("op-wp-single-card--content-type")
+      .double_click
 
     expect(page).to have_current_path project_work_package_path(project, wp.id, "activity")
 
@@ -82,6 +86,9 @@ RSpec.describe "Work Package boards spec", :js, with_ee: %i[board_view] do
 
     expect(page).to have_current_path /details\/#{wp.id}\/overview/
     card.expect_selected
+    split_view.close
+
+    expect(page).to have_current_path /boards\/#{board_view.id}$/
 
     # Add a second card, focus on that
     board_page.add_card "List 1", "Foobar"
@@ -91,8 +98,8 @@ RSpec.describe "Work Package boards spec", :js, with_ee: %i[board_view] do
     expect(wp.subject).to eq "Foobar"
     card = board_page.card_for(wp)
 
-    # Click on the card
-    card.card_element.click
+    # Click on the card again
+    card.open_details_view
     expect(page).to have_current_path /details\/#{wp.id}\/overview/
   end
 

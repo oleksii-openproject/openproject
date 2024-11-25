@@ -29,38 +29,36 @@
 #++
 
 module Meetings
-  class TableComponent < ::TableComponent
+  class TableComponent < ::OpPrimer::BorderBoxTableComponent
     options :current_project # used to determine if displaying the projects column
 
-    sortable_columns :title, :project_name, :type, :start_time, :duration, :location
+    columns :title, :start_time, :project_name, :duration, :location
+
+    mobile_columns :title, :start_time, :project_name
+
+    mobile_labels :project_name
+
+    def sortable?
+      true
+    end
 
     def initial_sort
       %i[start_time asc]
     end
 
-    def sortable_columns_correlation
-      super.merge(
-        project_name: "projects.name",
-        type: "meetings.type"
-      )
-    end
-
-    def initialize_sorted_model
-      helpers.sort_clear
-
-      super
-    end
-
-    def paginated?
+    def has_actions?
       true
+    end
+
+    def mobile_title
+      I18n.t(:label_meeting_plural)
     end
 
     def headers
       @headers ||= [
         [:title, { caption: Meeting.human_attribute_name(:title) }],
+        [:start_time, { caption: I18n.t(:label_meeting_date_and_time) }],
         current_project.blank? ? [:project_name, { caption: Meeting.human_attribute_name(:project) }] : nil,
-        [:type, { caption: Meeting.human_attribute_name(:type) }],
-        [:start_time, { caption: Meeting.human_attribute_name(:start_time) }],
         [:duration, { caption: Meeting.human_attribute_name(:duration) }],
         [:location, { caption: Meeting.human_attribute_name(:location) }]
       ].compact

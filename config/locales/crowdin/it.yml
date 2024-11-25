@@ -76,11 +76,11 @@ it:
       upgrade_to_ee: "Aggiorna a Enterprise edition"
       add_token: "Carica un token di assistenza per Enterprise edition"
       delete_token_modal:
-        text: "Vuoi davvero rimuovere il token Enterprise Edition attualmente utilizzato?"
+        text: "Vuoi davvero rimuovere il token Enterprise edition attualmente utilizzato?"
         title: "Elimina token"
       replace_token: "Sostituisci il token di assistenza attuale"
       order: "Ordina l'edizione Enterprise on-premises"
-      paste: "Incolla il tuo token di assistenza per Enterprise Edition"
+      paste: "Incolla il tuo token di assistenza per Enterprise edition"
       required_for_feature: "Questa aggiunta è disponibile solo con un token di assistenza Enterprise Edition attivo."
       enterprise_link: "Per ulteriori informazioni, clicca qui."
       start_trial: "Inizia la prova gratuita"
@@ -220,8 +220,12 @@ it:
       items:
         actions: "Azioni elemento"
         blankslate:
-          title: "La tua lista di elementi è vuota"
-          description: "Inizia aggiungendo elementi al campo personalizzato di tipo gerarchia. Ogni elemento può essere utilizzato per creare una gerarchia sottostante. Per navigare e creare sottoelementi all'interno di una gerarchia, fai clic sull'elemento creato."
+          root:
+            title: "La tua lista di elementi è vuota"
+            description: "Inizia aggiungendo elementi al campo personalizzato di tipo gerarchia. Ogni elemento può essere utilizzato per creare una gerarchia sottostante. Per navigare e creare sottoelementi all'interno di una gerarchia, fai clic sull'elemento creato."
+          item:
+            title: Questo elemento non ha alcun livello gerarchico sotto
+            description: Aggiungi elementi a questo elenco per creare sottoelementi all'interno di un altro
         placeholder:
           label: "Etichetta elemento"
           short: "Abbreviazione"
@@ -232,6 +236,8 @@ it:
           zero: nessun sottoelemento
           one: 1 sottoelemento
           other: "%{count} sottoelementi"
+    upsale:
+      custom_field_format_hierarchy: "Need a hierarchy in your custom fields for work packages?"
     text_add_new_custom_field: >
       Per aggiungere nuovi campi personalizzati a un progetto, è necessario prima crearli.
     is_enabled_globally: "Abilitato a livello globale"
@@ -258,12 +264,26 @@ it:
     single: "oppure"
   dry_validation:
     errors:
+      int?: "must be an integer."
+      filled?: "must be filled."
+      greater_or_equal_zero: "must be greater or equal to 0."
+      not_found: "not found."
       rules:
+        item:
+          root_item: "cannot be a root item."
+          not_persisted: "must be an already existing item."
         label:
-          filled?: "deve essere compilato"
-          not_unique: "deve essere unico all'interno dello stesso livello gerarchico"
+          not_unique: "must be unique within the same hierarchy level."
+        short:
+          not_unique: "must be unique within the same hierarchy level."
+        parent:
+          not_descendant: "must be a descendant of the hierarchy root."
     rules:
+      depth: "Profondità"
+      item: "Elemento"
       label: "Etichetta"
+      short: "Abbreviazione"
+      parent: "Genitore"
   global_search:
     placeholder: "Cerca in %{app_title}"
     overwritten_tabs:
@@ -863,7 +883,7 @@ it:
         confirmation: "non coincide con %{attribute}."
         could_not_be_copied: "%{dependency} non può essere (completamente) copiato."
         does_not_exist: "non esiste."
-        error_enterprise_only: "%{action} è disponibile solo in OpenProject Enterprise Edition"
+        error_enterprise_only: "%{action} è disponibile solo in OpenProject Enterprise edition"
         error_unauthorized: "potrebbe non essere accessibile."
         error_readonly: "è in sola lettura, pertanto non è stato possibile modificarlo."
         error_conflict: "L'informazione è stata aggiornata da almeno un altro utente nel frattempo."
@@ -1375,6 +1395,9 @@ it:
   button_actions: "Azioni"
   button_add: "Aggiungi"
   button_add_comment: "Aggiungi un commento"
+  button_add_item_above: "Aggiungi elemento sopra"
+  button_add_item_below: "Aggiungi elemento sotto"
+  button_add_sub_item: "Aggiungi sottoelemento"
   button_add_member: Aggiungi membro
   button_add_watcher: "Aggiungi osservatore"
   button_annotate: "Annota"
@@ -1662,7 +1685,7 @@ it:
   error_cookie_missing: "Il cookie di OpenProject è mancante. Prego, verifica che i cookie siano attivati, questa applicazione non funziona correttamente senza."
   error_custom_option_not_found: "L'opzione non esiste."
   error_enterprise_activation_user_limit: "Il tuo account potrebbe non essere attivo (raggiunto il limite utente). Si prega di contattare l'amministratore per ottenere l'accesso."
-  error_enterprise_token_invalid_domain: "L'Enterprise Edition non è attiva. Il dominio del token Enterprise (%{actual}) non corrisponde al nome host del sistema (%{expected})."
+  error_enterprise_token_invalid_domain: "L'Enterprise edition non è attiva. Il dominio del token Enterprise (%{actual}) non corrisponde al nome host del sistema (%{expected})."
   error_failed_to_delete_entry: "Cancellazione voce non riuscita."
   error_in_dependent: "Errore nel tentativo di modificare l'oggetto dipendente: %{dependent_class} #%{related_id} - %{related_subject}: %{error}"
   error_in_new_dependent: "Errore nel tentativo di creare un oggetto dipendente: %{dependent_class} - %{related_subject}: %{error}"
@@ -1798,6 +1821,23 @@ it:
     units:
       hours: o
       days: g
+  pdf_generator:
+    page_nr_footer: "Page %{page} of %{total}"
+    dialog:
+      title: Generate PDF
+      submit: Generate
+      header_right:
+        label: Header right
+        caption: Text to be displayed in the right of the header
+      footer_center:
+        label: Footer center
+        caption: Text to be displayed in the center of the footer
+      hyphenation:
+        label: Hyphenation
+        caption: Break words between lines to improve text justification and readability.
+      paper_size:
+        label: Paper size
+        caption: The size of the paper to use for the PDF.
   extraction:
     available:
       pdftotext: "Pdfatesto disponibile (opzionale)"
@@ -1827,10 +1867,10 @@ it:
     blocks:
       community: "Comunità di OpenProject"
       upsale:
-        title: "Aggiorna ad Enterprise Edition"
+        title: "Aggiorna ad Enterprise edition"
         more_info: "Altre informazioni"
     links:
-      upgrade_enterprise_edition: "Aggiorna ad Enterprise Edition"
+      upgrade_enterprise_edition: "Aggiorna ad Enterprise edition"
       postgres_migration: "Migrazione dell'installazione su PostgreSQL"
       user_guides: "Guide utente"
       faq: "FAQ"
@@ -2150,7 +2190,7 @@ it:
   label_enumerations: "Enumerazioni"
   label_enterprise: "Enterprise"
   label_enterprise_active_users: "%{current}/%{limit} utenti attivi riservati"
-  label_enterprise_edition: "Enterprise Edition"
+  label_enterprise_edition: "Enterprise edition"
   label_enterprise_support: "Supporto per Imprese"
   label_enterprise_addon: "Componente aggiuntivo Enterprise"
   label_environment: "Ambiente"

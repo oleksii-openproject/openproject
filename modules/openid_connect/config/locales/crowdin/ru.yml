@@ -83,6 +83,7 @@ ru:
       metadata_url: У меня есть URL конечной точки обнаружения
       endpoint_url: URL конечной точки
     providers:
+      label_providers: "Провайдеры"
       seeded_from_env: "Этот провайдер был инициализирован из конфигурации среды. Он не может быть отредактирован."
       google:
         name: Google

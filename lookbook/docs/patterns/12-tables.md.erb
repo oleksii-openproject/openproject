@@ -33,6 +33,49 @@ end
 
 <%= embed OpPrimer::BorderBoxTableComponentPreview, :default, panels: %i[source] %>
 
+
+
+### Border Box Table specific options
+
+#### Mobile behavior
+
+On mobile, the BorderBoxTable does not scroll, but collapse into two columns (content columns and actions). You can control which columns are shown using the `mobile_columns` method.
+
+As the columns are collapsed, some information might need an additional label, which you can prepend with `mobile_labels`.
+
+```ruby
+# On desktop, show these columns
+columns :title, :users, :created_at
+
+# On mobile, only two columns are visible
+mobile_columns :title, :users
+
+# For users, show the label using the header caption
+mobile_labels :users
+```
+
+
+
+#### Mobile headers
+
+On mobile, the usual table headers are replaced with a single `mobile_title` property that you have to set on the table.
+
+#### Wide columns
+
+To use wider columns on desktop, use the `wide_columns`  helper:
+
+```ruby
+# On desktop, show these columns
+columns :title, :users, :created_at
+
+# Make title column wider than the others (factor 3 using grid span)
+wide_columns :title
+```
+
+
+
+
+
 ## Best practices
 
 **Do**

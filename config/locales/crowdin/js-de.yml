@@ -105,6 +105,7 @@ de:
     button_update: "Aktualisieren"
     button_export-pdf: "PDF-Download"
     button_export-atom: "Atom-Download"
+    button_generate_pdf: "PDF generieren"
     button_create: "Anlegen"
     card:
       add_new: "Neue Karte hinzufügen"
@@ -574,7 +575,7 @@ de:
         members: "Sie können hier neue <b>Mitglieder</b> zu Ihrem Projekt hinzufügen."
         quick_add_button: "Klicken Sie auf das Plus (+) Symbol in der Navigationsleiste um <b>neue Projekte zu erzeugen</b> oder <b>MitarbeiterInnen einzuladen</b>."
         sidebar_arrow: "Benutzen Sie den Pfeil in der oberen linken Ecke um zum <b>Hauptmenü</b> des Projekts zurückzukehren."
-        welcome: "Lernen Sie in drei Minuten die <b>wichtigen Funktionen</b> kennen. <br> Wir empfehlen Ihnen, die Tour vollständig abzuschließen. Sie können diese jederzeit wieder neu starten."
+        welcome: "Take a three-minute introduction tour to learn the most <b>important features</b>. <br> We recommend completing the steps until the end. You can restart the tour any time."
         wiki: "Im <b>Wiki</b> können Sie gemeinsam mit dem Team Informationen dokumentieren und eine Wissensdatenbank aufbauen."
         backlogs:
           overview: "Verwalten Sie Ihre Arbeit in der <b>-Backlogs</b> Ansicht."

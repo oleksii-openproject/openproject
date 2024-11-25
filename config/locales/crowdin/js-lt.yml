@@ -105,6 +105,7 @@ lt:
     button_update: "Atnaujinti"
     button_export-pdf: "Atsisiųsti PDF"
     button_export-atom: "Atsisiųsti Atom"
+    button_generate_pdf: "Generate PDF"
     button_create: "Kurti"
     card:
       add_new: "Pridėti naują kortelę"
@@ -575,7 +576,7 @@ lt:
         members: "Pakvieskite naujus <b>narius</b> prisijungti prie projekto."
         quick_add_button: "Paspauskite pliuso (+) ženklą navigacijos antraštėje ir <b>sukursite naują projektą</b> arba </b>pakviesite bendradarbius</b>."
         sidebar_arrow: "Pasinaudokite grįžimo rodykle viršutiniame kairiajame kampe grįžimui į projekto <b>pagrindinį meniu</b>."
-        welcome: "Paskirkite tris minutes įvadinei kelionei ir išmokite daugumą <b>svarbių sistemos galimybių</b>. <br>Rekomenduojame atlikti visus veiksmus iki pabaigos. Ekskursiją galite paleisti iš naujo bet kuriuo metu."
+        welcome: "Take a three-minute introduction tour to learn the most <b>important features</b>. <br> We recommend completing the steps until the end. You can restart the tour any time."
         wiki: "<b>Wiki</b>'yje galite dokumentuoti ir dalintis žiniomis su savo komandos nariais."
         backlogs:
           overview: "Valdykite savo darbus <b>Darbų sąrašo</b> vaizde."

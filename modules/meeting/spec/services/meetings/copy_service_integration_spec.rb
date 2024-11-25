@@ -45,7 +45,7 @@ RSpec.describe Meetings::CopyService, "integration", type: :model do
   it "copies the meeting as is" do
     expect(service_result).to be_success
     expect(copy.author).to eq(user)
-    expect(copy.start_time).to eq(meeting.start_time + 1.week)
+    expect(copy.start_time).to eq(meeting.start_time + 1.day)
   end
 
   context "when the meeting is closed" do
@@ -98,7 +98,7 @@ RSpec.describe Meetings::CopyService, "integration", type: :model do
     it "builds the meeting" do
       expect(service_result).to be_success
       expect(copy.author).to eq(user)
-      expect(copy.start_time).to eq(meeting.start_time + 1.week)
+      expect(copy.start_time).to eq(meeting.start_time + 1.day)
       expect(copy).to be_new_record
     end
   end

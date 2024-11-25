@@ -173,6 +173,8 @@ module Components
             wait_for { page }.to have_test_selector("op-journal-notes-body", text:)
           end
         end
+
+        wait_for_network_idle
       end
 
       def edit_comment(journal, text: nil, save: true)

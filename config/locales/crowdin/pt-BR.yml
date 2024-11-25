@@ -222,8 +222,12 @@ pt-BR:
       items:
         actions: "Ações do item"
         blankslate:
-          title: "Sua lista de itens está vazia"
-          description: "Comece adicionando itens ao campo personalizado do tipo hierarquia. Cada item pode ser utilizado para construir uma hierarquia abaixo dele. Para navegar e criar subitens dentro dessa hierarquia, clique no item que você criou."
+          root:
+            title: "Sua lista de itens está vazia"
+            description: "Comece adicionando itens ao campo personalizado do tipo hierarquia. Cada item pode ser usado para criar uma hierarquia abaixo dele. Para navegar e criar subitens, clique no item criado."
+          item:
+            title: Este item não possui nenhum nível de hierarquia abaixo
+            description: Adicione itens a esta lista para criar subitens dentro de outro item
         placeholder:
           label: "Rótulo do item"
           short: "Nome abreviado"
@@ -234,6 +238,8 @@ pt-BR:
           zero: sem subitens
           one: 1 subitem
           other: "%{count} subitens"
+    upsale:
+      custom_field_format_hierarchy: "Need a hierarchy in your custom fields for work packages?"
     text_add_new_custom_field: >
       Para adicionar campos personalizados a um projeto é necessário criá-los primeiro para depois adicioná-los a este projeto.
     is_enabled_globally: "Está habilitado globalmente"
@@ -260,12 +266,26 @@ pt-BR:
     single: "ou"
   dry_validation:
     errors:
+      int?: "deve ser um número inteiro."
+      filled?: "deve ser preenchido."
+      greater_or_equal_zero: "deve ser maior ou igual a 0."
+      not_found: "não encontrado."
       rules:
+        item:
+          root_item: "não pode ser um item raiz."
+          not_persisted: "deve ser um item já existente."
         label:
-          filled?: "deve ser preenchido"
-          not_unique: "deve ser único dentro do mesmo nível hierárquico"
+          not_unique: "deve ser único dentro do mesmo nível hierárquico."
+        short:
+          not_unique: "deve ser único dentro do mesmo nível hierárquico."
+        parent:
+          not_descendant: "deve ser um descendente da raiz da hierarquia."
     rules:
+      depth: "Profundidade"
+      item: "Item"
       label: "Rótulo"
+      short: "Nome abreviado"
+      parent: "Pai"
   global_search:
     placeholder: "Buscar em %{app_title}"
     overwritten_tabs:
@@ -1376,6 +1396,9 @@ pt-BR:
   button_actions: "Ações"
   button_add: "Adicionar"
   button_add_comment: "Adicionar comentário"
+  button_add_item_above: "Adicionar item acima"
+  button_add_item_below: "Adicionar item abaixo"
+  button_add_sub_item: "Adicionar subitem"
   button_add_member: Adicionar membro
   button_add_watcher: "Adicionar observador"
   button_annotate: "Anotar"
@@ -1799,6 +1822,23 @@ pt-BR:
     units:
       hours: h
       days: d
+  pdf_generator:
+    page_nr_footer: "Page %{page} of %{total}"
+    dialog:
+      title: Generate PDF
+      submit: Generate
+      header_right:
+        label: Header right
+        caption: Text to be displayed in the right of the header
+      footer_center:
+        label: Footer center
+        caption: Text to be displayed in the center of the footer
+      hyphenation:
+        label: Hyphenation
+        caption: Break words between lines to improve text justification and readability.
+      paper_size:
+        label: Paper size
+        caption: The size of the paper to use for the PDF.
   extraction:
     available:
       pdftotext: "Pdftotext disponível (opcional)"

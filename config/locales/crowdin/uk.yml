@@ -218,8 +218,12 @@ uk:
       items:
         actions: "Дії"
         blankslate:
-          title: "Ваш список елементів порожній"
-          description: "Спочатку додайте елементи до користувацького поля ієрархії типів. Створити ієрархію можна для кожного елемента. Щоб переходити між піделементами ієрархії і додавати\nїх, натисніть створений елемент."
+          root:
+            title: "Ваш список елементів порожній"
+            description: "Спочатку додайте елементи до користувацького поля ієрархії типів. Створити ієрархію можна для кожного елемента. Щоб переходити між піделементами ієрархії і додавати\nїх, натисніть створений елемент."
+          item:
+            title: Цей елемент не має нижчого рівня ієрархії
+            description: Додайте елементи до цього списку, щоб створити піделементи всередині іншого
         placeholder:
           label: "Мітка елемента"
           short: "Коротка назва"
@@ -230,6 +234,8 @@ uk:
           zero: немає піделементів
           one: 1 піделемент
           other: "Піделементів: %{count}"
+    upsale:
+      custom_field_format_hierarchy: "Need a hierarchy in your custom fields for work packages?"
     text_add_new_custom_field: >
       Щоб додати нові користувальницькі поля до проекту, спочатку потрібно створити їх, перш ніж ви зможете додати їх до цього проекту.
     is_enabled_globally: "Увімкнено у всьому світі"
@@ -256,12 +262,26 @@ uk:
     single: "або"
   dry_validation:
     errors:
+      int?: "must be an integer."
+      filled?: "must be filled."
+      greater_or_equal_zero: "must be greater or equal to 0."
+      not_found: "not found."
       rules:
+        item:
+          root_item: "cannot be a root item."
+          not_persisted: "must be an already existing item."
         label:
-          filled?: "має бути заповнено"
-          not_unique: "має бути унікальним у межах одного рівня ієрархії"
+          not_unique: "must be unique within the same hierarchy level."
+        short:
+          not_unique: "must be unique within the same hierarchy level."
+        parent:
+          not_descendant: "must be a descendant of the hierarchy root."
     rules:
+      depth: "Глибина"
+      item: "Елемент"
       label: "Мітка"
+      short: "Коротка назва"
+      parent: "Батьківський елемент"
   global_search:
     placeholder: "Пошук у додатку %{app_title}"
     overwritten_tabs:
@@ -1408,6 +1428,9 @@ uk:
   button_actions: "Дії"
   button_add: "Додати"
   button_add_comment: "Додати коментар"
+  button_add_item_above: "Додати елемент вище"
+  button_add_item_below: "Додати елемент нижче"
+  button_add_sub_item: "Додати піделемент"
   button_add_member: Додати учасника
   button_add_watcher: "Додати спостерігача"
   button_annotate: "Коментувати"
@@ -1867,6 +1890,23 @@ uk:
     units:
       hours: г
       days: д
+  pdf_generator:
+    page_nr_footer: "Page %{page} of %{total}"
+    dialog:
+      title: Generate PDF
+      submit: Generate
+      header_right:
+        label: Header right
+        caption: Text to be displayed in the right of the header
+      footer_center:
+        label: Footer center
+        caption: Text to be displayed in the center of the footer
+      hyphenation:
+        label: Hyphenation
+        caption: Break words between lines to improve text justification and readability.
+      paper_size:
+        label: Paper size
+        caption: The size of the paper to use for the PDF.
   extraction:
     available:
       pdftotext: "Доступний текст PDF (необов'язково)"
@@ -2286,7 +2326,7 @@ uk:
   label_index_by_title: "Індекс за назвою"
   label_information: "Інформація"
   label_information_plural: "Інформація"
-  label_installation_guides: "Інструкції із встановлення"
+  label_installation_guides: "Інструкції зі встановлення"
   label_integer: "Ціле число"
   label_internal: "Власне"
   label_introduction_video: "Введення відео"

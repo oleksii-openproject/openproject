@@ -55,8 +55,7 @@ RSpec.describe UpdateProgressCalculation, type: :model do
 
     run_migration
 
-    table.work_packages.map(&:reload)
-    expect_work_packages(table.work_packages, to)
+    expect_work_packages_after_reload(table.work_packages, to)
 
     table.work_packages
   end
@@ -829,7 +828,7 @@ RSpec.describe UpdateProgressCalculation, type: :model do
       end
 
       it "fixes the total values and sets ∑ % complete to nil (not 0) and keeps % complete (unless wrong)" do
-        expect_work_packages(table_work_packages.map(&:reload), <<~TABLE)
+        expect_work_packages_after_reload(table_work_packages, <<~TABLE)
           subject            | work  | remaining work | % complete | ∑ work | ∑ remaining work | ∑ % complete |
           wp zero            |       |                |          0 |        |                  |              |
           wp correct         |  100h |            50h |         50 |   100h |              50h |           50 |

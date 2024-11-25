@@ -31,6 +31,8 @@ module API
     module Utilities
       class ParamsToQuery
         class << self
+          include ::API::Helpers::RaiseQueryErrors
+
           def collection_response(scope, current_user, params, representer: nil, self_link: nil)
             model = model_class(scope)
 

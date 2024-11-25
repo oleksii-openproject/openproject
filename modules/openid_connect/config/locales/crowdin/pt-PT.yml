@@ -83,6 +83,7 @@ pt-PT:
       metadata_url: Tenho um URL de endpoint de descoberta
       endpoint_url: URL do Endpoint
     providers:
+      label_providers: "Providers"
       seeded_from_env: "Este fornecedor foi semeado a partir da configuração do ambiente. Não pode ser editado."
       google:
         name: Google

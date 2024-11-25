@@ -105,6 +105,7 @@ zh-CN:
     button_update: "更新"
     button_export-pdf: "下载 PDF"
     button_export-atom: "下载 Atom"
+    button_generate_pdf: "生成 PDF"
     button_create: "创建"
     card:
       add_new: "添加新卡"

@@ -32,7 +32,7 @@ class CustomField::Hierarchy::Item < ApplicationRecord
   self.table_name = "hierarchical_items"
 
   belongs_to :custom_field
-  has_closure_tree order: "sort_order", numeric_order: true, dependent: :destroy
+  has_closure_tree order: "sort_order", numeric_order: true, dont_order_roots: true, dependent: :destroy
 
   scope :including_children, -> { includes(children: :children) }
 end

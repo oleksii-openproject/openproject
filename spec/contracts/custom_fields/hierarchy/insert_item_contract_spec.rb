@@ -67,17 +67,45 @@ RSpec.describe CustomFields::Hierarchy::InsertItemContract do
       it "is invalid" do
         result = subject.call(params)
         expect(result).to be_failure
-        expect(result.errors.to_h).to include(label: ["must be unique within the same hierarchy level"])
+        expect(result.errors.to_h).to include(label: [I18n.t("dry_validation.errors.rules.label.not_unique")])
       end
 
-      context "if locale is set to 'de'", skip: "Skipped until the german localization is available" do
+      context "if another locale is set" do
+        let(:mordor) { "agh burzum-ishi krimpatul" }
+
+        before do
+          I18n.config.enforce_available_locales = false
+          I18n.backend.store_translations(
+            :mo,
+            { dry_validation: {
+              errors: { rules: { label: { not_unique: mordor } } }
+            } }
+          )
+        end
+
+        after do
+          I18n.config.enforce_available_locales = true
+        end
+
         it "is invalid with localized validation errors" do
-          I18n.with_locale(:de) do
+          I18n.with_locale(:mo) do
             result = subject.call(params)
             expect(result).to be_failure
-            expect(result.errors.to_h).to include(label: ["muss einzigartig innerhalb derselben Hierarchieebene sein"])
+            expect(result.errors.to_h).to include(label: [mordor])
           end
         end
+      end
+    end
+
+    context "when short is not unique in the same hierarchy level" do
+      let(:params) { { parent:, label: "Valid Label", short: "Repeated Short" } }
+
+      before { create(:hierarchy_item, parent:, label: "Unique Label", short: "Repeated Short") }
+
+      it "is invalid with localized validation errors" do
+        result = subject.call(params)
+        expect(result).to be_failure
+        expect(result.errors.to_h).to include(short: [I18n.t("dry_validation.errors.rules.short.not_unique")])
       end
     end
 
@@ -96,7 +124,7 @@ RSpec.describe CustomFields::Hierarchy::InsertItemContract do
       it "is invalid" do
         result = subject.call(params)
         expect(result).to be_failure
-        expect(result.errors.to_h).to include(short: ["must be a string"])
+        expect(result.errors.to_h).to include(short: [I18n.t("dry_validation.errors.str?")])
       end
     end
 

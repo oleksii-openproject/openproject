@@ -247,8 +247,12 @@ en:
       items:
         actions: "Item actions"
         blankslate:
-          title: "Your list of items is empty"
-          description: "Start by adding items to the custom field of type hierarchy. Each item can be used to create a hierarchy bellow it. To navigate and create sub-items inside a hierarchy click on the created item."
+          root:
+            title: "Your list of items is empty"
+            description: "Start by adding items to the custom field of type hierarchy. Each item can be used to create a hierarchy bellow it. To navigate and create sub-items inside a hierarchy click on the created item."
+          item:
+            title: This item doesn't have any hierarchy level below
+            description: Add items to this list to create sub-items inside another one
         placeholder:
           label: "Item label"
           short: "Short name"
@@ -259,6 +263,8 @@ en:
           zero: no sub-items
           one: 1 sub-item
           other: "%{count} sub-items"
+    upsale:
+      custom_field_format_hierarchy: "Need a hierarchy in your custom fields for work packages?"
 
     text_add_new_custom_field: >
       To add new custom fields to a project you first need to create them before
@@ -291,12 +297,26 @@ en:
 
   dry_validation:
     errors:
+      int?: "must be an integer."
+      filled?: "must be filled."
+      greater_or_equal_zero: "must be greater or equal to 0."
+      not_found: "not found."
       rules:
+        item:
+          root_item: "cannot be a root item."
+          not_persisted: "must be an already existing item."
         label:
-          filled?: "must be filled"
-          not_unique: "must be unique within the same hierarchy level"
+          not_unique: "must be unique within the same hierarchy level."
+        short:
+          not_unique: "must be unique within the same hierarchy level."
+        parent:
+          not_descendant: "must be a descendant of the hierarchy root."
     rules:
+      depth: "Depth"
+      item: "Item"
       label: "Label"
+      short: "Short name"
+      parent: "Parent"
 
   global_search:
     placeholder: "Search in %{app_title}"
@@ -1090,6 +1110,20 @@ en:
           attributes:
             project_ids:
               blank: "Please select a project."
+        project/life_cycle_step_definition:
+          attributes:
+            type:
+              must_be_a_stage_or_gate: "must be either Project::StageDefinition or Project::GateDefinition"
+        project/life_cycle_step:
+          attributes:
+            type:
+              must_be_a_stage_or_gate: "must be either Project::Stage or Project::Gate"
+              must_be_a_stage: "must be a Project::Stage"
+              must_be_a_gate: "must be a Project::Gate"
+        project/gate:
+          attributes:
+            base:
+              end_date_not_allowed: "Cannot assign `end_date` to a Project::Gate"
         query:
           attributes:
             project:
@@ -1470,6 +1504,9 @@ en:
   button_actions: "Actions"
   button_add: "Add"
   button_add_comment: "Add comment"
+  button_add_item_above: "Add item above"
+  button_add_item_below: "Add item below"
+  button_add_sub_item: "Add sub-item"
   button_add_member: Add member
   button_add_watcher: "Add watcher"
   button_annotate: "Annotate"
@@ -1910,6 +1947,23 @@ en:
     units:
       hours: h
       days: d
+  pdf_generator:
+    page_nr_footer: "Page %{page} of %{total}"
+    dialog:
+       title: Generate PDF
+       submit: Generate
+       header_right:
+         label: Header right
+         caption: Text to be displayed in the right of the header
+       footer_center:
+         label: Footer center
+         caption: Text to be displayed in the center of the footer
+       hyphenation:
+         label: Hyphenation
+         caption: Break words between lines to improve text justification and readability.
+       paper_size:
+         label: Paper size
+         caption: The size of the paper to use for the PDF.
 
   extraction:
     available:
@@ -3469,7 +3523,7 @@ en:
         If this option is active, login requests will redirect to the configured omniauth provider.
         The login dropdown and sign-in page will be disabled.
         <br/>
-        <strong>Note:</strong> Unless you also disable password logins, with this option enabled, 
+        <strong>Note:</strong> Unless you also disable password logins, with this option enabled,
         users can still log in internally by visiting the <code>%{internal_path}</code> login page.
     attachments:
       whitelist_text_html: >

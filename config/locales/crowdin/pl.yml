@@ -220,8 +220,12 @@ pl:
       items:
         actions: "Działania elementu"
         blankslate:
-          title: "Twoja lista elementów jest pusta"
-          description: "Zacznij od dodawania elementów do pola niestandardowego typu hierarchii. Każdy element może być użyty do tworzenia hierarchii poniżej niego. Aby nawigować i tworzyć podelementy wewnątrz hierarchii, kliknij utworzony element."
+          root:
+            title: "Twoja lista elementów jest pusta"
+            description: "Zacznij od dodawania elementów do pola niestandardowego typu hierarchii. Każdy element może być użyty do tworzenia hierarchii poniżej niego. Aby nawigować i tworzyć podelementy wewnątrz hierarchii, kliknij utworzony element."
+          item:
+            title: Ten element nie ma żadnego poziomu hierarchii poniżej
+            description: Dodaj elementy do tej listy, aby utworzyć elementy podrzędne wewnątrz innego
         placeholder:
           label: "Etykieta elementu"
           short: "Nazwa skrócona"
@@ -232,6 +236,8 @@ pl:
           zero: brak podelementów
           one: 1 podelement
           other: "Liczba podelementów: %{count}"
+    upsale:
+      custom_field_format_hierarchy: "Need a hierarchy in your custom fields for work packages?"
     text_add_new_custom_field: >
       Aby dodać do projektu nowe pola niestandardowe, najpierw należy je utworzyć.
     is_enabled_globally: "Jest włączony globalnie"
@@ -258,12 +264,26 @@ pl:
     single: "lub"
   dry_validation:
     errors:
+      int?: "must be an integer."
+      filled?: "must be filled."
+      greater_or_equal_zero: "must be greater or equal to 0."
+      not_found: "not found."
       rules:
+        item:
+          root_item: "cannot be a root item."
+          not_persisted: "must be an already existing item."
         label:
-          filled?: "musi być wypełnione"
-          not_unique: "muszą być unikalne na tym samym poziomie hierarchii"
+          not_unique: "must be unique within the same hierarchy level."
+        short:
+          not_unique: "must be unique within the same hierarchy level."
+        parent:
+          not_descendant: "must be a descendant of the hierarchy root."
     rules:
+      depth: "Głębokość"
+      item: "Element"
       label: "Etykieta"
+      short: "Nazwa skrócona"
+      parent: "Element nadrzędny"
   global_search:
     placeholder: "Wyszukaj w %{app_title}"
     overwritten_tabs:
@@ -880,7 +900,7 @@ pl:
         confirmation: "nie pasuje do %{attribute}."
         could_not_be_copied: "Nie można było (w pełni) skopiować %{dependency}."
         does_not_exist: "nie istnieje."
-        error_enterprise_only: "%{action} jest dostępna tylko w OpenProject Enterprise Edition"
+        error_enterprise_only: "%{action} jest dostępna tylko w OpenProject Enterprise edition"
         error_unauthorized: "— nie można uzyskac dostępu."
         error_readonly: "— podjęto próbę zapisu, ale nie jest zapisywalny."
         error_conflict: "Information has been updated by at least one other user in the meantime."
@@ -1412,6 +1432,9 @@ pl:
   button_actions: "Działania"
   button_add: "Dodaj"
   button_add_comment: "Dodaj komentarz"
+  button_add_item_above: "Dodaj element powyżej"
+  button_add_item_below: "Dodaj element poniżej"
+  button_add_sub_item: "Dodaj podelement"
   button_add_member: Dodaj członka projektu
   button_add_watcher: "Dodaj obserwatora"
   button_annotate: "Adnotacja"
@@ -1871,6 +1894,23 @@ pl:
     units:
       hours: h
       days: d
+  pdf_generator:
+    page_nr_footer: "Page %{page} of %{total}"
+    dialog:
+      title: Generate PDF
+      submit: Generate
+      header_right:
+        label: Header right
+        caption: Text to be displayed in the right of the header
+      footer_center:
+        label: Footer center
+        caption: Text to be displayed in the center of the footer
+      hyphenation:
+        label: Hyphenation
+        caption: Break words between lines to improve text justification and readability.
+      paper_size:
+        label: Paper size
+        caption: The size of the paper to use for the PDF.
   extraction:
     available:
       pdftotext: "Dostępny konwerter Pdftotext (opcjonalny)"

@@ -223,8 +223,12 @@ ko:
       items:
         actions: "항목 작업"
         blankslate:
-          title: "항목 목록이 비어 있습니다"
-          description: "먼저 유형 계층의 사용자 지정 필드에 항목을 추가하여 시작하세요. 각 항목을 사용하여 그 아래에 계층을 만들 수 있습니다. 계층 내에서 하위 항목을 탐색하고 만들려면 생성된 항목을 클릭하세요."
+          root:
+            title: "항목 목록이 비어 있습니다"
+            description: "먼저 유형 계층의 사용자 지정 필드에 항목을 추가하여 시작하세요. 각 항목을 사용하여 그 아래에 계층을 만들 수 있습니다. 계층 내에서 탐색하고 하위 항목을 만들려면 생성된 항목을 클릭하세요."
+          item:
+            title: 이 항목에는 아래 계층 수준이 없습니다
+            description: 이 목록에 항목을 추가하여 다른 목록 내에서 하위 항목을 만듭니다
         placeholder:
           label: "항목 레이블"
           short: "짧은 이름"
@@ -235,6 +239,8 @@ ko:
           zero: 하위 항목 없음
           one: 하위 항목 1개
           other: "하위 항목 %{count}개"
+    upsale:
+      custom_field_format_hierarchy: "Need a hierarchy in your custom fields for work packages?"
     text_add_new_custom_field: >
       프로젝트에 새 사용자 지정 필드를 추가하려면 먼저 해당 필드를 만들어야 합니다. 그래야 이 프로젝트에 해당 필드를 추가할 수 있습니다.
     is_enabled_globally: "는 세계적으로 사용 가능합니다."
@@ -261,12 +267,26 @@ ko:
     single: "또는"
   dry_validation:
     errors:
+      int?: "must be an integer."
+      filled?: "must be filled."
+      greater_or_equal_zero: "must be greater or equal to 0."
+      not_found: "not found."
       rules:
+        item:
+          root_item: "cannot be a root item."
+          not_persisted: "must be an already existing item."
         label:
-          filled?: "- 입력해야 합니다"
-          not_unique: "- 동일한 계층 수준 내에서 고유해야 합니다"
+          not_unique: "must be unique within the same hierarchy level."
+        short:
+          not_unique: "must be unique within the same hierarchy level."
+        parent:
+          not_descendant: "must be a descendant of the hierarchy root."
     rules:
+      depth: "깊이"
+      item: "항목"
       label: "레이블"
+      short: "짧은 이름"
+      parent: "부모"
   global_search:
     placeholder: "%{app_title}에서 검색"
     overwritten_tabs:
@@ -1360,6 +1380,9 @@ ko:
   button_actions: "작업"
   button_add: "추가"
   button_add_comment: "댓글 달기"
+  button_add_item_above: "위에 항목 추가"
+  button_add_item_below: "아래에 항목 추가"
+  button_add_sub_item: "하위 항목 추가"
   button_add_member: 멤버 추가
   button_add_watcher: "주시자 추가"
   button_annotate: "주석 달기"
@@ -1765,6 +1788,23 @@ ko:
     units:
       hours: 시간
       days: 일
+  pdf_generator:
+    page_nr_footer: "Page %{page} of %{total}"
+    dialog:
+      title: Generate PDF
+      submit: Generate
+      header_right:
+        label: Header right
+        caption: Text to be displayed in the right of the header
+      footer_center:
+        label: Footer center
+        caption: Text to be displayed in the center of the footer
+      hyphenation:
+        label: Hyphenation
+        caption: Break words between lines to improve text justification and readability.
+      paper_size:
+        label: Paper size
+        caption: The size of the paper to use for the PDF.
   extraction:
     available:
       pdftotext: "Pdftotext 사용 가능(선택적)"

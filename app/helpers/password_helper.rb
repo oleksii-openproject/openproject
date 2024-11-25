@@ -47,16 +47,18 @@ module PasswordHelper
   # when the user is internally authenticated.
   def password_confirmation_form_tag(url_for_options = {}, options = {}, &)
     if password_confirmation_required?
-      data = options.fetch(:data, {})
-      options[:data] = password_confirmation_data_attribute(data)
+      options[:data] ||= {}
+      options[:data] = password_confirmation_data_attribute(options[:data])
     end
 
     form_tag(url_for_options, options, &)
   end
 
   def password_confirmation_data_attribute(with_data = {})
+    controller = with_data.fetch(:controller, "")
+
     if password_confirmation_required?
-      with_data.merge("request-for-confirmation": true)
+      with_data.merge(controller: "#{controller} password-confirmation-dialog".strip)
     else
       with_data
     end

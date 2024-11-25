@@ -31,6 +31,7 @@ require "spec_helper"
 RSpec.describe "User custom fields edit", :js, :with_cuprite do
   shared_let(:admin) { create(:admin) }
   let(:cf_page) { Pages::CustomFields::IndexPage.new }
+  let(:new_cf_page) { Pages::CustomFields::NewPage.new }
 
   before do
     login_as(admin)
@@ -39,30 +40,30 @@ RSpec.describe "User custom fields edit", :js, :with_cuprite do
 
   it "can create and edit user custom fields (#48725)" do
     # Create CF
-    click_link "Create a new custom field"
+    click_on "New custom field"
+    new_cf_page.expect_current_path
 
-    wait_for_reload
-
-    fill_in "custom_field_name", with: "My User CF"
-    select "User", from: "custom_field_field_format"
+    fill_in "Name", with: "My User CF"
+    select "User", from: "Format"
 
     expect(page).to have_no_field("custom_field_custom_options_attributes_0_value")
 
     click_on "Save"
 
     # Expect field to be created
-    cf = CustomField.last
-    expect(cf.name).to eq("My User CF")
+    cf_page.expect_current_path("tab=WorkPackageCustomField")
+    expect(page).to have_list_item("My User CF")
 
     # Edit again
-    find("a", text: "My User CF").click
+    click_on "My User CF"
 
     expect(page).to have_no_field("custom_field_custom_options_attributes_0_value")
-    fill_in "custom_field_name", with: "My User CF (edited)"
+    fill_in "Name", with: "My User CF (edited)"
 
     click_on "Save"
 
     # Expect field to be saved
+    expect(page).to have_css(".PageHeader-title", text: "My User CF (edited)")
     cf = CustomField.last
     expect(cf.name).to eq("My User CF (edited)")
   end

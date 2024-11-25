@@ -102,9 +102,10 @@ ro:
     button_save: "Salvează"
     button_settings: "Setări"
     button_uncheck_all: "Deselectează tot"
-    button_update: "Actualizează"
+    button_update: "Actualizare"
     button_export-pdf: "Descarcă PDF"
     button_export-atom: "Descarcă Atom"
+    button_generate_pdf: "Generate PDF"
     button_create: "Creează"
     card:
       add_new: "Adaugă card nou"
@@ -574,7 +575,7 @@ ro:
         members: "Invitați noi <b>membri</b> să se alăture proiectului dumneavoastră."
         quick_add_button: "Dă click pe pictograma plus (+) din antetul navigării pentru a <b>crea un nou proiect</b> sau <b>invita colaboratori</b>."
         sidebar_arrow: "Folosește săgeata de întoarcere din colțul din stânga sus pentru a te întoarce în meniul <b>al proiectului</b>."
-        welcome: "Faceți un tur introductiv de trei minute pentru a afla cele mai <b>importante caracteristici</b>. <br> Vă recomandăm să parcurgeți pașii până la sfârșit. Puteți relua turul în orice moment.</br> "
+        welcome: "Take a three-minute introduction tour to learn the most <b>important features</b>. <br> We recommend completing the steps until the end. You can restart the tour any time."
         wiki: "În cadrul <b>Wiki</b> puteți documenta și împărtăși cunoștințe împreună cu echipa dumneavoastră."
         backlogs:
           overview: "Gestionează-ți munca în vizualizarea <b>backlogs</b>."
@@ -756,7 +757,7 @@ ro:
           label: "Întrerupeți temporar memento-urile zilnice prin e-mail"
           first_day: "Prima zi"
           last_day: "Ultima zi"
-    text_are_you_sure: "Ești sigur?"
+    text_are_you_sure: "Sunteți sigur?"
     text_data_lost: "Toate datele introduse vor fi pierdute."
     text_user_wrote: "%{value} a scris:"
     types:

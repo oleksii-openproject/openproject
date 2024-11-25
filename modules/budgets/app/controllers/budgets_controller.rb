@@ -111,7 +111,7 @@ class BudgetsController < ApplicationController
       flash[:notice] = t(:notice_successful_create)
       redirect_to(params[:continue] ? { action: "new" } : { action: "show", id: @budget })
     else
-      render action: "new", layout: !request.xhr?
+      render action: "new", status: :unprocessable_entity, layout: !request.xhr?
     end
   end
 
@@ -129,7 +129,7 @@ class BudgetsController < ApplicationController
       redirect_to(@budget)
     else
       @budget = call.result
-      render action: "edit"
+      render action: :edit, status: :unprocessable_entity
     end
   rescue ActiveRecord::StaleObjectError
     # Optimistic locking exception
@@ -229,7 +229,7 @@ class BudgetsController < ApplicationController
   def render_item_as_json(element_id, costs, unit, project, permission)
     response = {
       "#{element_id}_unit_name" => ActionController::Base.helpers.sanitize(unit),
-      "#{element_id}_currency" => Setting.plugin_costs["costs_currency"]
+      "#{element_id}_currency" => Setting.costs_currency
     }
 
     if current_user.allowed_in_project?(permission, project)

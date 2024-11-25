@@ -83,6 +83,7 @@ zh-TW:
       metadata_url: 我有發現一個端點 URL
       endpoint_url: 端點 URL
     providers:
+      label_providers: "提供商"
       seeded_from_env: "此提供者是從環境組態根植的。無法編輯。"
       google:
         name: Google
