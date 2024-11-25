@@ -46,7 +46,7 @@ RSpec.describe Reminders::CreateService, type: :model do
       subject
 
       expect(Reminders::ScheduleReminderJob).to have_received(:schedule).with(model_instance)
-      expect(model_instance).to have_received(:update_columns).with(status: :scheduled, job_id: 1)
+      expect(model_instance).to have_received(:update_columns).with(job_id: 1)
     end
   end
 end

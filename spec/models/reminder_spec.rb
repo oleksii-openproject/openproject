@@ -35,15 +35,35 @@ RSpec.describe Reminder do
     it { is_expected.to belong_to(:notification).optional }
   end
 
-  describe "Enums" do
-    it do
-      expect(subject).to define_enum_for(:status)
-        .with_values({ pending: 0, scheduled: 1, notified: 2, done: 9 })
-        .backed_by_column_of_type(:integer)
+  describe "DB Indexes" do
+    it { is_expected.to have_db_index(:notification_id).unique(true) }
+  end
+
+  describe "#notified?" do
+    it "returns true if notification_id is present" do
+      reminder = build_stubbed(:reminder, :notified)
+
+      expect(reminder).to be_notified
+    end
+
+    it "returns false if notification_id is not present" do
+      reminder = build(:reminder, notification_id: nil)
+
+      expect(reminder).not_to be_notified
     end
   end
 
-  describe "DB Indexes" do
-    it { is_expected.to have_db_index(:notification_id).unique(true) }
+  describe "#scheduled?" do
+    it "returns true if job_id is present" do
+      reminder = build_stubbed(:reminder, :scheduled)
+
+      expect(reminder).to be_scheduled
+    end
+
+    it "returns false if job_id is not present" do
+      reminder = build(:reminder, job_id: nil)
+
+      expect(reminder).not_to be_scheduled
+    end
   end
 end

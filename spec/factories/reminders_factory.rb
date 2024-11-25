@@ -39,7 +39,6 @@ FactoryBot.define do
 
     trait :notified do
       job_id { SecureRandom.uuid }
-      status { :notified }
       notification factory: :notification
     end
   end

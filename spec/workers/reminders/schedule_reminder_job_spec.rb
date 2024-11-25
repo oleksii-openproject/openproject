@@ -49,7 +49,7 @@ RSpec.describe Reminders::ScheduleReminderJob do
 
     it "creates a notification from the reminder" do
       notification_svc = nil
-      expect { notification_svc = subject }.to change(Notification, :count).by(1) & change(reminder, :status).to("notified")
+      expect { notification_svc = subject }.to change(Notification, :count).by(1)
 
       notification = notification_svc.result
 
@@ -61,7 +61,7 @@ RSpec.describe Reminders::ScheduleReminderJob do
 
       aggregate_failures "marks the reminder as notified" do
         expect(reminder.reload).to be_notified
-        expect(reminder.notification_id).to eq(notification.id)
+        expect(reminder.notification).to eq(notification)
       end
     end
 

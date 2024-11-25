@@ -31,5 +31,6 @@ class Reminder < ApplicationRecord
   belongs_to :creator, class_name: "User"
   belongs_to :notification, optional: true
 
-  enum :status, { pending: 0, scheduled: 1, notified: 2, done: 9 }
+  def notified?  = notification_id.present?
+  def scheduled? = job_id.present?
 end
