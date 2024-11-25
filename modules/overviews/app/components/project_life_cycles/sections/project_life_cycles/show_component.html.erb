@@ -3,12 +3,12 @@
               justify_content: :space_between,
               classes: 'op-project-life-cycle-container',
               data: {
-                test_selector: "project-life-cycle-#{@project_life_cycle.id}"
-              }) do |life_cycle_value_container|
+                test_selector: "project-life-cycle-#{@life_cycle_step.id}"
+              }) do |life_cycle_container|
     # temporarily using inline styles in order to align the content as desired
     life_cycle_container.with_row(mb: 1) do
       render(Primer::Beta::Text.new(font_weight: :bold)) do
-        concat @project_life_cycle.name
+        concat @life_cycle_step.name
       end
     end
 

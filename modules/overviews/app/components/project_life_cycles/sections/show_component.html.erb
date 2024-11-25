@@ -6,13 +6,12 @@
     )) do |section|
       section.with_title { "Life Cycles" }
 
-
       flex_layout do |details_container|
-        @project_life_cycles.each_with_index do |project_life_cycle, i|
-          margin =  i == @project_life_cycles.size - 1 ? 0 : 3
+        @life_cycle_steps.each_with_index do |life_cycle_step, i|
+          margin =  i == @life_cycle_steps.size - 1 ? 0 : 3
           details_container.with_row(mb: margin) do
             render(ProjectLifeCycles::Sections::ProjectLifeCycles::ShowComponent.new(
-              project_life_cycle:
+              life_cycle_step:
             ))
           end
         end

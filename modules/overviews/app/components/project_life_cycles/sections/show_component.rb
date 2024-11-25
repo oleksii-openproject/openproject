@@ -37,7 +37,7 @@ module ProjectLifeCycles
         super
 
         @project = project
-        @project_life_cycles = @project.project_life_cycles.includes(:life_cycle)
+        @life_cycle_steps = @project.life_cycle_steps.active.includes(:definition)
       end
 
       private

@@ -33,27 +33,27 @@ module ProjectLifeCycles
         include ApplicationHelper
         include OpPrimer::ComponentHelpers
 
-        def initialize(project_life_cycle:)
+        def initialize(life_cycle_step:)
           super
 
-          @project_life_cycle = project_life_cycle
+          @life_cycle_step = life_cycle_step
         end
 
         private
 
         def not_set?
-          @project_life_cycle.not_set?
+          @life_cycle_step.not_set?
         end
 
         def render_value
-          case @project_life_cycle
+          case @life_cycle_step
           when Project::Gate
             render(Primer::Beta::Text.new) do
-              concat @project_life_cycle.date
+              concat @life_cycle_step.date
             end
           when Project::Stage
             render(Primer::Beta::Text.new) do
-              concat [@project_life_cycle.start_date, " - ", @project_life_cycle.end_date].join
+              concat [@life_cycle_step.start_date, " - ", @life_cycle_step.end_date].join
             end
           end
         end

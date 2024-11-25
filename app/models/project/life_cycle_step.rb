@@ -33,11 +33,13 @@ class Project::LifeCycleStep < ApplicationRecord
              class_name: "Project::LifeCycleStepDefinition"
   has_many :work_packages, inverse_of: :project_life_cycle_step, dependent: :nullify
 
-  delegate :name, to: :life_cycle
+  delegate :name, to: :definition
 
   attr_readonly :definition_id, :type
 
   validates :type, inclusion: { in: %w[Project::Stage Project::Gate], message: :must_be_a_stage_or_gate }
+
+  scope :active, -> { where(active: true) }
 
   def initialize(*args)
     if instance_of? Project::LifeCycleStep
