@@ -37,7 +37,7 @@ class CostQuery::PDF::ExportJob < Exports::ExportJob
 
   def generate_timesheet
     self.query = CostQuery.new(project:)
-    generator = ::CostQuery::PDF::TimesheetGenerator.new(self.query, project, cost_types)
+    generator = ::CostQuery::PDF::TimesheetGenerator.new(query, project, cost_types)
     generator.generate!
   end
 end
