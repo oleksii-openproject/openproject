@@ -500,6 +500,11 @@ RSpec.describe TimeEntry do
       expect(time_entry.start_timestamp).to be_nil
     end
 
+    it "returns nil if timezone is nil" do
+      time_entry.time_zone = nil
+      expect(time_entry.start_timestamp).to be_nil
+    end
+
     it "generates a proper timestamp from the stored information" do
       time_entry.start_time = 14 * 60
       time_entry.spent_on = Date.new(2024, 12, 24)
@@ -512,6 +517,11 @@ RSpec.describe TimeEntry do
   describe "#end_timestamp" do
     it "returns nil if end_time is nil" do
       time_entry.end_time = nil
+      expect(time_entry.end_timestamp).to be_nil
+    end
+
+    it "returns nil if timezone is nil" do
+      time_entry.time_zone = nil
       expect(time_entry.end_timestamp).to be_nil
     end
 

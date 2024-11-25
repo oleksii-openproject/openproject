@@ -123,12 +123,14 @@ class TimeEntry < ApplicationRecord
 
   def start_timestamp
     return nil if start_time.blank?
+    return nil if time_zone.blank?
 
     ActiveSupport::TimeZone[time_zone].local(spent_on.year, spent_on.month, spent_on.day, start_time / 60, start_time % 60)
   end
 
   def end_timestamp
     return nil if end_time.blank?
+    return nil if time_zone.blank?
 
     ActiveSupport::TimeZone[time_zone].local(spent_on.year, spent_on.month, spent_on.day, end_time / 60, end_time % 60)
   end
