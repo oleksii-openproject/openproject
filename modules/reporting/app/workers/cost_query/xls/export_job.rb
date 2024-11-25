@@ -40,7 +40,6 @@ class CostQuery::XLS::ExportJob < Exports::ExportJob
                           content:)
   end
 
-
   # rubocop:disable Metrics/AbcSize
   def build_query(filters, groups = {})
     query = CostQuery.new(project:)
@@ -58,6 +57,5 @@ class CostQuery::XLS::ExportJob < Exports::ExportJob
     groups[:rows].try(:reverse_each) { |r| query.row(r) }
     query
   end
-
   # rubocop:enable Metrics/AbcSize
 end

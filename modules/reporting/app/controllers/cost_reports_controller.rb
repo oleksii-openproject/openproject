@@ -83,25 +83,19 @@ class CostReportsController < ApplicationController
           session[report_engine.name.underscore.to_sym].try(:delete, :name)
           render locals: { menu_name: project_or_global_menu }
         end
-
-        format.xls do
-          job_id = ::CostQuery::ScheduleExportService
-            .new(user: current_user)
-            .call(:xls, filter_params:, project: @project, cost_types: @cost_types)
-            .result
-          redirect_to job_status_path(job_id)
-        end
-
-        format.pdf do
-          job_id = ::CostQuery::ScheduleExportService
-            .new(user: current_user)
-            .call(:pdf, filter_params:, project: @project, cost_types: @cost_types)
-            .result
-
-          redirect_to job_status_path(job_id)
-        end
+        format.xls { export(:xls) }
+        format.pdf { export(:pdf) }
       end
     end
+  end
+
+  def export(format)
+    job_id = ::CostQuery::ScheduleExportService
+               .new(user: current_user)
+               .call(format, filter_params:, project: @project, cost_types: @cost_types)
+               .result
+
+    redirect_to job_status_path(job_id)
   end
 
   ##
@@ -366,7 +360,8 @@ class CostReportsController < ApplicationController
   # save_private_cost_reports permission as well
   #
   # @Override
-  def allowed_in_report?(action, report, user = User.current) # rubocop:disable Metrics/AbcSize, Metrics/PerceivedComplexity
+  # rubocop:disable Metrics/AbcSize, Metrics/PerceivedComplexity
+  def allowed_in_report?(action, report, user = User.current)
     # admins may do everything
     return true if user.admin?
 
@@ -398,6 +393,7 @@ class CostReportsController < ApplicationController
       Array(permissions).any? { |permission| user.allowed_in_any_project?(permission) }
     end
   end
+  # rubocop:enable Metrics/AbcSize, Metrics/PerceivedComplexity
 
   private
 
@@ -407,8 +403,8 @@ class CostReportsController < ApplicationController
 
   def get_filter_class(name)
     filter = report_engine::Filter
-      .all
-      .detect { |cls| cls.to_s.demodulize.underscore == name.to_s }
+               .all
+               .detect { |cls| cls.to_s.demodulize.underscore == name.to_s }
 
     raise ArgumentError.new("Filter with name #{name} does not exist.") unless filter
 
