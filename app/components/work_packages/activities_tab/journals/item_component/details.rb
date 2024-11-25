@@ -96,7 +96,7 @@ module WorkPackages
 
         def render_user_avatar(container)
           container.with_column(mr: 2) do
-            render Users::AvatarComponent.new(user: journal.user, show_name: false, size: :mini, hover_card: { active: true })
+            render Users::AvatarComponent.new(user: journal.user, show_name: false, size: :mini)
           end
         end
 

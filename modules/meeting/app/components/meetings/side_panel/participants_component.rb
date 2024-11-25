@@ -60,8 +60,7 @@ module Meetings
         flex.with_column(classes: "ellipsis") do
           render(Users::AvatarComponent.new(user: participant.user,
                                             size: :medium,
-                                            classes: "op-principal_flex",
-                                            hover_card: { active: true }))
+                                            classes: "op-principal_flex"))
         end
         render_participant_state(participant, flex)
       end

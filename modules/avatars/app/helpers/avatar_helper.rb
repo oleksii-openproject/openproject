@@ -45,7 +45,7 @@ module AvatarHelper
 
   # Returns the avatar image tag for the given +user+ if avatars are enabled
   # +user+ can be a User or a string that will be scanned for an email address (eg. 'joe <joe@foo.bar>')
-  def avatar(principal, size: "default", hide_name: true, hover_card: { active: false, target: :default }, name_classes: "", **)
+  def avatar(principal, size: "default", hide_name: true, hover_card: { active: true, target: :default }, name_classes: "", **)
     build_principal_avatar_tag(principal, size:, hide_name:, hover_card:, name_classes:, **)
   rescue StandardError => e
     Rails.logger.error "Failed to create avatar for #{principal}: #{e}"
@@ -147,7 +147,7 @@ module AvatarHelper
   def hover_card_options(user, inputs = {}, tag_options = {})
     # The hover card will be triggered by hovering over the avatar (if enabled)
     hover_card = tag_options[:hover_card]
-    if hover_card.fetch(:active, false)
+    if hover_card.fetch(:active, true)
       inputs[:hoverCard] = true
       inputs[:hoverCardModalTarget] = hover_card.fetch(:target, :default)
 

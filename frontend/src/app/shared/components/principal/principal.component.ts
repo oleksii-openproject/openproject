@@ -40,7 +40,7 @@ import { PathHelperService } from 'core-app/core/path-helper/path-helper.service
 import { ApiV3Service } from 'core-app/core/apiv3/api-v3.service';
 
 import { TimezoneService } from 'core-app/core/datetime/timezone.service';
-import { AvatarOptions, AvatarSize, HoverCardOptions, PrincipalRendererService } from './principal-renderer.service';
+import { AvatarOptions, AvatarSize, PrincipalRendererService } from './principal-renderer.service';
 import { PrincipalLike } from './principal-types';
 import { populateInputsFromDataset } from 'core-app/shared/components/dataset-inputs';
 import { PrincipalType } from 'core-app/shared/components/principal/principal-helper';
@@ -76,7 +76,7 @@ export class OpPrincipalComponent implements OnInit {
 
   @Input() avatarClasses? = '';
 
-  @Input() hoverCard= false;
+  @Input() hoverCard= true;
   @Input() hoverCardUrl= '';
   @Input() hoverCardModalTarget:'default'|'custom' = 'default';
 
@@ -97,19 +97,17 @@ export class OpPrincipalComponent implements OnInit {
 
   ngOnInit() {
     if (this.principal.name) {
-      const hoverCardOptions:HoverCardOptions = {
-        url: this.hoverCardUrl,
-        modalTarget: this.hoverCardModalTarget === 'custom'
-          ? PortalOutletTarget.Custom : PortalOutletTarget.Default,
-      };
-
       const avatarOptions:AvatarOptions = {
         hide: this.hideAvatar,
         size: this.size,
       };
 
       if (this.hoverCard) {
-        avatarOptions.hoverCard = hoverCardOptions;
+        avatarOptions.hoverCard = {
+          url: this.hoverCardUrl,
+          modalTarget: this.hoverCardModalTarget === 'custom'
+            ? PortalOutletTarget.Custom : PortalOutletTarget.Default,
+        };
       }
 
       this.principalRenderer.render(

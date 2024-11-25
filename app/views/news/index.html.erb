@@ -58,10 +58,8 @@ See COPYRIGHT and LICENSE files for more details.
 <% if @newss.any? %>
   <% @newss.each do |news| %>
    <div class="news">
-    <h3 class="news--header">
-      <%= avatar(news.author, hover_card: { active: true }) %>
-      <%= link_to_project(news.project) + ': ' unless news.project == @project %>
-      <%= link_to h(news.title), news_path(news) %>
+     <h3 class="news--header"><%= avatar(news.author) %><%= link_to_project(news.project) + ': ' unless news.project == @project %>
+       <%= link_to h(news.title), news_path(news) %>
       <%= "(#{t(:label_x_comments, count: news.comments_count)})" if news.comments_count > 0 %></h3>
     <p class="author additional-information"><%= authoring news.created_at, news.author %></p>
     <div class="wiki op-uc-container">

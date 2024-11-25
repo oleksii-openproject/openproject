@@ -46,8 +46,7 @@ module Members
     end
 
     def name
-      render Users::AvatarComponent.new(user: principal, size: :mini, link: true, show_name: true,
-                                        hover_card: { active: true })
+      render Users::AvatarComponent.new(user: principal, size: :mini, link: true, show_name: true)
     end
 
     def mail

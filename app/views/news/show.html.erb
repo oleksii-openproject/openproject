@@ -27,7 +27,7 @@ See COPYRIGHT and LICENSE files for more details.
 
 ++#%>
 
-<%= toolbar title: "#{avatar(@news.author, hover_card: { active: true })}  #{h @news.title}".html_safe do %>
+<%= toolbar title: "#{avatar(@news.author)}  #{h @news.title}".html_safe do %>
   <% if User.current.allowed_in_project?(:manage_news, @project) %>
     <li class="toolbar-item">
       <%= link_to(edit_news_path(@news),
@@ -88,9 +88,7 @@ See COPYRIGHT and LICENSE files for more details.
                                 title: t(:button_delete),
                                 alt: t(:button_delete) %>
         </div>
-        <h4 class="author additional-information">
-          <%= avatar(comment.author, hover_card: { active: true }) %><%= authoring comment.created_at, comment.author %>
-        </h4>
+        <h4 class="author additional-information"><%= avatar(comment.author) %><%= authoring comment.created_at, comment.author %></h4>
         <%= format_text(comment.comments, object: comment) %>
       </div>
     <% end %>

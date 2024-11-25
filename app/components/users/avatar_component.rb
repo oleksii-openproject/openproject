@@ -33,7 +33,7 @@ module Users
     include OpPrimer::ComponentHelpers
 
     def initialize(user:, show_name: true, link: true, size: "default", classes: "", title: nil, name_classes: "",
-                   hover_card: { active: false, target: :default })
+                   hover_card: { active: true, target: :default })
       super
 
       @user = user
