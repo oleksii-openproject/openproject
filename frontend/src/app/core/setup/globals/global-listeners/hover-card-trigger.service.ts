@@ -37,6 +37,7 @@ export class HoverCardTriggerService {
   private modalElement:HTMLElement;
 
   private mouseInModal = false;
+  private hoverTimeout:number|null = null;
   private closeTimeout:number|null = null;
   private closeDelayInMs:number = 100;
   private modalAlignment:string|null = null;
@@ -80,30 +81,35 @@ export class HoverCardTriggerService {
         this.closeTimeout = null;
       }
 
-      this.parseHoverCardOptions(el);
+      // Set a delay before showing the hover card
+      this.hoverTimeout = window.setTimeout(() => {
+        this.parseHoverCardOptions(el);
 
-      this.opModalService.show(
-        HoverCardComponent,
-        this.injector,
-        { turboFrameSrc: cleanedTurboFrameUrl, event: e },
-        true,
-        false,
-        this.modalTarget,
-      ).subscribe((previewModal) => {
-        this.modalElement = previewModal.elementRef.nativeElement as HTMLElement;
-        if (this.modalAlignment) {
-          previewModal.alignment = this.modalAlignment as Placement;
-        }
+        this.opModalService.show(
+          HoverCardComponent,
+          this.injector,
+          { turboFrameSrc: cleanedTurboFrameUrl, event: e },
+          true,
+          false,
+          this.modalTarget,
+        ).subscribe((previewModal) => {
+          this.modalElement = previewModal.elementRef.nativeElement as HTMLElement;
+          if (this.modalAlignment) {
+            previewModal.alignment = this.modalAlignment as Placement;
+          }
 
-        void previewModal.reposition(this.modalElement, el);
-      });
+          void previewModal.reposition(this.modalElement, el);
+        });
+      }, 1000);
     });
 
     jQuery(document.body).on('mouseleave', '.op-hover-card--preview-trigger', () => {
+      this.clearHoverTimer();
       this.closeAfterTimeout();
     });
 
     jQuery(document.body).on('mouseleave', '.op-hover-card', () => {
+      this.clearHoverTimer();
       this.mouseInModal = false;
       this.closeAfterTimeout();
     });
@@ -111,6 +117,14 @@ export class HoverCardTriggerService {
     jQuery(document.body).on('mouseenter', '.op-hover-card', () => {
       this.mouseInModal = true;
     });
+  }
+
+  // Should be called when the mouse leaves the hover-zone so that we no longer attempt ot display the hover card.
+  private clearHoverTimer() {
+    if (this.hoverTimeout) {
+      clearTimeout(this.hoverTimeout);
+      this.hoverTimeout = null;
+    }
   }
 
   private closeAfterTimeout() {
