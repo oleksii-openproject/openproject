@@ -42,7 +42,7 @@ class AddLdapTlsOptions < ActiveRecord::Migration[7.0]
         # Current LDAP library default is to not verify the certificate
         MigratingAuthSource.reset_column_information
 
-        ldap_settings = Setting.find_by(name: "ldap_tls_options")&.value
+        ldap_settings = Setting.where(name: "ldap_tls_options").pick :value
         migrate_ldap_settings(ldap_settings)
       end
     end
