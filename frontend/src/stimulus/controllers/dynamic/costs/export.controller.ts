@@ -14,7 +14,6 @@ export default class ExportController extends Controller<HTMLLinkElement> {
   }
 
   async showJobModal(job_id:string) {
-    console.log(this.jobModalUrl(job_id));
     const response = await fetch(this.jobModalUrl(job_id), {
       method: 'GET',
       headers: { Accept: 'text/vnd.turbo-stream.html' },
@@ -43,7 +42,7 @@ export default class ExportController extends Controller<HTMLLinkElement> {
   }
 
   get href() {
-    return (this.element as HTMLLinkElement).href;
+    return this.element.href;
   }
 
   download(evt:CustomEvent) {

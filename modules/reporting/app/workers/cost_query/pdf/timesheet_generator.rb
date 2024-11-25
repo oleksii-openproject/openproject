@@ -34,6 +34,7 @@ class CostQuery::PDF::TimesheetGenerator
     self.pdf = get_pdf
     @page_count = 0
     configure_page_size!(:portrait)
+    pdf.title = heading
   end
 
   def generate!
@@ -46,19 +47,31 @@ class CostQuery::PDF::TimesheetGenerator
 
   def render_doc
     write_cover_page! if with_cover?
+    write_heading!
+    write_hr!
+    write_entries!
+  end
 
+  def write_heading!
     pdf.formatted_text([{ text: heading }])
-    write_hr
-    query
-      .each_direct_result
-      .map(&:itself)
-      .filter { |r| r.fields["type"] == "TimeEntry" }
+  end
+
+  def write_entries!
+    all_entries
       .group_by { |r| r.fields["user_id"] }
       .each do |user_id, result|
       write_table(user_id, result)
     end
   end
 
+  def all_entries
+    query
+      .each_direct_result
+      .map(&:itself)
+      .filter { |r| r.fields["type"] == "TimeEntry" }
+  end
+
+  # rubocop:disable Metrics/AbcSize
   def build_table_rows(entries)
     rows = []
     entries
@@ -82,6 +95,7 @@ class CostQuery::PDF::TimesheetGenerator
     end
     rows
   end
+  # rubocop:enable Metrics/AbcSize
 
   def format_duration(hours)
     return "" if hours < 0
@@ -105,12 +119,16 @@ class CostQuery::PDF::TimesheetGenerator
     query.each_direct_result.map(&:itself)
   end
 
-  def write_hr
+  # rubocop:disable Metrics/AbcSize
+  def write_hr!
     hr_style = styles.cover_header_border
-    pdf.stroke_color = hr_style[:color]
-    pdf.line_width = hr_style[:height]
-    pdf.stroke_horizontal_line pdf.bounds.left, pdf.bounds.right, at: pdf.cursor
+    pdf.stroke do
+      pdf.line_width = hr_style[:color]
+      pdf.stroke_color hr_style[:height]
+      pdf.stroke_horizontal_line pdf.bounds.left, pdf.bounds.right, at: pdf.cursor
+    end
   end
+  # rubocop:enable Metrics/AbcSize
 
   def with_cover?
     true
