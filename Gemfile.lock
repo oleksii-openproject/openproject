@@ -343,7 +343,8 @@ GEM
     airbrake-ruby (6.2.2)
       rbtree3 (~> 0.6)
     android_key_attestation (0.3.0)
-    appsignal (3.10.0)
+    appsignal (4.2.0)
+      logger
       rack
     ast (2.4.2)
     attr_required (1.0.2)
@@ -1214,7 +1215,7 @@ DEPENDENCIES
   acts_as_tree (~> 2.9.0)
   addressable (~> 2.8.0)
   airbrake (~> 13.0.0)
-  appsignal (~> 3.10.0)
+  appsignal (~> 4.2)
   auto_strip_attributes (~> 2.5)
   awesome_nested_set (~> 3.7.0)
   aws-sdk-core (~> 3.107)
