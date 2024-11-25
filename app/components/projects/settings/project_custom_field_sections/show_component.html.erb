@@ -25,11 +25,11 @@
                 scheme: :invisible,
                 font_weight: :bold,
                 color: :subtle,
-                'aria-label': t('projects.settings.project_custom_fields.actions.label_enable_all'),
+                'aria-label': t('projects.settings.actions.label_enable_all'),
                 data: { 'turbo-method': :put, 'turbo-stream': true, test_selector: "enable-all-project-custom-field-mappings-#{@project_custom_field_section.id}" }
               )) do |button|
                 button.with_leading_visual_icon(icon: 'check-circle', color: :subtle)
-                t('projects.settings.project_custom_fields.actions.label_enable_all')
+                t('projects.settings.actions.label_enable_all')
               end
             end
             actions_container.with_column(data: { 'projects--settings--project-custom-fields-mapping-filter-target': 'bulkActionContainer' }) do
@@ -44,11 +44,11 @@
                 scheme: :invisible,
                 font_weight: :bold,
                 color: :subtle,
-                'aria-label': t('projects.settings.project_custom_fields.actions.label_disable_all'),
+                'aria-label': t('projects.settings.actions.label_disable_all'),
                 data: { 'turbo-method': :put, 'turbo-stream': true, test_selector: "disable-all-project-custom-field-mappings-#{@project_custom_field_section.id}" }
               )) do |button|
                 button.with_leading_visual_icon(icon: 'x-circle', color: :subtle)
-                t('projects.settings.project_custom_fields.actions.label_disable_all')
+                t('projects.settings.actions.label_disable_all')
               end
             end
           end

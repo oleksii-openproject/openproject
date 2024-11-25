@@ -378,6 +378,9 @@ en:
         text: "This action will not delete any project the list contains. Are you sure you want to delete this project list?"
     settings:
       change_identifier: Change identifier
+      actions:
+        label_enable_all: "Enable all"
+        label_disable_all: "Disable all"
       activities:
         no_results_title_text: There are currently no activities available.
       forums:
@@ -408,8 +411,6 @@ en:
           label_enable_single: "Active in this project, click to disable"
           label_disable_single: "Inactive in this project, click to enable"
           remove_from_project: "Remove from project"
-          label_enable_all: "Enable all"
-          label_disable_all: "Disable all"
         is_required_blank_slate:
           heading: Required in all projects
           description: This project attribute is activated in all projects since the "Required in all projects" option is checked. It cannot be deactivated for individual projects.

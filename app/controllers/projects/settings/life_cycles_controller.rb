@@ -31,7 +31,7 @@ class Projects::Settings::LifeCyclesController < Projects::SettingsController
 
   before_action :deny_access_on_feature_flag
 
-  before_action :load_life_cycle_elements, only: %i[show]
+  before_action :load_life_cycle_elements, only: %i[show enable_all disable_all]
   before_action :load_or_create_life_cycle_element, only: %i[toggle]
 
   menu_item :settings_life_cycles
@@ -40,6 +40,18 @@ class Projects::Settings::LifeCyclesController < Projects::SettingsController
 
   def toggle
     @life_cycle_element.toggle!(:active)
+  end
+
+  def disable_all
+    upsert_all(active: false)
+
+    redirect_to action: :show
+  end
+
+  def enable_all
+    upsert_all(active: true)
+
+    redirect_to action: :show
   end
 
   private
@@ -51,19 +63,37 @@ class Projects::Settings::LifeCyclesController < Projects::SettingsController
   def load_or_create_life_cycle_element
     element_params = params.require(:project_life_cycle).permit(:definition_id, :project_id, :type)
 
-    klass = case element_params.delete(:type)
-            when Project::StageDefinition.name
-              Project::Stage
-            when Project::GateDefinition.name
-              Project::Gate
-            else
-              raise NotImplementedError, "Unknown life cycle element type"
-            end
+    klass = project_type_for_definition_type(element_params.delete(:type))
 
     @life_cycle_element = klass.find_or_create_by(element_params)
   end
 
   def deny_access_on_feature_flag
     deny_access unless OpenProject::FeatureDecisions.stages_and_gates_active?
+  end
+
+  def upsert_all(active: true)
+    Project::LifeCycleStep.upsert_all(
+      @life_cycle_elements.map do |element|
+        {
+          project_id: @project.id,
+          definition_id: element.id,
+          active:,
+          type: project_type_for_definition_type(element.type)
+        }
+      end,
+      unique_by: %i[project_id definition_id]
+    )
+  end
+
+  def project_type_for_definition_type(definition_type)
+    case definition_type
+    when Project::StageDefinition.name
+      Project::Stage
+    when Project::GateDefinition.name
+      Project::Gate
+    else
+      raise NotImplementedError, "Unknown life cycle element type"
+    end
   end
 end

@@ -10,6 +10,36 @@
               I18n.t('projects.settings.life_cycle.section_header')
             end
           end
+          header_container.with_column(flex_layout: true, justify_content: :flex_end) do |actions_container|
+            actions_container.with_column(data: { 'projects--settings--project-custom-fields-mapping-filter-target': 'bulkActionContainer' }) do
+              render(Primer::Beta::Button.new(
+                tag: :a,
+                href: enable_all_project_settings_life_cycle_path(project_id: project),
+                scheme: :invisible,
+                font_weight: :bold,
+                color: :subtle,
+                'aria-label': t('projects.settings.actions.label_enable_all'),
+                data: { 'turbo-method': :post, 'turbo': true, test_selector: "enable-all-life-cycle-elements" }
+              )) do |button|
+                button.with_leading_visual_icon(icon: 'check-circle', color: :subtle)
+                t('projects.settings.actions.label_enable_all')
+              end
+            end
+            actions_container.with_column(data: { 'projects--settings--project-custom-fields-mapping-filter-target': 'bulkActionContainer' }) do
+              render(Primer::Beta::Button.new(
+                tag: :a,
+                href: disable_all_project_settings_life_cycle_path(project_id: project),
+                scheme: :invisible,
+                font_weight: :bold,
+                color: :subtle,
+                'aria-label': t('projects.settings.actions.label_disable_all'),
+                data: { 'turbo-method': :post, 'turbo': true, test_selector: "disable-all-life-cycle-elements" }
+              )) do |button|
+                button.with_leading_visual_icon(icon: 'x-circle', color: :subtle)
+                t('projects.settings.actions.label_disable_all')
+              end
+            end
+          end
         end
       end
       if life_cycle_elements.empty?

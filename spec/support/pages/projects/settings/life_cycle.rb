@@ -71,6 +71,14 @@ module Pages
           toggle_element(element).click
         end
 
+        def disable_all
+          find_test_selector("disable-all-life-cycle-elements").click
+        end
+
+        def enable_all
+          find_test_selector("enable-all-life-cycle-elements").click
+        end
+
         def life_cycle_test_selector(element)
           test_selector("project-life-cycle-element-#{element.id}")
         end

@@ -248,6 +248,10 @@ Rails.application.routes.draw do
           member do
             post :toggle
           end
+          collection do
+            post :enable_all
+            post :disable_all
+          end
         end
         resource :custom_fields, only: %i[show update]
         resource :repository, only: %i[show], controller: "repository"

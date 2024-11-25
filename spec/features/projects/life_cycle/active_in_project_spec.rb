@@ -46,36 +46,66 @@ RSpec.describe "Projects life cycle settings", :js, :with_cuprite, with_flag: { 
   shared_let(:ready_to_close_gate) { create(:project_gate_definition, name: "Ready to Close") }
   shared_let(:closing_stage) { create(:project_stage_definition, name: "Closing") }
 
-  let(:project_lifecycle_page) { Pages::Projects::Settings::LifeCycle.new(project) }
+  let(:project_life_cycle_page) { Pages::Projects::Settings::LifeCycle.new(project) }
 
   context "with sufficient permissions" do
     current_user { user_with_permission }
 
     it "allows toggling the active/inactive state of lifecycle elements" do
-      project_lifecycle_page.visit!
+      project_life_cycle_page.visit!
 
-      project_lifecycle_page.expect_listed(initiating_stage => false,
-                                           ready_to_execute_gate => false,
-                                           executing_stage => false,
-                                           ready_to_close_gate => false,
-                                           closing_stage => false)
+      project_life_cycle_page.expect_listed(initiating_stage => false,
+                                            ready_to_execute_gate => false,
+                                            executing_stage => false,
+                                            ready_to_close_gate => false,
+                                            closing_stage => false)
 
       # Activate the stages to be found within the project
-      project_lifecycle_page.toggle(initiating_stage)
-      project_lifecycle_page.toggle(ready_to_close_gate)
-      project_lifecycle_page.toggle(closing_stage)
+      project_life_cycle_page.toggle(initiating_stage)
+      project_life_cycle_page.toggle(ready_to_close_gate)
+      project_life_cycle_page.toggle(closing_stage)
 
       wait_for_network_idle
 
       # Expect the activation state to be kept after a reload
       visit home_path
-      project_lifecycle_page.visit!
+      project_life_cycle_page.visit!
 
-      project_lifecycle_page.expect_listed(initiating_stage => true,
-                                           ready_to_execute_gate => false,
-                                           executing_stage => false,
-                                           ready_to_close_gate => true,
-                                           closing_stage => true)
+      project_life_cycle_page.expect_listed(initiating_stage => true,
+                                            ready_to_execute_gate => false,
+                                            executing_stage => false,
+                                            ready_to_close_gate => true,
+                                            closing_stage => true)
+
+      # Disable all stages at once
+      project_life_cycle_page.disable_all
+
+      wait_for_network_idle
+
+      # Expect the activation state to be kept after a reload
+      visit home_path
+      project_life_cycle_page.visit!
+
+      project_life_cycle_page.expect_listed(initiating_stage => false,
+                                            ready_to_execute_gate => false,
+                                            executing_stage => false,
+                                            ready_to_close_gate => false,
+                                            closing_stage => false)
+
+      # Enable all stages at once
+      project_life_cycle_page.enable_all
+
+      wait_for_network_idle
+
+      # Expect the activation state to be kept after a reload
+      visit home_path
+      project_life_cycle_page.visit!
+
+      project_life_cycle_page.expect_listed(initiating_stage => true,
+                                            ready_to_execute_gate => true,
+                                            executing_stage => true,
+                                            ready_to_close_gate => true,
+                                            closing_stage => true)
     end
   end
 end
