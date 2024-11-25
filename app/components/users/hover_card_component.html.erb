@@ -61,9 +61,8 @@ See COPYRIGHT and LICENSE files for more details.
         end
 
         flex.with_row do
-          # TODO: could also use helpers.allowed_management_user_profile_path here...
-          render(Primer::Beta::Button.new(tag: :a, href: user_path(@user))) do
-            "Open profile"
+          render(Primer::Beta::Button.new(tag: :a, href: helpers.allowed_management_user_profile_path(@user))) do
+            I18n.t("users.open_profile")
           end
         end
       end
