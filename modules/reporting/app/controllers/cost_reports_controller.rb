@@ -95,7 +95,11 @@ class CostReportsController < ApplicationController
                .call(format, filter_params:, project: @project, cost_types: @cost_types)
                .result
 
-    redirect_to job_status_path(job_id)
+    if request.headers["Accept"]&.include?("application/json")
+      render json: { job_id: }
+    else
+      redirect_to job_status_path(job_id)
+    end
   end
 
   ##
