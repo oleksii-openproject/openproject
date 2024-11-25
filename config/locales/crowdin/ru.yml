@@ -33,7 +33,7 @@ ru:
         label_activity_show_only_changes: "Показать только изменения"
         label_sort_asc: "Новые внизу"
         label_sort_desc: "Новые вверху"
-        label_type_to_comment: "Введите комментарий"
+        label_type_to_comment: "Добавить комментарий. Введите @ для уведомления пользователей."
         label_submit_comment: "Отправить комментарий"
         changed_on: "изменено"
         created_on: "создано в"
@@ -224,10 +224,10 @@ ru:
         blankslate:
           root:
             title: "Ваш список пунктов пуст"
-            description: "Start by adding items to the custom field of type hierarchy. Each item can be used to create a hierarchy bellow it. To navigate and create sub-items inside a hierarchy click on the created item."
+            description: "Начните с добавления элементов в иерархическое настраиваемое поле. Каждый элемент может быть использован для создания иерархии ниже его. Чтобы переместить и создать подпункты внутри иерархии, нажмите на созданный элемент."
           item:
-            title: This item doesn't have any hierarchy level below
-            description: Add items to this list to create sub-items inside another one
+            title: Этот элемент не имеет уровня иерархии ниже
+            description: Добавьте элементы в этот список, чтобы создать подпункты внутри другого списка
         placeholder:
           label: "Название элемента"
           short: "Краткое имя"
@@ -238,6 +238,8 @@ ru:
           zero: нет подпунктов
           one: 1 подпункт
           other: "%{count} подпунктов"
+    upsale:
+      custom_field_format_hierarchy: "Need a hierarchy in your custom fields for work packages?"
     text_add_new_custom_field: >
       Прежде чем добавлять настраиваемые поля в проект, нужно создать их.
     is_enabled_globally: "Разрешено в глобальном масштабе"
@@ -264,20 +266,20 @@ ru:
     single: "или"
   dry_validation:
     errors:
-      integer?: "должно быть целое число"
-      filled?: "должно быть заполнено"
-      greater_or_equal_zero: "должно быть больше или равно 0"
-      not_found: "не найдено"
+      int?: "должно быть целым числом."
+      filled?: "должно быть заполнено."
+      greater_or_equal_zero: "должно быть больше или равно 0."
+      not_found: "не найдено."
       rules:
         item:
-          root_item: "не может быть корневым элементом"
-          not_persisted: "должно быть уже существующим элементом"
+          root_item: "не может быть корневым элементом."
+          not_persisted: "должно быть уже существующим элементом."
         label:
-          not_unique: "должно быть уникальным в пределах одного уровня иерархии"
+          not_unique: "должно быть уникальным в пределах одного уровня иерархии."
         short:
-          not_unique: "должно быть уникальным в пределах одного уровня иерархии"
+          not_unique: "должно быть уникальным в пределах одного уровня иерархии."
         parent:
-          not_descendant: "должно быть потомком корня иерархии"
+          not_descendant: "должно быть потомком корневого уровня иерархии."
     rules:
       depth: "Глубина"
       item: "Элемент"
@@ -1210,7 +1212,7 @@ ru:
               special: "спецсимволы (например, \"%\")"
               reused:
                 one: "уже использовался ранее. Пожалуйста, укажите другое значение."
-                few: "уже использовалось ранее. Пожалуйста, укажите другое значение."
+                few: "уже использовался ранее. Пожалуйста, укажите отличающийся пароль от %{count} использованных ранее."
                 many: "уже использовались ранее. Пожалуйста, укажите значения отличающиеся от %{count}."
                 other: "уже использовалось ранее. Пожалуйста, укажите значения отличающиеся от ваших последних %{count}."
               match:
@@ -1894,6 +1896,23 @@ ru:
     units:
       hours: ч
       days: д
+  pdf_generator:
+    page_nr_footer: "Страница %{page} из %{total}"
+    dialog:
+      title: Создать PDF
+      submit: Создать
+      header_right:
+        label: Заголовок справа
+        caption: Текст, отображаемый справа от заголовка
+      footer_center:
+        label: Нижний колонтитул по центру
+        caption: Текст, отображаемый в центре нижнего колонтитула
+      hyphenation:
+        label: Расстановка переносов
+        caption: Разрыв слов между строками для улучшения выравнивания и читаемости текста.
+      paper_size:
+        label: Размер бумаги
+        caption: Размер бумаги, используемый в PDF.
   extraction:
     available:
       pdftotext: "Pdftotext доступно (опционально)"
@@ -2915,9 +2934,9 @@ ru:
   notice_locking_conflict: "Информация была обновлена одновременно с вами  по крайней мере одним пользователем."
   notice_locking_conflict_additional_information: "Обновление(-ия) пришли от %{users}."
   notice_locking_conflict_reload_page: "Пожалуйста перезагрузите страницу, пересмотрите изменения и повторно примените Ваши обновления."
-  notice_locking_conflict_warning: "This page has been updated by someone else. To not lose your edits, copy them locally and reload to view the updated version."
-  notice_locking_conflict_danger: "Could not save your changes because of conflicting modifications. To not lose your edits, copy them locally and reload to view the updated version."
-  notice_locking_conflict_action_button: "Discard changes and reload"
+  notice_locking_conflict_warning: "Эта страница была обновлена кем-то еще. Чтобы не потерять ваши изменения, скопируйте их локально и перезагрузите страницу, чтобы просмотреть обновленную версию."
+  notice_locking_conflict_danger: "Не удалось сохранить ваши изменения из-за конфликтующих изменений. Чтобы не потерять ваши изменения, скопируйте их локально и перезагрузите страницу для просмотра обновления."
+  notice_locking_conflict_action_button: "Отменить изменения и перезагрузить"
   notice_member_added: '%{name} добавлено в проект.'
   notice_members_added: В проект добавлено %{number} пользователей.
   notice_member_removed: "Пользователь %{user} удален из проекта."
@@ -3388,7 +3407,7 @@ ru:
     authentication:
       single_sign_on: "Единый вход"
       omniauth_direct_login_hint_html: >
-        If this option is active, login requests will redirect to the configured omniauth provider. The login dropdown and sign-in page will be disabled. <br/> <strong>Note:</strong> Unless you also disable password logins, with this option enabled, users can still log in internally by visiting the <code>%{internal_path}</code> login page.
+        Если эта опция включена, запросы на вход в систему будут перенаправлены на настроенный провайдер omniauth. Выпадающий список входа и страница входа будут отключены. <br/> <strong>Примечание:</strong> Если вы также не отключите вход по паролю, то пользователи все еще могут войти внутри системы, посетив страницу входа <code>%{internal_path}</code>.
     attachments:
       whitelist_text_html: >
         Определите список допустимых расширений файлов и/или mime типов для загруженных файлов. <br/> Введите расширения файлов (например, <code>%{ext_example}</code>) или mime типы (e. ., <code>%{mime_example}</code>). <br/> Оставьте пустым, чтобы разрешить загрузку любого типа файла. Допустимы несколько значений (одна строка для каждого значения).

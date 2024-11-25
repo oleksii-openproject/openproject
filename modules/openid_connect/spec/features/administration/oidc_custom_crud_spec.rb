@@ -64,6 +64,9 @@ RSpec.describe "OIDC administration CRUD",
       fill_in "Client ID", with: "client_id"
       fill_in "Client secret", with: "client secret"
 
+      # Scope
+      fill_in "Scope", with: "custom_scope another_scope"
+
       click_link_or_button "Continue"
 
       # Mapping form

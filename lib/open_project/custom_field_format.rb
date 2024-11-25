@@ -63,7 +63,7 @@ module OpenProject
         @@available.keys
       end
 
-      def find_by_name(name)
+      def find_by(name:)
         @@available[name.to_s]
       end
 

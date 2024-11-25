@@ -97,7 +97,7 @@ ro:
     button_show_table: "Afișați vizualizarea tabelului"
     button_show_gantt: "Arată vizualizarea Gantt"
     button_show_fullscreen: "Arată vizualizarea pe tot ecranul"
-    button_more_actions: "Mai multe actiuni"
+    button_more_actions: "Mai multe acțiuni"
     button_quote: "Citat"
     button_save: "Salvează"
     button_settings: "Setări"
@@ -105,6 +105,7 @@ ro:
     button_update: "Actualizare"
     button_export-pdf: "Descarcă PDF"
     button_export-atom: "Descarcă Atom"
+    button_generate_pdf: "Generate PDF"
     button_create: "Creează"
     card:
       add_new: "Adaugă card nou"
@@ -239,7 +240,7 @@ ro:
         upsale:
           become_hero: "Deveniți un erou!"
           enterprise_info_html: "%{feature_title} is an Enterprise <span class='spot-icon spot-icon_inline spot-icon_enterprise-addons'></span> add-on."
-          upgrade_info: "Vă rugăm să treceți la un plan plătit pentru a-l activa și a începe să îl utilizați în echipa dumneavoastră."
+          upgrade_info: "Te rog să treci la un plan plătit pentru a-l activa și a începe să îl utilizezi în echipa ta."
           benefits:
             description: "Care sunt avantajele ediției Enterprise on-premise?"
             high_security: "Caracteristici de securitate"
@@ -252,7 +253,7 @@ ro:
             professional_support_text: "Beneficiați de asistență fiabilă, de înaltă calitate, din partea unor ingineri de asistență seniori cu cunoștințe de specialitate în ceea ce privește utilizarea OpenProject în medii critice pentru afaceri."
           button_start_trial: "Începeți o încercare gratuită"
           button_upgrade: "Actualizează acum"
-          button_contact_us: "Contactați-ne pentru o demonstrație"
+          button_contact_us: "Contactează-ne pentru o demonstrație"
           button_book_now: "Rezervă acum"
           confidence: >
             Oferim încrederea unui software de gestionare a proiectelor de clasă enterprise testat și susținut - cu Open Source și o minte deschisă.
@@ -351,14 +352,14 @@ ro:
     homescreen:
       blocks:
         new_features:
-          text_new_features: "Citiți despre noile caracteristici și actualizări de produse."
+          text_new_features: "Citește despre noile caracteristici și actualizări de produse."
           learn_about: "Aflați mai multe despre noile caracteristici"
           #Include the version to invalidate outdated translations in other locales.
           #Otherwise, e.g. chinese might still have the translations for 10.0 in the 12.0 release.
           "15_0":
             standard:
               new_features_html: >
-                The release brings various features and improvements for you, e.g. <br> <ul class="%{list_styling_class}"> <li>Boost your communication with a better structured Activity tab, real-time loading messages and notifications, emoji reactions, and more.</li> <li>Benefit from easy Single Sign-On authentication settings with SAML and OIDC in your Enterprise Cloud administration.</li> <li>Use the new 'Standard global role' and enable permissions to view email addresses.</li> <li>Enjoy easier navigation in project lists with quick action table headers.</li> <li>Experience simplified design settings with fewer sidebar design variables needed.</li> <li>Reduce manual cleanup when adding a custom field to a type – no more auto-applying to all projects.</li> <li>Benefit from improved navigation clarity – 'My account' is renamed to 'Account settings'.</li> </ul>
+                Versiunea aduce diverse caracteristici și îmbunătățiri pentru tine, de exemplu: <br> <ul class="%{list_styling_class}"> <li>Îmbunătățește-ți comunicarea cu o filă de activitate structurată mai bună, mesaje de încărcare și notificări în timp real, reacții emoji și multe altele.</li> <li>Beneficiază de setările de autentificare unice ușor cu SAML și OIDC în administrarea Enterprise Cloud (cloud).</li> <li>Utilizează noul 'rol global standard' și activează permisiunile pentru a vizualiza adresele de e-mail.</li> <li>Bucură-te de o navigare mai ușoară în listele de proiecte cu anteturi de masă cu acțiune rapidă.</li> <li>Experiență simplificată setările de design cu mai puține variabile de proiectare laterale.</li> <li>Redu curățarea manuală la adăugarea unui câmp personalizat la un tip – nu mai există auto-aplicare la toate proiectele.</li> <li>Beneficiază de o mai bună claritate a navigării – 'Contul meu' este redenumit în 'Setări cont'.</li> </ul>
     ical_sharing_modal:
       title: "Subscribe to calendar"
       inital_setup_error_message: "An error occured while fetching data."
@@ -372,14 +373,14 @@ ro:
       success_message: 'The URL "%{name}" was successfully copied to your clipboard. Paste it in your calendar client to complete the subscription.'
     label_activate: "Activare"
     label_assignee: "Executant"
-    label_add_column_after: "Adauga o coloana dupa"
-    label_add_column_before: "Adauga o coloana inainte"
-    label_add_columns: "Adaugați coloane"
+    label_add_column_after: "Adaugă coloană după"
+    label_add_column_before: "Adaugă coloană înainte"
+    label_add_columns: "Adaugă coloane"
     label_add_comment: "Adăugare comentariu"
     label_add_comment_title: "Comentează și tastează @ pentru a notifica alte persoane"
     label_add_row_after: "Adauga un rand dupa"
     label_add_row_before: "Adauga un rand inainte"
-    label_add_selected_columns: "Adăugați coloanele selectate"
+    label_add_selected_columns: "Adaugă coloanele selectate"
     label_added_by: "adăugat de"
     label_added_time_by: 'Adăugat de <a href="%{authorLink}">%{author}</a> acum %{age}'
     label_ago: "zile în urmă"
@@ -425,7 +426,7 @@ ro:
     label_expanded: "extins"
     label_expand_all: "Extindere totală"
     label_expand_project_menu: "Deschideți meniul proiectului"
-    label_export: "Exportare"
+    label_export: "Exportă"
     label_export_preparing: "Exportul este în curs de pregătire și va fi descărcat în curând."
     label_favorites: "Favorite"
     label_filename: "Fișier"
@@ -444,7 +445,7 @@ ro:
     label_in_more_than: "în mai mult de"
     label_incoming_emails: "E-mailuri primite"
     label_information_plural: "Informații"
-    label_invalid: "Nevalid"
+    label_invalid: "Invalid"
     label_import: "Importă"
     label_latest_activity: "Activitate recentă"
     label_last_updated_on: "Ultima actualizare la data de"
@@ -486,8 +487,8 @@ ro:
     label_recent: "Recente"
     label_reset: "Resetare"
     label_remove: "Eliminare"
-    label_remove_column: "Elimina colana"
-    label_remove_columns: "Eliminare coloane selectate"
+    label_remove_column: "Elimină coloana"
+    label_remove_columns: "Elimină coloane selectate"
     label_remove_row: "Elimina rand"
     label_report: "Raportare"
     label_repository_plural: "Repo-uri"
@@ -516,7 +517,7 @@ ro:
     label_time_entry_plural: "Timp consumat"
     label_up: "Sus"
     label_user_plural: "Utilizatori"
-    label_activity_show_only_comments: "Afișați doar activitățile ce conțin comentarii"
+    label_activity_show_only_comments: "Arată doar activitățile cu comentarii"
     label_activity_show_all: "Afișează toate activitățile"
     label_total_progress: "%{percent} % Progres total"
     label_total_amount: "Total: %{amount}"
@@ -544,8 +545,8 @@ ro:
     label_attachments: Atașamente
     label_drop_files: "Aruncați fișierele aici pentru a atașa fișiere."
     label_drop_or_click_files: "Trage fișierele aici sau clic aici pentru a atașa."
-    label_drop_folders_hint: Nu puteți încărca dosare ca atașament. Vă rugăm să selectați fișiere individuale.
-    label_add_attachments: "Atașare fișiere"
+    label_drop_folders_hint: Nu poți încărca dosare ca atașament. Te rog selectează fișiere individuale.
+    label_add_attachments: "Atașează fișiere"
     label_formattable_attachment_hint: "Atașați și legați fișiere prin plasarea în acest câmp sau prin lipirea din clipboard."
     label_remove_file: "Ştergere %{fileName}"
     label_remove_watcher: "Eliminare observator %{name}"
@@ -574,7 +575,7 @@ ro:
         members: "Invitați noi <b>membri</b> să se alăture proiectului dumneavoastră."
         quick_add_button: "Dă click pe pictograma plus (+) din antetul navigării pentru a <b>crea un nou proiect</b> sau <b>invita colaboratori</b>."
         sidebar_arrow: "Folosește săgeata de întoarcere din colțul din stânga sus pentru a te întoarce în meniul <b>al proiectului</b>."
-        welcome: "Faceți un tur introductiv de trei minute pentru a afla cele mai <b>importante caracteristici</b>. <br> Vă recomandăm să parcurgeți pașii până la sfârșit. Puteți relua turul în orice moment.</br> "
+        welcome: "Take a three-minute introduction tour to learn the most <b>important features</b>. <br> We recommend completing the steps until the end. You can restart the tour any time."
         wiki: "În cadrul <b>Wiki</b> puteți documenta și împărtăși cunoștințe împreună cu echipa dumneavoastră."
         backlogs:
           overview: "Gestionează-ți munca în vizualizarea <b>backlogs</b>."
@@ -637,14 +638,14 @@ ro:
           few: "și %{count} alții"
           other: "și %{count} alții"
         no_results:
-          at_all: "Aici vor apărea notificări noi atunci când există o activitate care vă interesează."
+          at_all: "Aici vor apărea notificări noi atunci când există o activitate care te interesează."
           with_current_filter: "Nu există notificări în această vizualizare în acest moment"
         mark_all_read: "Marchează toate ca și citite"
         mark_as_read: "Marchează ca Citit"
         text_update_date_by: "%{date} de"
         total_count_warning: "Se afișează %{newest_count} cele mai recente notificări. %{more_count} în plus nu sunt afișate."
         empty_state:
-          no_notification: "Se pare că v-ați pus la punct."
+          no_notification: "Se pare că ești cu toate la zi."
           no_notification_with_current_project_filter: "Se pare că v-ați pus la punct cu proiectul selectat."
           no_notification_with_current_filter: "Se pare că ești la zi cu filtrul %{filter}."
           no_notification_for_filter: "Looks like you are all caught up for this filter."
@@ -653,16 +654,16 @@ ro:
           message: "Există notificări noi."
           link_text: "Click here to load them."
       settings:
-        change_notification_settings: 'Puteți modifica setările <a target="_blank" href="%{url}">de notificare</a> pentru a vă asigura că nu pierdeți niciodată o actualizare importantă.'
+        change_notification_settings: 'Poți modifica setările <a target="_blank" href="%{url}">de notificare</a> pentru a te asigura că nu pierzi niciodată o actualizare importantă.'
         title: "Setări notificare"
-        notify_me: "Anunta-ma"
+        notify_me: "Notifică-mă"
         reminders:
           no_notification: Nicio notificare
           timeframes:
             normal:
               PT0S: în aceeași zi
-              P1D: Cu 1 zi înainte
-              P3D: Cu 3 zile înainte
+              P1D: cu 1 zi înainte
+              P3D: cu 3 zile înainte
               P7D: ' cu o săptămână înainte '
             overdue:
               P1D: zilnic
@@ -671,7 +672,7 @@ ro:
         reasons:
           mentioned:
             title: "Menţionat"
-            description: "Primește o notificare de fiecare dată când cineva mă menționează oriunde"
+            description: "Primesc o notificare de fiecare dată când cineva mă menționează oriunde"
           assignee: "Executant"
           responsible: "Responsabil"
           shared: "Partajat"
@@ -679,7 +680,7 @@ ro:
           work_package_commented: "Toate comentariile noi"
           work_package_created: "Pachete de lucru noi"
           work_package_processed: "Toate modificările de stare"
-          work_package_prioritized: "Toate modificările prioritare"
+          work_package_prioritized: "Toate modificările de prioritate"
           work_package_scheduled: "Toate modificările dății"
         global:
           immediately:
@@ -710,7 +711,7 @@ ro:
     placeholders:
       default: "-"
       subject: "Introduceţi subiectul aici"
-      selection: "Vă rugăm să selectaţi"
+      selection: "Te rog selectează"
       description: "Descriere: Clic pentru a edita..."
       relation_description: "Clic pentru a adăuga o descriere pentru această relație"
     project:
@@ -854,12 +855,12 @@ ro:
     scheduling:
       manual: "Programarea manuală"
     sort:
-      sorted_asc: "Sortare ascendentă aplicată "
-      sorted_dsc: "Sortare descendentă aplicată "
+      sorted_asc: "Ordonare ascendentă aplicată, "
+      sorted_dsc: "Ordonare descendentă aplicată, "
       sorted_no: "Nu a fost selectată nicio sortare "
       sorting_disabled: "sortarea este dezactivată"
-      activate_asc: "activați pentru a sorta ascendent"
-      activate_dsc: "activați pentru a sorta descendent"
+      activate_asc: "activează pentru a ordona ascendent"
+      activate_dsc: "activează pentru a ordona descendent"
       activate_no: "activați pentru a înlătura sortarea"
     text_work_packages_destroy_confirmation: "Sunteți sigur că doriți ștergerea pachetelor de lucru selectate?"
     text_query_destroy_confirmation: "Sunteți sigur că doriți să ștergeți vizualizarea selectată?"
@@ -1054,13 +1055,13 @@ ro:
         configure_button: "Configurarea tabelului pachetului de lucru"
         summary: "Tabel cu pachete de lucru pe rânduri şi câmpurile pachetelor pe coloane."
         text_inline_edit: "Majoritatea celulelor din acest tabel sunt butoane care activează editarea \"inline\" a câmpului respectiv."
-        text_sort_hint: "Cu link-urile din capul de tabel puteți sorta, grupa, reordona, elimina și adăuga coloane la tabel."
+        text_sort_hint: "Cu link-urile din capul de tabel poți sorta, grupa, reordona, elimina și adăuga coloane la tabel."
         text_select_hint: "Casetele de selectare ar trebui să fie deschise cu 'ALT' si tastele săgeată."
       table_configuration:
         button: "Configurați acest tabel al pachetului de lucru"
         choose_display_mode: "Afișare pachete de lucru din subproiecte pe pagina proiectului principal"
         modal_title: "Configurația tabelului pachetului de lucru"
-        embedded_tab_disabled: "Această filă de configurare nu este disponibilă pentru vizualizarea încorporată pe care o editați."
+        embedded_tab_disabled: "Această filă de configurare nu este disponibilă pentru vizualizarea încorporată pe care o editezi."
         default: "implicit"
         display_settings: "Setări afișare"
         default_mode: "Listă"
@@ -1083,7 +1084,7 @@ ro:
           automatic: "Automat"
           manually: "Manual"
           warning: "La activarea modului de sortare automată, veți pierde sortarea anterioară."
-        columns_help_text: "Utilizați datele de mai sus pentru a adăuga sau elimina coloane în vizualizarea tabelului. Puteți glisa și plasa coloanele pentru a le reordona."
+        columns_help_text: "Utilizează datele de mai sus pentru a adăuga sau elimina coloane în vizualizarea tabelului. Poți glisa și plasa coloanele pentru a le reordona."
         upsale:
           attribute_highlighting: "Aveți nevoie ca anumite pachete de lucru să iasă în evidență?"
           relation_columns: "Aveți nevoie să vedeți relațiile din lista pachetelor de lucru?"
@@ -1102,7 +1103,7 @@ ro:
         months: "luni"
     toolbar:
       settings:
-        configure_view: "Configurați vizualizarea"
+        configure_view: "Configurează vizualizarea"
         columns: "Coloane"
         sort_by: "Sortare după"
         group_by: "Grupare după"
@@ -1112,7 +1113,7 @@ ro:
         hide_sums: "Ascundere totaluri"
         save: "Salvează"
         save_as: "Salvează ca"
-        export: "Exportare"
+        export: "Exportă"
         visibility_settings: "Setări vizibilitate"
         share_calendar: "Subscribe to calendar"
         page_settings: "Redenumire"
@@ -1222,14 +1223,14 @@ ro:
         invite_principal_to_project: "Invitați %{principal} la %{project}"
       project:
         label: "Proiect"
-        required: "Te rog să selectezi un proiect"
-        lacking_permission: "Te rog să selectezi un alt proiect, deoarece nu ai permisiuni pentru a atribui utilizatori la cel selectat în prezent."
+        required: "Te rog selectează un proiect"
+        lacking_permission: "Te rog selectează un alt proiect, deoarece nu ai permisiuni pentru a atribui utilizatori la cel selectat în prezent."
         lacking_permission_info: "Nu aveți permisiunea de a atribui utilizatori la proiectul în care vă aflați în prezent. Trebuie să selectați un alt proiect."
         next_button: "Înainte"
         no_results: "Nu au fost găsite proiecte"
         no_invite_rights: "Nu aveți voie să invitați membri în acest proiect"
       type:
-        required: "Te rog să selectezi tipul de invitat"
+        required: "Te rog selectează tipul de invitat"
         user:
           title: "Utilizator"
           description: "Permisiuni bazate pe rolul atribuit în proiectul selectat"
@@ -1253,15 +1254,15 @@ ro:
         no_results_group: "Nu au fost găsite grupuri"
         next_button: "Înainte"
         required:
-          user: "Te rog să selectezi un utilizator"
-          placeholder: "Te rog să selectezi un substituent"
-          group: "Te rog să selectezi un grup"
+          user: "Te rog selectează un utilizator"
+          placeholder: "Te rog selectează un substituent"
+          group: "Te rog selectează un grup"
       role:
         label: "Rolul în %{project}"
         no_roles_found: "Nu au fost găsite roluri"
         description: >-
           This is the role that the user will receive when they join your project. Rolul definește acțiunile pe care utilizatorul are voie să le întreprindă și informațiile pe care le poate vedea. <a href="https://www.openproject.org/docs/system-admin-guide/users-permissions/roles-permissions/#roles-and-permissions" target="_blank"> Aflați mai multe despre roluri și permisiuni. </a>
-        required: "Te rog să selectezi un rol"
+        required: "Te rog selectează un rol"
         next_button: "Înainte"
       message:
         label: "Mesaj invitație"

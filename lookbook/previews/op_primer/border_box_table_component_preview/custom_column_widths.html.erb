@@ -1,30 +1,21 @@
 <%=
   table = Class.new(OpPrimer::BorderBoxTableComponent) do
     columns :foo, :bar
+
+    wide_columns :foo
+
     def self.name
       "MyTable"
     end
 
-    def header_args(column)
-      if column == :foo
-        { style: "grid-column: span 3" }
-      else
-        super
-      end
+    def mobile_title
+      "Mobile foo"
     end
 
     def row_class
       @clazz ||= Class.new(OpPrimer::BorderBoxRowComponent) do
         def self.name
           "MyRow"
-        end
-
-        def column_args(column)
-          if column == :foo
-            { style: "grid-column: span 3" }
-          else
-            super
-          end
         end
 
         def foo

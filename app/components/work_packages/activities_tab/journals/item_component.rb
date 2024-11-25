@@ -75,7 +75,7 @@ module WorkPackages
         end
 
         def has_unread_notifications?
-          journal.notifications.where(read_ian: false, recipient_id: User.current.id).any?
+          journal.has_unread_notifications_for_user?(User.current)
         end
 
         def notification_on_details?

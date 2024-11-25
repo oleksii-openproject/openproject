@@ -33,13 +33,13 @@ uk:
         label_activity_show_only_changes: "Показувати лише зміни"
         label_sort_asc: "Найновіші внизу"
         label_sort_desc: "Найновіші вгорі"
-        label_type_to_comment: "Місце для коментаря"
+        label_type_to_comment: "Add a comment. Type @ to notify people."
         label_submit_comment: "Надіслати коментар"
         changed_on: "змінено"
         created_on: "створив(-ла)"
-        changed: "змінено"
-        created: "створено"
-        commented: "прокоментовано"
+        changed: "змінив(-ла)"
+        created: "створив(-ла)"
+        commented: "прокоментував(-ла)"
   admin:
     plugins:
       no_results_title_text: Зараз немає встановлених плагінів.
@@ -234,6 +234,8 @@ uk:
           zero: немає піделементів
           one: 1 піделемент
           other: "Піделементів: %{count}"
+    upsale:
+      custom_field_format_hierarchy: "Need a hierarchy in your custom fields for work packages?"
     text_add_new_custom_field: >
       Щоб додати нові користувальницькі поля до проекту, спочатку потрібно створити їх, перш ніж ви зможете додати їх до цього проекту.
     is_enabled_globally: "Увімкнено у всьому світі"
@@ -260,20 +262,20 @@ uk:
     single: "або"
   dry_validation:
     errors:
-      integer?: "має бути цілим числом"
-      filled?: "має бути заповнено"
-      greater_or_equal_zero: "має дорівнювати нулю або перевищувати його"
-      not_found: "не знайдено"
+      int?: "must be an integer."
+      filled?: "must be filled."
+      greater_or_equal_zero: "must be greater or equal to 0."
+      not_found: "not found."
       rules:
         item:
-          root_item: "не може бути кореневим елементом"
-          not_persisted: "має бути вже наявним елементом"
+          root_item: "cannot be a root item."
+          not_persisted: "must be an already existing item."
         label:
-          not_unique: "має бути унікальним у межах одного рівня ієрархії"
+          not_unique: "must be unique within the same hierarchy level."
         short:
-          not_unique: "має бути унікальним у межах одного рівня ієрархії"
+          not_unique: "must be unique within the same hierarchy level."
         parent:
-          not_descendant: "має бути дочірнім елементом кореня ієрархії"
+          not_descendant: "must be a descendant of the hierarchy root."
     rules:
       depth: "Глибина"
       item: "Елемент"
@@ -1888,6 +1890,23 @@ uk:
     units:
       hours: г
       days: д
+  pdf_generator:
+    page_nr_footer: "Page %{page} of %{total}"
+    dialog:
+      title: Generate PDF
+      submit: Generate
+      header_right:
+        label: Header right
+        caption: Text to be displayed in the right of the header
+      footer_center:
+        label: Footer center
+        caption: Text to be displayed in the center of the footer
+      hyphenation:
+        label: Hyphenation
+        caption: Break words between lines to improve text justification and readability.
+      paper_size:
+        label: Paper size
+        caption: The size of the paper to use for the PDF.
   extraction:
     available:
       pdftotext: "Доступний текст PDF (необов'язково)"

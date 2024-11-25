@@ -33,7 +33,7 @@ el:
         label_activity_show_only_changes: "Show changes only"
         label_sort_asc: "Newest at the bottom"
         label_sort_desc: "Newest on top"
-        label_type_to_comment: "Type here to comment"
+        label_type_to_comment: "Add a comment. Type @ to notify people."
         label_submit_comment: "Submit comment"
         changed_on: "changed on"
         created_on: "created this on"
@@ -235,6 +235,8 @@ el:
           zero: no sub-items
           one: 1 sub-item
           other: "%{count} sub-items"
+    upsale:
+      custom_field_format_hierarchy: "Need a hierarchy in your custom fields for work packages?"
     text_add_new_custom_field: >
       Για να προσθέσετε νέα προσαρμοσμένα πεδία σε ένα έργο, πρέπει πρώτα να τα δημιουργήσετε για να τα προσθέσετε σε αυτό το έργο.
     is_enabled_globally: "Είναι ενεργοποιημένο σε όλο το σύστημα"
@@ -261,20 +263,20 @@ el:
     single: "ή"
   dry_validation:
     errors:
-      integer?: "must be an integer"
-      filled?: "must be filled"
-      greater_or_equal_zero: "must be greater or equal to 0"
-      not_found: "not found"
+      int?: "must be an integer."
+      filled?: "must be filled."
+      greater_or_equal_zero: "must be greater or equal to 0."
+      not_found: "not found."
       rules:
         item:
-          root_item: "cannot be a root item"
-          not_persisted: "must be an already existing item"
+          root_item: "cannot be a root item."
+          not_persisted: "must be an already existing item."
         label:
-          not_unique: "must be unique within the same hierarchy level"
+          not_unique: "must be unique within the same hierarchy level."
         short:
-          not_unique: "must be unique within the same hierarchy level"
+          not_unique: "must be unique within the same hierarchy level."
         parent:
-          not_descendant: "must be a descendant of the hierarchy root"
+          not_descendant: "must be a descendant of the hierarchy root."
     rules:
       depth: "Depth"
       item: "Item"
@@ -1819,6 +1821,23 @@ el:
     units:
       hours: h
       days: d
+  pdf_generator:
+    page_nr_footer: "Page %{page} of %{total}"
+    dialog:
+      title: Generate PDF
+      submit: Generate
+      header_right:
+        label: Header right
+        caption: Text to be displayed in the right of the header
+      footer_center:
+        label: Footer center
+        caption: Text to be displayed in the center of the footer
+      hyphenation:
+        label: Hyphenation
+        caption: Break words between lines to improve text justification and readability.
+      paper_size:
+        label: Paper size
+        caption: The size of the paper to use for the PDF.
   extraction:
     available:
       pdftotext: "Το Pdftotext είναι διαθέσιμο (προαιρετικό)"

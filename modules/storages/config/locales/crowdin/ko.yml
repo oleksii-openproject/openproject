@@ -115,7 +115,7 @@ ko:
               permission_not_set: '- %{path}에 대한 권한을 설정할 수 없습니다.'
             remote_folders:
               not_allowed: '%{username}에게는 %{group_folder} 폴더에 대한 액세스 권한이 없습니다. Nextcloud의 폴더 권한을 확인하세요.'
-              not_found: "%{group_folder} folder wasn't found. Please check your Nextcloud setup."
+              not_found: "%{group_folder} 폴더를 찾을 수 없습니다. Nextcloud 설정을 확인하세요."
             remove_user_from_group:
               conflict: '다음과 같은 이유로 %{user} 사용자를 %{group} 그룹에서 제거할 수 없습니다: %{reason}'
               failed_to_remove: '다음과 같은 이유로 %{user} 사용자를 %{group} 그룹에서 제거할 수 없습니다: %{reason}'

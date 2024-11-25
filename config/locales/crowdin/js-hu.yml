@@ -105,6 +105,7 @@ hu:
     button_update: "Frissítés"
     button_export-pdf: "PDF-fájl letöltése"
     button_export-atom: "Atom letöltés"
+    button_generate_pdf: "Generate PDF"
     button_create: "Létrehoz"
     card:
       add_new: "Új kártya hozzáadása"
@@ -575,7 +576,7 @@ hu:
         members: "Új <b>tagok</b> meghívása, hogy a projekthez csatlakozzanak."
         quick_add_button: "Kattintson a fejlécben található (+) ikonra hogy   <b>create a new project</b> vagy  <b>invite coworkers</b>."
         sidebar_arrow: "Használja a vissza nyilat bal felül hogy visszatérjen a projektekhez <b>main menu</b>.."
-        welcome: "Áldozzon három percet erre a bemutatóra, hogy megismerje a <b>legfontosabb szolgáltatásokat</b><br> Javasoljuk, hogy végezze el a lépéseket egészen a végéig. A túra bármikor újraindítható."
+        welcome: "Take a three-minute introduction tour to learn the most <b>important features</b>. <br> We recommend completing the steps until the end. You can restart the tour any time."
         wiki: "A <b>Wiki</b> modulban tudását dokumentálhatja és megoszthatja a csapatával."
         backlogs:
           overview: "Munka kezelése a <b>backlogs</b>  nézetben"

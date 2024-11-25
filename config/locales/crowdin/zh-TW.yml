@@ -33,7 +33,7 @@ zh-TW:
         label_activity_show_only_changes: "僅顯示差異"
         label_sort_asc: "最新的在最下面"
         label_sort_desc: "最新的在最上面"
-        label_type_to_comment: "在此留言"
+        label_type_to_comment: "留言。輸入 @ 來通知他人。"
         label_submit_comment: "留言"
         changed_on: "異動於"
         created_on: "新增於"
@@ -238,6 +238,8 @@ zh-TW:
           zero: 無子項目
           one: 1 個子項目
           other: "%{count} 子項目"
+    upsale:
+      custom_field_format_hierarchy: "工作項目的自訂欄位需要分層嗎？"
     text_add_new_custom_field: >
       要加入客製欄位至一個專案，您必須先建立欄位才能將它們加入至此專案。
     is_enabled_globally: "已全域啟用"
@@ -264,7 +266,7 @@ zh-TW:
     single: "或者"
   dry_validation:
     errors:
-      integer?: "必須是整數"
+      int?: "必須是整數"
       filled?: "必填"
       greater_or_equal_zero: "必須大於或等於 0"
       not_found: "未找到"
@@ -273,11 +275,11 @@ zh-TW:
           root_item: "不能為根項目"
           not_persisted: "必須是已存在的項目"
         label:
-          not_unique: "在同一層級內必須唯一"
+          not_unique: "在同一階層內必須唯一"
         short:
           not_unique: "在同一階層內必須唯一"
         parent:
-          not_descendant: "必須是階層根的展開的"
+          not_descendant: "必須是層級展開的"
     rules:
       depth: "深度"
       item: "項目"
@@ -1291,7 +1293,7 @@ zh-TW:
     assigned_to: "執行者"
     assignee: "執行者"
     attachments: "附加檔"
-    author: "作者"
+    author: "工作項目發起者"
     base: "一般錯誤:"
     blocks_ids: "已被限制的工作項目 IDs"
     category: "類別"
@@ -1784,6 +1786,23 @@ zh-TW:
     units:
       hours: 小時
       days: 日
+  pdf_generator:
+    page_nr_footer: "頁面 %{page} of %{total}"
+    dialog:
+      title: 產生PDF檔案
+      submit: 產生
+      header_right:
+        label: 標題右側
+        caption: 要顯示在標頭右側的文字
+      footer_center:
+        label: 頁尾中心
+        caption: 要顯示在頁尾中央的文字
+      hyphenation:
+        label: 連字符
+        caption: 在行與行之間分隔字詞，以改善文字的正確性和可讀性。
+      paper_size:
+        label: 紙張大小
+        caption: PDF 要使用的紙張尺寸。
   extraction:
     available:
       pdftotext: "Pdftotext 可用 (非必要)"

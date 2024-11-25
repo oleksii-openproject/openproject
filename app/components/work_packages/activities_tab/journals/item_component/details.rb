@@ -53,6 +53,14 @@ module WorkPackages
           journal.id
         end
 
+        def journal_details
+          @journal_details ||= journal.details
+        end
+
+        def has_details?
+          @has_details ||= journal_details.any?
+        end
+
         def render_details_header(details_container)
           details_container.with_row(
             flex_layout: true,
@@ -223,7 +231,7 @@ module WorkPackages
         end
 
         def render_journal_details(details_container_inner)
-          journal.details.each do |detail|
+          journal_details.each do |detail|
             rendered_detail = journal.render_detail(detail)
             render_single_detail(details_container_inner, rendered_detail) if rendered_detail.present?
           end

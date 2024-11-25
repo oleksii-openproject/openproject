@@ -459,7 +459,7 @@ pt-BR:
                   name: Pacotes de trabalho
               item_6:
                 options:
-                  name: Etapas
+                  name: Marcos
           work_packages:
             item_0:
               subject: Kick off do projeto criando modelo BIM

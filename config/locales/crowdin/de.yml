@@ -33,7 +33,7 @@ de:
         label_activity_show_only_changes: "Nur Änderungen anzeigen"
         label_sort_asc: "Neueste unten"
         label_sort_desc: "Neueste oben"
-        label_type_to_comment: "Tippen Sie hier, um zu kommentieren"
+        label_type_to_comment: "Add a comment. Type @ to notify people."
         label_submit_comment: "Kommentar absenden"
         changed_on: "geändert am"
         created_on: "erstellte dies am"
@@ -236,6 +236,8 @@ de:
           zero: keine Unterelemente
           one: 1 Unterelement
           other: "%{count} Unterelemente"
+    upsale:
+      custom_field_format_hierarchy: "Need a hierarchy in your custom fields for work packages?"
     text_add_new_custom_field: >
       Um neue benutzerdefinierte Felder einem Projekt zuzuweisen, müssen Sie diese erst global erstellen, um Sie dann an dieser Stelle aktivieren zu können.
     is_enabled_globally: "Für alle Projekte aktiviert"
@@ -262,25 +264,25 @@ de:
     single: "oder"
   dry_validation:
     errors:
-      integer?: "muss eine ganze Zahl sein"
-      filled?: "muss ausgefüllt sein"
-      greater_or_equal_zero: "muss größer oder gleich 0 sein"
-      not_found: "nicht gefunden"
+      int?: "muss eine ganze Zahl sein."
+      filled?: "muss ausgefüllt werden."
+      greater_or_equal_zero: "muss größer oder gleich 0 sein."
+      not_found: "nicht gefunden."
       rules:
         item:
-          root_item: "cannot be a root item"
-          not_persisted: "must be an already existing item"
+          root_item: "cannot be a root item."
+          not_persisted: "muss ein bereits vorhandenes Element sein."
         label:
-          not_unique: "muss innerhalb der gleichen Hierarchieebene eindeutig sein"
+          not_unique: "muss innerhalb der gleichen Hierarchieebene eindeutig sein."
         short:
-          not_unique: "must be unique within the same hierarchy level"
+          not_unique: "muss innerhalb der gleichen Hierarchieebene eindeutig sein."
         parent:
-          not_descendant: "must be a descendant of the hierarchy root"
+          not_descendant: "must be a descendant of the hierarchy root."
     rules:
-      depth: "Depth"
-      item: "Item"
+      depth: "Tiefe"
+      item: "Element"
       label: "Bezeichnung"
-      short: "Short name"
+      short: "Kurzname"
       parent: "Parent"
   global_search:
     placeholder: "Suche in %{app_title}"
@@ -1816,6 +1818,23 @@ de:
     units:
       hours: h
       days: d
+  pdf_generator:
+    page_nr_footer: "Seite %{page} von %{total}"
+    dialog:
+      title: PDF generieren
+      submit: Generieren
+      header_right:
+        label: Kopfzeile rechts
+        caption: Text, der rechts neben der Kopfzeile angezeigt werden soll
+      footer_center:
+        label: Fußzeile mittig
+        caption: Text, der in der Mitte der Fußzeile angezeigt werden soll
+      hyphenation:
+        label: Silbentrennung
+        caption: Wörter zwischen den Zeilen umbrechen, um die Textausrichtung und die Lesbarkeit zu verbessern.
+      paper_size:
+        label: Papierformat
+        caption: Die Größe des Papiers, das für das PDF verwendet werden soll.
   extraction:
     available:
       pdftotext: "Pdftotext verfügbar (optional)"
@@ -2836,9 +2855,9 @@ de:
   notice_locking_conflict: "Die Informationen wurde zwischenzeitlich von einem anderen Benutzer geändert."
   notice_locking_conflict_additional_information: "Die Änderung(en) wurde(n) durchgeführt von %{users}."
   notice_locking_conflict_reload_page: "Bitte laden Sie die Seite neu, prüfen Sie die Anpassungen und geben Sie Ihre Änderungen noch einmal ein."
-  notice_locking_conflict_warning: "This page has been updated by someone else. To not lose your edits, copy them locally and reload to view the updated version."
-  notice_locking_conflict_danger: "Could not save your changes because of conflicting modifications. To not lose your edits, copy them locally and reload to view the updated version."
-  notice_locking_conflict_action_button: "Discard changes and reload"
+  notice_locking_conflict_warning: "Diese Seite wurde von jemand anderem aktualisiert. Um Ihre Änderungen nicht zu verlieren, kopieren Sie sie lokal und laden Sie sie erneut, um die aktualisierte Version anzuzeigen."
+  notice_locking_conflict_danger: "Ihre Änderungen konnten wegen in Konflikt stehender Änderungen nicht gespeichert werden. Um Ihre Änderungen nicht zu verlieren, kopieren Sie sie lokal und laden Sie sie erneut, um die aktualisierte Version anzuzeigen."
+  notice_locking_conflict_action_button: "Änderungen verwerfen und neu laden"
   notice_member_added: '%{name} zum Projekt hinzugefügt.'
   notice_members_added: '%{number} Benutzer zum Projekt hinzugefügt.'
   notice_member_removed: "%{user} aus dem Projekt entfernt."

@@ -105,6 +105,7 @@ zh-TW:
     button_update: "更新"
     button_export-pdf: "下載 PDF"
     button_export-atom: "下載 Atom"
+    button_generate_pdf: "產生PDF檔案"
     button_create: "建立"
     card:
       add_new: "新增卡片"
@@ -387,7 +388,7 @@ zh-TW:
     label_all_work_packages: "所有工作項目"
     label_and: "和"
     label_ascending: "昇冪"
-    label_author: "作者: %{user}"
+    label_author: "工作項目發起者: %{user}"
     label_avatar: "大頭貼"
     label_between: "介於"
     label_board: "面板"
@@ -967,7 +968,7 @@ zh-TW:
         other: "其他"
       properties:
         assignee: "執行者"
-        author: "作者"
+        author: "工作項目發起者"
         createdAt: "建立於"
         description: "敘述"
         date: "日期"

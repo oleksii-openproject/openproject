@@ -82,13 +82,15 @@ RSpec.describe TableHelpers::TableParser do
       .to raise_error(ArgumentError, "Too many cells in row 1, have you forgotten some headers?")
   end
 
-  it "is ok to have more headers than cells (value of missing cells will be nil)" do
+  it "is ok to have more headers than cells (raw values of missing cells will be empty strings)" do
     table = <<~TABLE
       subject | work | remaining work
       wp      |   4h
     TABLE
     parsed_data = described_class.new.parse(table)
+    expect(parsed_data.dig(0, :row, " work ")).to eq("   4h")
     expect(parsed_data.dig(0, :attributes, :estimated_hours)).to eq(4.0)
+    expect(parsed_data.dig(0, :row, " remaining work")).to eq("")
     expect(parsed_data.dig(0, :attributes, :remaining_hours)).to be_nil
   end
 

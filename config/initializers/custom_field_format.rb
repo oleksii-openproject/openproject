@@ -80,6 +80,7 @@ OpenProject::CustomFieldFormat.map do |fields|
 
   fields.register OpenProject::CustomFieldFormat.new("hierarchy",
                                                      label: :label_hierarchy,
+                                                     only: %w(WorkPackage),
                                                      order: 12,
                                                      formatter: "CustomValue::HierarchyStrategy")
 end

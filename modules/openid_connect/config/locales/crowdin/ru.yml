@@ -8,7 +8,7 @@ ru:
     attributes:
       openid_connect/provider:
         name: Имя
-        slug: Unique identifier
+        slug: Уникальный идентификатор
         display_name: Отображаемое имя
         client_id: ID клиента
         client_secret: Закрытый ключ клиента
@@ -27,7 +27,7 @@ ru:
         icon: Пользовательская иконка
         claims: Претензии
         acr_values: Значения ACR
-        redirect_url: Redirect URL
+        redirect_url: URL переадресации
   activerecord:
     errors:
       models:
@@ -53,36 +53,38 @@ ru:
     menu_title: Провайдеры OpenID
     delete_title: "Удалить провайдера OpenID Connect"
     instructions:
-      redirect_url: This is the redirect URL that the OpenID Connect provider should use to redirect back to OpenProject after a successful login.
+      redirect_url: Это URL, который провайдер OpenID Connect должен использовать для перенаправления обратно на OpenProject после успешного входа в систему.
       endpoint_url: URL-адрес конечной точки, указанный поставщиком OpenID Connect
       metadata_none: У меня нет этой информации
       metadata_url: У меня есть URL конечной точки обнаружения
       client_id: Это идентификатор клиента, присвоенный вам провайдером OpenID Connect
       client_secret: Это ключ клиента, предоставленный вам провайдером OpenID Connect
-      limit_self_registration: Если этот параметр включен, пользователи могут регистрироваться только с помощью этого провайдера, если это позволяет конфигурация провайдера.
+      limit_self_registration: Если эта опция включена, пользователи смогут регистрироваться у этого провайдера только в том случае, если конфигурация провайдера позволяет это делать.
       display_name: Это имя провайдера. Оно будет отображаться как кнопка входа и в списке провайдеров.
       tenant: 'Пожалуйста, замените владельца по умолчанию на своего собственного, если это применимо. См. <a href=" https://learn.microsoft.com/en-us/entra/identity-platform/v2-protocols-oidc#find-your-apps-openid-configuration-document-uri">это</a>.'
+      scope: If you want to request custom scopes, you can add one or multiple scope values separated by spaces here. For more information, see the [OpenID Connect documentation](docs_url).
       post_logout_redirect_uri: URL-адрес, на который провайдер OpenID Connect должен перенаправить Вас после запроса на выход из системы.
       claims: >
         Вы можете запросить дополнительные требования к конечным точкам пользовательской информации и id токена. Пожалуйста, обратитесь к [нашей документации для OpenID подключения](docs_url) для получения дополнительной информации.
       acr_values: >
-        Request non-essential claims in an easier format. See [our documentation on acr_values](docs_url) for more information.
+        Запрос несущественных требований в более удобном формате. Смотрите [нашу документацию по acr_values](docs_url) для получения дополнительной информации.
       mapping_login: >
-        Provide a custom mapping in the userinfo response to be used for the login attribute.
+        Предоставьте пользовательское отображение в ответе userinfo, которое будет использоваться для атрибута логина.
       mapping_email: >
-        Provide a custom mapping in the userinfo response to be used for the email attribute.
+        Предоставьте пользовательское отображение в ответе userinfo, которое будет использоваться для атрибута электронной почты.
       mapping_first_name: >
-        Provide a custom mapping in the userinfo response to be used for the first name.
+        Предоставьте пользовательское отображение в ответе userinfo, которое будет использоваться для атрибута имени.
       mapping_last_name: >
-        Provide a custom mapping in the userinfo response to be used for the last name.
+        Предоставьте пользовательское отображение в ответе userinfo, которое будет использоваться для атрибута фамилии.
       mapping_admin: >
-        Provide a custom mapping in the userinfo response to be used for the admin status. It expects a boolean attribute to be returned.
+        Предоставьте пользовательское отображение в ответе userinfo, которое будет использоваться для определения статуса администратора. Ожидается, что будет возвращен атрибут boolean.
     settings:
       metadata_none: У меня нет этой информации
       metadata_url: У меня есть URL конечной точки обнаружения
       endpoint_url: URL конечной точки
     providers:
-      seeded_from_env: "This provider was seeded from the environment configuration. It cannot be edited."
+      label_providers: "Провайдеры"
+      seeded_from_env: "Этот провайдер был инициализирован из конфигурации среды. Он не может быть отредактирован."
       google:
         name: Google
       microsoft_entra:
@@ -90,7 +92,7 @@ ru:
       custom:
         name: Пользовательский
       upsale:
-        description: Connect OpenProject to an OpenID connect identity provider
+        description: Подключить OpenProject к провайдеру идентификации OpenID connect
       label_add_new: Добавить нового провайдера OpenID
       label_edit: Редактировать провайдера OpenID %{name}
       label_empty_title: Провайдеры OpenID еще не настроены.
@@ -107,15 +109,15 @@ ru:
       plural: Провайдеры OpenID
       singular: Провайдер OpenID
       section_texts:
-        metadata: Pre-fill configuration using an OpenID Connect discovery endpoint URL
-        metadata_form_banner: Editing the discovery endpoint may override existing pre-filled metadata values.
+        metadata: Предварительно заполните конфигурацию, используя URL обнаружения OpenID Connect
+        metadata_form_banner: Редактирование URL может перезаписать ранее заполненные значения метаданных.
         metadata_form_title: Конечная точка обнаружения OpenID Connect
-        metadata_form_description: If your identity provider has a discovery endpoint URL. Use it below to pre-fill configuration.
-        configuration_metadata: The information has been pre-filled using the supplied discovery endpoint. In most cases, they do not require editing.
-        configuration: Configuration details of the OpenID Connect provider
+        metadata_form_description: Если ваш поставщик идентификации имеет URL обнаружения. Используйте его ниже для предварительного заполнения.
+        configuration_metadata: Эта информация была предварительно заполнена с использованием URL обнаружения. В большинстве случаев она не требует редактирования.
+        configuration: Подробности конфигурации провайдера OpenID Connect
         display_name: Отображаемое имя, видимое пользователям.
-        attribute_mapping: Configure the mapping of attributes between OpenProject and the OpenID Connect provider.
-        claims: Request additional claims for the ID token or userinfo response.
+        attribute_mapping: Настройте сопоставление атрибутов между OpenProject и провайдером OpenID Connect.
+        claims: Запросите дополнительные требования к ID-токену или ответу userinfo.
     setting_instructions:
       limit_self_registration: >
         Если включено, пользователи могут зарегистрироваться только с помощью данного провайдера, если это позволяет сама регистрация.

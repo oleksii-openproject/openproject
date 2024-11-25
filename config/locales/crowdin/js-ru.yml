@@ -105,6 +105,7 @@ ru:
     button_update: "Обновление"
     button_export-pdf: "Скачать PDF"
     button_export-atom: "Скачать Atom"
+    button_generate_pdf: "Создать PDF"
     button_create: "Создать"
     card:
       add_new: "Добавить новую карту"
@@ -358,7 +359,7 @@ ru:
           "15_0":
             standard:
               new_features_html: >
-                The release brings various features and improvements for you, e.g. <br> <ul class="%{list_styling_class}"> <li>Boost your communication with a better structured Activity tab, real-time loading messages and notifications, emoji reactions, and more.</li> <li>Benefit from easy Single Sign-On authentication settings with SAML and OIDC in your Enterprise Cloud administration.</li> <li>Use the new 'Standard global role' and enable permissions to view email addresses.</li> <li>Enjoy easier navigation in project lists with quick action table headers.</li> <li>Experience simplified design settings with fewer sidebar design variables needed.</li> <li>Reduce manual cleanup when adding a custom field to a type – no more auto-applying to all projects.</li> <li>Benefit from improved navigation clarity – 'My account' is renamed to 'Account settings'.</li> </ul>
+                Релиз содержит новые возможности и различные улучшения, такие как, <br>. <ul class="%{list_styling_class}"> <li>Повысьте эффективность общения благодаря более структурированной вкладке "Активность", загрузке сообщений и уведомлений в режиме реального времени, реакциям emoji и многому другому.</li> <li>Воспользуйтесь простыми настройками аутентификации Single Sign-On с помощью SAML и OIDC при администрировании Enterprise Cloud.</li> <li>Используйте новую "Стандартную глобальную роль" и включите разрешения на просмотр адресов электронной почты.</li> <li>Наслаждайтесь более удобной навигацией в списках проектов с помощью быстрых действий заголовков таблиц.</li> <li>Упрощенные настройки оформления боковой панели с меньшим количеством необходимых переменных.</li> <li>Сократите ручную очистку при добавлении пользовательского поля к типу - больше не нужно автоматически применять его ко всем проектам.</li> <li>Воспользуйтесь улучшенной ясностью навигации - "Мой аккаунт" переименован в "Настройки аккаунта".</li> </ul>
     ical_sharing_modal:
       title: "Подписаться на календарь"
       inital_setup_error_message: "Произошла ошибка при получении данных."

@@ -43,7 +43,7 @@ zh-TW:
         start_time_hour: "開始時間"
       meeting_agenda_item:
         title: "標題"
-        author: "作者"
+        author: "會議發起者"
         duration_in_minutes: "分鐘"
         description: "備註"
         presenter: "簡報者"
@@ -87,7 +87,7 @@ zh-TW:
   label_meeting: "會議"
   label_meeting_plural: "會議"
   label_meeting_new: "新增會議"
-  label_meeting_new_one_time: "建立一次性會議"
+  label_meeting_new_dynamic: "新的動態會議"
   label_meeting_create: "新增會議"
   label_meeting_copy: "複製會議"
   label_meeting_edit: "編輯會議"
@@ -145,7 +145,7 @@ zh-TW:
     types:
       classic: "經典"
       classic_text: "以調整好的文字議程和程序來整理您的會議紀錄。"
-      structured: "一次性"
+      structured: "動態"
       structured_text: "將您的會議整理成一個議程項目列表，並可選擇地將它們與一個工作項目連接起來。"
       structured_text_copy: "目前複製會議不會複製相關會議的議程項目，只會複製會議的詳細信息。"
     copied: "從會議紀錄 #%{id} 中複製"

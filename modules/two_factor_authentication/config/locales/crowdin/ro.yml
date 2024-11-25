@@ -58,7 +58,7 @@ ro:
       label_enforced: "Aplicați 2FA"
       label_remember: "Rețineți autentificarea 2FA"
       text_configuration: |
-        Notă: Aceste valori reprezintă configurația curentă la nivelul întregii aplicații. Nu puteți dezactiva setările impuse de configurație sau modifica strategiile active curente, deoarece acestea necesită o repornire a serverului.
+        Notă: Aceste valori reprezintă configurația curentă la nivelul întregii aplicații. Nu poți dezactiva setările impuse de configurație sau modifica strategiile active curente, deoarece acestea necesită o repornire a serverului.
       text_configuration_guide: Pentru mai multe informații, consultați ghidul de configurare.
       text_enforced: "Activează această setare pentru a forța toți utilizatorii să înregistreze un dispozitiv 2FA la următoarea autentificare. Poate fi dezactivată numai atunci când nu este impusă prin configurare."
       text_remember: |
@@ -79,7 +79,7 @@ ro:
       text_2fa_disabled: "The user did not set up a 2FA device through their 'My account page'"
       only_sms_allowed: "Only SMS delivery can be set up for other users."
     upsale:
-      title: "Autentificare cu doi factori"
+      title: "Autentificare doi factori"
       description: "Consolidarea securității instanței OpenProject prin oferirea (sau impunerea) autentificării cu doi factori pentru toți membrii proiectului."
     backup_codes:
       none_found: Nu există coduri de rezervă pentru acest cont.

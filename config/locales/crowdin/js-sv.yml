@@ -105,6 +105,7 @@ sv:
     button_update: "Uppdatera"
     button_export-pdf: "Ladda ner PDF"
     button_export-atom: "Ladda ner Atom"
+    button_generate_pdf: "Generate PDF"
     button_create: "Skapa"
     card:
       add_new: "Lägg till kort"
@@ -574,7 +575,7 @@ sv:
         members: "Invite new <b>members</b> to join your project."
         quick_add_button: "Click on the plus (+) icon in the header navigation to <b>create a new project</b> or to <b>invite coworkers</b>."
         sidebar_arrow: "Use the return arrow in the top left corner to return to the project’s <b>main menu</b>."
-        welcome: "Ta en tre minuters introduktionstur för att lära dig de <b>viktigaste funktionerna</b>. <br> Vi rekommenderar att du slutför stegen till slutet. Du kan starta om turen när som helst."
+        welcome: "Take a three-minute introduction tour to learn the most <b>important features</b>. <br> We recommend completing the steps until the end. You can restart the tour any time."
         wiki: "Within the <b>wiki</b> you can document and share knowledge together with your team."
         backlogs:
           overview: "Manage your work in the <b>backlogs</b> view."

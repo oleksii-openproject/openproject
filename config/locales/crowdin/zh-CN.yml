@@ -33,7 +33,7 @@ zh-CN:
         label_activity_show_only_changes: "仅显示更改"
         label_sort_asc: "时间升序"
         label_sort_desc: "时间降序"
-        label_type_to_comment: "在此输入评论"
+        label_type_to_comment: "添加评论。输入 @ 以通知他人。"
         label_submit_comment: "提交评论"
         changed_on: "更改于"
         created_on: "创建于"
@@ -236,6 +236,8 @@ zh-CN:
           zero: 无子项目
           one: 1个子项目
           other: "%{count} 个子项目"
+    upsale:
+      custom_field_format_hierarchy: "Need a hierarchy in your custom fields for work packages?"
     text_add_new_custom_field: >
       要向项目添加新的自定义字段，您需要先创建字段，然后才能将其添加到此项目中。
     is_enabled_globally: "已全局启用"
@@ -262,7 +264,7 @@ zh-CN:
     single: "或"
   dry_validation:
     errors:
-      integer?: "必须是整数"
+      int?: "必须为整数"
       filled?: "必须填写"
       greater_or_equal_zero: "必须大于或等于 0"
       not_found: "未找到"
@@ -1782,6 +1784,23 @@ zh-CN:
     units:
       hours: 时
       days: 天
+  pdf_generator:
+    page_nr_footer: "第 %{page} 页，共%{total} 页"
+    dialog:
+      title: 生成 PDF
+      submit: 生成
+      header_right:
+        label: 页眉右侧
+        caption: 标题右侧显示的文本
+      footer_center:
+        label: 页脚中心
+        caption: 在页脚中心显示的文本
+      hyphenation:
+        label: 断字
+        caption: 在行之间打断单词，以改进文本解释和可读性。
+      paper_size:
+        label: 纸张大小
+        caption: 用于PDF的纸张大小。
   extraction:
     available:
       pdftotext: "Pdftotext 可用 (可选)"

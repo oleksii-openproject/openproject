@@ -14,23 +14,20 @@
       when :only_comments
         render_empty_line(details_container) unless journal.notes.blank? && !journal.noop?
       when :only_changes
-        if journal.details.any?
+        if has_details?
           render_details_header(details_container)
           render_details(details_container)
         end
       else
-        if journal.details.any?
+        if has_details?
           if journal.notes.present?
             render_details(details_container)
           else
             render_details_header(details_container)
             render_details(details_container)
           end
-        elsif journal.notes.present?
-          render_details(details_container)
         else
-          # empty row to render the flex layout with its minimal height
-          render_empty_line(details_container)
+          render_details(details_container)
         end
       end
     end

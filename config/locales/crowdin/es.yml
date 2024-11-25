@@ -33,7 +33,7 @@ es:
         label_activity_show_only_changes: "Mostrar solo los cambios"
         label_sort_asc: "Lo más reciente en la parte inferior"
         label_sort_desc: "Lo más reciente en la parte superior"
-        label_type_to_comment: "Escriba aquí para comentar"
+        label_type_to_comment: "Add a comment. Type @ to notify people."
         label_submit_comment: "Enviar comentario"
         changed_on: "cambiado el"
         created_on: "creó esto el"
@@ -236,6 +236,8 @@ es:
           zero: ningún subelemento
           one: 1 subelemento
           other: "%{count} subelementos"
+    upsale:
+      custom_field_format_hierarchy: "Need a hierarchy in your custom fields for work packages?"
     text_add_new_custom_field: >
       Para agregar nuevos campos personalizados a un proyecto, primero debe crearlos, y luego añadirlos a este proyecto.
     is_enabled_globally: "Está activado a nivel global"
@@ -262,20 +264,20 @@ es:
     single: "o bien"
   dry_validation:
     errors:
-      integer?: "debe ser un número entero"
-      filled?: "debe rellenarse"
-      greater_or_equal_zero: "debe ser mayor o igual a 0"
-      not_found: "no encontrado"
+      int?: "must be an integer."
+      filled?: "must be filled."
+      greater_or_equal_zero: "must be greater or equal to 0."
+      not_found: "not found."
       rules:
         item:
-          root_item: "no puede ser un elemento raíz"
-          not_persisted: "debe ser un elemento ya existente"
+          root_item: "cannot be a root item."
+          not_persisted: "must be an already existing item."
         label:
-          not_unique: "debe ser único dentro del mismo nivel de jerarquía"
+          not_unique: "must be unique within the same hierarchy level."
         short:
-          not_unique: "debe ser único dentro del mismo nivel de jerarquía"
+          not_unique: "must be unique within the same hierarchy level."
         parent:
-          not_descendant: "debe ser descendiente de la raíz de la jerarquía"
+          not_descendant: "must be a descendant of the hierarchy root."
     rules:
       depth: "Profundidad"
       item: "Elemento"
@@ -1820,6 +1822,23 @@ es:
     units:
       hours: h
       days: d
+  pdf_generator:
+    page_nr_footer: "Page %{page} of %{total}"
+    dialog:
+      title: Generate PDF
+      submit: Generate
+      header_right:
+        label: Header right
+        caption: Text to be displayed in the right of the header
+      footer_center:
+        label: Footer center
+        caption: Text to be displayed in the center of the footer
+      hyphenation:
+        label: Hyphenation
+        caption: Break words between lines to improve text justification and readability.
+      paper_size:
+        label: Paper size
+        caption: The size of the paper to use for the PDF.
   extraction:
     available:
       pdftotext: "Pdftotext disponible (opcional)"

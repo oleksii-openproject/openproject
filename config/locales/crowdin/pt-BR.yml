@@ -33,7 +33,7 @@ pt-BR:
         label_activity_show_only_changes: "Exibir apenas alterações"
         label_sort_asc: "Mais recentes embaixo"
         label_sort_desc: "Mais recentes em cima"
-        label_type_to_comment: "Digite aqui para comentar"
+        label_type_to_comment: "Add a comment. Type @ to notify people."
         label_submit_comment: "Enviar comentário"
         changed_on: "alterado em"
         created_on: "criou em"
@@ -238,6 +238,8 @@ pt-BR:
           zero: sem subitens
           one: 1 subitem
           other: "%{count} subitens"
+    upsale:
+      custom_field_format_hierarchy: "Need a hierarchy in your custom fields for work packages?"
     text_add_new_custom_field: >
       Para adicionar campos personalizados a um projeto é necessário criá-los primeiro para depois adicioná-los a este projeto.
     is_enabled_globally: "Está habilitado globalmente"
@@ -264,20 +266,20 @@ pt-BR:
     single: "ou"
   dry_validation:
     errors:
-      integer?: "deve ser um número inteiro"
-      filled?: "deve ser preenchido"
-      greater_or_equal_zero: "deve ser maior ou igual a 0"
-      not_found: "não encontrado"
+      int?: "deve ser um número inteiro."
+      filled?: "deve ser preenchido."
+      greater_or_equal_zero: "deve ser maior ou igual a 0."
+      not_found: "não encontrado."
       rules:
         item:
-          root_item: "não pode ser um item raiz"
-          not_persisted: "deve ser um item já existente"
+          root_item: "não pode ser um item raiz."
+          not_persisted: "deve ser um item já existente."
         label:
-          not_unique: "deve ser único dentro do mesmo nível hierárquico"
+          not_unique: "deve ser único dentro do mesmo nível hierárquico."
         short:
-          not_unique: "deve ser único dentro do mesmo nível hierárquico"
+          not_unique: "deve ser único dentro do mesmo nível hierárquico."
         parent:
-          not_descendant: "deve ser um descendente da raiz da hierarquia"
+          not_descendant: "deve ser um descendente da raiz da hierarquia."
     rules:
       depth: "Profundidade"
       item: "Item"
@@ -1820,6 +1822,23 @@ pt-BR:
     units:
       hours: h
       days: d
+  pdf_generator:
+    page_nr_footer: "Page %{page} of %{total}"
+    dialog:
+      title: Generate PDF
+      submit: Generate
+      header_right:
+        label: Header right
+        caption: Text to be displayed in the right of the header
+      footer_center:
+        label: Footer center
+        caption: Text to be displayed in the center of the footer
+      hyphenation:
+        label: Hyphenation
+        caption: Break words between lines to improve text justification and readability.
+      paper_size:
+        label: Paper size
+        caption: The size of the paper to use for the PDF.
   extraction:
     available:
       pdftotext: "Pdftotext disponível (opcional)"

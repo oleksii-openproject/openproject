@@ -88,7 +88,7 @@ nl:
   label_meeting: "Vergadering"
   label_meeting_plural: "Vergaderingen"
   label_meeting_new: "Nieuwe vergadering"
-  label_meeting_new_one_time: "New one-time meeting"
+  label_meeting_new_dynamic: "New dynamic meeting"
   label_meeting_create: "Create meeting"
   label_meeting_copy: "Copy meeting"
   label_meeting_edit: "Vergadering bewerken"
@@ -146,7 +146,7 @@ nl:
     types:
       classic: "Klassiek"
       classic_text: "Organiseer uw vergadering met een opmaakbare tekstagenda en protocol."
-      structured: "One-time"
+      structured: "Dynamisch"
       structured_text: "Organiseren van uw vergadering als een lijst met agendapunten, eventueel koppelen aan een werkpakket."
       structured_text_copy: "Een vergadering kopiëren zal momenteel niet de bijbehorende agendapunten kopiëren, alleen de details"
     copied: "Gekopieerd van vergadering #%{id}"

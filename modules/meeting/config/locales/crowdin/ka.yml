@@ -88,7 +88,7 @@ ka:
   label_meeting: "შეხვედრა"
   label_meeting_plural: "შეხვედრები"
   label_meeting_new: "ახალი შეხვედრა"
-  label_meeting_new_one_time: "New one-time meeting"
+  label_meeting_new_dynamic: "New dynamic meeting"
   label_meeting_create: "Create meeting"
   label_meeting_copy: "Copy meeting"
   label_meeting_edit: "შეხვედრის ჩასწორება"
@@ -146,7 +146,7 @@ ka:
     types:
       classic: "კლასიკური"
       classic_text: "Organize your meeting in a formattable text agenda and protocol."
-      structured: "One-time"
+      structured: "დინამიკური"
       structured_text: "Organize your meeting as a list of agenda items, optionally linking them to a work package."
       structured_text_copy: "Copying a meeting will currently not copy the associated meeting agenda items, just the details"
     copied: "Copied from Meeting #%{id}"
