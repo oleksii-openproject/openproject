@@ -25,17 +25,29 @@
 #
 # See COPYRIGHT and LICENSE files for more details.
 #++
-module BasicData
-  class ColorSeeder < ModelSeeder
-    self.model_class = Color
-    self.seed_data_model_key = "colors"
-    self.attribute_names_for_lookups = %i[name]
 
-    def model_attributes(color_data)
-      {
-        name: color_data["name"],
-        hexcode: color_data["hexcode"]
-      }
+class CreateProjectLifeCycles < ActiveRecord::Migration[7.1]
+  def change
+    create_table :project_life_cycle_step_definitions do |t|
+      t.string :type
+      t.string :name
+      t.integer :position, null: true
+      t.references :color, foreign_key: true
+
+      t.timestamps
     end
+
+    create_table :project_life_cycle_steps do |t|
+      t.string :type
+      t.date :start_date
+      t.date :end_date
+      t.boolean :active, default: false, null: false
+      t.references :project, foreign_key: true
+      t.references :definition, foreign_key: { to_table: :project_life_cycle_step_definitions }
+
+      t.timestamps
+    end
+
+    add_reference :work_packages, :project_life_cycle_step, null: true
   end
 end

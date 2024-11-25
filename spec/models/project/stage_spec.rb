@@ -25,17 +25,21 @@
 #
 # See COPYRIGHT and LICENSE files for more details.
 #++
-module BasicData
-  class ColorSeeder < ModelSeeder
-    self.model_class = Color
-    self.seed_data_model_key = "colors"
-    self.attribute_names_for_lookups = %i[name]
 
-    def model_attributes(color_data)
-      {
-        name: color_data["name"],
-        hexcode: color_data["hexcode"]
-      }
+require "rails_helper"
+require "support/shared/project_life_cycle_helpers"
+
+RSpec.describe Project::Stage do
+  it_behaves_like "a Project::LifeCycleStep event"
+
+  describe "validations" do
+    it { is_expected.to validate_presence_of(:start_date) }
+    it { is_expected.to validate_presence_of(:end_date) }
+    it { is_expected.to validate_inclusion_of(:type).in_array(["Project::Stage"]).with_message(:must_be_a_stage) }
+
+    it "is valid when `start_date` and `end_date` are present" do
+      valid_stage = build(:project_stage)
+      expect(valid_stage).to be_valid
     end
   end
 end

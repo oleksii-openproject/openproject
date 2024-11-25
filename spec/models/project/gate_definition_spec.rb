@@ -25,17 +25,19 @@
 #
 # See COPYRIGHT and LICENSE files for more details.
 #++
-module BasicData
-  class ColorSeeder < ModelSeeder
-    self.model_class = Color
-    self.seed_data_model_key = "colors"
-    self.attribute_names_for_lookups = %i[name]
 
-    def model_attributes(color_data)
-      {
-        name: color_data["name"],
-        hexcode: color_data["hexcode"]
-      }
+require "rails_helper"
+require "support/shared/project_life_cycle_helpers"
+
+RSpec.describe Project::GateDefinition do
+  it_behaves_like "a Project::LifeCycleStepDefinition event"
+
+  describe "associations" do
+    it "has many gates" do
+      expect(subject).to have_many(:gates).class_name("Project::Gate")
+                        .with_foreign_key(:definition_id)
+                        .inverse_of(:definition)
+                        .dependent(:destroy)
     end
   end
 end

@@ -25,17 +25,21 @@
 #
 # See COPYRIGHT and LICENSE files for more details.
 #++
-module BasicData
-  class ColorSeeder < ModelSeeder
-    self.model_class = Color
-    self.seed_data_model_key = "colors"
-    self.attribute_names_for_lookups = %i[name]
 
-    def model_attributes(color_data)
-      {
-        name: color_data["name"],
-        hexcode: color_data["hexcode"]
-      }
+FactoryBot.define do
+  factory :project_life_cycle_step, class: "Project::LifeCycleStep" do
+    project
+    active { true }
+
+    factory :project_stage, class: "Project::Stage" do
+      definition factory: :project_stage_definition
+      start_date { Date.current - 2.days }
+      end_date { Date.current + 2.days }
+    end
+
+    factory :project_gate, class: "Project::Gate" do
+      definition factory: :project_gate_definition
+      date { Date.current + 2.days }
     end
   end
 end

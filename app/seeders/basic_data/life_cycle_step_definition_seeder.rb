@@ -26,15 +26,20 @@
 # See COPYRIGHT and LICENSE files for more details.
 #++
 module BasicData
-  class ColorSeeder < ModelSeeder
-    self.model_class = Color
-    self.seed_data_model_key = "colors"
-    self.attribute_names_for_lookups = %i[name]
+  class LifeCycleStepDefinitionSeeder < ModelSeeder
+    self.model_class = Project::LifeCycleStepDefinition
+    self.seed_data_model_key = "life_cycles"
+    self.needs = [
+      BasicData::LifeCycleColorSeeder
+    ]
 
-    def model_attributes(color_data)
+    self.attribute_names_for_lookups = %i[name type]
+
+    def model_attributes(life_cyle_data)
       {
-        name: color_data["name"],
-        hexcode: color_data["hexcode"]
+        name: life_cyle_data["name"],
+        type: life_cyle_data["type"],
+        color_id: color_id(life_cyle_data["color_name"])
       }
     end
   end

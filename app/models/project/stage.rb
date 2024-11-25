@@ -25,17 +25,9 @@
 #
 # See COPYRIGHT and LICENSE files for more details.
 #++
-module BasicData
-  class ColorSeeder < ModelSeeder
-    self.model_class = Color
-    self.seed_data_model_key = "colors"
-    self.attribute_names_for_lookups = %i[name]
 
-    def model_attributes(color_data)
-      {
-        name: color_data["name"],
-        hexcode: color_data["hexcode"]
-      }
-    end
-  end
+class Project::Stage < Project::LifeCycleStep
+  # This ensures the type cannot be changed after initialising the class.
+  validates :type, inclusion: { in: %w[Project::Stage], message: :must_be_a_stage }
+  validates :start_date, :end_date, presence: true
 end

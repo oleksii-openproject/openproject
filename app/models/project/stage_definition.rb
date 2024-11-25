@@ -25,17 +25,11 @@
 #
 # See COPYRIGHT and LICENSE files for more details.
 #++
-module BasicData
-  class ColorSeeder < ModelSeeder
-    self.model_class = Color
-    self.seed_data_model_key = "colors"
-    self.attribute_names_for_lookups = %i[name]
 
-    def model_attributes(color_data)
-      {
-        name: color_data["name"],
-        hexcode: color_data["hexcode"]
-      }
-    end
-  end
+class Project::StageDefinition < Project::LifeCycleStepDefinition
+  has_many :stages, # Alias for life_cycle_steps
+           class_name: "Project::Stage",
+           foreign_key: :definition_id,
+           inverse_of: :definition,
+           dependent: :destroy
 end

@@ -25,17 +25,22 @@
 #
 # See COPYRIGHT and LICENSE files for more details.
 #++
-module BasicData
-  class ColorSeeder < ModelSeeder
-    self.model_class = Color
-    self.seed_data_model_key = "colors"
-    self.attribute_names_for_lookups = %i[name]
 
-    def model_attributes(color_data)
-      {
-        name: color_data["name"],
-        hexcode: color_data["hexcode"]
-      }
-    end
+require "rails_helper"
+
+RSpec.describe Project::LifeCycleStepDefinition do
+  it "cannot be instantiated" do
+    expect { described_class.new }.to raise_error(NotImplementedError)
   end
+
+  context "with a Project::StageDefinition" do
+    subject { create :project_stage_definition }
+
+    it { is_expected.to have_readonly_attribute(:type) }
+  end
+
+  # For more specs see:
+  # - spec/support/shared/project_life_cycle_helpers.rb
+  # - spec/models/project/gate_definition_spec.rb
+  # - spec/models/project/stage_definition_spec.rb
 end

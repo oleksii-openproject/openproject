@@ -25,17 +25,25 @@
 #
 # See COPYRIGHT and LICENSE files for more details.
 #++
-module BasicData
-  class ColorSeeder < ModelSeeder
-    self.model_class = Color
-    self.seed_data_model_key = "colors"
-    self.attribute_names_for_lookups = %i[name]
 
-    def model_attributes(color_data)
-      {
-        name: color_data["name"],
-        hexcode: color_data["hexcode"]
-      }
+class Project::LifeCycleStep < ApplicationRecord
+  belongs_to :project, optional: false
+  belongs_to :definition,
+             optional: false,
+             class_name: "Project::LifeCycleStepDefinition"
+  has_many :work_packages, inverse_of: :project_life_cycle_step, dependent: :nullify
+
+  attr_readonly :definition_id, :type
+
+  validates :type, inclusion: { in: %w[Project::Stage Project::Gate], message: :must_be_a_stage_or_gate }
+
+  def initialize(*args)
+    if instance_of? Project::LifeCycleStep
+      # Do not allow directly instantiating this class
+      raise NotImplementedError, "Cannot instantiate the base Project::LifeCycleStep class directly. " \
+                                 "Use Project::Stage or Project::Gate instead."
     end
+
+    super
   end
 end

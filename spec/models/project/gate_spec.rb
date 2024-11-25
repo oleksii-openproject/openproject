@@ -25,17 +25,28 @@
 #
 # See COPYRIGHT and LICENSE files for more details.
 #++
-module BasicData
-  class ColorSeeder < ModelSeeder
-    self.model_class = Color
-    self.seed_data_model_key = "colors"
-    self.attribute_names_for_lookups = %i[name]
 
-    def model_attributes(color_data)
-      {
-        name: color_data["name"],
-        hexcode: color_data["hexcode"]
-      }
+require "rails_helper"
+require "support/shared/project_life_cycle_helpers"
+
+RSpec.describe Project::Gate do
+  it_behaves_like "a Project::LifeCycleStep event"
+
+  describe "validations" do
+    it { is_expected.to validate_presence_of(:date) }
+    it { is_expected.to validate_inclusion_of(:type).in_array(["Project::Gate"]).with_message(:must_be_a_gate) }
+
+    it "is invalid if `end_date` is present" do
+      subject.end_date = Time.zone.today
+
+      expect(subject).not_to be_valid
+      expect(subject.errors[:base])
+        .to include("Cannot assign `end_date` to a Project::Gate")
+    end
+
+    it "is valid if `end_date` is not present" do
+      valid_gate = build(:project_gate, end_date: nil)
+      expect(valid_gate).to be_valid
     end
   end
 end

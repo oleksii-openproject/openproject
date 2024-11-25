@@ -25,17 +25,18 @@
 #
 # See COPYRIGHT and LICENSE files for more details.
 #++
-module BasicData
-  class ColorSeeder < ModelSeeder
-    self.model_class = Color
-    self.seed_data_model_key = "colors"
-    self.attribute_names_for_lookups = %i[name]
 
-    def model_attributes(color_data)
-      {
-        name: color_data["name"],
-        hexcode: color_data["hexcode"]
-      }
+class Project::Gate < Project::LifeCycleStep
+  alias_attribute :date, :start_date
+
+  # This ensures the type cannot be changed after initialising the class.
+  validates :type, inclusion: { in: %w[Project::Gate], message: :must_be_a_gate }
+  validates :date, presence: true
+  validate :end_date_not_allowed
+
+  def end_date_not_allowed
+    if end_date.present?
+      errors.add(:base, :end_date_not_allowed)
     end
   end
 end
