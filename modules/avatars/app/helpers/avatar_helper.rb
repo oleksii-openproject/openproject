@@ -152,6 +152,9 @@ module AvatarHelper
       inputs[:hoverCardModalTarget] = hover_card.fetch(:target, :default)
 
       inputs[:hoverCardUrl] = hover_card_user_path(user.id)
+    else
+      # We must explicitly set this to false since the angular renderer defines their own default to `true`
+      inputs[:hoverCard] = false
     end
 
     inputs
