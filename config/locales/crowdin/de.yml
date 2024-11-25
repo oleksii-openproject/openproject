@@ -236,6 +236,8 @@ de:
           zero: keine Unterelemente
           one: 1 Unterelement
           other: "%{count} Unterelemente"
+    upsale:
+      custom_field_format_hierarchy: "Need a hierarchy in your custom fields for work packages?"
     text_add_new_custom_field: >
       Um neue benutzerdefinierte Felder einem Projekt zuzuweisen, müssen Sie diese erst global erstellen, um Sie dann an dieser Stelle aktivieren zu können.
     is_enabled_globally: "Für alle Projekte aktiviert"
@@ -1816,6 +1818,23 @@ de:
     units:
       hours: h
       days: d
+  pdf_generator:
+    page_nr_footer: "Seite %{page} von %{total}"
+    dialog:
+      title: PDF generieren
+      submit: Generieren
+      header_right:
+        label: Kopfzeile rechts
+        caption: Text, der rechts neben der Kopfzeile angezeigt werden soll
+      footer_center:
+        label: Fußzeile mittig
+        caption: Text, der in der Mitte der Fußzeile angezeigt werden soll
+      hyphenation:
+        label: Silbentrennung
+        caption: Wörter zwischen den Zeilen umbrechen, um die Textausrichtung und die Lesbarkeit zu verbessern.
+      paper_size:
+        label: Papierformat
+        caption: Die Größe des Papiers, das für das PDF verwendet werden soll.
   extraction:
     available:
       pdftotext: "Pdftotext verfügbar (optional)"

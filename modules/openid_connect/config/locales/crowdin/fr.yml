@@ -83,6 +83,7 @@ fr:
       metadata_url: J'ai une URL de point de terminaison de découverte
       endpoint_url: URL du point de terminaison
     providers:
+      label_providers: "Providers"
       seeded_from_env: "Ce fournisseur a été ajouté à partir de la configuration de l'environnement. Il ne peut pas être modifié."
       google:
         name: Google

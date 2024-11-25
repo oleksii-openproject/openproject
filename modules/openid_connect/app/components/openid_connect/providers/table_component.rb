@@ -26,7 +26,7 @@ module OpenIDConnect
       end
 
       def mobile_title
-        I18n.t("openid_connect.providers.plural")
+        I18n.t("openid_connect.providers.label_providers")
       end
 
       def headers

@@ -171,13 +171,14 @@ RSpec.describe "API v3 file links resource" do
     # total, count, element_type, collection_type = 'Collection'
     it_behaves_like "API V3 collection response", 6, 6, "FileLink", "Collection" do
       let(:elements) do
+        # ordered by id
         [
-          file_link_timeout_happy,
-          file_link_error_happy,
-          file_link_unauth_happy,
-          file_link_deleted,
+          file_link_happy,
           file_link_other_user,
-          file_link_happy
+          file_link_deleted,
+          file_link_unauth_happy,
+          file_link_error_happy,
+          file_link_timeout_happy
         ]
       end
     end

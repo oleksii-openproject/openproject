@@ -43,7 +43,8 @@ class WorkPackages::ActivitiesTabController < ApplicationController
       WorkPackages::ActivitiesTab::IndexComponent.new(
         work_package: @work_package,
         filter: @filter,
-        last_server_timestamp: get_current_server_timestamp
+        last_server_timestamp: get_current_server_timestamp,
+        deferred: ActiveRecord::Type::Boolean.new.cast(params[:deferred])
       ),
       layout: false
     )
@@ -374,6 +375,7 @@ class WorkPackages::ActivitiesTabController < ApplicationController
     # alternative approach in order to bypass the notification join issue in relation with the sequence_version query
     Notification
       .where(journal_id: journals.pluck(:id))
+      .where(recipient_id: User.current.id)
       .where("notifications.updated_at > ?", last_update_timestamp)
       .find_each do |notification|
       update_item_show_component(

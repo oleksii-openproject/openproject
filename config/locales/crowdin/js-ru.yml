@@ -105,6 +105,7 @@ ru:
     button_update: "Обновление"
     button_export-pdf: "Скачать PDF"
     button_export-atom: "Скачать Atom"
+    button_generate_pdf: "Создать PDF"
     button_create: "Создать"
     card:
       add_new: "Добавить новую карту"

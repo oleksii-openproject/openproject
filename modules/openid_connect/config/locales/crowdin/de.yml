@@ -83,6 +83,7 @@ de:
       metadata_url: Ich habe eine Discovery-Endpunkt-URL
       endpoint_url: Endpunkt-URL
     providers:
+      label_providers: "Providers"
       seeded_from_env: "Dieser Anbieter wurde über Umgebungsvariablen konfiguriert. Er kann nicht in der Oberfläche bearbeitet werden."
       google:
         name: Google

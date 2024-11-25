@@ -83,6 +83,7 @@ ko:
       metadata_url: 검색 엔드포인트 URL이 있습니다
       endpoint_url: 엔드포인트 URL
     providers:
+      label_providers: "Providers"
       seeded_from_env: "이 공급자는 환경 구성에서 시드되었으며, 편집할 수 없습니다."
       google:
         name: Google

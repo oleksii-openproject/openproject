@@ -54,6 +54,7 @@ class WorkPackage < ApplicationRecord
   belongs_to :assigned_to, class_name: "Principal", optional: true
   belongs_to :responsible, class_name: "Principal", optional: true
   belongs_to :version, optional: true
+  belongs_to :project_life_cycle_step, class_name: "Project::LifeCycleStep", optional: true
   belongs_to :priority, class_name: "IssuePriority"
   belongs_to :category, class_name: "Category", optional: true
 
@@ -302,7 +303,7 @@ class WorkPackage < ApplicationRecord
   end
 
   def done_ratio
-    if WorkPackage.status_based_mode? && status && status.default_done_ratio
+    if WorkPackage.status_based_mode? && status&.default_done_ratio
       status.default_done_ratio
     else
       read_attribute(:done_ratio)
@@ -377,7 +378,7 @@ class WorkPackage < ApplicationRecord
   # Set the done_ratio using the status if that setting is set.  This will keep the done_ratios
   # even if the user turns off the setting later
   def update_done_ratio_from_status
-    if WorkPackage.status_based_mode? && status && status.default_done_ratio
+    if WorkPackage.status_based_mode? && status&.default_done_ratio
       self.done_ratio = status.default_done_ratio
     end
   end
@@ -631,7 +632,7 @@ class WorkPackage < ApplicationRecord
 
   # Default assignment based on category
   def default_assign
-    if assigned_to.nil? && category && category.assigned_to
+    if assigned_to.nil? && category&.assigned_to
       self.assigned_to = category.assigned_to
     end
   end

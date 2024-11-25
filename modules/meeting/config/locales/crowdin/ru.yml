@@ -90,7 +90,7 @@ ru:
   label_meeting: "Совещание"
   label_meeting_plural: "Совещания"
   label_meeting_new: "Новое совещание"
-  label_meeting_new_dynamic: "New dynamic meeting"
+  label_meeting_new_dynamic: "Новая динамичная встреча"
   label_meeting_create: "Создать совещание"
   label_meeting_copy: "Копировать совещание"
   label_meeting_edit: "Измененить совещание"

@@ -56,3 +56,6 @@ OpenProject::FeatureDecisions.define_singleton_method(:primerized_work_package_a
     (Setting.exists?("feature_primerized_work_package_activities_active") &&
       Setting.send(:feature_primerized_work_package_activities_active?))
 end
+
+OpenProject::FeatureDecisions.add :stages_and_gates,
+                                  description: "Enables the under construction feature of stages and gates."

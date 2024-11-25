@@ -105,6 +105,7 @@ ko:
     button_update: "업데이트"
     button_export-pdf: "PDF 다운로드"
     button_export-atom: "Atom 다운로드"
+    button_generate_pdf: "Generate PDF"
     button_create: "만들기"
     card:
       add_new: "새로운 카드를 추가하다"
@@ -575,7 +576,7 @@ ko:
         members: "프로젝트에 참여할 새로운 <b>멤버</b>를 초대하세요."
         quick_add_button: "헤더 탐색에서 더하기(+) 아이콘을 클릭하여 <b>새 프로젝트를 생성</b>하거나 <b>동료를 초대</b>하세요."
         sidebar_arrow: "프로젝트의 <b>기본 메뉴</b>로 돌아가려면 왼쪽 상단의 뒤로 화살표를 사용하세요."
-        welcome: "3분 소개 투어를 보고 가장 <b>중요한 기능</b>에 대해 알아보세요. <br> 끝까지 단계를 완료하는 것이 좋습니다. 언제든지 투어를 다시 시작할 수 있습니다."
+        welcome: "Take a three-minute introduction tour to learn the most <b>important features</b>. <br> We recommend completing the steps until the end. You can restart the tour any time."
         wiki: "<b>Wiki</b>에서 문서화하고 팀과 함께 지식을 공유할 수 있습니다."
         backlogs:
           overview: "<b>백로그</b> 보기에서 작업을 관리하세요."

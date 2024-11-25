@@ -87,7 +87,7 @@ zh-CN:
   label_meeting: "会议"
   label_meeting_plural: "会议"
   label_meeting_new: "新增会议"
-  label_meeting_new_dynamic: "New dynamic meeting"
+  label_meeting_new_dynamic: "新动态会议"
   label_meeting_create: "创建会议"
   label_meeting_copy: "复制会议"
   label_meeting_edit: "编辑会议"

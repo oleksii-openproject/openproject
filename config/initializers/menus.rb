@@ -546,18 +546,6 @@ Redmine::MenuManager.map :admin_menu do |menu|
             icon: "op-enterprise-addons",
             if: proc { User.current.admin? && OpenProject::Configuration.ee_manager_visible? }
 
-  menu.push :admin_costs,
-            { controller: "/admin/settings", action: "show_plugin", id: :costs },
-            if: Proc.new { User.current.admin? },
-            caption: :project_module_costs,
-            icon: "op-cost-reports"
-
-  menu.push :costs_setting,
-            { controller: "/admin/settings", action: "show_plugin", id: :costs },
-            if: Proc.new { User.current.admin? },
-            caption: :label_setting_plural,
-            parent: :admin_costs
-
   menu.push :admin_backlogs,
             { controller: "/backlogs_settings", action: :show },
             if: Proc.new { User.current.admin? },

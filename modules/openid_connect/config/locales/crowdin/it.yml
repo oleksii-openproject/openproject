@@ -83,6 +83,7 @@ it:
       metadata_url: Ho un URL endpoint di ricerca
       endpoint_url: URL dell'endpoint
     providers:
+      label_providers: "Providers"
       seeded_from_env: "Questo fornitore è stato salvato dalla configurazione dell'ambiente. Non può essere modificato."
       google:
         name: Google

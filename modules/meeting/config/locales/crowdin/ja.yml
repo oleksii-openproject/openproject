@@ -28,7 +28,7 @@ ja:
   activerecord:
     attributes:
       meeting:
-        type: "Meeting type"
+        type: ""
         location: "場所"
         duration: "期間"
         notes: "注記"
@@ -57,7 +57,7 @@ ja:
       meeting_agenda_item: "Agenda item"
       meeting_agenda: "アジェンダ"
       meeting_minutes: "議事録"
-      meeting_section: "Section"
+      meeting_section: "セクション"
   activity:
     filter:
       meeting: "会議"

@@ -105,6 +105,7 @@ nl:
     button_update: "Bijwerken"
     button_export-pdf: "Download PDF"
     button_export-atom: "Download Atom"
+    button_generate_pdf: "Generate PDF"
     button_create: "Maken"
     card:
       add_new: "Nieuwe kaart toevoegen"
@@ -575,7 +576,7 @@ nl:
         members: "Nodig nieuwe <b>leden</b> uit om deel te nemen aan uw project."
         quick_add_button: "Klik op het plus (+) pictogram in de koptekst navigatie om <b>een nieuw project te maken</b> of <b>collega's uit te nodigen</b>."
         sidebar_arrow: "Gebruik de terug pijl in de linkerbovenhoek om terug te keren naar het project <b>hoofdmenu</b>."
-        welcome: "Neem drie minuten introductie rondleiding om de meeste <b>belangrijke kenmerken </b> te leren. <br> het is raadzaam de stappen uit te voeren tot het einde. U kunt de tour ieder moment opnieuw doen."
+        welcome: "Take a three-minute introduction tour to learn the most <b>important features</b>. <br> We recommend completing the steps until the end. You can restart the tour any time."
         wiki: "Binnen de <b>wiki</b> kunt u kennis delen en documenteren met uw team."
         backlogs:
           overview: "Beheer uw werk in de <b>backlogs</b> weergave."

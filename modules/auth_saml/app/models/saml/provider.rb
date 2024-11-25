@@ -97,7 +97,7 @@ module Saml
     end
 
     def idp_certificate_configured?
-      idp_cert.present?
+      idp_cert.present? || idp_cert_fingerprint.present?
     end
 
     def idp_certificate_valid?
