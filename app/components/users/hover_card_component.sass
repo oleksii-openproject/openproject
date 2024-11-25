@@ -1,10 +1,4 @@
-// When displaying the hover card on top of an existing modal, we must
-// set the z-index so that the hover card stays in the front.
-.op-user-share-modal-overlay
-  position: absolute
-  z-index: 9600
-
-// Correct the z-index of the regular hover card container so that it is above user auto completers
+// Correct the z-index of the regular hover card container so that it is above the dropdown of user auto completers
 .spot-modal-overlay:has(.op-user-hover-card)
   z-index: 9600
 
