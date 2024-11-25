@@ -33,8 +33,7 @@ See COPYRIGHT and LICENSE files for more details.
     header.with_breadcrumbs([{ href: project_overview_path(@project.id), text: @project.name  },
                              { href: project_settings_general_path(@project.id), text: I18n.t("label_project_settings") },
                              { href: project_settings_categories_path(@project.id), text: t(:label_work_package_category_plural) },
-                             "#{@category.name}: <b>#{t(:label_delete)}</b>".html_safe
-                            ], selected_item_font_weight: :normal)
+                             @category.name])
   end %>
 
 <%= form_tag({}, {method: :delete, class: 'form'}) do %>

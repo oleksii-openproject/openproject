@@ -33,9 +33,9 @@ See COPYRIGHT and LICENSE files for more details.
     header.with_breadcrumbs([{ href: project_overview_path(@project.id), text: @project.name  },
                              { href: project_settings_general_path(@project.id), text: I18n.t("label_project_settings") },
                              { href: project_settings_categories_path(@project.id), text: t(:label_work_package_category_plural) },
-                             "#{@category.name}: <b>#{t(:label_edit)}</b>".html_safe
-                            ], selected_item_font_weight: :normal)
-  end %>
+                             @category.name])
+  end
+%>
 
 <%= labelled_tabular_form_for @category, as: :category do |f| %>
   <%= render partial: 'categories/form', locals: { f: f } %>

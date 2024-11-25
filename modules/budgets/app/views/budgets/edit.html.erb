@@ -34,8 +34,7 @@ See COPYRIGHT and LICENSE files for more details.
     header.with_title { t(:label_budget_id, id: @budget.id) }
     header.with_breadcrumbs([{ href: project_overview_path(@project.id), text: @project.name },
                              { href: projects_budgets_path(@project.id), text: t(:label_budget_plural) },
-                            "#{ t(:label_budget_id, id: @budget.id)}: <b>#{t(:label_edit)}</b>".html_safe
-    ], selected_item_font_weight: :normal)
+                             t(:label_budget_id, id: @budget.id)])
   end
 %>
 <%= render :partial => 'edit' %>
