@@ -102,9 +102,6 @@ class CostlogController < ApplicationController
     elsif params[:work_package_id]
       @work_package = WorkPackage.find(params[:work_package_id])
       @project = @work_package.project
-    elsif params[:work_package_id]
-      @work_package = WorkPackage.find(params[:work_package_id])
-      @project = @work_package.project
     elsif params[:project_id]
       @project = Project.find(params[:project_id])
     else
