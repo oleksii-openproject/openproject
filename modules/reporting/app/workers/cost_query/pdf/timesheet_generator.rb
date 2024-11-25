@@ -52,13 +52,13 @@ class CostQuery::PDF::TimesheetGenerator
     query
       .each_direct_result
       .map(&:itself)
+      .filter { |r| r.fields["type"] == "TimeEntry" }
       .group_by { |r| r.fields["user_id"] }
       .each do |user_id, result|
       write_table(user_id, result)
     end
   end
 
-  # rubocop:disable Metrics/AbcSize
   def build_table_rows(entries)
     rows = []
     entries
@@ -66,18 +66,28 @@ class CostQuery::PDF::TimesheetGenerator
       .sort
       .each do |_spent_on, lines|
       lines.each do |r|
-        rows.push([
-                    lines[0]["spent_on"],
-                    WorkPackage.find(r.fields["work_package_id"]).subject,
-                    "??:00-??:00",
-                    "#{r.fields['units'].inspect}h",
-                    TimeEntryActivity.find(r.fields["activity_id"]).name
-                  ])
+        row = [
+          { content: lines[0]["spent_on"], rowspan: 1 },
+          WorkPackage.find(r.fields["work_package_id"]).subject,
+          "??:00-??:00",
+          format_duration(r.fields["units"]),
+          TimeEntryActivity.find(r.fields["activity_id"]).name
+        ]
+        rows.push(row)
+        if r.fields["comments"].present?
+          row[0][:rowspan] = 2
+          rows.push([{ content: r.fields["comments"], colspan: 4 }])
+        end
       end
     end
     rows
   end
-  # rubocop:enable Metrics/AbcSize
+
+  def format_duration(hours)
+    return "" if hours < 0
+
+    "#{hours}h"
+  end
 
   def write_table(user_id, entries)
     rows = [["Date", "Work package", "Time", "Hours", "Activity"]].concat(build_table_rows(entries))
@@ -95,14 +105,12 @@ class CostQuery::PDF::TimesheetGenerator
     query.each_direct_result.map(&:itself)
   end
 
-  # rubocop:disable Metrics/AbcSize
   def write_hr
     hr_style = styles.cover_header_border
     pdf.stroke_color = hr_style[:color]
     pdf.line_width = hr_style[:height]
     pdf.stroke_horizontal_line pdf.bounds.left, pdf.bounds.right, at: pdf.cursor
   end
-  # rubocop:enable Metrics/AbcSize
 
   def with_cover?
     true
