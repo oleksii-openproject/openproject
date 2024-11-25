@@ -1,11 +1,7 @@
 require "active_storage/filename"
 
-class CostQuery::ExportJob < Exports::ExportJob
+class CostQuery::XLS::ExportJob < Exports::ExportJob
   self.model = ::CostQuery
-
-  def title
-    I18n.t("export.cost_reports.title")
-  end
 
   def project
     options[:project]
@@ -13,6 +9,10 @@ class CostQuery::ExportJob < Exports::ExportJob
 
   def cost_types
     options[:cost_types]
+  end
+
+  def title
+    I18n.t("export.cost_reports.title")
   end
 
   private
@@ -39,6 +39,7 @@ class CostQuery::ExportJob < Exports::ExportJob
                           mime_type: "application/vnd.ms-excel",
                           content:)
   end
+
 
   # rubocop:disable Metrics/AbcSize
   def build_query(filters, groups = {})

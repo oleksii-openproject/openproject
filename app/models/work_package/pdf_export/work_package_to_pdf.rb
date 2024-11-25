@@ -63,7 +63,7 @@ class WorkPackage::PDFExport::WorkPackageToPdf < Exports::Exporter
   end
 
   def setup_page!
-    self.pdf = get_pdf(current_language)
+    self.pdf = get_pdf
     @page_count = 0
     configure_page_size!(:portrait)
   end

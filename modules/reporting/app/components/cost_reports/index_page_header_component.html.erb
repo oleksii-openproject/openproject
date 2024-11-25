@@ -15,6 +15,17 @@
         button.with_leading_visual_icon(icon: "op-file-xls-descriptions")
         t(:export_to_excel)
       end
+      header.with_action_button(scheme: :default,
+                                aria: { label: t("export.timesheet.button")},
+                                title: t("export.timesheet.button"),
+                                mobile_icon: "op-file-xls-descriptions",
+                                mobile_label: t("export.timesheet.button"),
+                                tag: :a,
+                                href: url_for({ controller: "cost_reports" , action: :index, format: 'pdf', project_id: @project })
+      ) do |button|
+        button.with_leading_visual_icon(icon: "op-file-xls-descriptions")
+        t("export.timesheet.button")
+      end
       call_hook(:view_cost_report_toolbar)
     end
   end

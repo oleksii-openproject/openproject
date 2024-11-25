@@ -35,7 +35,7 @@ module WorkPackage::PDFExport::Common::Common
 
   private
 
-  def get_pdf(_language)
+  def get_pdf
     ::WorkPackage::PDFExport::Common::View.new(current_language)
   end
 

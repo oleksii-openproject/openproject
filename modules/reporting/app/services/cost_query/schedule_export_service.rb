@@ -33,17 +33,18 @@ class CostQuery::ScheduleExportService
     self.user = user
   end
 
-  def call(filter_params:, project:, cost_types:)
+  def call(format, filter_params:, project:, cost_types:)
     export_storage = ::CostQuery::Export.create
-    job = schedule_export(export_storage, filter_params, project, cost_types)
+    job = schedule_export(format, export_storage, filter_params, project, cost_types)
 
     ServiceResult.success result: job.job_id
   end
 
   private
 
-  def schedule_export(export_storage, filter_params, project, cost_types)
-    ::CostQuery::ExportJob.perform_later(export: export_storage,
+  def schedule_export(format, export_storage, filter_params, project, cost_types)
+    job = format == :pdf ? ::CostQuery::PDF::ExportJob : ::CostQuery::XLS::ExportJob
+    job.perform_later(export: export_storage,
                                          user:,
                                          mime_type: :xls,
                                          query: filter_params,

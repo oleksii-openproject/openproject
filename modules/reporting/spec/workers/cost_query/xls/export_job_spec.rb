@@ -30,7 +30,7 @@
 
 require "spec_helper"
 
-RSpec.describe CostQuery::ExportJob do
+RSpec.describe CostQuery::XLS::ExportJob do
   let(:user) { build_stubbed(:user) }
   let(:project) { build_stubbed(:project) }
 

@@ -87,7 +87,15 @@ class CostReportsController < ApplicationController
         format.xls do
           job_id = ::CostQuery::ScheduleExportService
             .new(user: current_user)
-            .call(filter_params:, project: @project, cost_types: @cost_types)
+            .call(:xls, filter_params:, project: @project, cost_types: @cost_types)
+            .result
+          redirect_to job_status_path(job_id)
+        end
+
+        format.pdf do
+          job_id = ::CostQuery::ScheduleExportService
+            .new(user: current_user)
+            .call(:pdf, filter_params:, project: @project, cost_types: @cost_types)
             .result
 
           redirect_to job_status_path(job_id)

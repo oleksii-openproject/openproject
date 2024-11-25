@@ -86,7 +86,7 @@ class WorkPackage::PDFExport::WorkPackageListToPdf < WorkPackage::Exports::Query
   private
 
   def setup_page!
-    self.pdf = get_pdf(current_language)
+    self.pdf = get_pdf
 
     configure_page_size!(wants_report? ? :portrait : :landscape)
   end
