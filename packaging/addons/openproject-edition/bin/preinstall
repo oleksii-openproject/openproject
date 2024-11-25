@@ -70,10 +70,10 @@ if [ "$edition" = "bim" ]; then
 	fi
 
 	if ! ${CLI} run which IfcConvert &>/dev/null ||
-	   ! echo "83eed7f2f12079df5f6a55a07f812d27b28620bd  $(${CLI} run which IfcConvert)" | sha1sum -c - ; then
+	   ! echo "2d48d5df36371fc5920a71f0d74b29449b0b166a  $(${CLI} run which IfcConvert)" | sha1sum -c - ; then
 		echo "Fetching and installing IfcConvert..."
-		wget --quiet https://s3.amazonaws.com/ifcopenshell-builds/IfcConvert-v0.6.0-517b819-linux64.zip
-		unzip -qq IfcConvert-v0.6.0-517b819-linux64.zip
+		wget --quiet https://s3.amazonaws.com/ifcopenshell-builds/IfcConvert-v0.7.11-fea8e3a-linux64.zip
+		unzip -qq IfcConvert-v0.7.11-fea8e3a-linux64.zip
 		mv IfcConvert "$APP_HOME/bin/IfcConvert"
 	fi
 
