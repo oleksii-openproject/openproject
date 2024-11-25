@@ -1448,6 +1448,7 @@ en:
     login: "Username"
     mail: "Email"
     name: "Name"
+    note: "Note"
     password: "Password"
     priority: "Priority"
     project: "Project"
