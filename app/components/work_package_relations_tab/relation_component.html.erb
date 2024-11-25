@@ -1,11 +1,11 @@
 <%=
 flex_layout do |flex|
-  flex.with_row(mb: 1, mt: 1) do
+  flex.with_row do
     render(WorkPackages::InfoLineComponent.new(work_package: related_work_package))
   end
 
-  flex.with_row(flex_layout: true, justify_content: :space_between, align_items: :center, mb: 1) do |subject_line_row|
-    subject_line_row.with_column do
+  flex.with_row(flex_layout: true, justify_content: :space_between, align_items: :flex_start) do |subject_line_row|
+    subject_line_row.with_column(py: 2) do
       render(Primer::Beta::Link.new(href: work_package_path(related_work_package),
                                     color: :default,
                                     underline: false,
@@ -53,7 +53,7 @@ flex_layout do |flex|
   end
 
   if should_display_description?
-    flex.with_row(flex_layout: true, mb: 1) do |description_row|
+    flex.with_row(flex_layout: true) do |description_row|
       description_row.with_column do
         render(Primer::Beta::Text.new(font_size: :small, color: :muted)) { format_text(relation, :description) }
       end
