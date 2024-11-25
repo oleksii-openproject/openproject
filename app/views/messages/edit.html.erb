@@ -33,7 +33,7 @@ See COPYRIGHT and LICENSE files for more details.
     header.with_breadcrumbs( [{ href: project_overview_path(@project.id), text: @project.name },
                               { href: project_forums_path(@project), text: t(:label_forum_plural) },
                               { href: project_forum_path(@project, @forum), text: @forum.name },
-                             "#{ @message.subject }: <b>#{t(:label_edit)}</b>".html_safe], selected_item_font_weight: :normal)
+                             @message.subject])
  end %>
 
 <%= labelled_tabular_form_for @message,
