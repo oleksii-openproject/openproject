@@ -58,14 +58,6 @@ GIT
       parallel_tests (>= 3.3.0, < 5)
       rspec (>= 3.10)
 
-GIT
-  remote: https://github.com/puma/puma.git
-  revision: 6a87b708a0862e559ab549259bd54bc13c090734
-  branch: master
-  specs:
-    puma (6.5.0)
-      nio4r (~> 2.0)
-
 PATH
   remote: modules/auth_plugins
   specs:
@@ -887,6 +879,8 @@ GEM
       eventmachine_httpserver
       http_parser.rb (~> 0.6.0)
       multi_json
+    puma (6.5.0)
+      nio4r (~> 2.0)
     puma-plugin-statsd (2.6.0)
       puma (>= 5.0, < 7)
     raabro (1.4.0)
@@ -1340,7 +1334,7 @@ DEPENDENCIES
   pry-rails (~> 0.3.6)
   pry-rescue (~> 1.6.0)
   puffing-billy (~> 4.0.0)
-  puma!
+  puma (~> 6.5)
   puma-plugin-statsd (~> 2.0)
   rack-attack (~> 6.7.0)
   rack-cors (~> 2.0.2)
