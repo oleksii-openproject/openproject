@@ -53,7 +53,7 @@ flex_layout do |flex|
   end
 
   if should_display_description?
-    flex.with_row(flex_layout: true) do |description_row|
+    flex.with_row(flex_layout: true, mb: 2) do |description_row|
       description_row.with_column do
         render(Primer::Beta::Text.new(font_size: :small, color: :muted)) { format_text(relation, :description) }
       end
@@ -61,7 +61,7 @@ flex_layout do |flex|
   end
 
   if should_display_start_and_end_dates?
-    flex.with_row(flex_layout: true, align_items: :center, mb: 1) do |start_and_end_dates_row|
+    flex.with_row(flex_layout: true, align_items: :center) do |start_and_end_dates_row|
       start_and_end_dates_row.with_column(mr: 1) do
         icon = if follows?
                  :calendar
