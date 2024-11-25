@@ -218,7 +218,7 @@ gem "dry-validation"
 gem "store_attribute", "~> 1.0"
 
 # Appsignal integration
-gem "appsignal", "~> 3.10.0", require: false
+gem "appsignal", "~> 4.2", require: false
 
 gem "view_component"
 # Lookbook
