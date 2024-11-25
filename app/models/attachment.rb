@@ -163,8 +163,12 @@ class Attachment < ApplicationRecord
     content_type == "application/pdf"
   end
 
+  def is_html?
+    content_type == "text/html"
+  end
+
   def is_text?
-    content_type.match?(/\Atext\/.+/)
+    content_type.match?(/\Atext\/.+/) && !is_html?
   end
 
   def is_diff?

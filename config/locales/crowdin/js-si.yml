@@ -105,6 +105,7 @@ si:
     button_update: "යාවත්කාලීන"
     button_export-pdf: "PDF බාගන්න"
     button_export-atom: "බාගත කරන්න පරමාණුව"
+    button_generate_pdf: "Generate PDF"
     button_create: "සාදන්න"
     card:
       add_new: "නව කාඩ් එකතු කරන්න"
@@ -575,7 +576,7 @@ si:
         members: "Invite new <b>members</b> to join your project."
         quick_add_button: "Click on the plus (+) icon in the header navigation to <b>create a new project</b> or to <b>invite coworkers</b>."
         sidebar_arrow: "Use the return arrow in the top left corner to return to the project’s <b>main menu</b>."
-        welcome: "වඩාත්ම ඉගෙන ගැනීමට විනාඩි තුනක් හඳුන්වාදීමේ චාරිකාවක් ගන්න <b>වැදගත් ලක්ෂණ</b>. <br> අවසානය දක්වා පියවර සම්පූර්ණ කිරීම අපි නිර්දේශ කරමු. ඔබට ඕනෑම වේලාවක සංචාරය නැවත ආරම්භ කළ හැකිය."
+        welcome: "Take a three-minute introduction tour to learn the most <b>important features</b>. <br> We recommend completing the steps until the end. You can restart the tour any time."
         wiki: "Within the <b>wiki</b> you can document and share knowledge together with your team."
         backlogs:
           overview: "Manage your work in the <b>backlogs</b> view."

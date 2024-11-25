@@ -33,7 +33,7 @@ uk:
         label_activity_show_only_changes: "Показувати лише зміни"
         label_sort_asc: "Найновіші внизу"
         label_sort_desc: "Найновіші вгорі"
-        label_type_to_comment: "Місце для коментаря"
+        label_type_to_comment: "Add a comment. Type @ to notify people."
         label_submit_comment: "Надіслати коментар"
         changed_on: "змінено"
         created_on: "створив(-ла)"
@@ -234,6 +234,8 @@ uk:
           zero: немає піделементів
           one: 1 піделемент
           other: "Піделементів: %{count}"
+    upsale:
+      custom_field_format_hierarchy: "Need a hierarchy in your custom fields for work packages?"
     text_add_new_custom_field: >
       Щоб додати нові користувальницькі поля до проекту, спочатку потрібно створити їх, перш ніж ви зможете додати їх до цього проекту.
     is_enabled_globally: "Увімкнено у всьому світі"
@@ -1888,6 +1890,23 @@ uk:
     units:
       hours: г
       days: д
+  pdf_generator:
+    page_nr_footer: "Page %{page} of %{total}"
+    dialog:
+      title: Generate PDF
+      submit: Generate
+      header_right:
+        label: Header right
+        caption: Text to be displayed in the right of the header
+      footer_center:
+        label: Footer center
+        caption: Text to be displayed in the center of the footer
+      hyphenation:
+        label: Hyphenation
+        caption: Break words between lines to improve text justification and readability.
+      paper_size:
+        label: Paper size
+        caption: The size of the paper to use for the PDF.
   extraction:
     available:
       pdftotext: "Доступний текст PDF (необов'язково)"

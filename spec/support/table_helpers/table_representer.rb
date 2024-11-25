@@ -35,29 +35,107 @@ module TableHelpers
       @columns = columns
     end
 
-    # rubocop:disable Style/MultilineBlockChain
     def render(table_data)
-      column_and_cell_sizes
-        .map do |column, cell_size|
-          header = column.title.ljust(cell_size)
-          cells = table_data.values_for_attribute(column.attribute).map { column.cell_format(_1, cell_size) }
-          [header, *cells]
-        end
+      columns
+        .map { |column| formatted_cells_for_column(column, table_data) }
         .transpose
         .map { |row| "| #{row.join(' | ')} |\n" }
         .join
     end
-    # rubocop:enable Style/MultilineBlockChain
+
+    def formatted_cells_for_column(column, table_data)
+      get_header_and_values(column, table_data)
+        .then { |cells| normalize_width(cells, column) }
+    end
+
+    def get_header_and_values(column, table_data)
+      if column.attribute == :schedule
+        header = schedule_column_representer.column_title
+        start_dates = table_data.values_for_attribute(:start_date)
+        due_dates = table_data.values_for_attribute(:due_date)
+        values = start_dates.zip(due_dates).map do |start_date, due_date|
+          schedule_column_representer.span(start_date, due_date)
+        end
+      else
+        header = column.title
+        values = table_data
+          .values_for_attribute(column.attribute)
+          .map! { column.format(_1) }
+      end
+      [header, *values]
+    end
+
+    def normalize_width(cells, column)
+      header, *values = cells
+      width = column_width(column)
+      header = header.ljust(width)
+      values.map! { column.align(_1, width) }
+      [header, *values]
+    end
 
     private
 
-    def column_and_cell_sizes
-      @column_and_cell_sizes ||=
+    def column_width(column)
+      column_widths[column]
+    end
+
+    # Calculate the width of each column given values from all tables data.
+    def column_widths
+      @column_widths ||=
         columns.index_with do |column|
-          values = tables_data.flat_map { _1.values_for_attribute(column.attribute) }
-          values_max_size = values.map { column.format(_1).size }.max
-          [column.title.size, values_max_size].max
+          if column.attribute == :schedule
+            schedule_column_representer.column_size
+          else
+            values = tables_data.flat_map { _1.values_for_attribute(column.attribute) }
+            values_max_size = values.map { column.format(_1).size }.max
+            [column.title.size, values_max_size].max
+          end
         end
+    end
+
+    def schedule_column_representer
+      @schedule_column_representer ||= begin
+        start_dates = tables_data.flat_map { _1.values_for_attribute(:start_date) }
+        due_dates = tables_data.flat_map { _1.values_for_attribute(:due_date) }
+        ScheduleColumnFormatter.new(start_dates, due_dates)
+      end
+    end
+
+    class ScheduleColumnFormatter
+      attr_reader :monday, :first_day, :last_day
+
+      def initialize(start_dates, due_dates)
+        @monday = Date.current.next_occurring(:monday)
+        all_dates = start_dates + due_dates + [@monday, @monday + 6]
+        @first_day, @last_day = all_dates.flatten.compact.minmax
+      end
+
+      def column_size
+        (first_day..last_day).count
+      end
+
+      def column_title
+        spaced_at(monday, "MTWTFSS")
+      end
+
+      def span(start_date, due_date)
+        if start_date.nil? && due_date.nil?
+          " " * column_size
+        elsif due_date.nil?
+          spaced_at(start_date, "[")
+        elsif start_date.nil?
+          spaced_at(due_date, "]")
+        else
+          span = "X" * (start_date..due_date).count
+          spaced_at(start_date, span)
+        end
+      end
+
+      def spaced_at(date, text)
+        nb_days = date - first_day
+        spaced = (" " * nb_days) + text
+        spaced.ljust(column_size)
+      end
     end
   end
 end

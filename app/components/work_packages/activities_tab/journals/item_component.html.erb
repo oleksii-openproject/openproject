@@ -30,6 +30,16 @@
                                                     classes: "work-packages-activities-tab-journals-item-component--user-name ellipsis hidden-for-mobile") do
                     truncated_user_name(journal.user)
                   end
+                  if journal.initial?
+                      header_start_container.with_column(
+                        mr: 1,
+                        classes: "work-packages-activities-tab-journals-item-component-details--journal-type hidden-for-mobile"
+                      ) do
+                        render(Primer::Beta::Text.new(font_size: :small, color: :subtle, mt: 1)) do
+                          I18n.t("activities.work_packages.activity_tab.created_on")
+                        end
+                      end
+                    end
                   header_start_container.with_column(mr: 1, classes: "hidden-for-mobile") do
                     render(Primer::Beta::Text.new(font_size: :small, color: :subtle, mt: 1)) { format_time(journal.updated_at) }
                   end

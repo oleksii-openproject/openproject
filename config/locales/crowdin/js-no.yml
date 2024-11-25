@@ -105,6 +105,7 @@
     button_update: "Oppdatèr"
     button_export-pdf: "Last ned PDF"
     button_export-atom: "Last ned Atom"
+    button_generate_pdf: "Generate PDF"
     button_create: "Opprett"
     card:
       add_new: "Legg til nytt kort"
@@ -575,7 +576,7 @@
         members: "Inviter nye <b>medlemmer</b> til å bli med i prosjektet ditt."
         quick_add_button: "Klikk på plussikonet (+) i toppnavigasjonen til <b>opprette et nytt prosjekt</b> eller for å  <b>inviterer kolleger</b>."
         sidebar_arrow: "Bruk returpilen i øvre venstre hjørne for å gå tilbake til prosjektets <b>hovedmeny</b>."
-        welcome: "Ta en tre minutters introduksjon for å lære de <b>viktigste mulighetene</b>.<br>Vi anbefaler å fullføre alle trinnene.  Du kan når som helst starte på nytt."
+        welcome: "Take a three-minute introduction tour to learn the most <b>important features</b>. <br> We recommend completing the steps until the end. You can restart the tour any time."
         wiki: "I <b>wiki</b> kan du dokumentere og dele kunnskap sammen med teamet."
         backlogs:
           overview: "Administrer arbeidet ditt i <b>- backlogs</b> -visningen."

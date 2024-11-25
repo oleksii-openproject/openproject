@@ -105,6 +105,7 @@ vi:
     button_update: "Cập Nhật"
     button_export-pdf: "Tải xuống PDF"
     button_export-atom: "Tải xuống Atom"
+    button_generate_pdf: "Generate PDF"
     button_create: "Tạo"
     card:
       add_new: "Thêm thẻ mới"
@@ -575,7 +576,7 @@ vi:
         members: "Mời <b>thành viên mới</b> tham gia dự án của bạn."
         quick_add_button: "Nhấp vào biểu tượng cộng (+) trong thanh điều hướng tiêu đề để <b>tạo một dự án mới</b> hoặc <b>mời đồng nghiệp</b>."
         sidebar_arrow: "Sử dụng mũi tên trở lại ở góc trên bên trái để quay lại <b>menu chính</b> của dự án."
-        welcome: "Tham gia tour giới thiệu ba phút để tìm hiểu những <b>tính năng quan trọng</b> nhất. <br> Chúng tôi khuyến nghị bạn hoàn thành các bước cho đến cuối. Bạn có thể khởi động lại tour bất kỳ lúc nào."
+        welcome: "Take a three-minute introduction tour to learn the most <b>important features</b>. <br> We recommend completing the steps until the end. You can restart the tour any time."
         wiki: "Trong <b>wiki</b>, bạn có thể tài liệu hóa và chia sẻ kiến thức cùng với nhóm của bạn."
         backlogs:
           overview: "Quản lý công việc của bạn trong chế độ xem <b>backlogs</b>."

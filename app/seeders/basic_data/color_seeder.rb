@@ -29,6 +29,7 @@ module BasicData
   class ColorSeeder < ModelSeeder
     self.model_class = Color
     self.seed_data_model_key = "colors"
+    self.attribute_names_for_lookups = %i[name]
 
     def model_attributes(color_data)
       {

@@ -105,6 +105,7 @@ fr:
     button_update: "Mettre à jour"
     button_export-pdf: "Télécharger le PDF"
     button_export-atom: "Télécharger Atom"
+    button_generate_pdf: "Générer un fichier PDF"
     button_create: "Créer"
     card:
       add_new: "Ajouter une nouvelle carte"
@@ -188,8 +189,8 @@ fr:
           without_type: "Créer un lot de travaux"
           with_type: "Créer un lot de travaux (Type : %{typename})"
         embedded_table:
-          button: "Tableau intégré de lots de travaux"
-          text: "[Placeholder] Tableau intégré de lots de travaux"
+          button: "Intégrer le lot de travaux"
+          text: "[Placeholder] Tableau du lot de travaux intégré"
         embedded_calendar:
           text: "[Placeholder] Calendrier embarqué"
     admin:
@@ -575,7 +576,7 @@ fr:
         members: "Invitez de nouveaux <b>membres</b> à rejoindre votre projet."
         quick_add_button: "Cliquez sur l'icône plus (+) dans l'en-tête de navigation pour <b>créer un nouveau projet</b> ou <b>inviter des collègues</b>."
         sidebar_arrow: "Utilisez la flèche de retour dans le coin supérieur gauche pour retourner au <b>menu principal</b> du projet."
-        welcome: "Faites une visite d’introduction de trois minutes d’apprendre le plus de caractéristiques importantes de <b></b>. <br> il est recommandé d’avoir effectué les étapes jusqu'à la fin. Vous pouvez redémarrer la tournée à tout moment."
+        welcome: "Faites une visite d’introduction de trois minutes pour apprendre <b>les fonctionnalités les plus importantes</b>.<br>Il est recommandé d’effectuer les étapes jusqu'à la fin. Vous pouvez redémarrer cette visite à tout moment."
         wiki: "Dans le <b>wiki</b> vous pouvez documenter et partager vos connaissances avec votre équipe."
         backlogs:
           overview: "Gérez votre travail dans la vue <b>backlogs</b>."
