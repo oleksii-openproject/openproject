@@ -52,12 +52,15 @@ RSpec.describe TimeEntry do
   let!(:default_hourly_three) { create(:default_hourly_rate, valid_from: 4.days.ago, project:, user: user2) }
   let!(:default_hourly_five) { create(:default_hourly_rate, valid_from: 6.days.ago, project:, user: user2) }
   let(:hours) { 5.0 }
+  let(:start_time) { 10 * 60 } # 10:00
   let(:time_entry) do
     create(:time_entry,
            project:,
            work_package:,
            spent_on: date,
            hours:,
+           start_time: start_time,
+           end_time: start_time + (hours * 60).to_i,
            user:,
            rate: hourly_one,
            comments: "lorem")
@@ -405,6 +408,133 @@ RSpec.describe TimeEntry do
 
       context "with the setting disabled", with_settings: { allow_tracking_start_and_end_times: false } do
         it { expect(described_class).not_to be_can_track_start_and_end_time }
+      end
+    end
+  end
+
+  describe "validations" do
+    describe "start_time" do
+      it "allows blank values" do
+        time_entry.start_time = nil
+        expect(time_entry).to be_valid
+      end
+
+      it "allows integer values between 0 and 1440" do
+        time_entry.start_time = (5 * 60) + 30
+        expect(time_entry).to be_valid
+      end
+
+      it "does not allow non integer values" do
+        time_entry.start_time = 1.5
+        expect(time_entry).not_to be_valid
+      end
+
+      it "does not allow negative values" do
+        time_entry.start_time = -42
+        expect(time_entry).not_to be_valid
+      end
+    end
+
+    describe "end_time" do
+      it "allows blank values" do
+        time_entry.end_time = nil
+        expect(time_entry).to be_valid
+      end
+
+      it "allows integer values between 0 and 1439" do
+        time_entry.end_time = 1337
+        expect(time_entry).to be_valid
+      end
+
+      it "does not allow values > 1439" do
+        time_entry.end_time = 1440
+        expect(time_entry).not_to be_valid
+      end
+
+      it "does not allow non integer values" do
+        time_entry.end_time = 1.5
+        expect(time_entry).not_to be_valid
+      end
+
+      it "does not allow negative values" do
+        time_entry.end_time = -42
+        expect(time_entry).not_to be_valid
+      end
+    end
+
+    describe "start_time and end_time" do
+      it "does not allow end times smaller than the start time" do
+        time_entry.start_time = 10 * 60
+        time_entry.end_time = 8 * 60
+
+        expect(time_entry).not_to be_valid
+      end
+
+      context "when enforcing start and end times" do
+        before do
+          allow(described_class).to receive(:must_track_start_and_end_time?).and_return(true)
+        end
+
+        it "validates that both values are present" do
+          time_entry.start_time = nil
+          time_entry.end_time = nil
+
+          expect(time_entry).not_to be_valid
+
+          time_entry.start_time = 10 * 60
+
+          expect(time_entry).not_to be_valid
+
+          time_entry.end_time = 12 * 60
+
+          expect(time_entry).to be_valid
+        end
+      end
+    end
+  end
+
+  describe ".must_track_start_and_end_time?" do
+    context "with the feature flag enabled", with_flag: { track_start_and_end_times_for_time_entries: true } do
+      context "with the allow setting enabled", with_settings: { allow_tracking_start_and_end_times: true } do
+        context "with the enforce setting enabled", with_settings: { enforce_tracking_start_and_end_times: true } do
+          it { expect(described_class).to be_must_track_start_and_end_time }
+        end
+
+        context "with the enforce setting disabled", with_settings: { enforce_tracking_start_and_end_times: false } do
+          it { expect(described_class).not_to be_must_track_start_and_end_time }
+        end
+      end
+
+      context "with the allow setting disabled", with_settings: { allow_tracking_start_and_end_times: false } do
+        context "with the enforce setting enabled", with_settings: { enforce_tracking_start_and_end_times: true } do
+          it { expect(described_class).not_to be_must_track_start_and_end_time }
+        end
+
+        context "with the enforce setting disabled", with_settings: { enforce_tracking_start_and_end_times: false } do
+          it { expect(described_class).not_to be_must_track_start_and_end_time }
+        end
+      end
+    end
+
+    context "with the feature flag disabled", with_flag: { track_start_and_end_times_for_time_entries: false } do
+      context "with the allow setting enabled", with_settings: { allow_tracking_start_and_end_times: true } do
+        context "with the enforce setting enabled", with_settings: { enforce_tracking_start_and_end_times: true } do
+          it { expect(described_class).not_to be_must_track_start_and_end_time }
+        end
+
+        context "with the enforce setting disabled", with_settings: { enforce_tracking_start_and_end_times: false } do
+          it { expect(described_class).not_to be_must_track_start_and_end_time }
+        end
+      end
+
+      context "with the allow setting disabled", with_settings: { allow_tracking_start_and_end_times: false } do
+        context "with the enforce setting enabled", with_settings: { enforce_tracking_start_and_end_times: true } do
+          it { expect(described_class).not_to be_must_track_start_and_end_time }
+        end
+
+        context "with the enforce setting disabled", with_settings: { enforce_tracking_start_and_end_times: false } do
+          it { expect(described_class).not_to be_must_track_start_and_end_time }
+        end
       end
     end
   end
