@@ -10,8 +10,7 @@
     gap: 0.5rem
 
     .op-user-hover-card--name, .op-user-hover-card--email
-      overflow: hidden
-      text-overflow: ellipsis
+      @include text-shortener()
 
   .op-user-hover-card--group-list
     gap: 0.5rem
