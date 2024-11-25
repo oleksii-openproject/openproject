@@ -121,6 +121,18 @@ class TimeEntry < ApplicationRecord
       (user_id == usr.id && usr.allowed_in_project?(:view_own_hourly_rate, project))
   end
 
+  def start_timestamp
+    return nil if start_time.blank?
+
+    ActiveSupport::TimeZone[time_zone].local(spent_on.year, spent_on.month, spent_on.day, start_time / 60, start_time % 60)
+  end
+
+  def end_timestamp
+    return nil if end_time.blank?
+
+    ActiveSupport::TimeZone[time_zone].local(spent_on.year, spent_on.month, spent_on.day, end_time / 60, end_time % 60)
+  end
+
   class << self
     def can_track_start_and_end_time?(_project: nil)
       OpenProject::FeatureDecisions.track_start_and_end_times_for_time_entries_active? &&

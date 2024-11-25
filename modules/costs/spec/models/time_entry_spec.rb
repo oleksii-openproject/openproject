@@ -62,6 +62,7 @@ RSpec.describe TimeEntry do
            start_time: start_time,
            end_time: start_time + (hours * 60).to_i,
            user:,
+           time_zone: user.time_zone,
            rate: hourly_one,
            comments: "lorem")
   end
@@ -490,6 +491,36 @@ RSpec.describe TimeEntry do
           expect(time_entry).to be_valid
         end
       end
+    end
+  end
+
+  describe "#start_timestamp" do
+    it "returns nil if start_time is nil" do
+      time_entry.start_time = nil
+      expect(time_entry.start_timestamp).to be_nil
+    end
+
+    it "generates a proper timestamp from the stored information" do
+      time_entry.start_time = 14 * 60
+      time_entry.spent_on = Date.new(2024, 12, 24)
+      time_entry.time_zone = "America/Los_Angeles"
+
+      expect(time_entry.start_timestamp.iso8601).to eq("2024-12-24T14:00:00-08:00")
+    end
+  end
+
+  describe "#end_timestamp" do
+    it "returns nil if end_time is nil" do
+      time_entry.end_time = nil
+      expect(time_entry.end_timestamp).to be_nil
+    end
+
+    it "generates a proper timestamp from the stored information" do
+      time_entry.end_time = 14 * 60
+      time_entry.spent_on = Date.new(2024, 12, 24)
+      time_entry.time_zone = "America/Los_Angeles"
+
+      expect(time_entry.end_timestamp.iso8601).to eq("2024-12-24T14:00:00-08:00")
     end
   end
 
