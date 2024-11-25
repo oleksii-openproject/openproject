@@ -42,4 +42,8 @@ RSpec.describe Reminder do
         .backed_by_column_of_type(:integer)
     end
   end
+
+  describe "DB Indexes" do
+    it { is_expected.to have_db_index(:notification_id).unique(true) }
+  end
 end
