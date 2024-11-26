@@ -81,7 +81,7 @@ RSpec.describe "Work package filtering by hierarchy custom field", :js do
     end
 
     context "when is not" do
-      it "is not" do
+      it "shows work packages that do not match the hierarchy cf filter" do
         filters.open
 
         # Filtering by hierarchy (!)
@@ -90,6 +90,32 @@ RSpec.describe "Work package filtering by hierarchy custom field", :js do
 
         wp_table.ensure_work_package_not_listed!(wp_luke)
         wp_table.expect_work_package_listed(wp_leia)
+      end
+    end
+
+    context "when equals with descendants" do
+      let!(:grogu) { service.insert_item(parent: luke, label: "Grogu").value! }
+      let!(:wp_grogu) do
+        create(:work_package, project:, subject: "Grogu's wp").tap do |wp|
+          wp.custom_field_values = { hierarchy_cf.id => grogu.id }
+          wp.save!
+        end
+      end
+
+      it "shows the work packages with associated hierarchy items to the branch" do
+        filters.open
+
+        # Filtering by hierarchy (!)
+
+        filters.add_filter_by(
+          hierarchy_cf.name,
+          "is any with descendants",
+          [luke.label],
+          hierarchy_cf.attribute_name(:camel_case)
+        )
+
+        wp_table.ensure_work_package_not_listed!(wp_leia)
+        wp_table.expect_work_package_listed(wp_luke, wp_grogu)
       end
     end
   end
