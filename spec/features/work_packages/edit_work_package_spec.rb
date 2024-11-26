@@ -60,6 +60,7 @@ RSpec.describe "edit work package", :js, :with_cuprite do
 
   let(:new_subject) { "Some other subject" }
   let(:wp_page) { Pages::FullWorkPackage.new(work_package) }
+  let(:activity_tab) { Components::WorkPackages::Activities.new(work_package) }
   let(:priority2) { create(:priority) }
   let(:status2) { create(:status) }
   let(:workflow) do
@@ -108,7 +109,9 @@ RSpec.describe "edit work package", :js, :with_cuprite do
       wp_page.update_attributes status: status2.name
       wp_page.expect_attributes status: status2.name
 
-      wp_page.expect_activity_message("Status changed from #{status.name} to #{status2.name}")
+      activity_tab.expect_journal_changed_attribute(
+        text: "Status changed from #{status.name} to #{status2.name}"
+      )
     end
   end
 
@@ -140,13 +143,17 @@ RSpec.describe "edit work package", :js, :with_cuprite do
                               version: version.name,
                               category: category.name
 
-    wp_page.expect_activity_message("Status changed from #{status.name} to #{status2.name}")
+    activity_tab.expect_journal_changed_attribute(
+      text: "Status changed from #{status.name} to #{status2.name}"
+    )
   end
 
   it "correctly assigns and un-assigns users" do
     wp_page.update_attributes assignee: manager.name
     wp_page.expect_attributes assignee: manager.name
-    wp_page.expect_activity_message("Assignee set to #{manager.name}")
+    activity_tab.expect_journal_changed_attribute(
+      text: "Assignee set to #{manager.name}"
+    )
 
     field = wp_page.edit_field :assignee
     field.unset_value
@@ -174,8 +181,12 @@ RSpec.describe "edit work package", :js, :with_cuprite do
     wp_page.expect_attributes assignee: placeholder_user.name,
                               responsible: placeholder_user.name
 
-    wp_page.expect_activity_message("Assignee set to #{placeholder_user.name}")
-    wp_page.expect_activity_message("Accountable set to #{placeholder_user.name}")
+    activity_tab.expect_journal_changed_attribute(
+      text: "Assignee set to #{placeholder_user.name}"
+    )
+    activity_tab.expect_journal_changed_attribute(
+      text: "Accountable set to #{placeholder_user.name}"
+    )
   end
 
   context "switching to custom field with required CF" do
