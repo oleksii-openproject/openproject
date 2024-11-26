@@ -38,12 +38,13 @@ module Components
 
       def initialize(work_package)
         @work_package = work_package
-        @container = ".work-package-details-activities-list"
       end
 
       def expect_wp_has_been_created_activity(work_package)
-        within @container do
-          expect(page).to have_content("created on #{work_package.created_at.strftime('%m/%d/%Y')}")
+        within "#work-package-activites-container" do
+          created_date = work_package.created_at.strftime("%m/%d/%Y")
+          expect(page).to have_text("created this on", wait: 10)
+          expect(page).to have_text(created_date, wait: 10)
         end
       end
 
