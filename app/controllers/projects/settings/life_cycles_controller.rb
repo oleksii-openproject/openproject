@@ -32,24 +32,30 @@ class Projects::Settings::LifeCyclesController < Projects::SettingsController
   before_action :deny_access_on_feature_flag
 
   before_action :load_life_cycle_elements, only: %i[show enable_all disable_all]
-  before_action :load_or_create_life_cycle_element, only: %i[toggle]
 
   menu_item :settings_life_cycles
 
   def show; end
 
   def toggle
-    @life_cycle_element.toggle!(:active)
+    element_params = params
+                       .require(:project_life_cycle)
+                       .permit(:definition_id, :type)
+                       .to_h
+                       .symbolize_keys
+                       .merge(active: params["value"] == "1")
+
+    upsert_one_step(**element_params)
   end
 
   def disable_all
-    upsert_all(active: false)
+    upsert_all_steps(active: false)
 
     redirect_to action: :show
   end
 
   def enable_all
-    upsert_all(active: true)
+    upsert_all_steps(active: true)
 
     redirect_to action: :show
   end
@@ -60,20 +66,23 @@ class Projects::Settings::LifeCyclesController < Projects::SettingsController
     @life_cycle_elements = Project::LifeCycleStepDefinition.all
   end
 
-  def load_or_create_life_cycle_element
-    element_params = params.require(:project_life_cycle).permit(:definition_id, :project_id, :type)
-
-    klass = project_type_for_definition_type(element_params.delete(:type))
-
-    @life_cycle_element = klass.find_or_create_by(element_params)
-  end
-
   def deny_access_on_feature_flag
     deny_access unless OpenProject::FeatureDecisions.stages_and_gates_active?
   end
 
-  def upsert_all(active: true)
-    Project::LifeCycleStep.upsert_all(
+  def upsert_one_step(definition_id:, type:, active: true)
+    upsert_all(
+      [{
+        project_id: @project.id,
+        definition_id:,
+        active:,
+        type: project_type_for_definition_type(type)
+      }]
+    )
+  end
+
+  def upsert_all_steps(active: true)
+    upsert_all(
       @life_cycle_elements.map do |element|
         {
           project_id: @project.id,
@@ -81,7 +90,13 @@ class Projects::Settings::LifeCyclesController < Projects::SettingsController
           active:,
           type: project_type_for_definition_type(element.type)
         }
-      end,
+      end
+    )
+  end
+
+  def upsert_all(upserted_steps)
+    Project::LifeCycleStep.upsert_all(
+      upserted_steps,
       unique_by: %i[project_id definition_id]
     )
   end
