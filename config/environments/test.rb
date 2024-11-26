@@ -27,6 +27,7 @@
 #++
 
 require "active_support/core_ext/integer/time"
+require "appsignal" # we will need it to test it in `spec/lib/open_project/appsignal_spec.rb`
 
 # The test environment is used exclusively to run your application's
 # test suite. You never need to work with it otherwise. Remember that
