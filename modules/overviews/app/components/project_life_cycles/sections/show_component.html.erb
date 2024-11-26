@@ -6,6 +6,19 @@
     )) do |section|
       section.with_title { t('label_life_cycle_plural') }
 
+      if allowed_to_edit?
+        section.with_action_icon(
+          icon: :pencil,
+          tag: :a,
+          href: project_life_cycles_dialog_path(project_id: @project.id),
+          data: {
+            controller: 'async-dialog'
+          },
+          test_selector: "project-life-cycles-edit-button",
+          aria: { label: I18n.t(:label_edit) }
+        )
+      end
+
       flex_layout do |details_container|
         @life_cycle_steps.each_with_index do |life_cycle_step, i|
           margin =  i == @life_cycle_steps.size - 1 ? 0 : 3

@@ -26,26 +26,13 @@
 # See COPYRIGHT and LICENSE files for more details.
 #++
 
-module ProjectLifeCycles
-  module Sections
-    class ShowComponent < ApplicationComponent
-      include ApplicationHelper
-      include OpPrimer::ComponentHelpers
-      include OpTurbo::Streamable
+require "spec_helper"
+require File.expand_path("../support/permission_specs", __dir__)
 
-      def initialize(project:)
-        super
+RSpec.describe Overviews::OverviewsController, "view_project_life_cycles permission", # rubocop:disable RSpec/EmptyExampleGroup,RSpec/SpecFilePathFormat
+               type: :controller do
+  include PermissionSpecs
 
-        @project = project
-        @life_cycle_steps =
-          @project.life_cycle_steps.active.eager_load(:definition).order(position: :asc)
-      end
-
-      private
-
-      def allowed_to_edit?
-        User.current.allowed_in_project?(:edit_project_stages_and_gates, @project)
-      end
-    end
-  end
+  # render sidebar on project overview page with view_project permission
+  check_permission_required_for("overviews/overviews#project_life_cycles_sidebar", :view_project_stages_and_gates)
 end

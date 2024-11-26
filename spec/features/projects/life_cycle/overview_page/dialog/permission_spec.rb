@@ -60,5 +60,24 @@ RSpec.describe "Edit project stages and gates on project overview page", :js, :w
         expect(page).to have_text("Project lifecycle")
       end
     end
+
+  describe "with Edit project permissions" do
+    let(:permissions) { [:view_project, :view_project_stages_and_gates, :edit_project] }
+
+    it "does not show the edit buttons" do
+      overview_page.within_life_cycles_sidebar do
+        expect(page).to have_no_css("[data-test-selector='project-life-cycles-edit-button']")
+      end
+    end
+  end
+
+  describe "with sufficient Edit Stages and Gates permissions" do
+    let(:permissions) { [:view_project, :view_project_stages_and_gates, :edit_project, :edit_project_stages_and_gates] }
+
+    it "shows the edit buttons" do
+      overview_page.within_life_cycles_sidebar do
+        expect(page).to have_css("[data-test-selector='project-life-cycles-edit-button']")
+      end
+    end
   end
 end

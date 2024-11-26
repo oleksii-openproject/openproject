@@ -44,10 +44,6 @@ module ::Overviews
       render :project_custom_fields_sidebar, layout: false
     end
 
-    def project_life_cycles_sidebar
-      render :project_life_cycles_sidebar, layout: false
-    end
-
     def project_custom_field_section_dialog
       respond_with_dialog(
         ProjectCustomFields::Sections::EditDialogComponent.new(
@@ -80,6 +76,21 @@ module ::Overviews
 
       respond_to_with_turbo_streams(status: service_call.success? ? :ok : :unprocessable_entity)
     end
+
+    def project_life_cycles_sidebar
+      render :project_life_cycles_sidebar, layout: false
+    end
+
+    def project_life_cycles_dialog
+      respond_with_dialog(
+        ProjectCustomFields::Sections::EditDialogComponent.new(
+          project: @project,
+          project_custom_field_section: ProjectCustomFieldSection.first
+        )
+      )
+    end
+
+    def update_project_life_cycles; end
 
     def jump_to_project_menu_item
       if params[:jump]
