@@ -144,13 +144,13 @@ RSpec.describe "Administrating memberships via the project settings", :js, :with
         row.find(".op-principal--avatar").hover
       end
 
-      members_page.in_user_hover_card do |card|
-        card.find(".op-user-hover-card--name", text: peter.name)
-        card.find(".op-user-hover-card--email", text: peter.mail)
-        card.find(".op-user-hover-card--group-list", text: "Member of #{peter.groups.first.name}")
+      members_page.in_user_hover_card(peter) do
+        find_test_selector("user-hover-card-name", text: peter.name)
+        find_test_selector("user-hover-card-email", text: peter.mail)
+        find_test_selector("user-hover-card-groups", text: "Member of #{peter.groups.first.name}")
 
-        button = card.find(".Button", text: "Open profile")
-        expect(button["href"]).to eq(user_url(peter))
+        button = find_test_selector("user-hover-card-profile-btn", text: "Open profile")
+        expect(button["href"]).to eq(edit_user_url(peter))
       end
     end
 

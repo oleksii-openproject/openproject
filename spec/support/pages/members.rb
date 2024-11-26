@@ -82,8 +82,8 @@ module Pages
       page.within(".principal-#{user.id}", &)
     end
 
-    def in_user_hover_card(&)
-      page.within("#op-hover-card-body .op-user-hover-card", &)
+    def in_user_hover_card(user, &)
+      page.within_test_selector("user-hover-card-#{user.id}", &)
     end
 
     ##
