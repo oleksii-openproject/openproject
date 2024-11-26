@@ -94,8 +94,14 @@ class CostReportsController < ApplicationController
   def export(format)
     job_id = ::CostQuery::ScheduleExportService
                .new(user: current_user)
-               .call(format, filter_params:, query: @query, project: @project, cost_types: @cost_types)
-               .result
+               .call(
+                 format:,
+                 query_id: @query.id,
+                 query_name: @query.name,
+                 filter_params: filter_params,
+                 project: @project,
+                 cost_types: @cost_types
+               ).result
 
     if request.headers["Accept"]&.include?("application/json")
       render json: { job_id: }
@@ -133,7 +139,8 @@ class CostReportsController < ApplicationController
 
     if request.xhr? # Update via AJAX - return url for redirect
       render plain: url_for(**redirect_params)
-    else # Redirect to the new record
+    else
+      # Redirect to the new record
       redirect_to **redirect_params
     end
   end
@@ -399,6 +406,7 @@ class CostReportsController < ApplicationController
       Array(permissions).any? { |permission| user.allowed_in_any_project?(permission) }
     end
   end
+
   # rubocop:enable Metrics/AbcSize, Metrics/PerceivedComplexity
 
   private
@@ -501,11 +509,11 @@ class CostReportsController < ApplicationController
   def determine_settings
     if force_default?
       filters = default_filter_parameters
-      groups  = default_group_parameters
+      groups = default_group_parameters
       session[report_engine.name.underscore.to_sym].try :delete, :name
     else
       filters = filter_params
-      groups  = group_params
+      groups = group_params
     end
     cookie = session[report_engine.name.underscore.to_sym] || {}
     session[report_engine.name.underscore.to_sym] = cookie.merge(filters:, groups:)

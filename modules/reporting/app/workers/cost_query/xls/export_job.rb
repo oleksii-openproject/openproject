@@ -19,7 +19,7 @@ class CostQuery::XLS::ExportJob < Exports::ExportJob
 
   def prepare!
     CostQuery::Cache.check
-    self.query = build_query(query)
+    self.query = CostQuery.build_query(project, query)
   end
 
   def export!
@@ -39,23 +39,4 @@ class CostQuery::XLS::ExportJob < Exports::ExportJob
                           mime_type: "application/vnd.ms-excel",
                           content:)
   end
-
-  # rubocop:disable Metrics/AbcSize
-  def build_query(filters, groups = {})
-    query = CostQuery.new(project:)
-    query.tap do |q|
-      filters[:operators].each do |filter, operator|
-        unless filters[:values][filter] == ["<<inactive>>"]
-          values = Array(filters[:values][filter]).map { |v| v == "<<null>>" ? nil : v }
-          q.filter(filter.to_sym,
-                   operator:,
-                   values:)
-        end
-      end
-    end
-    groups[:columns].try(:reverse_each) { |c| query.column(c) }
-    groups[:rows].try(:reverse_each) { |r| query.row(r) }
-    query
-  end
-  # rubocop:enable Metrics/AbcSize
 end

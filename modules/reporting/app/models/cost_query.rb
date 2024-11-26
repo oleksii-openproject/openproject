@@ -85,6 +85,25 @@ class CostQuery < ApplicationRecord
     public(project).or(private(project, user)).exists?
   end
 
+  # rubocop:disable Metrics/AbcSize
+  def self.build_query(project, filters, groups = {})
+    query = CostQuery.new(project:)
+    query.tap do |q|
+      filters[:operators].each do |filter, operator|
+        unless filters[:values][filter] == ["<<inactive>>"]
+          values = Array(filters[:values][filter]).map { |v| v == "<<null>>" ? nil : v }
+          q.filter(filter.to_sym,
+                   operator:,
+                   values:)
+        end
+      end
+    end
+    groups[:columns].try(:reverse_each) { |c| query.column(c) }
+    groups[:rows].try(:reverse_each) { |r| query.row(r) }
+    query
+  end
+  # rubocop:enable Metrics/AbcSize
+
   def serialize
     # have to take the reverse group_bys to retain the original order when deserializing
     self.serialized = { filters: filters.map(&:serialize).reject(&:nil?).sort_by(&:first),

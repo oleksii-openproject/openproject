@@ -23,6 +23,8 @@ class CostQuery::PDF::ExportJob < Exports::ExportJob
 
   def prepare!
     CostQuery::Cache.check
+    self.query = CostQuery.build_query(project, query)
+    query.name = options[:query_name]
   end
 
   def pdf_report_result
