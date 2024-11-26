@@ -121,10 +121,11 @@ RSpec.describe "Working Days", :js, :with_cuprite do
 
       # The updated work packages will have a journal entry informing about the change
       wp_page = Pages::FullWorkPackage.new(earliest_work_package)
+      activity_tab = Components::WorkPackages::Activities.new(earliest_work_package)
       wp_page.visit!
 
-      wp_page.expect_activity_message(
-        "Dates changed by changes to working days (Monday is now non-working, Friday is now non-working)"
+      activity_tab.expect_journal_changed_attribute(
+        text: "Dates changed by changes to working days (Monday is now non-working, Friday is now non-working)"
       )
     end
 
