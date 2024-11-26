@@ -48,7 +48,7 @@ class Users::HoverCardComponent < ApplicationComponent
   # "Member of group1, group2 and 3 more"
   # The latter string is cut off since the complete list of group names would exceed the allowed `max_length`.
   def group_membership_summary(max_length = 40)
-    groups = @user.groups
+    groups = @user.groups.visible
     return no_group_text if groups.empty?
 
     group_links = linked_group_names(groups)
