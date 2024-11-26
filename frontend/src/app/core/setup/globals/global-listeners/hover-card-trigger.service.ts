@@ -62,8 +62,10 @@ export class HoverCardTriggerService {
       const el = e.target as HTMLElement;
       if (!el) { return; }
 
-      // Abort if the current element is already showing a modal
       if (this.previousTarget && this.previousTarget === el) {
+        // Re-entering the trigger counts as hovering over the card:
+        this.mouseInModal = true;
+        // But we will not re-render the same card, abort here
         return;
       }
       this.previousTarget = el;
@@ -104,6 +106,7 @@ export class HoverCardTriggerService {
 
     jQuery(document.body).on('mouseleave', '.op-hover-card--preview-trigger', () => {
       this.clearHoverTimer();
+      this.mouseInModal = false;
       this.closeAfterTimeout();
     });
 
