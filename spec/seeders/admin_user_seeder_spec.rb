@@ -56,6 +56,7 @@ RSpec.describe AdminUserSeeder do
       seeder.seed!
 
       admin = User.admin.last
+      expect(admin).to be_active
       expect(admin.firstname).to eq "foo"
       expect(admin.lastname).to eq "bar"
       expect(admin.mail).to eq "foobar@example.com"
