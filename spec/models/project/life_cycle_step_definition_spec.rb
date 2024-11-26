@@ -29,8 +29,8 @@
 require "rails_helper"
 
 RSpec.describe Project::LifeCycleStepDefinition do
-  it "cannot be instantiated" do
-    expect { described_class.new }.to raise_error(NotImplementedError)
+  it "can be instantiated" do
+    expect { described_class.new }.not_to raise_error
   end
 
   context "with a Project::StageDefinition" do
