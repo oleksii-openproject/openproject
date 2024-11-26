@@ -56,6 +56,11 @@ module Pages
         expect(page).to have_no_css(".op-grid-page--grid-container")
       end
 
+      def expect_visible_sidebar
+        expect_angular_frontend_initialized
+        expect(page).to have_css(".op-grid-page--grid-container")
+      end
+
       def within_project_attributes_sidebar(&)
         within "#project-custom-fields-sidebar" do
           expect(page).to have_css("[data-test-selector='project-custom-fields-sidebar-async-content']")
@@ -80,6 +85,17 @@ module Pages
         end
 
         expect(page).to have_css("[data-test-selector='async-dialog-content']", wait: 5)
+      end
+
+      def within_life_cycles_sidebar(&)
+        within "#project-life-cycles-sidebar" do
+          expect(page).to have_css("[data-test-selector='project-life-cycles-sidebar-async-content']")
+          yield
+        end
+      end
+
+      def within_life_cycle_container(life_cycle, &)
+        within("[data-test-selector='project-life-cycle-#{life_cycle.id}']", &)
       end
 
       def expand_text(custom_field)

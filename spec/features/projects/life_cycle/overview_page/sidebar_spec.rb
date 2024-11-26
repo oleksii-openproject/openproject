@@ -27,10 +27,10 @@
 #++
 
 require "spec_helper"
+require_relative "shared_context"
 
 RSpec.describe "Show project life cycles on project overview page", :js, :with_cuprite, with_flag: { stages_and_gates: true } do
-  shared_let(:admin) { create(:admin) }
-  shared_let(:project) { create(:project, name: "Foo project", identifier: "foo-project") }
+  include_context "with seeded projects and stages and gates"
 
   let(:overview_page) { Pages::Projects::Show.new(project) }
 
@@ -40,18 +40,113 @@ RSpec.describe "Show project life cycles on project overview page", :js, :with_c
 
   it "does show the sidebar" do
     overview_page.visit_page
-
-    within ".op-grid-page" do
-      expect(page).to have_css(".op-grid-page--sidebar")
-    end
+    overview_page.expect_visible_sidebar
   end
 
   context "when stages and gates are disabled", with_flag: { stages_and_gates: false } do
     it "does not show the sidebar" do
       overview_page.visit_page
+      overview_page.expect_no_visible_sidebar
+    end
+  end
 
-      within ".op-grid-page" do
-        expect(page).to have_no_css(".op-grid-page--sidebar")
+  context "when all stages and gates are disabled for this project" do
+    before do
+      project_life_cycles.each { |p| p.toggle!(:active) }
+    end
+
+    it "does not show the sidebar" do
+      overview_page.visit_page
+      overview_page.expect_no_visible_sidebar
+    end
+  end
+
+  describe "with correct order and scoping" do
+    it "shows the project stages and gates in the correct order" do
+      overview_page.visit_page
+
+      overview_page.within_life_cycles_sidebar do
+        fields = page.all(".op-project-life-cycle-container")
+
+        expect(fields.size).to eq(7)
+
+        expect(fields[0].text).to include("Initiating")
+        expect(fields[1].text).to include("Ready for Planning")
+        expect(fields[2].text).to include("Planning")
+        expect(fields[3].text).to include("Ready for Executing")
+        expect(fields[4].text).to include("Executing")
+        expect(fields[5].text).to include("Ready for Closing")
+        expect(fields[6].text).to include("Closing")
+      end
+
+      life_cycle_ready_for_executing_definition.move_to_bottom
+
+      overview_page.visit_page
+
+      overview_page.within_life_cycles_sidebar do
+        fields = page.all(".op-project-life-cycle-container")
+
+        expect(fields.size).to eq(7)
+
+        expect(fields[0].text).to include("Initiating")
+        expect(fields[1].text).to include("Ready for Planning")
+        expect(fields[2].text).to include("Planning")
+        expect(fields[3].text).to include("Executing")
+        expect(fields[4].text).to include("Ready for Closing")
+        expect(fields[5].text).to include("Closing")
+        expect(fields[6].text).to include("Ready for Executing")
+      end
+    end
+
+    it "does not show stages and gates not enabled for this project in a sidebar" do
+      life_cycle_ready_for_executing.toggle!(:active)
+
+      overview_page.visit_page
+
+      overview_page.within_life_cycles_sidebar do
+        expect(page).to have_no_text life_cycle_ready_for_executing.name
+      end
+    end
+  end
+
+  describe "with correct values" do
+    describe "with values set" do
+      it "shows the correct value for the project custom field if given" do
+        overview_page.visit_page
+
+        overview_page.within_life_cycles_sidebar do
+          project_life_cycles.each do |life_cycle|
+            overview_page.within_life_cycle_container(life_cycle) do
+              expected_date = if life_cycle.is_a? Project::Stage
+                                [
+                                  life_cycle.start_date.strftime("%m/%d/%Y"),
+                                  life_cycle.end_date.strftime("%m/%d/%Y")
+                                ].join(" - ")
+                              else
+                                life_cycle.start_date.strftime("%m/%d/%Y")
+                              end
+              expect(page).to have_text expected_date
+            end
+          end
+        end
+      end
+    end
+
+    describe "with no values" do
+      before do
+        Project::LifeCycleStep.update_all(start_date: nil, end_date: nil)
+      end
+
+      it "shows the correct value for the project custom field if given" do
+        overview_page.visit_page
+
+        overview_page.within_life_cycles_sidebar do
+          project_life_cycles.each do |life_cycle|
+            overview_page.within_life_cycle_container(life_cycle) do
+              expect(page).to have_text I18n.t("placeholders.default")
+            end
+          end
+        end
       end
     end
   end

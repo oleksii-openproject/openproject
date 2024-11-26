@@ -49,11 +49,14 @@ module ProjectLifeCycles
           case @life_cycle_step
           when Project::Gate
             render(Primer::Beta::Text.new) do
-              concat @life_cycle_step.date
+              concat helpers.format_date(@life_cycle_step.date)
             end
           when Project::Stage
             render(Primer::Beta::Text.new) do
-              concat [@life_cycle_step.start_date, " - ", @life_cycle_step.end_date].join
+              concat [
+                helpers.format_date(@life_cycle_step.start_date),
+                helpers.format_date(@life_cycle_step.end_date)
+              ].join(" - ")
             end
           end
         end
