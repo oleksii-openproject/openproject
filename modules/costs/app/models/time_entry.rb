@@ -116,7 +116,7 @@ class TimeEntry < ApplicationRecord
     return nil if start_time.blank?
     return nil if time_zone.blank?
 
-    ActiveSupport::TimeZone[time_zone].local(spent_on.year, spent_on.month, spent_on.day, start_time / 60, start_time % 60)
+    time_zone_object.local(spent_on.year, spent_on.month, spent_on.day, start_time / 60, start_time % 60)
   end
 
   def end_timestamp
@@ -144,5 +144,9 @@ class TimeEntry < ApplicationRecord
 
   def cost_attribute
     hours
+  end
+
+  def time_zone_object
+    ActiveSupport::TimeZone[time_zone]
   end
 end
