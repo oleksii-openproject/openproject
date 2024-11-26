@@ -133,6 +133,18 @@ Rails.application.reloader.to_prepare do
                      permissible_on: :project,
                      require: :member
 
+      map.permission :view_project_stages_and_gates,
+                     {},
+                     permissible_on: :project,
+                     dependencies: :view_project
+
+      map.permission :edit_project_stages_and_gates,
+                     {},
+                     permissible_on: :project,
+                     require: :member,
+                     dependencies: :view_project_stages_and_gates,
+                     contract_actions: { projects: %i[update] }
+
       map.permission :manage_members,
                      {
                        members: %i[index new create update destroy destroy_by_principal autocomplete_for_member menu],
