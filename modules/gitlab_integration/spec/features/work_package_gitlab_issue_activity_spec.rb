@@ -71,6 +71,7 @@ RSpec.describe "Work Package Activity Tab",
   end
 
   let(:work_package_page) { Pages::SplitWorkPackage.new(work_package, project) }
+  let(:activity_tab) { Components::WorkPackages::Activities.new(work_package) }
 
   context "when there is an issue event" do
     before do
@@ -90,7 +91,7 @@ RSpec.describe "Work Package Activity Tab",
       end
 
       it "renders a comment referencing the issue" do
-        expect(page).to have_css(".user-comment > .message", text: expected_comment)
+        activity_tab.expect_journal_notes(text: expected_comment)
       end
     end
   end
