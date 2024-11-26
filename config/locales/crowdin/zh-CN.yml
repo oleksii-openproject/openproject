@@ -237,7 +237,7 @@ zh-CN:
           one: 1个子项目
           other: "%{count} 个子项目"
     upsale:
-      custom_field_format_hierarchy: "Need a hierarchy in your custom fields for work packages?"
+      custom_field_format_hierarchy: "工作包的自定义字段需要层级结构？"
     text_add_new_custom_field: >
       要向项目添加新的自定义字段，您需要先创建字段，然后才能将其添加到此项目中。
     is_enabled_globally: "已全局启用"
@@ -1017,6 +1017,20 @@ zh-CN:
           attributes:
             project_ids:
               blank: "请选择一个项目。"
+        project/life_cycle_step_definition:
+          attributes:
+            type:
+              must_be_a_stage_or_gate: "must be either Project::StageDefinition or Project::GateDefinition"
+        project/life_cycle_step:
+          attributes:
+            type:
+              must_be_a_stage_or_gate: "must be either Project::Stage or Project::Gate"
+              must_be_a_stage: "must be a Project::Stage"
+              must_be_a_gate: "must be a Project::Gate"
+        project/gate:
+          attributes:
+            base:
+              end_date_not_allowed: "Cannot assign `end_date` to a Project::Gate"
         query:
           attributes:
             project:
