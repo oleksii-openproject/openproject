@@ -29,5 +29,5 @@ See COPYRIGHT and LICENSE files for more details.
 <div data-turbo="true">
   <%= render Projects::Settings::LifeCycles::ShowPageHeaderComponent.new(project: @project) %>
 
-  <%= render(Projects::Settings::LifeCycles::IndexComponent.new( project: @project, life_cycle_elements: @life_cycle_elements)) %>
+  <%= render(Projects::Settings::LifeCycles::IndexComponent.new( project: @project, life_cycle_definitions: @life_cycle_definitions)) %>
 </div>

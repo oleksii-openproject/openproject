@@ -19,7 +19,7 @@
                 font_weight: :bold,
                 color: :subtle,
                 'aria-label': t('projects.settings.actions.label_enable_all'),
-                data: { 'turbo-method': :post, 'turbo': true, test_selector: "enable-all-life-cycle-elements" }
+                data: { 'turbo-method': :post, 'turbo': true, test_selector: "enable-all-life-cycle-steps" }
               )) do |button|
                 button.with_leading_visual_icon(icon: 'check-circle', color: :subtle)
                 t('projects.settings.actions.label_enable_all')
@@ -33,7 +33,7 @@
                 font_weight: :bold,
                 color: :subtle,
                 'aria-label': t('projects.settings.actions.label_disable_all'),
-                data: { 'turbo-method': :post, 'turbo': true, test_selector: "disable-all-life-cycle-elements" }
+                data: { 'turbo-method': :post, 'turbo': true, test_selector: "disable-all-life-cycle-steps" }
               )) do |button|
                 button.with_leading_visual_icon(icon: 'x-circle', color: :subtle)
                 t('projects.settings.actions.label_disable_all')
@@ -42,15 +42,15 @@
           end
         end
       end
-      if life_cycle_elements.empty?
+      if life_cycle_definitions.empty?
         component.with_row do
           render(Primer::Beta::Text.new(color: :subtle)) { t("projects.settings.life_cycle.non_defined") }
         end
       else
-        life_cycle_elements.each do |element|
+        life_cycle_definitions.each do |definition|
           component.with_row(data: { 'projects--settings--project-custom-fields-mapping-filter-target': 'searchItem' },
-                                     test_selector: "project-life-cycle-element-#{element.id}") do
-            render(Projects::Settings::LifeCycles::ElementComponent.new(project:, element:))
+                                     test_selector: "project-life-cycle-step-#{definition.id}") do
+            render(Projects::Settings::LifeCycles::StepComponent.new(project:, definition:))
           end
         end
       end

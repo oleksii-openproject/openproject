@@ -1,17 +1,17 @@
 <%=
   component_wrapper do
     flex_layout(align_items: :center,
-                justify_content: :space_between) do |element_container|
-      element_container.with_column(flex_layout: true) do |title_container|
+                justify_content: :space_between) do |definition_container|
+      definition_container.with_column(flex_layout: true) do |title_container|
         title_container.with_column(pt: 1, mr: 3) do
-          render(Primer::Beta::Text.new) { element.name }
+          render(Primer::Beta::Text.new) { definition.name }
         end
         title_container.with_column(pt: 1) do
-          render(Projects::LifeCycleTypeComponent.new(element))
+          render(Projects::LifeCycleTypeComponent.new(definition))
         end
       end
       # py: 1 quick fix: prevents the row from bouncing as the toggle switch currently changes height while toggling
-      element_container.with_column(py: 1, mr: 2) do
+      definition_container.with_column(py: 1, mr: 2) do
         # buggy currently:
         # small variant +  status_label_position: :start leads to a small bounce while toggling
         # behavior can be seen on primer's viewbook as well -> https://view-components-storybook.eastus.cloudapp.azure.com/view-components/lookbook/inspect/primer/alpha/toggle_switch/small
@@ -19,12 +19,12 @@
         render(Primer::Alpha::ToggleSwitch.new(
           src: toggle_project_settings_life_cycle_path(
             project_life_cycle: {
-              definition_id: element.id,
-              type: element.type
+              definition_id: definition.id,
+              type: definition.type
             }
           ),
           csrf_token: form_authenticity_token,
-          data: { test_selector: "toggle-project-life-cycle-#{element.id}" },
+          data: { test_selector: "toggle-project-life-cycle-#{definition.id}" },
           aria: { label: toggle_aria_label },
           checked: active_in_project?,
           size: :small,

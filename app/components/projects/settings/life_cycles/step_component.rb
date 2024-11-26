@@ -29,36 +29,36 @@
 module Projects
   module Settings
     module LifeCycles
-      class ElementComponent < ApplicationComponent
+      class StepComponent < ApplicationComponent
         include ApplicationHelper
         include OpPrimer::ComponentHelpers
         include OpTurbo::Streamable
 
-        attr_reader :element,
+        attr_reader :definition,
                     :project
 
-        def initialize(project:, element:)
+        def initialize(project:, definition:)
           super
 
-          @element = element
+          @definition = definition
           @project = project
         end
 
         def active_in_project?
           project
             .life_cycle_steps
-            .detect { |project_lc| project_lc.definition_id == element.id }
+            .detect { |project_lc| project_lc.definition_id == definition.id }
             &.active
         end
 
         def toggle_aria_label
-          I18n.t("projects.settings.life_cycle.element.use_in_project", element: element.name)
+          I18n.t("projects.settings.life_cycle.step.use_in_project", step: definition.name)
         end
 
         private
 
         def wrapper_uniq_by
-          element.id
+          definition.id
         end
       end
     end

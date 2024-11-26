@@ -35,13 +35,13 @@ module Projects
         include OpTurbo::Streamable
 
         attr_reader :project,
-                    :life_cycle_elements
+                    :life_cycle_definitions
 
-        def initialize(project:, life_cycle_elements:)
+        def initialize(project:, life_cycle_definitions:)
           super
 
           @project = project
-          @life_cycle_elements = life_cycle_elements
+          @life_cycle_definitions = life_cycle_definitions
         end
 
         private

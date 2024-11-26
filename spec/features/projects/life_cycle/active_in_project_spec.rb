@@ -51,7 +51,7 @@ RSpec.describe "Projects life cycle settings", :js, :with_cuprite, with_flag: { 
   context "with sufficient permissions" do
     current_user { user_with_permission }
 
-    it "allows toggling the active/inactive state of lifecycle elements" do
+    it "allows toggling the active/inactive state of lifecycle steps" do
       project_life_cycle_page.visit!
 
       project_life_cycle_page.expect_listed(initiating_stage => false,

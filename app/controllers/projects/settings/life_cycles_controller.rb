@@ -31,21 +31,21 @@ class Projects::Settings::LifeCyclesController < Projects::SettingsController
 
   before_action :deny_access_on_feature_flag
 
-  before_action :load_life_cycle_elements, only: %i[show enable_all disable_all]
+  before_action :load_life_cycle_definitions, only: %i[show enable_all disable_all]
 
   menu_item :settings_life_cycles
 
   def show; end
 
   def toggle
-    element_params = params
-                       .require(:project_life_cycle)
-                       .permit(:definition_id, :type)
-                       .to_h
-                       .symbolize_keys
-                       .merge(active: params["value"] == "1")
+    step_params = params
+                    .require(:project_life_cycle)
+                    .permit(:definition_id, :type)
+                    .to_h
+                    .symbolize_keys
+                    .merge(active: params["value"] == "1")
 
-    upsert_one_step(**element_params)
+    upsert_one_step(**step_params)
   end
 
   def disable_all
@@ -62,8 +62,8 @@ class Projects::Settings::LifeCyclesController < Projects::SettingsController
 
   private
 
-  def load_life_cycle_elements
-    @life_cycle_elements = Project::LifeCycleStepDefinition.all
+  def load_life_cycle_definitions
+    @life_cycle_definitions = Project::LifeCycleStepDefinition.all
   end
 
   def deny_access_on_feature_flag
@@ -83,12 +83,12 @@ class Projects::Settings::LifeCyclesController < Projects::SettingsController
 
   def upsert_all_steps(active: true)
     upsert_all(
-      @life_cycle_elements.map do |element|
+      @life_cycle_definitions.map do |definition|
         {
           project_id: @project.id,
-          definition_id: element.id,
+          definition_id: definition.id,
           active:,
-          type: project_type_for_definition_type(element.type)
+          type: project_type_for_definition_type(definition.type)
         }
       end
     )
@@ -108,7 +108,7 @@ class Projects::Settings::LifeCyclesController < Projects::SettingsController
     when Project::GateDefinition.name
       Project::Gate
     else
-      raise NotImplementedError, "Unknown life cycle element type"
+      raise NotImplementedError, "Unknown life cycle definition type"
     end
   end
 end

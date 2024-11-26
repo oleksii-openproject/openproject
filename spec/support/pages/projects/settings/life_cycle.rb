@@ -44,47 +44,47 @@ module Pages
           "/projects/#{project.identifier}/settings/life_cycle"
         end
 
-        # Checks if the life cycle elements are listed in the order given and with the correct toggle state.
-        # @param life_cycle_elements [Hash{LifeCycleElement => Boolean}]
-        def expect_listed(**life_cycle_elements)
-          if life_cycle_elements.size > 1
-            life_cycle_elements.each_cons(2) do |(predecessor, _), (successor, _)|
+        # Checks if the life cycle steps are listed in the order given and with the correct toggle state.
+        # @param life_cycle_definitions [Hash{LifeCycleElement => Boolean}]
+        def expect_listed(**life_cycle_definitions)
+          if life_cycle_definitions.size > 1
+            life_cycle_definitions.each_cons(2) do |(predecessor, _), (successor, _)|
               expect(page).to have_css("#{life_cycle_test_selector(predecessor)} + #{life_cycle_test_selector(successor)}")
             end
           end
 
-          life_cycle_elements.each do |element, active|
-            expect_toggle_state(element, active)
+          life_cycle_definitions.each do |definition, active|
+            expect_toggle_state(definition, active)
           end
         end
 
-        def expect_toggle_state(element, active)
-          within toggle_element(element) do
+        def expect_toggle_state(definition, active)
+          within toggle_step(definition) do
             expect(page)
               .to have_css(".ToggleSwitch-status#{expected_toggle_status(active)}"),
-                  "Expected toggle for '#{element.name}' to be #{expected_toggle_status(active)} " \
+                  "Expected toggle for '#{definition.name}' to be #{expected_toggle_status(active)} " \
                   "but was #{expected_toggle_status(!active)}"
           end
         end
 
-        def toggle(element)
-          toggle_element(element).click
+        def toggle(definition)
+          toggle_step(definition).click
         end
 
         def disable_all
-          find_test_selector("disable-all-life-cycle-elements").click
+          find_test_selector("disable-all-life-cycle-steps").click
         end
 
         def enable_all
-          find_test_selector("enable-all-life-cycle-elements").click
+          find_test_selector("enable-all-life-cycle-steps").click
         end
 
-        def life_cycle_test_selector(element)
-          test_selector("project-life-cycle-element-#{element.id}")
+        def life_cycle_test_selector(definition)
+          test_selector("project-life-cycle-step-#{definition.id}")
         end
 
-        def toggle_element(element)
-          find_test_selector("toggle-project-life-cycle-#{element.id}")
+        def toggle_step(definition)
+          find_test_selector("toggle-project-life-cycle-#{definition.id}")
         end
 
         def expected_toggle_status(active)
