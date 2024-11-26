@@ -124,15 +124,16 @@ class CostQuery::PDF::TimesheetGenerator
     # TODO: write user on new page if table does not fit on the same
     write_user(user_id)
     pdf.make_table(
-      rows, header: false,
-            width: table_width,
-            column_widths: table_columns_widths,
-            cell_style: {
-              border_color: "BBBBBB",
-              border_width: 0.5,
-              borders: [:top],
-              padding: [5, 5, 8, 5]
-            }
+      rows,
+      header: false,
+      width: table_width,
+      column_widths: table_columns_widths,
+      cell_style: {
+        border_color: "BBBBBB",
+        border_width: 0.5,
+        borders: %i[top bottom],
+        padding: [5, 5, 8, 5]
+      }
     ) do |table|
       table.columns(0).borders = %i[top bottom left right]
       table.columns(-1).style do |c|
@@ -142,17 +143,20 @@ class CostQuery::PDF::TimesheetGenerator
         if c.colspan > 1
           c.borders = %i[left right]
           c.padding = [0, 5, 8, 5]
+          row_nr = c.row - 1
+          values = table.columns(1..-1).rows(row_nr..row_nr)
+          values.each do |cell|
+            cell.borders = cell.borders - [:bottom]
+          end
         end
       end
       table.rows(0).style do |c|
         c.borders = c.borders + [:top]
         c.font_style = :bold
       end
-      table.rows(-1).style do |c|
-        c.borders = c.borders + [:bottom]
-      end
     end.draw
   end
+
   # rubocop:enable Metrics/AbcSize
 
   def sorted_results
@@ -169,6 +173,7 @@ class CostQuery::PDF::TimesheetGenerator
     end
     pdf.move_down(16)
   end
+
   # rubocop:enable Metrics/AbcSize
 
   def write_heading!
@@ -204,6 +209,6 @@ class CostQuery::PDF::TimesheetGenerator
   end
 
   def with_cover?
-    true
+    false
   end
 end
