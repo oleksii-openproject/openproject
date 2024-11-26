@@ -83,7 +83,7 @@ zh-CN:
       metadata_url: 我有一个发现端点 URL
       endpoint_url: 端点 URL
     providers:
-      label_providers: "Providers"
+      label_providers: "供应商"
       seeded_from_env: "此提供商是从环境配置中生成的。它无法被编辑。"
       google:
         name: 谷歌

@@ -9,19 +9,7 @@
 
       grid.with_area(:content, tag: :span, mr: 2) do
         if @meeting_agenda_item.visible_work_package?
-          flex_layout(align_items: :center) do |flex|
-            flex.with_column(mr: 2) do
-              render(Primer::Beta::Text.new(font_size: :small, color: :subtle)) do
-                "##{@meeting_agenda_item.work_package.id} #{@meeting_agenda_item.work_package.type.name}"
-              end
-            end
-
-            flex.with_column(mr: 2) do
-              render(Primer::Beta::Label.new(font_weight: :bold)) do
-                @meeting_agenda_item.work_package.status.name
-              end
-            end
-          end
+          render(WorkPackages::InfoLineComponent.new(work_package: @meeting_agenda_item.work_package))
         elsif @meeting_agenda_item.linked_work_package?
           render(Primer::Beta::Text.new(font_size: :small, mr: 2, color: :subtle, test_selector: 'op-meeting-agenda-title')) do
             I18n.t(:label_agenda_item_undisclosed_wp, id: @meeting_agenda_item.work_package_id)

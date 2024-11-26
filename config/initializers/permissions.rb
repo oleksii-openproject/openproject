@@ -224,13 +224,16 @@ Rails.application.reloader.to_prepare do
                        "work_packages/reports": %i[report report_details],
                        "work_packages/activities_tab": %i[index update_streams update_sorting update_filter],
                        "work_packages/menus": %i[show],
-                       "work_packages/hover_card": %i[show]
+                       "work_packages/hover_card": %i[show],
+                       work_package_relations_tab: %i[index]
                      },
                      permissible_on: %i[work_package project],
                      contract_actions: { work_packages: %i[read] }
 
       wpt.permission :add_work_packages,
-                     {},
+                     {
+                       work_package_relations: %i[new create]
+                     },
                      permissible_on: :project,
                      dependencies: :view_work_packages,
                      contract_actions: { work_packages: %i[create] }
@@ -316,13 +319,15 @@ Rails.application.reloader.to_prepare do
 
       wpt.permission :manage_work_package_relations,
                      {
-                       work_package_relations: %i[create destroy]
+                       work_package_relations: %i[edit update create destroy]
                      },
                      permissible_on: %i[work_package project],
                      dependencies: :view_work_packages
 
       wpt.permission :manage_subtasks,
-                     {},
+                     {
+                       work_package_children: %i[new create destroy]
+                     },
                      permissible_on: :project,
                      dependencies: :view_work_packages
       # Queries
