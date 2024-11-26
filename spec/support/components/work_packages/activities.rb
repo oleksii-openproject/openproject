@@ -101,6 +101,14 @@ module Components
         expect(page).to have_test_selector("op-journal-notes-body", text:, wait: 10)
       end
 
+      def expect_journal_mention(text: nil)
+        expect_journal_notes # wait for the notes to be loaded
+
+        page.within_test_selector("op-journal-notes-body") do
+          expect(page).to have_css("a.user-mention", text:, wait: 10)
+        end
+      end
+
       def expect_notification_bubble
         expect(page).to have_test_selector("op-journal-unread-notification", wait: 10)
       end
