@@ -35,7 +35,7 @@ end
 
 
 
-### Border Box Table specific options
+### Border Box Table specifics
 
 #### Mobile behavior
 
@@ -60,18 +60,22 @@ mobile_labels :users
 
 On mobile, the usual table headers are replaced with a single `mobile_title` property that you have to set on the table.
 
-#### Wide columns
+#### Text wrapping behaviour
 
-To use wider columns on desktop, use the `wide_columns`  helper:
+By default, text longer than the column width will truncate with ellipsis. Only the main column has text that wraps around to display the full string.
+
+#### Main column
+
+Use the `main_column` helper to make a column 2 times as wide as the others and also display the full text:
 
 ```ruby
 # On desktop, show these columns
 columns :title, :users, :created_at
 
-# Make title column wider than the others (factor 3 using grid span)
-wide_columns :title
+# Make title column wider than the others (factor 2 using grid span)
+main_column :title
 ```
-
+Note: Ideally, one one main column will be present for each table.
 
 
 
