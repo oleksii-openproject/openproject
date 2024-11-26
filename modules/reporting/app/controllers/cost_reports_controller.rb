@@ -92,7 +92,7 @@ class CostReportsController < ApplicationController
   def export(format)
     job_id = ::CostQuery::ScheduleExportService
                .new(user: current_user)
-               .call(format, filter_params:, project: @project, cost_types: @cost_types)
+               .call(format, filter_params:, query: @query, project: @project, cost_types: @cost_types)
                .result
 
     if request.headers["Accept"]&.include?("application/json")

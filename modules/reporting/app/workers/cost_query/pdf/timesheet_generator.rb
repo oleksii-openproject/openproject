@@ -15,7 +15,11 @@ class CostQuery::PDF::TimesheetGenerator
   end
 
   def heading
-    "Timesheet"
+    query.name || "Timesheet"
+  end
+
+  def footer_title
+    heading
   end
 
   def project
@@ -50,10 +54,8 @@ class CostQuery::PDF::TimesheetGenerator
     write_heading!
     write_hr!
     write_entries!
-  end
-
-  def write_heading!
-    pdf.formatted_text([{ text: heading }])
+    write_headers!
+    write_footers!
   end
 
   def write_entries!
@@ -77,43 +79,81 @@ class CostQuery::PDF::TimesheetGenerator
     entries
       .group_by { |r| DateTime.parse(r.fields["spent_on"]) }
       .sort
-      .each do |_spent_on, lines|
+      .each do |spent_on, lines|
+      day_rows = []
       lines.each do |r|
-        row = [
-          { content: lines[0]["spent_on"], rowspan: 1 },
-          WorkPackage.find(r.fields["work_package_id"]).subject,
-          "??:00-??:00",
-          format_duration(r.fields["units"]),
-          TimeEntryActivity.find(r.fields["activity_id"]).name
-        ]
-        rows.push(row)
+        day_rows.push(
+          [
+            wp_subject(r.fields["work_package_id"]),
+            with_times_column? ? "??:00-??:00" : nil,
+            format_duration(r.fields["units"]),
+            activity_name(r.fields["activity_id"])
+          ].compact
+        )
         if r.fields["comments"].present?
-          row[0][:rowspan] = 2
-          rows.push([{ content: r.fields["comments"], colspan: 4 }])
+          day_rows.push ([{ content: r.fields["comments"], text_color: "636C76", colspan: table_columns_span }])
         end
       end
+      day_rows[0].unshift({ content: format_date(spent_on), rowspan: day_rows.length })
+      rows.concat(day_rows)
     end
     rows
   end
+
   # rubocop:enable Metrics/AbcSize
 
-  def format_duration(hours)
-    return "" if hours < 0
-
-    "#{hours}h"
+  def table_header_columns
+    with_times_column? ? ["Date", "Work package", "Time", "Hours", "Activity"] : ["Date", "Work package", "Hours", "Activity"]
   end
 
+  def table_columns_widths
+    with_times_column? ? [80, 193, 80, 70, 100] : [80, 270, 70, 100]
+  end
+
+  def table_width
+    table_columns_widths.sum
+  end
+
+  def table_columns_span
+    with_times_column? ? 4 : 3
+  end
+
+  # rubocop:disable Metrics/AbcSize
   def write_table(user_id, entries)
-    rows = [["Date", "Work package", "Time", "Hours", "Activity"]].concat(build_table_rows(entries))
+    rows = [table_header_columns].concat(build_table_rows(entries))
     # TODO: write user on new page if table does not fit on the same
     write_user(user_id)
-    table = pdf.make_table(rows, header: false, width: 500, column_widths: [100, 100, 100, 100, 100])
-    table.draw
+    pdf.make_table(
+      rows, header: false,
+            width: table_width,
+            column_widths: table_columns_widths,
+            cell_style: {
+              border_color: "BBBBBB",
+              border_width: 0.5,
+              borders: [:top],
+              padding: [5, 5, 8, 5]
+            }
+    ) do |table|
+      table.columns(0).borders = %i[top bottom left right]
+      table.rows(0).style do |c|
+        c.borders = c.borders + [:top]
+        c.font_style = :bold
+      end
+      table.rows(-1).style do |c|
+        c.borders = c.borders + [:bottom]
+      end
+      table.columns(-1).style do |c|
+        c.borders = c.borders + [:right]
+      end
+      table.columns(1).style do |c|
+        if c.colspan > 1
+          c.borders = %i[left right]
+          c.padding = [0, 5, 8, 5]
+        end
+      end
+    end.draw
   end
-
-  def write_user(user_id)
-    pdf.formatted_text([{ text: User.select_for_name.find(user_id).name }])
-  end
+  # rubocop:enable Metrics/AbcSize
 
   def sorted_results
     query.each_direct_result.map(&:itself)
@@ -123,12 +163,45 @@ class CostQuery::PDF::TimesheetGenerator
   def write_hr!
     hr_style = styles.cover_header_border
     pdf.stroke do
-      pdf.line_width = hr_style[:color]
-      pdf.stroke_color hr_style[:height]
+      pdf.line_width = hr_style[:height]
+      pdf.stroke_color hr_style[:color]
       pdf.stroke_horizontal_line pdf.bounds.left, pdf.bounds.right, at: pdf.cursor
     end
+    pdf.move_down(16)
   end
   # rubocop:enable Metrics/AbcSize
+
+  def write_heading!
+    pdf.formatted_text([{ text: heading, size: 26, style: :bold }])
+    pdf.move_down(2)
+  end
+
+  def write_user(user_id)
+    pdf.formatted_text([{ text: user_name(user_id), size: 20 }])
+    pdf.move_down(10)
+  end
+
+  def user_name(user_id)
+    User.select_for_name.find(user_id).name
+  end
+
+  def activity_name(activity_id)
+    TimeEntryActivity.find(activity_id).name
+  end
+
+  def wp_subject(wp_id)
+    WorkPackage.find(wp_id).subject
+  end
+
+  def format_duration(hours)
+    return "" if hours < 0
+
+    "#{hours}h"
+  end
+
+  def with_times_column?
+    true
+  end
 
   def with_cover?
     true
