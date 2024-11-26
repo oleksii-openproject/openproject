@@ -51,30 +51,30 @@ module WatchersHelper
     link_to(content_tag(:i, "", class: watched ? "button--icon icon-watched" : " button--icon icon-unwatched") + " " +
       content_tag(:span, label, class: "button--text"), path, html_options.merge(method:))
   end
-end
 
-def watcher_button_arguments(object, user)
-  return nil unless user&.logged? && object.respond_to?(:watched_by?)
+  def watcher_button_arguments(object, user)
+    return nil unless user&.logged? && object.respond_to?(:watched_by?)
 
-  watched = object.watched_by?(user)
+    watched = object.watched_by?(user)
 
-  path = send(:"#{(watched ? 'unwatch' : 'watch')}_path",
-              object_type: object.class.to_s.underscore.pluralize,
-              object_id: object.id)
+    path = send(:"#{(watched ? 'unwatch' : 'watch')}_path",
+                object_type: object.class.to_s.underscore.pluralize,
+                object_id: object.id)
 
-  method = watched ? :delete : :post
+    method = watched ? :delete : :post
 
-  label = watched ? I18n.t(:button_unwatch) : I18n.t(:button_watch)
+    label = watched ? I18n.t(:button_unwatch) : I18n.t(:button_watch)
 
-  {
-    tag: :a,
-    href: path,
-    scheme: :default,
-    aria: { label: label },
-    data: {
-      method:
-    },
-    mobile_icon: watched ? "eye-closed" : "eye",
-    mobile_label: label
-  }
+    {
+      tag: :a,
+      href: path,
+      scheme: :default,
+      aria: { label: label },
+      data: {
+        method:
+      },
+      mobile_icon: watched ? "eye-closed" : "eye",
+      mobile_label: label
+    }
+  end
 end
