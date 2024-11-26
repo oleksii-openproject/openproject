@@ -135,13 +135,6 @@ class CostQuery::PDF::TimesheetGenerator
             }
     ) do |table|
       table.columns(0).borders = %i[top bottom left right]
-      table.rows(0).style do |c|
-        c.borders = c.borders + [:top]
-        c.font_style = :bold
-      end
-      table.rows(-1).style do |c|
-        c.borders = c.borders + [:bottom]
-      end
       table.columns(-1).style do |c|
         c.borders = c.borders + [:right]
       end
@@ -150,6 +143,13 @@ class CostQuery::PDF::TimesheetGenerator
           c.borders = %i[left right]
           c.padding = [0, 5, 8, 5]
         end
+      end
+      table.rows(0).style do |c|
+        c.borders = c.borders + [:top]
+        c.font_style = :bold
+      end
+      table.rows(-1).style do |c|
+        c.borders = c.borders + [:bottom]
       end
     end.draw
   end
