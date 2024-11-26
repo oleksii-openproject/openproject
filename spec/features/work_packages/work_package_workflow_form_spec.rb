@@ -58,6 +58,7 @@ RSpec.describe "Work package transitive status workflows", :js do
     work_package
   end
   let(:wp_page) { Pages::FullWorkPackage.new(work_package) }
+  let(:activity_tab) { Components::WorkPackages::Activities.new(work_package) }
 
   let(:status_from) { work_package.status }
   let(:status_intermediate) { create(:status) }
@@ -93,14 +94,16 @@ RSpec.describe "Work package transitive status workflows", :js do
     wp_page.update_attributes status: status_intermediate.name
     wp_page.expect_attributes status: status_intermediate.name
 
-    wp_page.expect_activity_message "Status changed from #{status_from.name} " \
-                                    "to #{status_intermediate.name}"
+    activity_tab.expect_journal_changed_attribute(
+      text: "Status changed from #{status_from.name} to #{status_intermediate.name}"
+    )
 
     wp_page.update_attributes status: status_to.name
     wp_page.expect_attributes status: status_to.name
 
-    wp_page.expect_activity_message "Status changed from #{status_from.name} " \
-                                    "to #{status_to.name}"
+    activity_tab.expect_journal_changed_attribute(
+      text: "Status changed from #{status_from.name} to #{status_to.name}"
+    )
 
     work_package.reload
     expect(work_package.status).to eq(status_to)
