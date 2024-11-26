@@ -89,15 +89,20 @@ export class HoverCardTriggerService {
       this.hoverTimeout = window.setTimeout(() => {
         this.parseHoverCardOptions(el);
 
-        this.opModalService.show(
+        // There is only one possible slot to insert a modal. If that slot is taken, we assume the other modal
+        // to be more important than a hover card and give up.
+        const modal = this.opModalService.showIfNotActive(
           HoverCardComponent,
           this.injector,
           { turboFrameSrc: cleanedTurboFrameUrl, event: e },
           true,
           false,
           this.modalTarget,
-        ).subscribe((previewModal) => {
+        );
+
+        modal?.subscribe((previewModal) => {
           this.modalElement = previewModal.elementRef.nativeElement as HTMLElement;
+          previewModal.alignment = 'top';
 
           void previewModal.reposition(this.modalElement, el);
         });
