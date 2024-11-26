@@ -1,16 +1,8 @@
 <%=
     if @work_package.present?
       grid_layout('op-wp-hover-card', tag: :div) do |grid|
-        grid.with_area(:type, tag: :div) do
-          render(WorkPackages::HighlightedTypeComponent.new(work_package: @work_package, font_size: :small))
-        end
-
-        grid.with_area(:status, tag: :div) do
-          render WorkPackages::StatusBadgeComponent.new(status: @work_package.status)
-        end
-
-        grid.with_area(:id, tag: :div) do
-          render(Primer::Beta::Text.new(font_size: :small,color: :muted)) { "##{@work_package.id}" }
+        grid.with_area(:info, tag: :div) do
+          render(WorkPackages::InfoLineComponent.new(work_package: @work_package))
         end
 
         grid.with_area(:project, tag: :div) do
