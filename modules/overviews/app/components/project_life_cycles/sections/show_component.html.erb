@@ -4,7 +4,7 @@
       classes: 'op-project-life-cyle-section-container',
       test_selector: "project-life-cycle-section"
     )) do |section|
-      section.with_title { "Life Cycles" }
+      section.with_title { t('label_life_cycle_plural') }
 
       flex_layout do |details_container|
         @life_cycle_steps.each_with_index do |life_cycle_step, i|
