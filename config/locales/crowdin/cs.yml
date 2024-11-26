@@ -1046,6 +1046,20 @@ cs:
           attributes:
             project_ids:
               blank: "Vyberte prosím projekt."
+        project/life_cycle_step_definition:
+          attributes:
+            type:
+              must_be_a_stage_or_gate: "must be either Project::StageDefinition or Project::GateDefinition"
+        project/life_cycle_step:
+          attributes:
+            type:
+              must_be_a_stage_or_gate: "must be either Project::Stage or Project::Gate"
+              must_be_a_stage: "must be a Project::Stage"
+              must_be_a_gate: "must be a Project::Gate"
+        project/gate:
+          attributes:
+            base:
+              end_date_not_allowed: "Cannot assign `end_date` to a Project::Gate"
         query:
           attributes:
             project:

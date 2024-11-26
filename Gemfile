@@ -218,7 +218,7 @@ gem "dry-validation"
 gem "store_attribute", "~> 1.0"
 
 # Appsignal integration
-gem "appsignal", "~> 4.2", require: false
+gem "appsignal", "~> 3.10.0", require: false
 
 gem "view_component"
 # Lookbook
@@ -400,4 +400,4 @@ end
 
 gem "openproject-octicons", "~>19.19.0"
 gem "openproject-octicons_helper", "~>19.19.0"
-gem "openproject-primer_view_components", "~>0.49.1"
+gem "openproject-primer_view_components", "~>0.49.2"

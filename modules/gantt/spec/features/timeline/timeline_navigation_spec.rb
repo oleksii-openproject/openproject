@@ -363,7 +363,7 @@ RSpec.describe "Work package timeline navigation",
       split_view = wp_table.open_split_view(wp_cat1)
       split_view.switch_to_tab tab: :relations
 
-      relations.remove_relation(wp_cat2)
+      relations.remove_relation(relation)
 
       # Relation should be removed in TL
       within(".work-packages-split-view--tabletimeline-side") do
