@@ -1,8 +1,15 @@
 <%=
   table = Class.new(OpPrimer::BorderBoxTableComponent) do
     columns :foo, :bar
+
+    mobile_labels :bar
+
     def self.name
       "MyTable"
+    end
+
+    def mobile_title
+      "Mobile foo"
     end
 
     ## This method is just a hack used for the preview
@@ -33,7 +40,7 @@
 
         def foo
           concat render(Primer::Beta::Link.new(scheme: :primary, href: "#")) { "Some link" }
-          concat render(Primer::Beta::Text.new(tag: :p, font_size: :small, color: :subtle)) { "Hello there" }
+          render(Primer::Beta::Text.new(tag: :p, font_size: :small, color: :subtle)) { "Hello there" }
         end
 
         def bar

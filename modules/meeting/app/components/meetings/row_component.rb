@@ -30,14 +30,6 @@
 
 module Meetings
   class RowComponent < ::OpPrimer::BorderBoxRowComponent
-    def column_args(column)
-      if column == :title
-        { style: "grid-column: span 2" }
-      else
-        super
-      end
-    end
-
     def project_name
       helpers.link_to_project model.project, {}, {}, false
     end

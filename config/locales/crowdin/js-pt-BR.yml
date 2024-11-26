@@ -105,6 +105,7 @@ pt-BR:
     button_update: "Atualizar"
     button_export-pdf: "Baixar PDF"
     button_export-atom: "Baixar Atom"
+    button_generate_pdf: "Generate PDF"
     button_create: "Criar"
     card:
       add_new: "Adicionar novo cartão"
@@ -574,14 +575,14 @@ pt-BR:
         members: "Convide novos <b>membros</b> para participar de seu projeto."
         quick_add_button: "Clique no ícone mais (+) no menu de navegação para <b>criar um novo projeto</b> ou para <b>convidar colegas de trabalho</b>."
         sidebar_arrow: "Use a seta de retorno no canto superior esquerdo para retornar ao <b>menu principal</b> do projeto."
-        welcome: "Acompanhe um tour de apresentação de 3 minutos para descobrir mais <b>recursos importantes</b>.<br> Recomendamos que você conclua as etapas até o final. Você pode reiniciar o tour a qualquer momento."
+        welcome: "Take a three-minute introduction tour to learn the most <b>important features</b>. <br> We recommend completing the steps until the end. You can restart the tour any time."
         wiki: "Na <b>wiki</b>, você pode documentar e compartilhar conhecimento junto com sua equipe. "
         backlogs:
           overview: "Gerencie seu trabalho na visão de <b>backlogs</b>."
-          sprints: "À direita você encontra o backlog do produto e de erros, à esquerda você encontra os respectivos sprints. Aqui você pode criar <b>épicos, histórias de usuário e bugs</b>, priorizar através de arrastar e soltar e adicioná-los a um sprint."
-          task_board_arrow: "Para ver o seu <b>quadro de tarefas</b>, abra o menu suspenso de sprint ... "
+          sprints: "À direita, você tem o backlog de produto e o backlog de erro, à esquerda, você tem as respectivas sprints. Aqui você pode criar <b>épicos, user stories e erros</b>, priorizar via arrastar e soltar e adicioná-los a uma sprint."
+          task_board_arrow: "Para ver o seu <b>quadro de tarefas</b>, abra o menu suspenso da sprint..."
           task_board_select: "... e selecione a entrada do <b>quadro de tarefas</b>. "
-          task_board: "O painel de tarefas visualiza o <b>progresso deste sprint</b>. Clique no ícone mais (+) ao lado de uma história de usuário para adicionar novas tarefas ou impedimentos. <br> A situação pode ser atualizada arrastando e soltando."
+          task_board: "O quadro de tarefas visualiza o <b>progresso desta sprint</b>. Clique no ícone de mais (+) ao lado de uma user story para adicionar novas tarefas ou impedimentos. <br> O status pode ser atualizado por arrastar e soltar."
         boards:
           overview: "Selecione <b>quadros</b> para mudar a visão e gerenciar seu projeto usando a exibição de quadros ágeis."
           lists_kanban: "Aqui você pode criar várias listas (colunas) dentro do seu painel. Este recurso permite que você crie um <b>Quadro Kanban</b>, por exemplo."

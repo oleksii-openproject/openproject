@@ -36,7 +36,13 @@ module API
           end
 
           self_link path: :custom_field_item,
-                    title_getter: ->(*) { represented.label }
+                    title_getter: ->(*) do
+                      if represented.short.nil?
+                        represented.label
+                      else
+                        "#{represented.label} (#{represented.short})"
+                      end
+                    end
 
           property :id
 

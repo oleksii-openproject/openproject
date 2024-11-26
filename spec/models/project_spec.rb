@@ -381,6 +381,10 @@ RSpec.describe Project do
     end
   end
 
+  describe "life_cycles" do
+    it { is_expected.to have_many(:life_cycle_steps).class_name("Project::LifeCycleStep").dependent(:destroy) }
+  end
+
   describe "#enabled_module_names=", with_settings: { default_projects_modules: %w(work_package_tracking repository) } do
     context "when assigning a new value" do
       let(:new_value) { %w(work_package_tracking news) }

@@ -1,0 +1,38 @@
+<%= component_wrapper do %>
+  <%= primer_form_with(
+    id: FORM_ID,
+    model: WorkPackage.new,
+    **submit_url_options,
+    data: {
+      turbo: true,
+      update_work_package: true
+    }
+    ) do |f| %>
+    <%# Form fields section %>
+    <%= flex_layout(my: 3) do |flex|
+        flex.with_row do
+          if @base_errors&.any?
+            render(Primer::Alpha::Banner.new(mb: 3, icon: :stop, scheme: :danger)) { @base_errors.join("\n") }
+          end
+        end
+        flex.with_row do
+          render_inline_form(f) do |my_form|
+            my_form.work_package_autocompleter(
+              name: :id,
+              label: WorkPackage.model_name.human,
+              visually_hide_label: false,
+              autocomplete_options: {
+                resource: 'work_packages',
+                searchKey: 'subjectOrId',
+                openDirectly: false,
+                focusDirectly: false,
+                dropdownPosition: 'bottom',
+                appendTo: "##{DIALOG_ID}",
+                data: { test_selector: ID_FIELD_TEST_SELECTOR }
+              }
+            )
+          end
+        end
+      end %>
+  <% end %>
+<% end %>

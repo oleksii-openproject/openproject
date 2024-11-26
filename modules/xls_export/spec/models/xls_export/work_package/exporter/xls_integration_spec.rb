@@ -161,7 +161,7 @@ RSpec.describe XlsExport::WorkPackage::Exporter::XLS do
     end
   end
 
-  describe "with cost and time entries" do
+  describe "with cost and time entries", with_settings: { costs_currency: "EUR", costs_currency_format: "%n %u" } do
     # Since this test has to work without the actual costs plugin we'll just add
     # a custom field called 'costs' to emulate it.
 
@@ -197,12 +197,6 @@ RSpec.describe XlsExport::WorkPackage::Exporter::XLS do
       wps
     end
     let(:column_names) { ["subject", "status", "estimated_hours", custom_field.column_name] }
-
-    before do
-      allow(Setting)
-        .to receive(:plugin_costs)
-        .and_return("costs_currency" => "EUR", "costs_currency_format" => "%n %u")
-    end
 
     it "exports successfully the work packages with a cost column" do
       expect(sheet.rows.size).to eq(4 + 1)

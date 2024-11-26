@@ -33,7 +33,7 @@ de:
         label_activity_show_only_changes: "Nur Änderungen anzeigen"
         label_sort_asc: "Neueste unten"
         label_sort_desc: "Neueste oben"
-        label_type_to_comment: "Tippen Sie hier, um zu kommentieren"
+        label_type_to_comment: "Add a comment. Type @ to notify people."
         label_submit_comment: "Kommentar absenden"
         changed_on: "geändert am"
         created_on: "erstellte dies am"
@@ -236,6 +236,8 @@ de:
           zero: keine Unterelemente
           one: 1 Unterelement
           other: "%{count} Unterelemente"
+    upsale:
+      custom_field_format_hierarchy: "Need a hierarchy in your custom fields for work packages?"
     text_add_new_custom_field: >
       Um neue benutzerdefinierte Felder einem Projekt zuzuweisen, müssen Sie diese erst global erstellen, um Sie dann an dieser Stelle aktivieren zu können.
     is_enabled_globally: "Für alle Projekte aktiviert"
@@ -1021,6 +1023,20 @@ de:
           attributes:
             project_ids:
               blank: "Bitte wählen Sie ein Projekt aus."
+        project/life_cycle_step_definition:
+          attributes:
+            type:
+              must_be_a_stage_or_gate: "must be either Project::StageDefinition or Project::GateDefinition"
+        project/life_cycle_step:
+          attributes:
+            type:
+              must_be_a_stage_or_gate: "must be either Project::Stage or Project::Gate"
+              must_be_a_stage: "must be a Project::Stage"
+              must_be_a_gate: "must be a Project::Gate"
+        project/gate:
+          attributes:
+            base:
+              end_date_not_allowed: "Cannot assign `end_date` to a Project::Gate"
         query:
           attributes:
             project:
@@ -1816,6 +1832,23 @@ de:
     units:
       hours: h
       days: d
+  pdf_generator:
+    page_nr_footer: "Seite %{page} von %{total}"
+    dialog:
+      title: PDF generieren
+      submit: Generieren
+      header_right:
+        label: Kopfzeile rechts
+        caption: Text, der rechts neben der Kopfzeile angezeigt werden soll
+      footer_center:
+        label: Fußzeile mittig
+        caption: Text, der in der Mitte der Fußzeile angezeigt werden soll
+      hyphenation:
+        label: Silbentrennung
+        caption: Wörter zwischen den Zeilen umbrechen, um die Textausrichtung und die Lesbarkeit zu verbessern.
+      paper_size:
+        label: Papierformat
+        caption: Die Größe des Papiers, das für das PDF verwendet werden soll.
   extraction:
     available:
       pdftotext: "Pdftotext verfügbar (optional)"

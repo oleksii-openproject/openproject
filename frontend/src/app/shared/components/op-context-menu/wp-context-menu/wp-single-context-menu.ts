@@ -19,6 +19,7 @@ import { TimeEntryCreateService } from 'core-app/shared/components/time_entries/
 import { WpDestroyModalComponent } from 'core-app/shared/components/modals/wp-destroy-modal/wp-destroy.modal';
 import { WorkPackageAuthorization } from 'core-app/features/work-packages/services/work-package-authorization.service';
 import * as moment from 'moment-timezone';
+import { TurboRequestsService } from 'core-app/core/turbo/turbo-requests.service';
 
 @Directive({
   selector: '[wpSingleContextMenu]',
@@ -34,6 +35,7 @@ export class WorkPackageSingleContextMenuDirective extends OpContextMenuTrigger 
     readonly PathHelper:PathHelperService,
     readonly elementRef:ElementRef,
     readonly opModalService:OpModalService,
+    readonly turboRequests:TurboRequestsService,
     readonly opContextMenuService:OPContextMenuService,
     readonly authorisationService:AuthorisationService,
     protected copyToClipboardService:CopyToClipboardService,
@@ -73,6 +75,9 @@ export class WorkPackageSingleContextMenuDirective extends OpContextMenuTrigger 
           .catch(() => {
           // do nothing, the user closed without changes
           });
+        break;
+      case 'generate_pdf':
+        void this.turboRequests.requestStream(link as string);
         break;
       case 'copy_link_to_clipboard': {
         const url = new URL(String(link), window.location.origin);

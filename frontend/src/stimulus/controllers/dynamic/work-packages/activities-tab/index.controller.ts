@@ -355,13 +355,20 @@ export default class IndexController extends Controller {
     }
   }
 
-  private scrollToActivity(activityId:string) {
+  private tryScroll(activityId:string, attempts:number, maxAttempts:number) {
     const scrollableContainer = this.getScrollableContainer();
     const activityElement = document.getElementById(`activity-anchor-${activityId}`);
 
     if (activityElement && scrollableContainer) {
-      scrollableContainer.scrollTop = activityElement.offsetTop-70;
+      scrollableContainer.scrollTop = activityElement.offsetTop - 70;
+    } else if (attempts < maxAttempts) {
+      setTimeout(() => this.tryScroll(activityId, attempts + 1, maxAttempts), 1000);
     }
+  }
+
+  private scrollToActivity(activityId:string) {
+    const maxAttempts = 20; // wait max 20 seconds for the activity to be rendered
+    this.tryScroll(activityId, 0, maxAttempts);
   }
 
   private scrollToBottom() {
@@ -398,7 +405,7 @@ export default class IndexController extends Controller {
   }
 
   private getScrollableContainer():HTMLElement | null {
-    if (this.isWithinNotificationCenter()) {
+    if (this.isWithinNotificationCenter() || this.isWithinSplitScreen()) {
       // valid for both mobile and desktop
       return document.querySelector('.work-package-details-tab') as HTMLElement;
     }
@@ -417,6 +424,10 @@ export default class IndexController extends Controller {
 
   private isWithinNotificationCenter():boolean {
     return window.location.pathname.includes(this.notificationCenterPathNameValue);
+  }
+
+  private isWithinSplitScreen():boolean {
+    return window.location.pathname.includes('work_packages/details');
   }
 
   private addEventListenersToCkEditorInstance() {
@@ -633,7 +644,7 @@ export default class IndexController extends Controller {
       headers: {
         'X-CSRF-Token': (document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement).content,
       },
-    });
+    }, true);
   }
 
   private handleSuccessfulSubmission(html:string, headers:Headers) {
@@ -643,8 +654,8 @@ export default class IndexController extends Controller {
     if (!this.journalsContainerTarget) return;
 
     this.clearEditor();
-    this.handleEditorVisibility();
-    this.adjustJournalsContainer();
+    this.hideEditor();
+    this.resetJournalsContainerMargins();
 
     setTimeout(() => {
       if (this.isMobile() && !this.isWithinNotificationCenter()) {
@@ -663,19 +674,11 @@ export default class IndexController extends Controller {
     this.saveInProgress = false;
   }
 
-  private handleEditorVisibility():void {
-    if (this.isMobile()) {
-      this.hideEditorIfEmpty();
-    } else {
-      this.focusEditor();
-    }
-  }
-
-  private adjustJournalsContainer():void {
+  private resetJournalsContainerMargins():void {
     if (!this.journalsContainerTarget) return;
 
     this.journalsContainerTarget.style.marginBottom = '';
-    this.journalsContainerTarget.classList.add('work-packages-activities-tab-index-component--journals-container_with-input-compensation');
+    this.journalsContainerTarget.classList.add('work-packages-activities-tab-index-component--journals-container_with-initial-input-compensation');
   }
 
   private setLastServerTimestampViaHeaders(headers:Headers) {
