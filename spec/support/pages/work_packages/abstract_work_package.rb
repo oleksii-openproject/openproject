@@ -151,18 +151,6 @@ module Pages
 
     alias :expect_attribute_hidden :expect_no_attribute
 
-    def expect_activity(user, number: nil)
-      container = "#work-package-activites-container"
-      container += " #activity-#{number}" if number
-
-      expect(page).to have_css("#{container} .op-user-activity--user-line", text: user.name)
-    end
-
-    def expect_activity_message(message)
-      expect(page).to have_css(".work-package-details-activities-messages .message",
-                               text: message)
-    end
-
     def expect_no_parent
       visit_tab!("relations")
 
