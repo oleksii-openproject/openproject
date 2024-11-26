@@ -54,6 +54,9 @@ def wait_for_reload
 end
 
 def warn_about_cuprite_helper_misuse(method_name)
+  # Don't bloat the output of the CI
+  return if ENV["CI"]
+
   stack = caller(2)
   cause = [stack[0], stack.find { |line| line["_spec.rb:"] }].uniq.join(" … ")
   warn "#{method_name} used in spec not using cuprite (#{cause})"

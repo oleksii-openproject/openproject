@@ -175,9 +175,12 @@ Rails.application.routes.draw do
         resources :projects, controller: "/admin/custom_fields/custom_field_projects", only: %i[index new create]
         resource :project, controller: "/admin/custom_fields/custom_field_projects", only: :destroy
         resources :items, controller: "/admin/custom_fields/hierarchy/items" do
-          get :deletion_dialog, on: :member
-          get :new_child, on: :member, action: :new
-          post :new_child, on: :member, action: :create
+          member do
+            get :deletion_dialog
+            get :new_child, action: :new
+            post :new_child, action: :create
+            post :move
+          end
         end
       end
     end
@@ -571,6 +574,9 @@ Rails.application.routes.draw do
 
     get "hover_card" => "work_packages/hover_card#show", on: :member
 
+    get "generate_pdf_dialog" => "work_packages#generate_pdf_dialog", on: :member
+    post "generate_pdf" => "work_packages#generate_pdf", on: :member
+
     # move bulk of wps
     get "move/new" => "work_packages/moves#new", on: :collection, as: "new_move"
     post "move" => "work_packages/moves#create", on: :collection, as: "move"
@@ -592,6 +598,8 @@ Rails.application.routes.draw do
       end
     end
 
+    resources :children, only: %i[new create destroy], controller: "work_package_children"
+
     resource :progress, only: %i[new edit update], controller: "work_packages/progress"
     collection do
       resource :progress,
@@ -599,6 +607,9 @@ Rails.application.routes.draw do
                controller: "work_packages/progress",
                as: :work_package_progress
     end
+    resources :relations_tab, only: %i[index], controller: "work_package_relations_tab"
+    resources :relations, only: %i[new create edit update destroy], controller: "work_package_relations"
+
     get "/export_dialog" => "work_packages#export_dialog", on: :collection, as: "export_dialog"
     get :show_conflict_flash_message, on: :collection # we don't need a specific work package for this
 

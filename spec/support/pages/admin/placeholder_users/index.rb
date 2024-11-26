@@ -37,8 +37,9 @@ module Pages
         end
 
         def expect_listed(*placeholder_users)
-          rows = page.all "td.name"
-          expect(rows.map(&:text)).to include(*placeholder_users.map(&:name))
+          placeholder_users.each do |user|
+            expect(page).to have_css("td.name", text: user.name)
+          end
         end
 
         def expect_ordered(*placeholder_users)
@@ -47,8 +48,9 @@ module Pages
         end
 
         def expect_not_listed(*users)
-          rows = page.all "td.name"
-          expect(rows.map(&:text)).not_to include(*users.map(&:name))
+          users.each do |user|
+            expect(page).to have_no_css("td.name", text: user.name)
+          end
         end
 
         def expect_non_listed
@@ -72,6 +74,7 @@ module Pages
           within "thead" do
             click_link key
           end
+          wait_for_network_idle
         end
 
         def expect_no_delete_button_for_all_rows

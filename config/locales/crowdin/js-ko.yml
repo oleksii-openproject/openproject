@@ -105,6 +105,7 @@ ko:
     button_update: "업데이트"
     button_export-pdf: "PDF 다운로드"
     button_export-atom: "Atom 다운로드"
+    button_generate_pdf: "Generate PDF"
     button_create: "만들기"
     card:
       add_new: "새로운 카드를 추가하다"
@@ -359,7 +360,7 @@ ko:
           "15_0":
             standard:
               new_features_html: >
-                The release brings various features and improvements for you, e.g. <br> <ul class="%{list_styling_class}"> <li>Boost your communication with a better structured Activity tab, real-time loading messages and notifications, emoji reactions, and more.</li> <li>Benefit from easy Single Sign-On authentication settings with SAML and OIDC in your Enterprise Cloud administration.</li> <li>Use the new 'Standard global role' and enable permissions to view email addresses.</li> <li>Enjoy easier navigation in project lists with quick action table headers.</li> <li>Experience simplified design settings with fewer sidebar design variables needed.</li> <li>Reduce manual cleanup when adding a custom field to a type – no more auto-applying to all projects.</li> <li>Benefit from improved navigation clarity – 'My account' is renamed to 'Account settings'.</li> </ul>
+                이 릴리즈는 다음과 같은 다양한 기능과 개선 사항을 제공합니다. <br> <ul class="%{list_styling_class}"> <li>더욱 체계화된 활동 탭, 실시간 로딩 메시지 및 알림, 이모티콘 반응 등으로 커뮤니케이션을 강화합니다.</li> <li>Enterprise Cloud 관리에서 SAML 및 OIDC로 간편한 Single Sign-On 인증 설정의 장점을 누립니다.</li> <li>새로운 '표준 글로벌 역할'을 사용하고 이메일 주소를 볼 수 있는 권한을 활성화합니다.</li> <li>빠른 작업 테이블 헤더로 프로젝트 목록에서 더욱 쉽게 탐색합니다.</li> <li>필요한 사이드바 디자인 변수가 더 적은 간소화된 디자인 설정을 이용합니다.</li> <li>유형에 사용자 지정 필드를 추가할 때 수동 정리가 줄어듭니다. 더 이상 모든 프로젝트에 자동 적용되지 않습니다.</li> <li>탐색의 명확성이 개선되었습니다. '내 계정'이 '계정 설정'으로 이름이 변경되었습니다.</li> </ul>
     ical_sharing_modal:
       title: "캘린더 구독"
       inital_setup_error_message: "데이터를 가져오는 중에 오류가 발생했습니다."
@@ -575,7 +576,7 @@ ko:
         members: "프로젝트에 참여할 새로운 <b>멤버</b>를 초대하세요."
         quick_add_button: "헤더 탐색에서 더하기(+) 아이콘을 클릭하여 <b>새 프로젝트를 생성</b>하거나 <b>동료를 초대</b>하세요."
         sidebar_arrow: "프로젝트의 <b>기본 메뉴</b>로 돌아가려면 왼쪽 상단의 뒤로 화살표를 사용하세요."
-        welcome: "3분 소개 투어를 보고 가장 <b>중요한 기능</b>에 대해 알아보세요. <br> 끝까지 단계를 완료하는 것이 좋습니다. 언제든지 투어를 다시 시작할 수 있습니다."
+        welcome: "Take a three-minute introduction tour to learn the most <b>important features</b>. <br> We recommend completing the steps until the end. You can restart the tour any time."
         wiki: "<b>Wiki</b>에서 문서화하고 팀과 함께 지식을 공유할 수 있습니다."
         backlogs:
           overview: "<b>백로그</b> 보기에서 작업을 관리하세요."

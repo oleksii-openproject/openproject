@@ -176,7 +176,7 @@ RSpec.describe StatusesController do
 
           perform_enqueued_jobs
 
-          expect_work_packages([parent, child, other_child], <<~TABLE)
+          expect_work_packages_after_reload([parent, child, other_child], <<~TABLE)
             subject       | status   | work | remaining work | % complete | ∑ work | ∑ remaining work | ∑ % complete
             parent        | New      |      |                |            |    10h |              10h |           0%
               child       | Rejected |  10h |             5h |        50% |        |                  |
@@ -245,7 +245,7 @@ RSpec.describe StatusesController do
 
           perform_enqueued_jobs
 
-          expect_work_packages([parent, child, other_child], <<~TABLE)
+          expect_work_packages_after_reload([parent, child, other_child], <<~TABLE)
             subject       | status   | work | remaining work | % complete | ∑ work | ∑ remaining work | ∑ % complete
             parent        | New      |      |                |         0% |    10h |              10h |           0%
               child       | Rejected |  10h |             3h |        70% |        |                  |
@@ -271,7 +271,7 @@ RSpec.describe StatusesController do
 
             perform_enqueued_jobs
 
-            expect_work_packages([parent, child, other_child], <<~TABLE)
+            expect_work_packages_after_reload([parent, child, other_child], <<~TABLE)
               subject       | status   | work | remaining work | % complete | ∑ work | ∑ remaining work | ∑ % complete
               parent        | New      |      |                |         0% |    10h |              10h |           0%
                 child       | Rejected |  10h |             6h |        40% |        |                  |

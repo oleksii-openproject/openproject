@@ -37,7 +37,7 @@ class Journal::BaseJournal < ApplicationRecord
   end
 
   def self.journaled_attributes
-    @journaled_attributes ||= column_names.map(&:to_sym) - excluded_attributes
+    @journaled_attributes ||= columns.reject(&:virtual?).map { |col| col.name.to_sym } - excluded_attributes
   end
 
   def self.excluded_attributes

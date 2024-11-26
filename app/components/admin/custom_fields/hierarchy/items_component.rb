@@ -35,21 +35,32 @@ module Admin
         include OpTurbo::Streamable
         include OpPrimer::ComponentHelpers
 
-        property :children
-
         def initialize(item:, new_item: nil)
           super(item)
           @new_item = new_item
         end
-
-        def show_new_item_form? = @new_item
 
         def root
           @root ||= model.root? ? model : model.root
         end
 
         def new_item_path
-          new_child_custom_field_item_path(root.custom_field_id, model)
+          position = model.children.any? ? model.children.last.sort_order + 1 : 0
+
+          new_child_custom_field_item_path(root.custom_field_id, model, position:)
+        end
+
+        def children
+          list = model.children
+          return list unless @new_item
+
+          position = @new_item.sort_order&.to_i
+
+          if position
+            list[0...position] + [@new_item] + list[position..]
+          else
+            list + [@new_item]
+          end
         end
 
         def item_header
@@ -57,6 +68,26 @@ module Admin
             slices.each do |slice|
               loaf.with_item(href: slice[:href], target: nil) { slice[:label] }
             end
+          end
+        end
+
+        def blank_icon
+          model.root? ? "list-ordered" : "op-arrow-in"
+        end
+
+        def blank_header_text
+          if model.root?
+            "custom_fields.admin.items.blankslate.root.title"
+          else
+            "custom_fields.admin.items.blankslate.item.title"
+          end
+        end
+
+        def blank_description_text
+          if model.root?
+            "custom_fields.admin.items.blankslate.root.description"
+          else
+            "custom_fields.admin.items.blankslate.item.description"
           end
         end
 

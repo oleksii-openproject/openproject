@@ -32,6 +32,25 @@ module OpPrimer
   class BorderBoxRowComponent < RowComponent # rubocop:disable OpenProject/AddPreviewForViewComponent
     include ComponentHelpers
 
+    def mobile_label(column)
+      return unless table.mobile_labels.include?(column)
+
+      table.column_title(column)
+    end
+
+    def visible_on_mobile?(column)
+      table.mobile_columns.include?(column)
+    end
+
+    def grid_column_classes(column)
+      classes = ["op-border-box-grid--row-item"]
+      classes << column_css_class(column)
+      classes << "op-border-box-grid--wide-column" if table.wide_column?(column)
+      classes << "op-border-box-grid--no-mobile" unless visible_on_mobile?(column)
+
+      classes.compact.join(" ")
+    end
+
     def column_args(_column)
       {}
     end

@@ -106,7 +106,7 @@ module ::TwoFactorAuthentication
 
     def remembered_device(user)
       if session[:two_factor_authentication_device_id]
-        user.otp_devices.find(session[:two_factor_authentication_device_id])
+        user.otp_devices.find_by(id: session[:two_factor_authentication_device_id])
       end
     end
 

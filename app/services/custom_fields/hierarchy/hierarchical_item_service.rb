@@ -44,17 +44,18 @@ module CustomFields
           .bind { |validation| create_root_item(validation[:custom_field]) }
       end
 
-      # Insert a new node on the hierarchy tree.
+      # Insert a new node on the hierarchy tree at a desired position or at the end if no sort_order is passed.
       # @param parent [CustomField::Hierarchy::Item] the parent of the node
       # @param label [String] the node label/name that must be unique at the same tree level
       # @param short [String] an alias for the node
+      # @param sort_order [Integer] the position into which insert the item.
       # @return [Success(CustomField::Hierarchy::Item), Failure(Dry::Validation::Result), Failure(ActiveModel::Errors)]
-      def insert_item(parent:, label:, short: nil)
+      def insert_item(parent:, label:, short: nil, sort_order: nil)
         CustomFields::Hierarchy::InsertItemContract
           .new
           .call({ parent:, label:, short: }.compact)
           .to_monad
-          .bind { |validation| create_child_item(validation:) }
+          .bind { |validation| create_child_item(validation:, sort_order:) }
       end
 
       # Updates an item/node
@@ -97,16 +98,35 @@ module CustomFields
 
       # Reorder the item along its siblings.
       # @param item [CustomField::Hierarchy::Item] the parent of the node
-      # @param new_sort_order [Integer] the new parent of the node
-      # @return [Success(CustomField::Hierarchy::Item)]
+      # @param new_sort_order [Integer] the new position of the node
+      # @return [Success]
       def reorder_item(item:, new_sort_order:)
-        old_item = item.siblings.where(sort_order: new_sort_order).first
-        Success(old_item.prepend_sibling(item))
+        return Success() if item.siblings.empty?
+
+        new_sort_order = [0, new_sort_order.to_i].max
+
+        return Success() if item.sort_order == new_sort_order
+
+        update_item_order(item:, new_sort_order:)
+
+        Success()
       end
 
-      def soft_delete_item(item)
+      def soft_delete_item(item:)
         # Soft delete the item and children
         raise NotImplementedError
+      end
+
+      def hashed_subtree(item:, depth:)
+        if depth >= 0
+          Success(item.hash_tree(limit_depth: depth + 1))
+        else
+          Success(item.hash_tree)
+        end
+      end
+
+      def descendant_of?(item:, parent:)
+        item.descendant_of?(parent) ? Success() : Failure()
       end
 
       private
@@ -118,8 +138,11 @@ module CustomFields
         Success(item)
       end
 
-      def create_child_item(validation:)
-        item = validation[:parent].children.create(label: validation[:label], short: validation[:short])
+      def create_child_item(validation:, sort_order: nil)
+        attributes = validation.to_h
+        attributes[:sort_order] = sort_order - 1 if sort_order
+
+        item = validation[:parent].children.create(**attributes)
         return Failure(item.errors) if item.new_record?
 
         Success(item)
@@ -130,6 +153,16 @@ module CustomFields
           Success(item)
         else
           Failure(item.errors)
+        end
+      end
+
+      def update_item_order(item:, new_sort_order:)
+        target_item = item.siblings.find_by(sort_order: new_sort_order)
+        if target_item.present?
+          target_item.prepend_sibling(item)
+        else
+          target_item = item.siblings.last
+          target_item.append_sibling(item)
         end
       end
     end

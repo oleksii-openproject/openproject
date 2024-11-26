@@ -33,7 +33,7 @@ zh-CN:
         label_activity_show_only_changes: "仅显示更改"
         label_sort_asc: "时间升序"
         label_sort_desc: "时间降序"
-        label_type_to_comment: "在此输入评论"
+        label_type_to_comment: "添加评论。输入 @ 以通知他人。"
         label_submit_comment: "提交评论"
         changed_on: "更改于"
         created_on: "创建于"
@@ -79,7 +79,7 @@ zh-CN:
         text: "您确定要删除当前使用的企业版令牌吗？"
         title: "删除令牌"
       replace_token: "替换您当前的支持令牌"
-      order: "订购本地部署版的 Enterprise edition"
+      order: "订购本地部署的 Enterprise edition"
       paste: "粘贴您企业版的支持令牌"
       required_for_feature: "此功能仅限具激活的企业版支持令牌的订阅者使用。"
       enterprise_link: "如需了解详细信息，请单击此处。"
@@ -220,8 +220,12 @@ zh-CN:
       items:
         actions: "项目操作"
         blankslate:
-          title: "您的条目列表为空"
-          description: "首先，将条目添加到类型层次结构的自定义字段中。每个条目都可以用于在其下方创建一个层次结构。要导航并在层次结构中创建子条目，请点击已创建的条目。"
+          root:
+            title: "您的条目列表为空"
+            description: "首先，将条目添加到类型层次结构的自定义字段中。每个条目都可以用于在其下方创建一个层次结构。要在层次结构中创建子条目，请点击已创建的条目。"
+          item:
+            title: 该项目下面没有任何层级
+            description: 在此列表中添加条目，以便在另一个列表中创建子条目
         placeholder:
           label: "项目标签"
           short: "短名"
@@ -232,6 +236,8 @@ zh-CN:
           zero: 无子项目
           one: 1个子项目
           other: "%{count} 个子项目"
+    upsale:
+      custom_field_format_hierarchy: "工作包的自定义字段需要层级结构？"
     text_add_new_custom_field: >
       要向项目添加新的自定义字段，您需要先创建字段，然后才能将其添加到此项目中。
     is_enabled_globally: "已全局启用"
@@ -258,12 +264,26 @@ zh-CN:
     single: "或"
   dry_validation:
     errors:
+      int?: "必须为整数"
+      filled?: "必须填写"
+      greater_or_equal_zero: "必须大于或等于 0"
+      not_found: "未找到"
       rules:
+        item:
+          root_item: "不能为根项目"
+          not_persisted: "必须是已存在的项目"
         label:
-          filled?: "必须填写"
           not_unique: "在同一层级内必须是唯一的"
+        short:
+          not_unique: "在同一层级内必须是唯一的"
+        parent:
+          not_descendant: "必须是层次结构根的后代"
     rules:
+      depth: "深"
+      item: "条目"
       label: "标签"
+      short: "简称"
+      parent: "父级"
   global_search:
     placeholder: "在%{app_title}中搜索"
     overwritten_tabs:
@@ -997,6 +1017,20 @@ zh-CN:
           attributes:
             project_ids:
               blank: "请选择一个项目。"
+        project/life_cycle_step_definition:
+          attributes:
+            type:
+              must_be_a_stage_or_gate: "must be either Project::StageDefinition or Project::GateDefinition"
+        project/life_cycle_step:
+          attributes:
+            type:
+              must_be_a_stage_or_gate: "must be either Project::Stage or Project::Gate"
+              must_be_a_stage: "must be a Project::Stage"
+              must_be_a_gate: "must be a Project::Gate"
+        project/gate:
+          attributes:
+            base:
+              end_date_not_allowed: "Cannot assign `end_date` to a Project::Gate"
         query:
           attributes:
             project:
@@ -1356,6 +1390,9 @@ zh-CN:
   button_actions: "操作"
   button_add: "添加"
   button_add_comment: "添加评论"
+  button_add_item_above: "在上方添加条目"
+  button_add_item_below: "在下方添加条目"
+  button_add_sub_item: "添加子项目"
   button_add_member: 添加成员
   button_add_watcher: "添加关注者"
   button_annotate: "批注"
@@ -1761,6 +1798,23 @@ zh-CN:
     units:
       hours: 时
       days: 天
+  pdf_generator:
+    page_nr_footer: "第 %{page} 页，共%{total} 页"
+    dialog:
+      title: 生成 PDF
+      submit: 生成
+      header_right:
+        label: 页眉右侧
+        caption: 标题右侧显示的文本
+      footer_center:
+        label: 页脚中心
+        caption: 在页脚中心显示的文本
+      hyphenation:
+        label: 断字
+        caption: 在行之间打断单词，以改进文本解释和可读性。
+      paper_size:
+        label: 纸张大小
+        caption: 用于PDF的纸张大小。
   extraction:
     available:
       pdftotext: "Pdftotext 可用 (可选)"
@@ -2407,7 +2461,7 @@ zh-CN:
   label_revision_id: "修订版本 %{value}"
   label_revision_plural: "修订"
   label_roadmap: "路线图"
-  label_roadmap_edit: "编辑路线图%{name}"
+  label_roadmap_edit: "编辑路线图 %{name}"
   label_roadmap_due_in: "%{value} 到期"
   label_roadmap_no_work_packages: "该版本没有工作包。"
   label_roadmap_overdue: "%{value} 超时"
@@ -2778,9 +2832,9 @@ zh-CN:
   notice_locking_conflict: "信息已由至少一个其他用户同时更新。"
   notice_locking_conflict_additional_information: "更新来自 %{users}。"
   notice_locking_conflict_reload_page: "请重新加载该页面，查看所做的更改并重新应用您的更新。"
-  notice_locking_conflict_warning: "This page has been updated by someone else. To not lose your edits, copy them locally and reload to view the updated version."
-  notice_locking_conflict_danger: "Could not save your changes because of conflicting modifications. To not lose your edits, copy them locally and reload to view the updated version."
-  notice_locking_conflict_action_button: "Discard changes and reload"
+  notice_locking_conflict_warning: "本页面已由他人更新。为了不丢失您的编辑内容，请将其复制到本地并重新加载，以查看更新后的版本。"
+  notice_locking_conflict_danger: "无法保存您的修改，因为修改冲突。为避免丢失您的编辑内容，请将其复制到本地，并重新加载以查看更新版本。"
+  notice_locking_conflict_action_button: "放弃更改并重新加载"
   notice_member_added: 向项目添加 %{name}。
   notice_members_added: 添加了 %{number} 个用户到该项目。
   notice_member_removed: "已从项目删除 %{user}。"
@@ -3061,7 +3115,7 @@ zh-CN:
       managed: "在 OpenProject 中创建新的存储库"
     storage:
       not_available: "磁盘存储开销不可用于此存储库。"
-      update_timeout: "在 N 分钟内保留存储库最后所需的磁盘空间信息。由于计算存储库所需的磁盘空间可能增加系统开销，增加该值可以减少性能影响。"
+      update_timeout: "在 N 分钟内保留存储库最后所需磁盘空间的信息。由于计算存储库所需的磁盘空间可能增加系统开销，增加该值可以减少性能影响。"
       oauth_application_details: "关闭此窗口后，将无法再次访问客户端密钥值。请将这些值复制到 Nextcloud OpenProject 集成设置中："
       oauth_application_details_link_text: "转到设置页面"
       setup_documentation_details: "如果您在配置新文件存储方面需要帮助，请查看文档："
@@ -3222,7 +3276,7 @@ zh-CN:
   setting_session_ttl_hint: "当设置的值低于5时，其作用类似于禁用。"
   setting_session_ttl_enabled: "会话过期"
   setting_start_of_week: "一周起始日"
-  setting_sys_api_enabled: "启用存储库管理网页服务"
+  setting_sys_api_enabled: "启用版本库管理 web 服务"
   setting_sys_api_description: "存储库管理网页服务提供了集成的，用户授权的存储库访问。"
   setting_time_format: "时间"
   setting_total_percent_complete_mode: "计算 完成% 层次结构总数"
@@ -3545,7 +3599,7 @@ zh-CN:
   warning_user_limit_reached_admin: >
     添加额外的用户将超出当前限制。请<a href="%{upgrade_url}">升级您的计划</a>，以确保外部用户能够访问此实例。
   warning_user_limit_reached_instructions: >
-    您已达到用户限制（%{current}/%{max} 活跃用户）。请联系 sales@openproject.com 升级您的企业版计划以添加额外用户。
+    您达到了用户限制（%{current}/%{max}活跃用户）。 请联系sales@openproject.com以升级您的Enterprise edition计划并添加其他用户。
   warning_protocol_mismatch_html: >
 
   warning_bar:

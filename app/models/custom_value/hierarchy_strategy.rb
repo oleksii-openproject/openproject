@@ -28,11 +28,14 @@
 
 class CustomValue::HierarchyStrategy < CustomValue::ARObjectStrategy
   def validate_type_of_value
-    raise NotImplementedError
-  end
+    item = CustomField::Hierarchy::Item.find_by(id: value)
+    return :invalid if item.nil?
 
-  def typed_value
-    raise NotImplementedError
+    parent = custom_field.hierarchy_root
+
+    if persistence_service.descendant_of?(item:, parent:).failure?
+      :inclusion
+    end
   end
 
   private
@@ -42,11 +45,15 @@ class CustomValue::HierarchyStrategy < CustomValue::ARObjectStrategy
   end
 
   def ar_object(value)
-    option = CustomField::Hierarchy::Item.find_by(id: value.to_s)
-    if option.nil?
+    item = CustomField::Hierarchy::Item.find_by(id: value.to_s)
+    if item.nil?
       "#{value} #{I18n.t(:label_not_found)}"
     else
-      option.value
+      item.label
     end
+  end
+
+  def persistence_service
+    @persistence_service ||= CustomFields::Hierarchy::HierarchicalItemService.new
   end
 end

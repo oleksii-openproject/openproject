@@ -32,9 +32,6 @@ See COPYRIGHT and LICENSE files for more details.
 <section
   class="form--section"
   id="custom_field_form"
-  data-controller="admin--custom-fields"
-  data-application-target="dynamic"
-  data-admin--custom-fields-format-config-value="<%= OpenProject::CustomFieldFormatDependent.stimulus_config %>"
 >
   <div class="form--field -required" id="custom_field_name_attributes">
     <%= f.text_field :name,
@@ -61,7 +58,19 @@ See COPYRIGHT and LICENSE files for more details.
                    'admin--custom-fields-target': 'format'
                  }
     %>
+    <div class="form--field-extra-actions" <%= format_dependent.attributes(:enterpriseBanner) %>>
+      <%= angular_component_tag "opce-enterprise-banner",
+                                inputs: {
+                                  collapsible: true,
+                                  topMargin: true,
+                                  opReferrer: "custom-field-hierarchy",
+                                  textMessage: I18n.t("custom_fields.upsale.custom_field_format_hierarchy"),
+                                  moreInfoLink: OpenProject::Static::Links.links[:enterprise_docs][:boards][:href]
+                                }
+      %>
+    </div>
   </div>
+
   <div class="form--grouping" id="custom_field_length" <%= format_dependent.attributes(:length) %>>
     <div class="form--grouping-label">
       <%= t(:label_min_max_length) %> <br>

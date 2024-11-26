@@ -37,4 +37,4 @@ See COPYRIGHT and LICENSE files for more details.
 <% content_controller 'backlogs',
                       dynamic: true %>
 
-<%= render template: 'layouts/base', locals: local_assigns %>
+<%= render template: 'layouts/base', locals: local_assigns.merge(turbo_opt_out: true) %>

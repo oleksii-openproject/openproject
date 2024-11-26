@@ -1267,7 +1267,8 @@ RSpec.describe API::V3::WorkPackages::WorkPackageRepresenter do
         end
       end
 
-      describe "fileLinks" do
+      describe "fileLinks",
+               skip: "test setup broken - remove embedding with https://community.openproject.org/wp/59468" do
         let(:storage) { build_stubbed(:nextcloud_storage) }
         let(:file_link) { build_stubbed(:file_link, storage:, container: work_package) }
 

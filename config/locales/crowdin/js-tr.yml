@@ -105,6 +105,7 @@ tr:
     button_update: "Güncelleştirme"
     button_export-pdf: "PDF indir"
     button_export-atom: "Atom İndir"
+    button_generate_pdf: "Generate PDF"
     button_create: "Oluştur"
     card:
       add_new: "Yeni kart ekleyin"
@@ -574,7 +575,7 @@ tr:
         members: "Projenize katılmak için yeni <b>üyeler</b> davet edin."
         quick_add_button: "<b>Yeni bir proje oluşturmak</b> veya <b>iş arkadaşlarınızı davet etmek</b> için başlık bölümündeki artı (+) simgesini tıklayın."
         sidebar_arrow: "Projenin <b>ana menüsüne</b> dönmek için sol üst köşedeki dönüş okunu kullanın."
-        welcome: "En <b>önemli özellikleri</b> öğrenmek için üç dakikalık bir tanıtım gezintisine çıkın. <br> Tüm adımları tamamlamanızı öneririz. Turu istediğiniz zaman yeniden başlatabilirsiniz."
+        welcome: "Take a three-minute introduction tour to learn the most <b>important features</b>. <br> We recommend completing the steps until the end. You can restart the tour any time."
         wiki: "<b>wiki</b> içinde belgeleyebilir ve ekibinizle birlikte bilgi paylaşabilirsiniz."
         backlogs:
           overview: "İşinizi <b>birikimler</b> görünümünde yönetin."
@@ -728,7 +729,7 @@ tr:
       settings:
         daily:
           add_time: "Süre ekle"
-          enable: "Günlük email hatırlatıcılarını etkinleştir"
+          enable: "Günlük e-posta hatırlatıcılarını etkinleştir"
           explanation: "Bu hatırlatıcıları yalnızca okunmamış bildirimler için ve yalnızca sizin belirlediğiniz saatlerde alacaksınız. %{no_time_zone}"
           no_time_zone: "Hesabınız için bir saat dilimi yapılandırana kadar, saatler UTC olarak yorumlanacaktır."
           time_label: "Zaman %{counter}:"
@@ -750,9 +751,9 @@ tr:
           wiki_page_updated: "Viki sayfası güncellendi"
           membership_added: "Üyelik eklendi"
           membership_updated: "Üyelik güncellendi"
-        title: "Email hatırlatıcıları"
+        title: "E-posta hatırlatıcıları"
         pause:
-          label: "Email hatırlatıcılarını geçici olarak durdur"
+          label: "E-posta hatırlatıcılarını geçici olarak durdur"
           first_day: "İlk gün"
           last_day: "Son gün"
     text_are_you_sure: "Emin misiniz?"

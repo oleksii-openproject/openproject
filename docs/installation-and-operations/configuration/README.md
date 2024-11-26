@@ -173,6 +173,18 @@ OPENPROJECT_SEED_ADMIN_USER_NAME="OpenProject Admin" # Name to assign to that us
 OPENPROJECT_SEED_ADMIN_USER_MAIL="admin@example.net" # Email attribute to assign to that user. Note that in packaged installations, a wizard step will assign this variable as well.
 ```
 
+Optionally, you can also lock the admin user that gets created right away. This is useful when you have an LDAP or SSO integration set up and you want to prevent the admin user from logging in.
+
+```shell 
+
+> [!WARNING]
+> With the admin user seeding disabled, you need to have an LDAP or SSO integration set up through environment variables.
+> Otherwise, you will not be able to retain access to the system.
+
+```shell
+OPENPROJECT_SEED_ADMIN_USER_LOCKED="true"
+```
+
 ### Seeding LDAP connections
 
 OpenProject allows you to create and maintain an LDAP connection with optional synchronized group filters. This is relevant for e.g., automated deployments, where you want to trigger the synchronization right at the start.

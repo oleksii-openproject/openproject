@@ -33,7 +33,7 @@ pt-BR:
         label_activity_show_only_changes: "Exibir apenas alterações"
         label_sort_asc: "Mais recentes embaixo"
         label_sort_desc: "Mais recentes em cima"
-        label_type_to_comment: "Digite aqui para comentar"
+        label_type_to_comment: "Add a comment. Type @ to notify people."
         label_submit_comment: "Enviar comentário"
         changed_on: "alterado em"
         created_on: "criou em"
@@ -217,13 +217,17 @@ pt-BR:
     admin:
       custom_field_projects:
         is_for_all_blank_slate:
-          heading: Em todos os projetos
-          description: Este campo personalizado é habilitado em todos os projetos, uma vez que a opção "para todos os projetos" está marcada. Ele não pode ser desativado para projetos individuais.
+          heading: Para todos os projetos
+          description: Este campo personalizado está ativado em todos os projetos, pois a opção “Para todos os projetos” está selecionada. Não é possível desativá-lo para projetos individuais.
       items:
         actions: "Ações do item"
         blankslate:
-          title: "Sua lista de itens está vazia"
-          description: "Comece adicionando itens ao campo personalizado do tipo hierarquia. Cada item pode ser utilizado para construir uma hierarquia abaixo dele. Para navegar e criar subitens dentro dessa hierarquia, clique no item que você criou."
+          root:
+            title: "Sua lista de itens está vazia"
+            description: "Comece adicionando itens ao campo personalizado do tipo hierarquia. Cada item pode ser usado para criar uma hierarquia abaixo dele. Para navegar e criar subitens, clique no item criado."
+          item:
+            title: Este item não possui nenhum nível de hierarquia abaixo
+            description: Adicione itens a esta lista para criar subitens dentro de outro item
         placeholder:
           label: "Rótulo do item"
           short: "Nome abreviado"
@@ -234,6 +238,8 @@ pt-BR:
           zero: sem subitens
           one: 1 subitem
           other: "%{count} subitens"
+    upsale:
+      custom_field_format_hierarchy: "Need a hierarchy in your custom fields for work packages?"
     text_add_new_custom_field: >
       Para adicionar campos personalizados a um projeto é necessário criá-los primeiro para depois adicioná-los a este projeto.
     is_enabled_globally: "Está habilitado globalmente"
@@ -260,12 +266,26 @@ pt-BR:
     single: "ou"
   dry_validation:
     errors:
+      int?: "deve ser um número inteiro."
+      filled?: "deve ser preenchido."
+      greater_or_equal_zero: "deve ser maior ou igual a 0."
+      not_found: "não encontrado."
       rules:
+        item:
+          root_item: "não pode ser um item raiz."
+          not_persisted: "deve ser um item já existente."
         label:
-          filled?: "deve ser preenchido"
-          not_unique: "deve ser único dentro do mesmo nível hierárquico"
+          not_unique: "deve ser único dentro do mesmo nível hierárquico."
+        short:
+          not_unique: "deve ser único dentro do mesmo nível hierárquico."
+        parent:
+          not_descendant: "deve ser um descendente da raiz da hierarquia."
     rules:
+      depth: "Profundidade"
+      item: "Item"
       label: "Rótulo"
+      short: "Nome abreviado"
+      parent: "Pai"
   global_search:
     placeholder: "Buscar em %{app_title}"
     overwritten_tabs:
@@ -384,9 +404,9 @@ pt-BR:
     menu:
       all: "Todos"
       invited: "Convidado"
-      locked: "Trancado"
+      locked: "Bloqueado"
       project_roles: "Funções do projeto"
-      wp_shares: "Compartilhamento de pacote de trabalho"
+      wp_shares: "Compartilhamentos do pacote de trabalho"
       groups: "Grupos"
     delete_member_dialog:
       title: "Remover membro"
@@ -738,9 +758,9 @@ pt-BR:
         status_explanation: "Descrição do status do projeto"
         status_codes:
           not_started: "Não iniciado"
-          on_track: "Sob controle"
+          on_track: "No cronograma"
           at_risk: "Em risco"
-          off_track: "Fora de controle"
+          off_track: "Fora do cronograma"
           finished: "Finalizado"
           discontinued: "Descontinuado"
         templated: "Projeto modelo"
@@ -867,7 +887,7 @@ pt-BR:
         error_enterprise_only: "%{action} só está disponível na edição OpenProject Enterprise"
         error_unauthorized: "não pode ser acessado."
         error_readonly: "tentou escrever, mas não é gravável."
-        error_conflict: "Informação foi atualizada por pelo menos um outro usuário."
+        error_conflict: "As informações foram atualizadas por pelo menos um outro usuário nesse meio tempo."
         email: "não é um endereço de e-mail válido."
         empty: "não pode ser vazio."
         even: "deve ser par."
@@ -937,7 +957,7 @@ pt-BR:
         custom_fields_project:
           attributes:
             project_ids:
-              blank: "Por favor, selecione um projeto."
+              blank: "Selecione um projeto."
         custom_actions:
           only_one_allowed: "(%{name}) apenas um valor é permitido."
           empty: "(%{name}) valor não pode ser vazio."
@@ -1007,6 +1027,20 @@ pt-BR:
           attributes:
             project_ids:
               blank: "Selecione um projeto."
+        project/life_cycle_step_definition:
+          attributes:
+            type:
+              must_be_a_stage_or_gate: "must be either Project::StageDefinition or Project::GateDefinition"
+        project/life_cycle_step:
+          attributes:
+            type:
+              must_be_a_stage_or_gate: "must be either Project::Stage or Project::Gate"
+              must_be_a_stage: "must be a Project::Stage"
+              must_be_a_gate: "must be a Project::Gate"
+        project/gate:
+          attributes:
+            base:
+              end_date_not_allowed: "Cannot assign `end_date` to a Project::Gate"
         query:
           attributes:
             project:
@@ -1275,13 +1309,13 @@ pt-BR:
           one: "<i>%{count} hora</i>"
           other: "<i>%{count} horas</i>"
         updated: "alterado de %{old_value} para %{value}"
-        logged_for: "Registrado por"
+        logged_for: "Registrado em"
     filter:
       changeset: "Cj de alterações"
       message: "Fóruns"
       news: "Notícias"
       project_attribute: "Atributos do projeto"
-      subproject: "Incur subprojetos"
+      subproject: "Incluir subprojetos"
       time_entry: "Tempo gasto"
       wiki_edit: "Wiki"
       work_package: "Pacotes de trabalho"
@@ -1376,6 +1410,9 @@ pt-BR:
   button_actions: "Ações"
   button_add: "Adicionar"
   button_add_comment: "Adicionar comentário"
+  button_add_item_above: "Adicionar item acima"
+  button_add_item_below: "Adicionar item abaixo"
+  button_add_sub_item: "Adicionar subitem"
   button_add_member: Adicionar membro
   button_add_watcher: "Adicionar observador"
   button_annotate: "Anotar"
@@ -1395,7 +1432,7 @@ pt-BR:
   button_continue: "Continuar"
   button_copy: "Copiar"
   button_copy_to_clipboard: "Copiar para a área de transferência"
-  button_copy_link_to_clipboard: "Link copiado da área de transferência"
+  button_copy_link_to_clipboard: "Copiar link para a área de transferência"
   button_copy_and_follow: "Copiar e seguir"
   button_create: "Criar"
   button_create_and_continue: "Criar e continuar"
@@ -1784,7 +1821,7 @@ pt-BR:
       atom: "Atom"
       csv: "CSV"
       pdf: "PDF"
-      pdf_overview_table: "Tabela PDF"
+      pdf_overview_table: "Tabela em PDF"
       pdf_report_with_images: "Relatório em PDF com imagens"
       pdf_report: "Relatório em PDF"
       pdf_gantt: "Gantt em PDF"
@@ -1799,6 +1836,23 @@ pt-BR:
     units:
       hours: h
       days: d
+  pdf_generator:
+    page_nr_footer: "Page %{page} of %{total}"
+    dialog:
+      title: Generate PDF
+      submit: Generate
+      header_right:
+        label: Header right
+        caption: Text to be displayed in the right of the header
+      footer_center:
+        label: Footer center
+        caption: Text to be displayed in the center of the footer
+      hyphenation:
+        label: Hyphenation
+        caption: Break words between lines to improve text justification and readability.
+      paper_size:
+        label: Paper size
+        caption: The size of the paper to use for the PDF.
   extraction:
     available:
       pdftotext: "Pdftotext disponível (opcional)"
@@ -1846,7 +1900,7 @@ pt-BR:
   journals:
     changes_retracted: "As mudanças foram retraídas."
     caused_changes:
-      dates_changed: "Data modificada"
+      dates_changed: "Datas alteradas"
       default_attribute_written: "Atributos de somente leitura escritos"
       progress_mode_changed_to_status_based: "Cálculo de progresso atualizado"
       status_changed: "Status '%{status_name}'"
@@ -1867,8 +1921,8 @@ pt-BR:
           working: "%{day} agora é um dia útil"
           non_working: "%{day} agora é um dia não útil"
         dates:
-          working: "%{date} agora está funcionando"
-          non_working: "%{date} não está funcionando agora"
+          working: "%{date} agora é um dia útil"
+          non_working: "%{date} agora é um dia não útil"
       progress_mode_changed_to_status_based: Modo de cálculo de progresso definido como com base no status
       status_excluded_from_totals_set_to_false_message: agora incluído nos totais da hierarquia
       status_excluded_from_totals_set_to_true_message: agora excluído dos totais da hierarquia
@@ -2004,7 +2058,7 @@ pt-BR:
   label_ical_access_key_not_present: "Token(s) de iCalendar não presente(s)."
   label_ical_access_key_generation_hint: "Gerado automaticamente ao assinar um calendário."
   label_ical_access_key_latest: "último"
-  label_ical_access_key_revoke: "Revogar"
+  label_ical_access_key_revoke: "Anular"
   label_add_column: "Adicionar coluna"
   label_applied_status: "Situação aplicada"
   label_archive_project: "Arquivar projeto"
@@ -2675,9 +2729,9 @@ pt-BR:
     sharing:
       work_packages:
         allowed_actions: "Você pode %{allowed_actions} este pacote de trabalho. Isso pode mudar dependendo da sua função e permissões do projeto."
-        create_account: "Para acessar este pacote de trabalho, você terá que criar e ativar uma conta %{instance}. "
+        create_account: "Para acessar este pacote de trabalho, você terá que criar e ativar uma conta em %{instance}."
         open_work_package: "Abrir pacote de trabalho"
-        subject: "O Pacote de trabalho #%{id} foi compartilhado com você"
+        subject: "O Pacote de trabalho nº %{id} foi compartilhado com você"
         enterprise_text: "Compartilhe pacotes de trabalho com usuários que não são membros do projeto."
         summary:
           user: "%{user} compartilhou um pacote de trabalho com você com privilégios de %{role_rights}"
@@ -2739,8 +2793,8 @@ pt-BR:
   mail_body_register_ending: "Fique ligado! Atenciosamente,"
   mail_body_reminder: "%{count} pacote(s) de trabalho foram atribuídos a você para os próximos %{days} dias:"
   mail_body_group_reminder: '%{count} pacote(s) de trabalho que estão atribuídos ao grupo "%{group}" expiram nos próximos %{days} dias:'
-  mail_body_wiki_page_added: "A página wiki '%{id}' foi adicionada por %{author}."
-  mail_body_wiki_page_updated: "A página wiki '%{id}' foi atualizada por %{author}."
+  mail_body_wiki_page_added: "A página wiki \"%{id}\" foi adicionada por %{author}."
+  mail_body_wiki_page_updated: "A página wiki \"%{id}\" foi atualizada por %{author}."
   mail_subject_account_activation_request: "solicitação de ativação de conta %{value}"
   mail_subject_backup_ready: "Seu backup está pronto"
   mail_subject_backup_token_reset: "Redefinir token de backup"
@@ -2818,9 +2872,9 @@ pt-BR:
   notice_locking_conflict: "Informação foi atualizada por pelo menos um outro usuário."
   notice_locking_conflict_additional_information: "A(s) atualização(ões) chegaram de %{users}."
   notice_locking_conflict_reload_page: "Por favor, recarregue a página, reveja as alterações e aplique novamente suas atualizações."
-  notice_locking_conflict_warning: "This page has been updated by someone else. To not lose your edits, copy them locally and reload to view the updated version."
-  notice_locking_conflict_danger: "Could not save your changes because of conflicting modifications. To not lose your edits, copy them locally and reload to view the updated version."
-  notice_locking_conflict_action_button: "Discard changes and reload"
+  notice_locking_conflict_warning: "Esta página foi atualizada por outra pessoa. Para não perder suas alterações, copie-as localmente e recarregue a página para ver a versão mais recente."
+  notice_locking_conflict_danger: "Não foi possível salvar suas alterações devido a conflitos. Para não perder seu trabalho, copie-o localmente e recarregue a página para ver a versão mais recente."
+  notice_locking_conflict_action_button: "Descartar alterações e recarregar"
   notice_member_added: '%{name} adicionado ao projeto.'
   notice_members_added: Adicionados %{number} usuários ao projeto.
   notice_member_removed: "%{user} removido do projeto."
@@ -2956,7 +3010,7 @@ pt-BR:
   permission_view_news: "Visualizar notícias"
   permission_view_members: "Visualizar membros"
   permission_view_reportings: "Ver relatórios"
-  permission_view_shared_work_packages: "Ver pacotes de trabalho compartilhado"
+  permission_view_shared_work_packages: "Ver compartilhamentos de pacotes de trabalho"
   permission_view_time_entries: "Ver tempo gasto"
   permission_view_timelines: "Ver cronogramas"
   permission_view_user_email: "Visualizar endereços de e-mail dos usuários"

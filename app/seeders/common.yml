@@ -70,6 +70,23 @@ colors:
     t_name: Black
     hexcode: "#000000"
 
+life_cycle_colors:
+  - reference: :default_color_pm2_orange
+    t_name: PM2 Orange
+    hexcode: "#F7983A"
+  - reference: :default_color_pm2_purple
+    t_name: PM2 Purple
+    hexcode: "#682D91"
+  - reference: :default_color_pm2_red
+    t_name: PM2 Red
+    hexcode: "#F05823"
+  - reference: :default_color_pm2_magenta
+    t_name: PM2 Magenta
+    hexcode: "#EC038A"
+  - reference: :default_color_pm2_green_yellow
+    t_name: PM2 Green Yellow
+    hexcode: "#B1D13A"
+
 document_categories:
   - t_name: Documentation
     position: 1

@@ -68,7 +68,7 @@ module CustomFieldsHelper
     field_name = "#{name}[custom_field_values][#{custom_field.id}]"
     field_id = "#{name}_custom_field_values_#{custom_field.id}"
 
-    field_format = OpenProject::CustomFieldFormat.find_by_name(custom_field.field_format)
+    field_format = OpenProject::CustomFieldFormat.find_by(name: custom_field.field_format)
 
     tag = case field_format.try(:edit_as)
           when "date"
@@ -146,7 +146,7 @@ module CustomFieldsHelper
   def custom_field_tag_for_bulk_edit(name, custom_field, project = nil) # rubocop:disable Metrics/AbcSize
     field_name = "#{name}[custom_field_values][#{custom_field.id}]"
     field_id = "#{name}_custom_field_values_#{custom_field.id}"
-    field_format = OpenProject::CustomFieldFormat.find_by_name(custom_field.field_format)
+    field_format = OpenProject::CustomFieldFormat.find_by(name: custom_field.field_format)
 
     case field_format.try(:edit_as)
     when "date"
@@ -186,10 +186,7 @@ module CustomFieldsHelper
 
   # Return a string used to display a custom value
   def format_value(value, custom_field)
-    custom_value = CustomValue.new(custom_field:,
-                                   value:)
-
-    custom_value.formatted_value
+    CustomValue.new(custom_field:, value:).formatted_value
   end
 
   # Return an array of custom field formats which can be used in select_tag
@@ -198,21 +195,24 @@ module CustomFieldsHelper
       format.name == "hierarchy" && !OpenProject::FeatureDecisions.custom_field_of_type_hierarchy_active?
     end
 
-    OpenProject::CustomFieldFormat
-      .all_for_field(custom_field)
-      .sort_by(&:order)
-      .reject { |format| format.label.nil? }
-      .reject(&hierarchy_if_deactivated)
-      .map do |custom_field_format|
-        [label_for_custom_field_format(custom_field_format.name), custom_field_format.name]
-      end
+    OpenProject::CustomFieldFormat.all_for_field(custom_field)
+                                  .sort_by(&:order)
+                                  .reject { |format| format.label.nil? }
+                                  .reject(&hierarchy_if_deactivated)
+                                  .map do |custom_field_format|
+      [label_for_custom_field_format(custom_field_format.name), custom_field_format.name]
+    end
   end
 
   def label_for_custom_field_format(format_string)
-    format = OpenProject::CustomFieldFormat.find_by_name(format_string)
+    format = OpenProject::CustomFieldFormat.find_by(name: format_string)
+    return "" if format.nil?
 
-    if format
-      format.label.is_a?(Proc) ? format.label.call : I18n.t(format.label)
-    end
+    label = format.label.is_a?(Proc) ? format.label.call : I18n.t(format.label)
+
+    show_enterprise_text = format_string == "hierarchy" && !EnterpriseToken.allows_to?(:custom_field_hierarchies)
+    suffix = show_enterprise_text ? " (#{I18n.t(:label_enterprise_addon)})" : ""
+
+    "#{label}#{suffix}"
   end
 end

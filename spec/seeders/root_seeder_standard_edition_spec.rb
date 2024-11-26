@@ -63,6 +63,8 @@ RSpec.describe RootSeeder,
       expect(VersionSetting.count).to eq 4
       expect(Boards::Grid.count).to eq 5
       expect(Boards::Grid.count { |grid| grid.options.has_key?(:filters) }).to eq 1
+      expect(Project::StageDefinition.count).to eq 4
+      expect(Project::GateDefinition.count).to eq 3
     end
 
     it "links work packages to their version" do
@@ -124,7 +126,7 @@ RSpec.describe RootSeeder,
       )
     end
 
-    include_examples "it creates records", model: Color, expected_count: 144
+    include_examples "it creates records", model: Color, expected_count: 149
     include_examples "it creates records", model: DocumentCategory, expected_count: 3
     include_examples "it creates records", model: GlobalRole, expected_count: 2
     include_examples "it creates records", model: WorkPackageRole, expected_count: 3
@@ -171,6 +173,8 @@ RSpec.describe RootSeeder,
         expect(Version.count).to eq 4
         expect(VersionSetting.count).to eq 4
         expect(Boards::Grid.count).to eq 5
+        expect(Project::StageDefinition.count).to eq 4
+        expect(Project::GateDefinition.count).to eq 3
       end
     end
   end
@@ -281,5 +285,28 @@ RSpec.describe RootSeeder,
     end
 
     include_examples "no email deliveries"
+  end
+
+  context "when admin user creation is locked with OPENPROJECT_SEED_ADMIN_USER_LOCKED=true",
+          :settings_reset do
+    shared_let(:root_seeder) { described_class.new }
+
+    before_all do
+      with_env("OPENPROJECT_SEED_ADMIN_USER_LOCKED" => "true") do
+        with_edition("standard") do
+          reset(:seed_admin_user_locked)
+          root_seeder.seed_data!
+        end
+      end
+    ensure
+      reset(:seed_admin_user_locked)
+      RequestStore.clear! # resets `User.current` cached result
+    end
+
+    it "seeds without any errors, but locks the admin user", :aggregate_failures do
+      expect(Project.count).to eq 2
+      expect(WorkPackage.count).to eq 36
+      expect(root_seeder.admin_user).to be_locked
+    end
   end
 end

@@ -27,144 +27,117 @@
 //++
 
 import {
-  ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit,
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  Input,
+  OnInit,
+  ViewChild,
 } from '@angular/core';
-import { I18nService } from 'core-app/core/i18n/i18n.service';
 import { WorkPackageResource } from 'core-app/features/hal/resources/work-package-resource';
-import { Observable, zip } from 'rxjs';
-import { take, takeUntil } from 'rxjs/operators';
+import {
+  debounceTime,
+  filter,
+} from 'rxjs/operators';
 import { UntilDestroyedMixin } from 'core-app/shared/helpers/angular/until-destroyed.mixin';
-import { componentDestroyed } from '@w11k/ngx-componentdestroyed';
 import { ApiV3Service } from 'core-app/core/apiv3/api-v3.service';
-import { RelationResource } from 'core-app/features/hal/resources/relation-resource';
-import { RelationsStateValue, WorkPackageRelationsService } from './wp-relations.service';
-import { RelatedWorkPackagesGroup } from './wp-relations.interfaces';
+import { WorkPackageRelationsService } from './wp-relations.service';
+import { PathHelperService } from 'core-app/core/path-helper/path-helper.service';
+import { TurboRequestsService } from 'core-app/core/turbo/turbo-requests.service';
+import { renderStreamMessage } from '@hotwired/turbo';
+import {
+  HalEventsService,
+  RelatedWorkPackageEvent,
+} from 'core-app/features/hal/services/hal-events.service';
 
 @Component({
   selector: 'wp-relations',
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './wp-relations.template.html',
 })
-export class WorkPackageRelationsComponent extends UntilDestroyedMixin implements OnInit {
+export class WorkPackageRelationsComponent extends UntilDestroyedMixin implements OnInit, AfterViewInit {
   @Input() public workPackage:WorkPackageResource;
 
-  public relationGroups:RelatedWorkPackagesGroup = {};
+  @ViewChild('frameElement') readonly relationTurboFrame:ElementRef<HTMLIFrameElement>;
 
-  public relationGroupKeys:string[] = [];
+  turboFrameSrc:string;
 
-  public relationsPresent = false;
-
-  public canAddRelation:boolean;
-
-  // By default, group by relation type
-  public groupByWorkPackageType = false;
-
-  public text = {
-    relations_header: this.I18n.t('js.work_packages.tabs.relations'),
-  };
-
-  public currentRelations:WorkPackageResource[] = [];
-
-  constructor(private I18n:I18nService,
+  constructor(
     private wpRelations:WorkPackageRelationsService,
-    private cdRef:ChangeDetectorRef,
-    private apiV3Service:ApiV3Service) {
+    private apiV3Service:ApiV3Service,
+    private halEvents:HalEventsService,
+    private PathHelper:PathHelperService,
+    private turboRequests:TurboRequestsService,
+) {
     super();
   }
 
   ngOnInit() {
-    this.canAddRelation = !!this.workPackage.addRelation;
+    this.turboFrameSrc = `${this.PathHelper.staticBase}/work_packages/${this.workPackage.id}/relations_tab`;
+  }
 
-    this.wpRelations
-      .state(this.workPackage.id!)
-      .values$()
-      .pipe(
-        takeUntil(componentDestroyed(this)),
-      )
-      .subscribe((relations:RelationsStateValue) => {
-        this.loadedRelations(relations);
-      });
-
-    this.wpRelations.require(this.workPackage.id!);
-
-    // Listen for changes to this WP.
+  ngAfterViewInit() {
+    // Listen to any changes to the relations and update the frame
     this
-      .apiV3Service
-      .work_packages
-      .id(this.workPackage)
-      .requireAndStream()
+      .halEvents
+      .events$
       .pipe(
-        takeUntil(componentDestroyed(this)),
+        filter((e:RelatedWorkPackageEvent) => {
+          return e.eventType === 'association' && e.id.toString() === this.workPackage.id?.toString();
+        }),
+        debounceTime(500),
+        this.untilDestroyed(),
       )
-      .subscribe((wp:WorkPackageResource) => {
-        this.workPackage = wp;
+      .subscribe(() => {
+        this.updateRelationsTab();
       });
-  }
 
-  private getRelatedWorkPackages(workPackageIds:string[]):Observable<WorkPackageResource[]> {
-    const observablesToGetZipped:Observable<WorkPackageResource>[] = workPackageIds.map((wpId) => this
-      .apiV3Service
-      .work_packages
-      .id(wpId)
-      .get());
+    /*
+    We globally listen for turbo:submit-end events to know when a form submission ends.
+    If the form action URL contains 'relation' or 'child', we know it is a relation or child creation/update.
+    In this case, we reload the relations state and push an updated event to the Hal resource
+    and the wpRelations service.
 
-    return zip(...observablesToGetZipped);
-  }
+    The reason for this workaround is that the form submissions occur in top layer
+    as they originate from dialog elements or turbo confirm elements. Because of this, we
+    cannot listen to the submit end event on the relationTurboFrame element and have
+    to rely on the form action URL.
+    */
+    document.addEventListener('turbo:submit-end', (event:CustomEvent) => {
+      const form = event.target as HTMLFormElement;
+      const updateWorkPackage = !!form.dataset?.updateWorkPackage;
 
-  protected getRelatedWorkPackageId(relation:RelationResource):string {
-    const involved = relation.ids;
-    return (relation.to.href === this.workPackage.href) ? involved.from : involved.to;
-  }
+      if (updateWorkPackage) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        if (event.detail && event.detail.success) {
+          // Update the work package
+          void this.apiV3Service
+            .work_packages
+            .id(this.workPackage.id!)
+            .refresh();
+          this.halEvents.push(this.workPackage, { eventType: 'updated' });
 
-  public toggleGroupBy() {
-    this.groupByWorkPackageType = !this.groupByWorkPackageType;
-    this.buildRelationGroups();
-  }
+          // Refetch relations
+          void this.wpRelations.require(this.workPackage.id!, true);
 
-  protected buildRelationGroups() {
-    if (_.isNil(this.currentRelations)) {
-      return;
-    }
-
-    this.relationGroups = <RelatedWorkPackagesGroup>_.groupBy(this.currentRelations,
-      (wp:WorkPackageResource) => {
-        if (this.groupByWorkPackageType) {
-          return wp.type.name;
+          this.updateCounter();
         }
-        const normalizedType = (wp.relatedBy as RelationResource).normalizedType(this.workPackage);
-        return this.I18n.t(`js.relation_labels.${normalizedType}`);
-      });
-    this.relationGroupKeys = _.keys(this.relationGroups);
-    this.relationsPresent = _.size(this.relationGroups) > 0;
-    this.cdRef.detectChanges();
+      }
+    });
   }
 
-  protected loadedRelations(stateValues:RelationsStateValue):void {
-    const relatedWpIds:string[] = [];
-    const relations:{ [wpId:string]:any } = [];
+  public updateCounter() {
+    const url = this.PathHelper.workPackageUpdateCounterPath(this.workPackage.id!, 'relations');
+    void this.turboRequests.request(url);
+  }
 
-    if (_.size(stateValues) === 0) {
-      this.currentRelations = [];
-      return this.buildRelationGroups();
-    }
-
-    _.each(stateValues, (relation:RelationResource) => {
-      const relatedWpId = this.getRelatedWorkPackageId(relation);
-      relatedWpIds.push(relatedWpId);
-      relations[relatedWpId] = relation;
-    });
-
-    this.getRelatedWorkPackages(relatedWpIds)
-      .pipe(
-        take(1),
-      )
-      .subscribe((relatedWorkPackages:WorkPackageResource[]) => {
-        this.currentRelations = relatedWorkPackages.map((wp:WorkPackageResource) => {
-          wp.relatedBy = relations[wp.id!];
-          return wp;
-        });
-
-        this.buildRelationGroups();
+  private updateRelationsTab() {
+    void this.turboRequests.requestStream(this.turboFrameSrc)
+      .then((result) => {
+        renderStreamMessage(result.html);
       });
+
+    this.updateCounter();
   }
 }

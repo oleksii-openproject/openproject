@@ -152,7 +152,7 @@ module OpenIDConnect
           render turbo_stream: turbo_streams
         end
         format.html do
-          render action: action_to_render
+          render action: action_to_render, status: :unprocessable_entity
         end
       end
     end

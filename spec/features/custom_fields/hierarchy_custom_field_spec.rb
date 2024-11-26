@@ -31,14 +31,18 @@
 require "spec_helper"
 
 RSpec.describe "custom fields of type hierarchy", :js, :with_cuprite do
-  let(:user) { create(:admin) }
+  let(:admin) { create(:admin) }
   let(:custom_field_index_page) { Pages::CustomFields::IndexPage.new }
   let(:new_custom_field_page) { Pages::CustomFields::NewPage.new }
   let(:hierarchy_page) { Pages::CustomFields::HierarchyPage.new }
 
+  before do
+    allow(EnterpriseToken).to receive(:allows_to?).and_return(true)
+  end
+
   it "lets you create, update and delete a custom field of type hierarchy",
      with_flag: { custom_field_of_type_hierarchy: true } do
-    login_as user
+    login_as admin
 
     # region CustomField creation
 
@@ -85,7 +89,7 @@ RSpec.describe "custom fields of type hierarchy", :js, :with_cuprite do
     hierarchy_page.expect_current_path
     expect(page).to have_test_selector("op-custom-fields--hierarchy-items-blankslate")
 
-    click_on "Item"
+    within("sub-header") { click_on "Item" }
     expect(page).not_to have_test_selector("op-custom-fields--hierarchy-items-blankslate")
     fill_in "Label", with: "Stormtroopers"
     fill_in "Short", with: "ST"

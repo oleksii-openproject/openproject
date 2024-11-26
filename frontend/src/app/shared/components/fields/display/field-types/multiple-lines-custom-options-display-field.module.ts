@@ -44,6 +44,10 @@ export class MultipleLinesCustomOptionsDisplayField extends ResourcesDisplayFiel
     }
   }
 
+  public get valueString():string {
+    return this.stringValue.join(', ');
+  }
+
   protected renderValues(values:string[], element:HTMLElement) {
     values.forEach((value) => {
       const div = document.createElement('div');

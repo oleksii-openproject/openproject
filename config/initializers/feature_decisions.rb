@@ -42,5 +42,19 @@ require_relative "../../lib_static/open_project/feature_decisions"
 OpenProject::FeatureDecisions.add :built_in_oauth_applications,
                                   description: "Allows the display and use of built-in OAuth applications."
 
+OpenProject::FeatureDecisions.add :generate_pdf_from_work_package,
+                                  description: "Allows to generate a PDF document from a work package description. " \
+                                               "See #45896 for details."
+
 OpenProject::FeatureDecisions.add :custom_field_of_type_hierarchy,
                                   description: "Allows the use of the custom field type 'Hierarchy'."
+
+# TODO: Remove once the feature flag primerized_work_package_activities is removed altogether
+OpenProject::FeatureDecisions.define_singleton_method(:primerized_work_package_activities_active?) do
+  Rails.env.production? ||
+    (Setting.exists?("feature_primerized_work_package_activities_active") &&
+      Setting.send(:feature_primerized_work_package_activities_active?))
+end
+
+OpenProject::FeatureDecisions.add :stages_and_gates,
+                                  description: "Enables the under construction feature of stages and gates."

@@ -1,8 +1,11 @@
 require_relative "../spec_helper"
 
-RSpec.describe "My Account 2FA configuration", :js, with_settings: {
-  plugin_openproject_two_factor_authentication: { "active_strategies" => %i[developer totp] }
-} do
+RSpec.describe "My Account 2FA configuration",
+               :js,
+               :with_cuprite,
+               with_settings: {
+                 plugin_openproject_two_factor_authentication: { "active_strategies" => %i[developer totp] }
+               } do
   let(:dialog) { Components::PasswordConfirmationDialog.new }
   let(:user_password) { "boB!4" * 4 }
   let(:user) do
@@ -11,6 +14,8 @@ RSpec.describe "My Account 2FA configuration", :js, with_settings: {
            password: user_password,
            password_confirmation: user_password)
   end
+
+  include Flash::Expectations
 
   before do
     login_as user
@@ -114,6 +119,8 @@ RSpec.describe "My Account 2FA configuration", :js, with_settings: {
     # Confirm again
     find(".two-factor--mark-default-button").click
     dialog.confirm_flow_with user_password, should_fail: false
+
+    expect_and_dismiss_flash(message: "Successful update")
 
     expect(page).to have_css(".mobile-otp--two-factor-device-row", count: 2)
     rows = page.all(".mobile-otp--two-factor-device-row")

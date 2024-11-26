@@ -60,7 +60,7 @@ class TypesController < ApplicationController
     end
   end
 
-  def create
+  def create # rubocop:disable Metrics/AbcSize
     CreateTypeService
       .new(current_user)
       .call(permitted_type_params, copy_workflow_from: params[:copy_workflow_from]) do |call|
@@ -73,7 +73,7 @@ class TypesController < ApplicationController
       call.on_failure do |result|
         flash[:error] = result.errors.full_messages.join("\n")
         load_projects_and_types
-        render action: "new"
+        render action: :new, status: :unprocessable_entity
       end
     end
   end
@@ -99,7 +99,7 @@ class TypesController < ApplicationController
       redirect_to types_path
     else
       flash.now[:error] = I18n.t(:error_type_could_not_be_saved)
-      render action: "edit"
+      render action: :edit, status: :unprocessable_entity
     end
   end
 
@@ -144,7 +144,7 @@ class TypesController < ApplicationController
     @projects = Project.all
     @type = type
 
-    render action: "edit"
+    render action: :edit, status: :unprocessable_entity
   end
 
   def show_local_breadcrumb

@@ -43,6 +43,16 @@ Rails.application.config.after_initialize do
     Journals::CompletedJob.schedule(payload[:journal], payload[:send_notification])
   end
 
+  OpenProject::Notifications.subscribe(OpenProject::Events::JOURNAL_UPDATED) do |payload|
+    # A job is scheduled immediately that creates notifications (in-app if
+    # supported) right away and schedules jobs to be run for mail and digest
+    # mails.
+    Notifications::WorkflowJob
+      .perform_later(:create_notifications,
+                     payload[:journal],
+                     payload[:send_notification])
+  end
+
   OpenProject::Notifications.subscribe(OpenProject::Events::WATCHER_ADDED) do |payload|
     next unless payload[:send_notifications]
 

@@ -28,7 +28,7 @@ See COPYRIGHT and LICENSE files for more details.
 ++#%>
 
 <%=
-  primer_form_with(url: @url, method: @method, test_selector: "op-custom-fields--new-item-form") do |f|
+  primer_form_with(**item_options) do |f|
     render(CustomFields::Hierarchy::ItemForm.new(f, target_item: model))
   end
 %>

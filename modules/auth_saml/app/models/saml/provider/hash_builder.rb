@@ -72,6 +72,7 @@ module Saml
         name_identifier_format:,
         certificate:,
         private_key:,
+        limit_self_registration:,
         attribute_statements: formatted_attribute_statements,
         request_attributes: formatted_request_attributes,
         uid_attribute: mapping_uid.presence

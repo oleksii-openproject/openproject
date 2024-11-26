@@ -1,0 +1,82 @@
+<%=
+flex_layout do |flex|
+  flex.with_row do
+    render(WorkPackages::InfoLineComponent.new(work_package: related_work_package))
+  end
+
+  flex.with_row(flex_layout: true, justify_content: :space_between, align_items: :flex_start) do |subject_line_row|
+    subject_line_row.with_column(py: 2) do
+      render(Primer::Beta::Link.new(href: work_package_path(related_work_package),
+                                    color: :default,
+                                    underline: false,
+                                    font_size: :normal,
+                                    font_weight: :bold,
+                                    target: "_blank")) { related_work_package.subject }
+    end
+
+    if should_render_action_menu?
+      subject_line_row.with_column do
+        render(Primer::Alpha::ActionMenu.new(test_selector: action_menu_test_selector)) do |menu|
+          menu.with_show_button(icon: "kebab-horizontal",
+                                "aria-label": I18n.t(:label_relation_actions),
+                                scheme: :invisible,
+                                ml: 2)
+
+          if should_render_edit_option?
+            menu.with_item(label: "Edit relation",
+                           href: edit_path,
+                           test_selector: edit_button_test_selector,
+                           content_arguments: {
+                             data: { turbo_stream: true }
+                           }) do |item|
+              item.with_leading_visual_icon(icon: :pencil)
+            end
+          end
+
+          menu.with_item(label: "Delete relation",
+                         scheme: :danger,
+                         href: destroy_path,
+                         form_arguments: {
+                           method: :delete,
+                           data: {
+                             confirm: t("text_are_you_sure"),
+                             turbo_stream: true,
+                             update_work_package: true
+                           }
+                         },
+                         test_selector: delete_button_test_selector) do |item|
+            item.with_leading_visual_icon(icon: :trash)
+          end
+        end
+      end
+    end
+  end
+
+  if should_display_description?
+    flex.with_row(flex_layout: true, mb: 2) do |description_row|
+      description_row.with_column do
+        render(Primer::Beta::Text.new(font_size: :small, color: :muted)) { format_text(relation, :description) }
+      end
+    end
+  end
+
+  if should_display_start_and_end_dates?
+    flex.with_row(flex_layout: true, align_items: :center) do |start_and_end_dates_row|
+      start_and_end_dates_row.with_column(mr: 1) do
+        icon = if follows?
+                 :calendar
+               elsif precedes?
+                 :pin
+               end
+
+        render(Primer::Beta::Octicon.new(icon:, color: :muted))
+      end
+      start_and_end_dates_row.with_column do
+        render(Primer::Beta::Text.new(color: :muted)) do
+          "#{format_date(related_work_package.start_date)} - #{format_date(related_work_package.due_date)}"
+        end
+      end
+    end
+  end
+end
+%>

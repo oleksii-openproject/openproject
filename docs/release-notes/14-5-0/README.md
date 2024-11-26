@@ -78,11 +78,11 @@ See our user guide to learn more about [project lists and how to filter them](..
 
 ### PDF export of meeting agenda and meeting
 
-When pressing the key combination for printing – e.g. **cmd + P** for mac users or **STRG + P** for Windows users – you can create your meeting as PDF, download and print it. This has been improved with OpenProject 14.5, so that, for example, meeting buttons like **+ Add** are not displayed in the PDF.
+When pressing the key combination for printing – e.g. **cmd + P** for mac users or **CTRL + P** for Windows users – you can create your meeting as PDF, download and print it. This has been improved with OpenProject 14.5, so that, for example, meeting buttons like **+ Add** are not displayed in the PDF.
 
 ### Meetings: Disable by default "Send out invitation emails upon creation"
 
-When creating a new meeting in OpenProject, you can choose wheather you want to send out invitation emails or not. Up until now, this has been enabled by default. Due to user feedback, this option is now disabled per default.
+When creating a new meeting in OpenProject, you can choose whether you want to send out invitation emails or not. Up until now, this has been enabled by default. Due to user feedback, this option is now disabled per default.
 
 ### Rename actions in work package dropdown menu
 
@@ -131,7 +131,7 @@ In this release, the dynamic bootstrapping of Angular components has been remove
 - Bugfix: \[API doc\] GET /projects missing params and incorrect response \[[#40642](https://community.openproject.org/wp/40642)\]
 - Bugfix: OpenAPI Specs wrong for creating work package relations \[[#40942](https://community.openproject.org/wp/40942)\]
 - Bugfix: API Description and OpenAPI Spec not consistent \[[#40945](https://community.openproject.org/wp/40945)\]
-- Bugfix: Truncaded custom fields in work package table (Browser: Edge) \[[#52890](https://community.openproject.org/wp/52890)\]
+- Bugfix: Truncated custom fields in work package table (Browser: Edge) \[[#52890](https://community.openproject.org/wp/52890)\]
 - Bugfix: GitLab integration pipeline status not updated \[[#54122](https://community.openproject.org/wp/54122)\]
 - Bugfix: Wrong date format in notification email \[[#54136](https://community.openproject.org/wp/54136)\]
 - Bugfix: Sort order of wiki pages in side-menu wrong / inconsistent \[[#54450](https://community.openproject.org/wp/54450)\]
@@ -147,8 +147,8 @@ In this release, the dynamic bootstrapping of Angular components has been remove
 - Bugfix: Internal error when trying to change 2FA settings that are enforced through ENV \[[#56821](https://community.openproject.org/wp/56821)\]
 - Bugfix: FixDeletedDataJournals migration can fail sometimes \[[#56846](https://community.openproject.org/wp/56846)\]
 - Bugfix: Backlogs and GitHub have unnecessarily nested menu nodes \[[#56920](https://community.openproject.org/wp/56920)\]
-- Bugfix: Wording of error message for Nextcloud host in storage form is missleading \[[#56992](https://community.openproject.org/wp/56992)\]
-- Bugfix: OpenProject Dark Mode: selection colour of table rows \[[#57003](https://community.openproject.org/wp/57003)\]
+- Bugfix: Wording of error message for Nextcloud host in storage form is misleading \[[#56992](https://community.openproject.org/wp/56992)\]
+- Bugfix: OpenProject Dark Mode: selection color of table rows \[[#57003](https://community.openproject.org/wp/57003)\]
 - Bugfix: Work package toolbar has double outline on left \[[#57004](https://community.openproject.org/wp/57004)\]
 - Bugfix: Firefox cuts PDF export after the first page \[[#57027](https://community.openproject.org/wp/57027)\]
 - Bugfix: Some status indicators are missing a border \[[#57031](https://community.openproject.org/wp/57031)\]
@@ -158,16 +158,16 @@ In this release, the dynamic bootstrapping of Angular components has been remove
 - Bugfix: Nextcloud &quot;recheck connection&quot; checks for GroupFolderApp though AMPF is deactivated \[[#57068](https://community.openproject.org/wp/57068)\]
 - Bugfix: In the calendar widget on the My Page page, meetings are displayed with the wrong time \[[#57078](https://community.openproject.org/wp/57078)\]
 - Bugfix: Default user avatar is too big for work package table rendering (safari) \[[#57093](https://community.openproject.org/wp/57093)\]
-- Bugfix: OpenProject Dark Mode: CKEditor using too light colours e.g. for pressed buttons \[[#57103](https://community.openproject.org/wp/57103)\]
+- Bugfix: OpenProject Dark Mode: CKEditor using too light colors e.g. for pressed buttons \[[#57103](https://community.openproject.org/wp/57103)\]
 - Bugfix: Cannot download 2FA backup codes \[[#57146](https://community.openproject.org/wp/57146)\]
 - Bugfix: OpenProject Dark Mode: diff view for description (and large text fields) not matching \[[#57151](https://community.openproject.org/wp/57151)\]
 - Bugfix: Project filter in notification center is not correctly highlighted \[[#57154](https://community.openproject.org/wp/57154)\]
 - Bugfix: Time and cost report :  text of unit cost activity is displayed with html tag &#39;&lt;i&gt;&#39; \[[#57198](https://community.openproject.org/wp/57198)\]
 - Bugfix: Meeting selection in work packages highly confusing \[[#57205](https://community.openproject.org/wp/57205)\]
 - Bugfix: Attachment headlines are semi-transparent and overlapped by content \[[#57209](https://community.openproject.org/wp/57209)\]
-- Bugfix: Webhook doesn&#39;t log all errors \[[#57277](https://community.openproject.org/wp/57277)\]
+- Bugfix: Webhook doesn't log all errors \[[#57277](https://community.openproject.org/wp/57277)\]
 - Bugfix: Notifications for date alerts show name of a person \[[#57279](https://community.openproject.org/wp/57279)\]
-- Bugfix: OpenProject Dark Mode: reiterate hover/active button colour \[[#57282](https://community.openproject.org/wp/57282)\]
+- Bugfix: OpenProject Dark Mode: reiterate hover/active button color \[[#57282](https://community.openproject.org/wp/57282)\]
 - Bugfix: Robots follow action links unnecessarily \[[#57316](https://community.openproject.org/wp/57316)\]
 - Bugfix: Some previews in the Lookbook do not work \[[#57322](https://community.openproject.org/wp/57322)\]
 - Bugfix: Number of meeting participants does not add up \[[#57392](https://community.openproject.org/wp/57392)\]

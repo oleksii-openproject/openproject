@@ -62,7 +62,7 @@ class CostTypesController < ApplicationController
   end
 
   def edit
-    render action: "edit", layout: !request.xhr?
+    render action: :edit, layout: !request.xhr?
   end
 
   def update
@@ -72,7 +72,7 @@ class CostTypesController < ApplicationController
       flash[:notice] = t(:notice_successful_update)
       redirect_back_or_default(action: "index")
     else
-      render action: "edit", layout: !request.xhr?
+      render action: :edit, status: :unprocessable_entity, layout: !request.xhr?
     end
   rescue ActiveRecord::StaleObjectError
     # Optimistic locking exception
@@ -84,10 +84,10 @@ class CostTypesController < ApplicationController
 
     @cost_type.rates.build(valid_from: Date.today) if @cost_type.rates.empty?
 
-    render action: "edit", layout: !request.xhr?
+    render action: :edit, layout: !request.xhr?
   end
 
-  def create
+  def create # rubocop:disable Metrics/AbcSize
     @cost_type = CostType.new(permitted_params.cost_type)
 
     if @cost_type.save
@@ -95,7 +95,7 @@ class CostTypesController < ApplicationController
       redirect_back_or_default(action: "index")
     else
       @cost_type.rates.build(valid_from: Date.today) if @cost_type.rates.empty?
-      render action: "edit", layout: !request.xhr?
+      render action: :edit, status: :unprocessable_entity, layout: !request.xhr?
     end
   rescue ActiveRecord::StaleObjectError
     # Optimistic locking exception

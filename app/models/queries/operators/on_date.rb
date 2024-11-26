@@ -34,10 +34,9 @@ module Queries::Operators
     extend DateRangeClauses
 
     def self.sql_for_field(values, db_table, db_field)
-      date_range_clause(db_table,
-                        db_field,
-                        Date.parse(values.first),
-                        Date.parse(values.first))
+      date = Date.parse(values.first)
+
+      date_range_clause(db_table, db_field, date, date)
     end
   end
 end

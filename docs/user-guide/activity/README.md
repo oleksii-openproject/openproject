@@ -16,7 +16,7 @@ The Activity tab within a work package maintains a history of all updates and ch
 
 ![The work package Activity tab split screen](Activity-tab.png)
 
-When you first access this tab, you will see the comments and list of changes in a timeline. This timeline can be sorted in either chronological (the newest comments at the bottom) or antichronological order (the newest comments on top):
+When you first access this tab, you will see the comments and list of changes in a timeline. This timeline can be sorted in either chronological (the newest comments at the bottom) or anti-chronological order (the newest comments on top):
 
 ![You can order the activities to show newest on top or at the bottom](Activity-sortOrder.png)
 

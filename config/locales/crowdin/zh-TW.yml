@@ -33,7 +33,7 @@ zh-TW:
         label_activity_show_only_changes: "僅顯示差異"
         label_sort_asc: "最新的在最下面"
         label_sort_desc: "最新的在最上面"
-        label_type_to_comment: "在此留言"
+        label_type_to_comment: "留言。輸入 @ 來通知他人。"
         label_submit_comment: "留言"
         changed_on: "異動於"
         created_on: "新增於"
@@ -222,8 +222,12 @@ zh-TW:
       items:
         actions: "自訂動作"
         blankslate:
-          title: "您的欄位清單是空的"
-          description: "首先將項目新增至層次結構的自訂欄位。每個項目都可用於在其下方建立一個層次結構。若要在層次結構內導覽和建立子項目，請按一下已建立的項目。"
+          root:
+            title: "您的欄位清單是空的"
+            description: "首先將項目新增至階層結構的客製欄位。每個項目都可用於在其下方建立一個階層結構。若要在階層結構內導覽和建立子項目，請按一下已建立的項目。"
+          item:
+            title: 此項目下方沒有任何階層
+            description: 將項目加入此清單以在另一個清單中建立子項目
         placeholder:
           label: "項目標籤"
           short: "簡稱"
@@ -234,6 +238,8 @@ zh-TW:
           zero: 無子項目
           one: 1 個子項目
           other: "%{count} 子項目"
+    upsale:
+      custom_field_format_hierarchy: "工作項目的自訂欄位需要分層嗎？"
     text_add_new_custom_field: >
       要加入客製欄位至一個專案，您必須先建立欄位才能將它們加入至此專案。
     is_enabled_globally: "已全域啟用"
@@ -260,12 +266,26 @@ zh-TW:
     single: "或者"
   dry_validation:
     errors:
+      int?: "必須是整數"
+      filled?: "必填"
+      greater_or_equal_zero: "必須大於或等於 0"
+      not_found: "未找到"
       rules:
+        item:
+          root_item: "不能為根項目"
+          not_persisted: "必須是已存在的項目"
         label:
-          filled?: "必填"
-          not_unique: "在同一層級內必須唯一"
+          not_unique: "在同一階層內必須唯一"
+        short:
+          not_unique: "在同一階層內必須唯一"
+        parent:
+          not_descendant: "必須是層級展開的"
     rules:
+      depth: "深度"
+      item: "項目"
       label: "標籤"
+      short: "簡稱"
+      parent: "上層"
   global_search:
     placeholder: "在 %{app_title} 搜尋"
     overwritten_tabs:
@@ -999,6 +1019,20 @@ zh-TW:
           attributes:
             project_ids:
               blank: "請選擇一個專案"
+        project/life_cycle_step_definition:
+          attributes:
+            type:
+              must_be_a_stage_or_gate: "must be either Project::StageDefinition or Project::GateDefinition"
+        project/life_cycle_step:
+          attributes:
+            type:
+              must_be_a_stage_or_gate: "must be either Project::Stage or Project::Gate"
+              must_be_a_stage: "must be a Project::Stage"
+              must_be_a_gate: "must be a Project::Gate"
+        project/gate:
+          attributes:
+            base:
+              end_date_not_allowed: "Cannot assign `end_date` to a Project::Gate"
         query:
           attributes:
             project:
@@ -1273,7 +1307,7 @@ zh-TW:
     assigned_to: "執行者"
     assignee: "執行者"
     attachments: "附加檔"
-    author: "作者"
+    author: "工作項目發起者"
     base: "一般錯誤:"
     blocks_ids: "已被限制的工作項目 IDs"
     category: "類別"
@@ -1358,6 +1392,9 @@ zh-TW:
   button_actions: "動作"
   button_add: "增加"
   button_add_comment: "新增留言"
+  button_add_item_above: "新增上述項目"
+  button_add_item_below: "新增以下項目"
+  button_add_sub_item: "新增子項目"
   button_add_member: 新增成員
   button_add_watcher: "新增監看者"
   button_annotate: "注釋"
@@ -1763,6 +1800,23 @@ zh-TW:
     units:
       hours: 小時
       days: 日
+  pdf_generator:
+    page_nr_footer: "頁面 %{page} of %{total}"
+    dialog:
+      title: 產生PDF檔案
+      submit: 產生
+      header_right:
+        label: 標題右側
+        caption: 要顯示在標頭右側的文字
+      footer_center:
+        label: 頁尾中心
+        caption: 要顯示在頁尾中央的文字
+      hyphenation:
+        label: 連字符
+        caption: 在行與行之間分隔字詞，以改善文字的正確性和可讀性。
+      paper_size:
+        label: 紙張大小
+        caption: PDF 要使用的紙張尺寸。
   extraction:
     available:
       pdftotext: "Pdftotext 可用 (非必要)"
@@ -2142,7 +2196,7 @@ zh-TW:
   label_filter: "篩選條件"
   label_filter_add: "新增條件"
   label_filter_by: "篩選條件："
-  label_filter_plural: "篩選條件"
+  label_filter_plural: "篩選器"
   label_filters_toggle: "顯示/隱藏篩選條件"
   label_float: "浮點數"
   label_folder: "資料夾"
@@ -2155,7 +2209,7 @@ zh-TW:
   label_generate_key: "產生一個金鑰"
   label_git_path: ".git 目錄的路徑"
   label_greater_or_equal: ">="
-  label_group_by: "分類"
+  label_group_by: "分組依據"
   label_group_new: "新增群組"
   label_group: "群組"
   label_group_named: "群組名稱 %{name}"
@@ -2167,7 +2221,7 @@ zh-TW:
   label_hierarchy: "階層"
   label_hierarchy_leaf: "頁面結構頁"
   label_home: "Home"
-  label_subject_or_id: "名稱或 id"
+  label_subject_or_id: "主旨或 id"
   label_calendar_subscriptions: "訂閱行事曆"
   label_identifier: "識別碼"
   label_in: "在"
@@ -2213,7 +2267,7 @@ zh-TW:
   label_latest_revision_plural: "最新版本"
   label_ldap_authentication: "LDAP 認證"
   label_learn_more: "了解更多"
-  label_less_or_equal: "之後"
+  label_less_or_equal: "<="
   label_less_than_ago: "幾天內"
   label_link_url: "連結(URL)"
   label_list: "清單"
@@ -2781,9 +2835,9 @@ zh-TW:
   notice_locking_conflict: "在此同時，資訊已經被至少一個使用者更新"
   notice_locking_conflict_additional_information: "更新來自於 %{users}"
   notice_locking_conflict_reload_page: "請重新載入頁面，檢查所做的更改並重新套用您的更新。"
-  notice_locking_conflict_warning: "This page has been updated by someone else. To not lose your edits, copy them locally and reload to view the updated version."
-  notice_locking_conflict_danger: "Could not save your changes because of conflicting modifications. To not lose your edits, copy them locally and reload to view the updated version."
-  notice_locking_conflict_action_button: "Discard changes and reload"
+  notice_locking_conflict_warning: "本頁面已由他人更新。為了不遺失您的編輯內容，請複製到本機，然後再重新載入以檢視更新的版本。"
+  notice_locking_conflict_danger: "由於修改衝突，無法儲存您的變更。為了不遺失您的編輯，請將它們複製到本機，然後再重新載入以檢視更新的版本。"
+  notice_locking_conflict_action_button: "放棄變更並重新載入"
   notice_member_added: 新增 %{name} 至專案
   notice_members_added: 已加入了 %{number} 個用戶至專案中
   notice_member_removed: "%{user} 已從專案移除"

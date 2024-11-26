@@ -230,84 +230,68 @@ RSpec.describe "Meetings", "Index", :js, :with_cuprite do
       meetings_page.expect_no_meeting_location(meeting_with_no_location)
     end
 
-    context "and the user is allowed to create meetings" do
-      let(:permissions) { %i(view_meetings create_meetings) }
-
-      it "shows the create new buttons" do
-        meetings_page.visit!
-
-        meetings_page.expect_create_new_buttons
-      end
-    end
-
-    context "and the user is not allowed to create meetings" do
+    context "and the user is only allowed to view meetings" do
       let(:permissions) { %i[view_meetings] }
 
       it "doesn't show a create new button" do
         meetings_page.visit!
 
-        meetings_page.expect_no_create_new_buttons
+        meetings_page.expect_no_create_new_button
+      end
+
+      it "shows a download ical event action button for each meeting" do
+        invite_to_meeting(meeting)
+        meetings_page.visit!
+
+        meetings_page.expect_ical_action(meeting)
+      end
+
+      it "doesn't show a copy meeting action button for each meeting" do
+        invite_to_meeting(meeting)
+        meetings_page.visit!
+
+        meetings_page.expect_no_copy_action(meeting)
+      end
+
+      it "doesn't show a delete meeting action button for each meeting" do
+        invite_to_meeting(meeting)
+        meetings_page.visit!
+
+        meetings_page.expect_no_delete_action(meeting)
       end
     end
 
-    describe "sorting" do
-      before do
-        invite_to_meeting(meeting)
-        invite_to_meeting(other_project_meeting)
-        visit meetings_path
-        # Start Time ASC is the default sort order for Upcoming meetings
-        # We can assert the initial sort by expecting the order is
-        # 1. `meeting`
-        # 2. `other_project_meeting`
-        # upon page load
-        meetings_page.expect_meetings_listed_in_order(meeting, other_project_meeting)
+    context "and the user is allowed to create meetings" do
+      let(:permissions) { %i(view_meetings create_meetings) }
+
+      it "shows the create new button" do
+        meetings_page.visit!
+
+        meetings_page.expect_create_new_button
       end
 
-      it "allows sorting by every column" do
-        aggregate_failures "Sorting by Title" do
-          meetings_page.click_to_sort_by("Title")
-          meetings_page.expect_meetings_listed_in_order(meeting,
-                                                        other_project_meeting)
-          meetings_page.click_to_sort_by("Title")
-          meetings_page.expect_meetings_listed_in_order(other_project_meeting,
-                                                        meeting)
-        end
+      it "allows creation of both types of meetings" do
+        meetings_page.visit!
 
-        aggregate_failures "Sorting by Project" do
-          meetings_page.click_to_sort_by("Project")
-          meetings_page.expect_meetings_listed_in_order(other_project_meeting,
-                                                        meeting)
-          meetings_page.click_to_sort_by("Project")
-          meetings_page.expect_meetings_listed_in_order(meeting,
-                                                        other_project_meeting)
-        end
+        meetings_page.expect_create_new_types
+      end
 
-        aggregate_failures "Sorting by Start time" do
-          meetings_page.click_to_sort_by("Start time")
-          meetings_page.expect_meetings_listed_in_order(meeting,
-                                                        other_project_meeting)
-          meetings_page.click_to_sort_by("Start time")
-          meetings_page.expect_meetings_listed_in_order(other_project_meeting,
-                                                        meeting)
-        end
+      it "shows a copy meeting action button for each meeting" do
+        invite_to_meeting(meeting)
+        meetings_page.visit!
 
-        aggregate_failures "Sorting by Duration" do
-          meetings_page.click_to_sort_by("Duration")
-          meetings_page.expect_meetings_listed_in_order(meeting,
-                                                        other_project_meeting)
-          meetings_page.click_to_sort_by("Duration")
-          meetings_page.expect_meetings_listed_in_order(other_project_meeting,
-                                                        meeting)
-        end
+        meetings_page.expect_copy_action(meeting)
+      end
+    end
 
-        aggregate_failures "Sorting by Location" do
-          meetings_page.click_to_sort_by("Location")
-          meetings_page.expect_meetings_listed_in_order(meeting,
-                                                        other_project_meeting)
-          meetings_page.click_to_sort_by("Location")
-          meetings_page.expect_meetings_listed_in_order(other_project_meeting,
-                                                        meeting)
-        end
+    context "and the user is allowed to delete meetings" do
+      let(:permissions) { %i(view_meetings delete_meetings) }
+
+      it "shows a delete meeting action button for each meeting" do
+        invite_to_meeting(meeting)
+        meetings_page.visit!
+
+        meetings_page.expect_delete_action(meeting)
       end
     end
 
@@ -328,18 +312,18 @@ RSpec.describe "Meetings", "Index", :js, :with_cuprite do
     context "when the user is allowed to create meetings" do
       let(:permissions) { %i(view_meetings create_meetings) }
 
-      it "shows the create new buttons" do
+      it "shows the create new button" do
         meetings_page.visit!
-        meetings_page.expect_create_new_buttons
+        meetings_page.expect_create_new_button
       end
     end
 
     context "when the user is not allowed to create meetings" do
       let(:permissions) { %i[view_meetings] }
 
-      it "doesn't show the create new buttons" do
+      it "doesn't show the create new button" do
         meetings_page.visit!
-        meetings_page.expect_no_create_new_buttons
+        meetings_page.expect_no_create_new_button
       end
     end
 
@@ -350,26 +334,6 @@ RSpec.describe "Meetings", "Index", :js, :with_cuprite do
       meetings_page.visit!
 
       meetings_page.expect_meetings_listed(meeting)
-    end
-
-    it "with pagination", with_settings: { per_page_options: "1" } do
-      invite_to_meeting(meeting)
-      invite_to_meeting(tomorrows_meeting)
-      invite_to_meeting(yesterdays_meeting)
-
-      # First page displays the soonest occurring upcoming meeting
-      meetings_page.visit!
-      meetings_page.expect_meetings_listed(meeting)
-      meetings_page.expect_meetings_not_listed(yesterdays_meeting, # Past meetings not displayed
-                                               tomorrows_meeting)
-
-      meetings_page.expect_to_be_on_page(1)
-
-      # Second page shows the next occurring upcoming meeting
-      meetings_page.to_page(2)
-      meetings_page.expect_meetings_listed(tomorrows_meeting)
-      meetings_page.expect_meetings_not_listed(yesterdays_meeting, # Past meetings not displayed
-                                               meeting)
     end
 
     it "renders a link to each meeting's location if present and a valid URL" do
@@ -383,76 +347,6 @@ RSpec.describe "Meetings", "Index", :js, :with_cuprite do
       meetings_page.expect_plaintext_meeting_location(tomorrows_meeting)
       meetings_page.expect_plaintext_meeting_location(meeting_with_malicious_location)
       meetings_page.expect_no_meeting_location(meeting_with_no_location)
-    end
-
-    describe "sorting" do
-      before do
-        invite_to_meeting(meeting)
-        invite_to_meeting(tomorrows_meeting)
-        meetings_page.visit!
-        # Start Time ASC is the default sort order for Upcoming meetings
-        # We can assert the initial sort by expecting the order is
-        # 1. `meeting`
-        # 2. `tomorrows_meeting`
-        # upon page load
-        meetings_page.expect_meetings_listed_in_order(meeting, tomorrows_meeting)
-      end
-
-      it "allows sorting by every column" do
-        aggregate_failures "Sorting by Title" do
-          meetings_page.click_to_sort_by("Title")
-          meetings_page.expect_meetings_listed_in_order(meeting,
-                                                        tomorrows_meeting)
-          meetings_page.click_to_sort_by("Title")
-          meetings_page.expect_meetings_listed_in_order(tomorrows_meeting,
-                                                        meeting)
-        end
-
-        aggregate_failures "Sorting by Start time" do
-          meetings_page.click_to_sort_by("Start time")
-          meetings_page.expect_meetings_listed_in_order(meeting,
-                                                        tomorrows_meeting)
-          meetings_page.click_to_sort_by("Start time")
-          meetings_page.expect_meetings_listed_in_order(tomorrows_meeting,
-                                                        meeting)
-        end
-
-        aggregate_failures "Sorting by Start time" do
-          meetings_page.click_to_sort_by("Start time")
-          meetings_page.expect_meetings_listed_in_order(meeting,
-                                                        tomorrows_meeting)
-          meetings_page.click_to_sort_by("Start time")
-          meetings_page.expect_meetings_listed_in_order(tomorrows_meeting,
-                                                        meeting)
-        end
-
-        aggregate_failures "Sorting by Duration" do
-          meetings_page.click_to_sort_by("Duration")
-          meetings_page.expect_meetings_listed_in_order(meeting,
-                                                        tomorrows_meeting)
-          meetings_page.click_to_sort_by("Duration")
-          meetings_page.expect_meetings_listed_in_order(tomorrows_meeting,
-                                                        meeting)
-        end
-
-        aggregate_failures "Sorting by Duration" do
-          meetings_page.click_to_sort_by("Duration")
-          meetings_page.expect_meetings_listed_in_order(meeting,
-                                                        tomorrows_meeting)
-          meetings_page.click_to_sort_by("Duration")
-          meetings_page.expect_meetings_listed_in_order(tomorrows_meeting,
-                                                        meeting)
-        end
-
-        aggregate_failures "Sorting by Location" do
-          meetings_page.click_to_sort_by("Location")
-          meetings_page.expect_meetings_listed_in_order(meeting,
-                                                        tomorrows_meeting)
-          meetings_page.click_to_sort_by("Location")
-          meetings_page.expect_meetings_listed_in_order(tomorrows_meeting,
-                                                        meeting)
-        end
-      end
     end
   end
 end

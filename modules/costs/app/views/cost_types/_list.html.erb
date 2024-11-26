@@ -98,7 +98,7 @@ See COPYRIGHT and LICENSE files for more details.
                                 placeholder: t(:label_example_placeholder, decimal: unitless_currency_number(1000.50)),
                                 id: "rate_field_#{cost_type.id}" %>
                 <span class="form-label">
-                  <%= Setting.plugin_costs['costs_currency'] %>
+                  <%= Setting.costs_currency %>
                 </span>
                 <button type="submit"
                         class="button submit_cost_type">

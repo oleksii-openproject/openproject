@@ -34,7 +34,9 @@ module Queries::Operators
     extend DateRangeClauses
 
     def self.sql_for_field(values, db_table, db_field)
-      relative_date_range_clause(db_table, db_field, - values.first.to_i, 0)
+      days = values.first.to_i
+
+      relative_date_range_clause(db_table, db_field, -days, 0)
     end
   end
 end

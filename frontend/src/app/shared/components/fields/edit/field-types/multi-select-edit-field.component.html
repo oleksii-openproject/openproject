@@ -18,6 +18,13 @@
            [appendTo]="appendTo"
            [dropdownPosition]="'top'"
            [hideSelected]="true">
+  <ng-template ng-option-tmp let-item="item">
+    <span
+      class="ng-option-label ellipsis"
+      [textContent]="item.name"
+      [ngStyle]="{'padding-left.px': item.depth * 16}"
+    ></span>
+  </ng-template>
   <ng-template ng-footer-tmp *ngIf="showAddNewUserButton">
     <op-invite-user-button
         [projectId]="resource.project?.id"

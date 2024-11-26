@@ -62,7 +62,7 @@ RSpec.describe "Meetings copy", :js, :with_cuprite do
 
   shared_let(:twelve_hour_format) { "%I:%M %p" }
   shared_let(:copied_meeting_time_heading) do
-    date = (start_time + 1.week).strftime("%m/%d/%Y")
+    date = (start_time + 1.day).strftime("%m/%d/%Y")
     start_of_meeting = start_time.strftime(twelve_hour_format)
     end_of_meeting = (start_time + meeting.duration.hours).strftime(twelve_hour_format)
 
@@ -90,7 +90,7 @@ RSpec.describe "Meetings copy", :js, :with_cuprite do
     expect(page)
       .to have_field "Duration",   with: meeting.duration
     expect(page)
-      .to have_field "Start date", with: (start_time + 1.week).strftime("%Y-%m-%d")
+      .to have_field "Start date", with: (start_time + 1.day).strftime("%Y-%m-%d")
     expect(page)
       .to have_field "Time",       with: start_time.strftime("%H:%M")
 
