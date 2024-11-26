@@ -77,15 +77,17 @@ class CostReportsController < ApplicationController
   def index
     table
 
-    unless performed?
-      respond_to do |format|
-        format.html do
-          session[report_engine.name.underscore.to_sym].try(:delete, :name)
-          render locals: { menu_name: project_or_global_menu }
-        end
-        format.xls { export(:xls) }
-        format.pdf { export(:pdf) }
+    perform unless performed?
+  end
+
+  def perform
+    respond_to do |format|
+      format.html do
+        session[report_engine.name.underscore.to_sym].try(:delete, :name)
+        render locals: { menu_name: project_or_global_menu }
       end
+      format.xls { export(:xls) }
+      format.pdf { export(:pdf) }
     end
   end
 
