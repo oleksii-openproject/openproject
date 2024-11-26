@@ -43,6 +43,7 @@ import { IAutocompleterTemplateComponent } from 'core-app/shared/components/auto
 export class UserAutocompleterTemplateComponent implements IAutocompleterTemplateComponent {
   @Input() public inviteUserToProject:string|undefined;
   @Input() public isOpenedInModal:boolean = false;
+  @Input() public hoverCards:boolean = true;
 
   @ViewChild('optionTemplate') optionTemplate:TemplateRef<Element>;
   @ViewChild('footerTemplate') footerTemplate?:TemplateRef<Element>;

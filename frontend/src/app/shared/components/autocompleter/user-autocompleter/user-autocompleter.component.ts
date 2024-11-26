@@ -88,6 +88,7 @@ export class UserAutocompleterComponent extends OpAutocompleterComponent<IUserAu
   @Input() public inviteUserToProject:string|undefined;
 
   @Input() public isOpenedInModal:boolean = false;
+  @Input() public hoverCards:boolean = true;
 
   @Input() public url:string = this.apiV3Service.users.path;
 
@@ -103,6 +104,7 @@ export class UserAutocompleterComponent extends OpAutocompleterComponent<IUserAu
     this.applyTemplates(UserAutocompleterTemplateComponent, {
       inviteUserToProject: this.inviteUserToProject,
       isOpenedInModal: this.isOpenedInModal,
+      hoverCards: this.hoverCards,
     });
 
     this

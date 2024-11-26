@@ -52,14 +52,16 @@ module Shares
           focusDirectly: true,
           appendToComponent: true,
           disabled: @disabled,
-          isOpenedInModal: true
+          isOpenedInModal: true,
+          hoverCards: @allow_hover_cards
         }
       )
     end
 
-    def initialize(disabled: false)
+    def initialize(disabled: false, allow_hover_cards: false)
       super()
       @disabled = disabled
+      @allow_hover_cards = allow_hover_cards
     end
   end
 end
