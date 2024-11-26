@@ -84,6 +84,8 @@ RSpec.describe "Work package copy", :js, :selenium do
           project:)
   end
 
+  let(:relations_tab) { Components::WorkPackages::Relations.new(original_work_package) }
+
   before do
     login_as(user)
     original_work_package.save!
@@ -123,8 +125,11 @@ RSpec.describe "Work package copy", :js, :selenium do
 
     work_package_page.visit_tab! :relations
     expect_angular_frontend_initialized
-    expect(page).to have_css(".relation-group--header", text: "RELATED TO", wait: 20)
-    expect(page).to have_test_selector("op-relation--row-subject", text: original_work_package.subject)
+    work_package_page.expect_subject
+    loading_indicator_saveguard
+
+    relations_tab.expect_relation_group(:relates)
+    relations_tab.expect_relation_by_text(original_work_package.subject)
   end
 
   describe "when source work package has an attachment" do
@@ -176,7 +181,10 @@ RSpec.describe "Work package copy", :js, :selenium do
 
     work_package_page.visit_tab!("relations")
     expect_angular_frontend_initialized
-    expect(page).to have_css(".relation-group--header", text: "RELATED TO", wait: 20)
-    expect(page).to have_test_selector("op-relation--row-subject", text: original_work_package.subject)
+    work_package_page.expect_subject
+    loading_indicator_saveguard
+
+    relations_tab.expect_relation_group(:relates)
+    relations_tab.expect_relation_by_text(original_work_package.subject)
   end
 end
