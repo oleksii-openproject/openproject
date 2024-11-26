@@ -56,7 +56,7 @@ module Pages
         expect(page).to have_no_css(".op-grid-page--grid-container")
       end
 
-      def within_async_loaded_sidebar(&)
+      def within_project_attributes_sidebar(&)
         within "#project-custom-fields-sidebar" do
           expect(page).to have_css("[data-test-selector='project-custom-fields-sidebar-async-content']")
           yield
@@ -72,7 +72,7 @@ module Pages
       end
 
       def open_edit_dialog_for_section(section)
-        within_async_loaded_sidebar do
+        within_project_attributes_sidebar do
           scroll_to_element(page.find("[data-test-selector='project-custom-field-section-#{section.id}']"))
           within_custom_field_section_container(section) do
             page.find("[data-test-selector='project-custom-field-section-edit-button']").click

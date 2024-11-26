@@ -391,7 +391,7 @@ RSpec.describe "Projects copy", :js, :with_cuprite,
         overview_page = Pages::Projects::Show.new(copied_project)
         overview_page.visit!
 
-        overview_page.within_async_loaded_sidebar do
+        overview_page.within_project_attributes_sidebar do
           # User has no permission to edit project attributes.
           expect(page).to have_no_css("[data-test-selector='project-custom-field-section-edit-button']")
           # The custom fields are still copied from the parent project.

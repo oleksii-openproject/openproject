@@ -52,7 +52,7 @@ RSpec.describe "Edit project custom fields on project overview page", :js do
     end
 
     it "shows the attributes sidebar" do
-      overview_page.within_async_loaded_sidebar do
+      overview_page.within_project_attributes_sidebar do
         expect(page).to have_text("Input fields")
       end
     end
@@ -65,7 +65,7 @@ RSpec.describe "Edit project custom fields on project overview page", :js do
     end
 
     it "does not show the edit buttons" do
-      overview_page.within_async_loaded_sidebar do
+      overview_page.within_project_attributes_sidebar do
         expect(page).to have_no_css("[data-test-selector='project-custom-field-section-edit-button']")
       end
     end
@@ -81,7 +81,7 @@ RSpec.describe "Edit project custom fields on project overview page", :js do
     end
 
     it "does not show the edit buttons" do
-      overview_page.within_async_loaded_sidebar do
+      overview_page.within_project_attributes_sidebar do
         expect(page).to have_no_css("[data-test-selector='project-custom-field-section-edit-button']")
       end
     end
@@ -94,7 +94,7 @@ RSpec.describe "Edit project custom fields on project overview page", :js do
     end
 
     it "shows the edit buttons" do
-      overview_page.within_async_loaded_sidebar do
+      overview_page.within_project_attributes_sidebar do
         expect(page).to have_css("[data-test-selector='project-custom-field-section-edit-button']", count: 3)
       end
     end
