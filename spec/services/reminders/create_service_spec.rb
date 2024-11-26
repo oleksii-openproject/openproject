@@ -31,7 +31,7 @@
 require "spec_helper"
 require "services/base_services/behaves_like_create_service"
 
-RSpec.describe Reminders::CreateService, type: :model do
+RSpec.describe Reminders::CreateService do
   it_behaves_like "BaseServices create service" do
     let(:factory) { :reminder }
 
