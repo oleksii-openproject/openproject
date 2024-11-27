@@ -34,7 +34,7 @@ module Reminders
 
     def unchangeable_attributes
       if model.remindable_changed? || model.creator_id_changed?
-        errors.add(:base, :unchangeable_attributes)
+        errors.add(:base, :unchangeable)
       end
     end
   end

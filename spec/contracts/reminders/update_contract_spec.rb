@@ -50,7 +50,7 @@ RSpec.describe Reminders::UpdateContract do
         reminder.remindable = build_stubbed(:work_package)
       end
 
-      it_behaves_like "contract is invalid", base: :unchangeable_attributes
+      it_behaves_like "contract is invalid", base: :unchangeable
     end
 
     context "when creator_id changed" do
@@ -60,7 +60,7 @@ RSpec.describe Reminders::UpdateContract do
         allow(User).to receive(:exists?).with(new_creator.id).and_return(true)
       end
 
-      it_behaves_like "contract is invalid", base: :unchangeable_attributes
+      it_behaves_like "contract is invalid", base: :unchangeable
     end
   end
 

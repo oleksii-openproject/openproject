@@ -99,4 +99,38 @@ RSpec.describe Reminders::UpdateService do
       end
     end
   end
+
+  describe "unchangeable attributes" do
+    let(:original_creator) { create(:user) }
+    let(:original_remindable) { create(:work_package) }
+    let(:model_instance) { create(:reminder, creator: original_creator, remindable: original_remindable) }
+
+    context "when attempting to update the creator" do
+      subject { described_class.new(user: model_instance.creator, model: model_instance).call(creator: another_user) }
+
+      let(:another_user) { create(:user) }
+
+      it "does not update the creator", :aggregate_failures do
+        update_svc = subject
+
+        expect(update_svc).to be_a_failure
+        expect(update_svc.result.reload.creator).to eq(original_creator)
+        expect(update_svc.message).to eq("Creator is invalid. may not be accessed. cannot be changed.")
+      end
+    end
+
+    context "when attempting to update the remindable" do
+      subject { described_class.new(user: model_instance.creator, model: model_instance).call(remindable: another_remindable) }
+
+      let(:another_remindable) { create(:work_package) }
+
+      it "does not update the remindable", :aggregate_failures do
+        update_svc = subject
+
+        expect(update_svc).to be_a_failure
+        expect(update_svc.result.reload.remindable).to eq(original_remindable)
+        expect(update_svc.message).to include("cannot be changed.")
+      end
+    end
+  end
 end
