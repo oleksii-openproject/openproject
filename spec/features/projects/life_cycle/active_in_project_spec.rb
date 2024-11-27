@@ -39,6 +39,14 @@ RSpec.describe "Projects life cycle settings", :js, :with_cuprite, with_flag: { 
              ]
            })
   end
+  shared_let(:user_without_permission) do
+    create(:user,
+           member_with_permissions: {
+             project => %w[
+               edit_project
+             ]
+           })
+  end
 
   shared_let(:initiating_stage) { create(:project_stage_definition, name: "Initiating") }
   shared_let(:ready_to_execute_gate) { create(:project_gate_definition, name: "Ready to Execute") }
@@ -112,6 +120,16 @@ RSpec.describe "Projects life cycle settings", :js, :with_cuprite, with_flag: { 
 
       project_life_cycle_page.expect_listed(ready_to_close_gate => true,
                                             closing_stage => true)
+    end
+  end
+
+  context "without sufficient permissions" do
+    current_user { user_without_permission }
+
+    it "does not allow the user to access the page" do
+      project_life_cycle_page.visit!
+
+      project_life_cycle_page.expect_flash(message: "You are not authorized to access this page", type: :error)
     end
   end
 end
