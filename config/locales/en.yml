@@ -399,6 +399,8 @@ en:
         section_header: "Stages and gates"
         step:
           use_in_project: "Use %{step} in this project"
+        filter:
+          label: "Search project stage or gate"
       project_custom_fields:
         header:
           title: "Project attributes"

@@ -87,6 +87,10 @@ module Pages
           find_test_selector("toggle-project-life-cycle-#{definition.id}")
         end
 
+        def filter_by(filter)
+          fill_in I18n.t("projects.settings.life_cycle.filter.label"), with: filter
+        end
+
         def expected_toggle_status(active)
           active ? "On" : "Off"
         end

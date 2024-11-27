@@ -51,7 +51,7 @@ RSpec.describe "Projects life cycle settings", :js, :with_cuprite, with_flag: { 
   context "with sufficient permissions" do
     current_user { user_with_permission }
 
-    it "allows toggling the active/inactive state of lifecycle steps" do
+    it "allows toggling the active/inactive state of lifecycle steps and filtering them" do
       project_life_cycle_page.visit!
 
       project_life_cycle_page.expect_listed(initiating_stage => false,
@@ -105,6 +105,12 @@ RSpec.describe "Projects life cycle settings", :js, :with_cuprite, with_flag: { 
                                             ready_to_execute_gate => true,
                                             executing_stage => true,
                                             ready_to_close_gate => true,
+                                            closing_stage => true)
+
+      # The user can filter the life cycle steps
+      project_life_cycle_page.filter_by("Clo")
+
+      project_life_cycle_page.expect_listed(ready_to_close_gate => true,
                                             closing_stage => true)
     end
   end

@@ -260,7 +260,7 @@ RSpec.describe "Projects custom fields mapping via project settings", :js, :with
     it "filters the project custom fields by name with given user input" do
       visit project_settings_project_custom_fields_path(project)
 
-      fill_in "project-custom-fields-mapping-filter", with: "Boolean"
+      fill_in "border-box-filter", with: "Boolean"
 
       within_custom_field_section_container(section_for_input_fields) do
         expect(page).to have_content("Boolean field")
