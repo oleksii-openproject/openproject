@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 #-- copyright
 # OpenProject is an open source project management software.
 # Copyright (C) the OpenProject GmbH
@@ -29,15 +27,20 @@
 #++
 
 module Queries
-  module Filters
-    module Strategies
-      class Hierarchy < BaseStrategy
-        self.supported_operators = %w[= ! eq_with_descendants]
-        self.default_operator = "="
+  module Operators
+    module CustomFields
+      module Hierarchies
+        class EqualsWithDescendants < Base
+          label "equals_with_descendants"
+          set_symbol "eq_with_descendants"
 
-        def operator_map
-          super.dup.tap do |super_value|
-            super_value["eq_with_descendants"] = ::Queries::Operators::CustomFields::Hierarchies::EqualsWithDescendants
+          def self.sql_for_field(values, db_table, db_field)
+            items = CustomField::Hierarchy::Item.find(values)
+            service = ::CustomFields::Hierarchy::HierarchicalItemService.new
+
+            actual_values = items.map { |item| service.get_descendants(item:).value! }.flatten.map(&:id).uniq
+
+            Equals.sql_for_field(actual_values, db_table, db_field)
           end
         end
       end

@@ -2398,6 +2398,7 @@ en:
   label_environment: "Environment"
   label_estimates_and_progress: "Estimates and progress"
   label_equals: "is"
+  label_equals_with_descendants: "is any with descendants"
   label_everywhere: "everywhere"
   label_example: "Example"
   label_experimental: "Experimental"
