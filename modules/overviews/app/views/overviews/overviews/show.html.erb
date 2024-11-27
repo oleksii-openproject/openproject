@@ -60,4 +60,7 @@
   end
 %>
 
+<%# TEMPORARY #%>
+<%= link_to "log time", dialog_project_time_entries_path(@project),  data: { controller: "async-dialog", test_selector: "toggle-log-time-dialog-button" } %>
+
 <openproject-base></openproject-base>
