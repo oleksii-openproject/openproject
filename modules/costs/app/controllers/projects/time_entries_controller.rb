@@ -29,6 +29,7 @@
 module Projects
   class TimeEntriesController < ApplicationController
     before_action :require_login
+    before_action :load_and_authorize_in_optional_project
 
     def dialog; end
 

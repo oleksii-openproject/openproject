@@ -33,6 +33,10 @@ Rails.application.routes.draw do
     resources :hourly_rates, only: %i[show edit update] do
       post :set_rate, on: :member
     end
+
+    resources :time_entries, only: %i[create update] do
+      get :dialog, on: :collection
+    end
   end
 
   scope "my" do
