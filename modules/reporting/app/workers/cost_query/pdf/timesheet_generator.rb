@@ -75,7 +75,7 @@ class CostQuery::PDF::TimesheetGenerator
 
   # rubocop:disable Metrics/AbcSize
   def build_table_rows(entries)
-    rows = []
+    rows = [table_header_columns]
     entries
       .group_by { |r| DateTime.parse(r.fields["spent_on"]) }
       .sort
@@ -84,6 +84,7 @@ class CostQuery::PDF::TimesheetGenerator
       lines.each do |r|
         day_rows.push(
           [
+            { content: format_date(spent_on), rowspan: r.fields["comments"].present? ? 2 : 1 },
             wp_subject(r.fields["work_package_id"]),
             with_times_column? ? "??:00-??:00" : nil,
             format_duration(r.fields["units"]),
@@ -94,7 +95,8 @@ class CostQuery::PDF::TimesheetGenerator
           day_rows.push ([{ content: r.fields["comments"], text_color: "636C76", colspan: table_columns_span }])
         end
       end
-      day_rows[0].unshift({ content: format_date(spent_on), rowspan: day_rows.length })
+
+      # day_rows[0].unshift({ content: format_date(spent_on), rowspan: day_rows.length })
       rows.concat(day_rows)
     end
     rows
@@ -104,7 +106,7 @@ class CostQuery::PDF::TimesheetGenerator
 
   def table_header_columns
     [
-      I18n.t(:"activerecord.attributes.time_entry.spent_on"),
+      { content: I18n.t(:"activerecord.attributes.time_entry.spent_on"), rowspan: 1 },
       I18n.t(:"activerecord.models.work_package"),
       with_times_column? ? I18n.t(:"export.timesheet.time") : nil,
       I18n.t(:"activerecord.attributes.time_entry.hours"),
@@ -125,13 +127,10 @@ class CostQuery::PDF::TimesheetGenerator
   end
 
   # rubocop:disable Metrics/AbcSize
-  def write_table(user_id, entries)
-    rows = [table_header_columns].concat(build_table_rows(entries))
-    # TODO: write user on new page if table does not fit on the same
-    write_user(user_id)
+  def build_table(rows)
     pdf.make_table(
       rows,
-      header: false,
+      header: true,
       width: table_width,
       column_widths: table_columns_widths,
       cell_style: {
@@ -160,10 +159,92 @@ class CostQuery::PDF::TimesheetGenerator
         c.borders = c.borders + [:top]
         c.font_style = :bold
       end
-    end.draw
+    end
   end
 
+  def split_group_rows(table_rows)
+    measure_table = build_table(table_rows)
+    groups = []
+    index = 0
+    while index < table_rows.length
+      row = table_rows[index]
+      rows = [row]
+      height = measure_table.row(index).height
+      index += 1
+      if (row[0][:rowspan] || 1) > 1
+        rows.push(table_rows[index])
+        height += measure_table.row(index).height
+        index += 1
+      end
+      groups.push({ rows:, height: })
+    end
+    groups
+  end
   # rubocop:enable Metrics/AbcSize
+
+  def write_table(user_id, entries)
+    rows = build_table_rows(entries)
+    # prawn-table does not support splitting a rowspan cell on page break, so we have to merge the first column manually
+    # for easier handling existing rowspan cells are grouped as one row
+    grouped_rows = split_group_rows(rows)
+    # start a new page if the username would be printed alone at the end of the page
+    pdf.start_new_page if available_space_from_bottom < grouped_rows[0][:height] + grouped_rows[1][:height] + 20
+    write_user(user_id)
+    write_grouped_tables(grouped_rows)
+  end
+
+  def available_space_from_bottom
+    margin_bottom = pdf.options[:bottom_margin] + 20
+    pdf.y - margin_bottom
+  end
+
+  def write_grouped_tables(grouped_rows)
+    header_row = grouped_rows[0]
+    current_table = []
+    current_table_height = 0
+    grouped_rows.each do |grouped_row|
+      grouped_row_height = grouped_row[:height]
+      if current_table_height + grouped_row_height >= available_space_from_bottom
+        write_grouped_row_table(current_table)
+        pdf.start_new_page
+        current_table = [header_row]
+        current_table_height = header_row[:height]
+      end
+      current_table.push(grouped_row)
+      current_table_height += grouped_row_height
+    end
+    write_grouped_row_table(current_table)
+    pdf.move_down(28)
+  end
+
+  def write_grouped_row_table(grouped_rows)
+    current_table = []
+    merge_first_columns(grouped_rows)
+    grouped_rows.map! { |row| current_table.concat(row[:rows]) }
+    build_table(current_table).draw
+  end
+
+  def merge_first_columns(grouped_rows)
+    last_row = grouped_rows[1]
+    index = 2
+    while index < grouped_rows.length
+      grouped_row = grouped_rows[index]
+      last_row = merge_first_rows(grouped_row, last_row)
+      index += 1
+    end
+  end
+
+  def merge_first_rows(grouped_row, last_row)
+    grouped_cell = grouped_row[:rows][0][0]
+    last_cell = last_row[:rows][0][0]
+    if grouped_cell[:content] == last_cell[:content]
+      last_cell[:rowspan] += grouped_cell[:rowspan]
+      grouped_row[:rows][0].shift
+      last_row
+    else
+      grouped_row
+    end
+  end
 
   def sorted_results
     query.each_direct_result.map(&:itself)
