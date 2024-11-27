@@ -1,4 +1,6 @@
-#-- copyright
+# frozen_string_literal: true
+
+# -- copyright
 # OpenProject is an open source project management software.
 # Copyright (C) the OpenProject GmbH
 #
@@ -24,29 +26,22 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
 # See COPYRIGHT and LICENSE files for more details.
-#++
+# ++
 
-module Projects
-  class TimeEntriesController < ApplicationController
-    include OpTurbo::ComponentStream
-    include OpTurbo::DialogStreamHelper
+module TimeEntries
+  class EntryDialogComponent < ApplicationComponent
+    include OpTurbo::Streamable
 
-    before_action :require_login
-    before_action :find_project_by_project_id
+    MODAL_ID = "time-entry-dialog"
 
-    authorization_checked! :dialog, :create, :update
-
-    def dialog
-      @time_entry = if params[:time_entry_id]
-                      # TODO: Properly handle authorization
-                      TimeEntry.find_by(id: params[:time_entry_id])
-                    else
-                      TimeEntry.new(project: @project)
-                    end
+    def initialize(time_entry:, open: false)
+      super()
+      @time_entry = time_entry
+      @open = open
     end
 
-    def create; end
+    private
 
-    def update; end
+    attr_reader :time_entry, :open
   end
 end

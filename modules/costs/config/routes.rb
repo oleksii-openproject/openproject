@@ -33,10 +33,6 @@ Rails.application.routes.draw do
     resources :hourly_rates, only: %i[show edit update] do
       post :set_rate, on: :member
     end
-
-    resources :time_entries, only: %i[create update] do
-      get :dialog, on: :collection
-    end
   end
 
   scope "my" do
@@ -46,6 +42,10 @@ Rails.application.routes.draw do
   scope "projects/:project_id", as: "project", module: "projects" do
     namespace "settings" do
       resource :time_entry_activities, only: %i[show update]
+    end
+
+    resources :time_entries, only: %i[create update] do
+      get :dialog, on: :collection
     end
   end
 

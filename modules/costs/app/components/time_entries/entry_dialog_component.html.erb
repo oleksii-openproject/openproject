@@ -1,0 +1,6 @@
+<%= render(Primer::Alpha::Dialog.new(title: 'Log Time', size: :large, id: MODAL_ID)) do |d| %>
+  <% d.with_header(variant: :large, mb: 3) %>
+  <%= d.with_body do %>
+    <h1>Hello, World!</h1>
+  <% end %>
+<% end %>
