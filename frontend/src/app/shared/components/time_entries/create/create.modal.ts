@@ -1,14 +1,17 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, InjectionToken } from '@angular/core';
 import { HalResourceEditingService } from 'core-app/shared/components/fields/edit/services/hal-resource-editing.service';
 import { TimeEntryResource } from 'core-app/features/hal/resources/time-entry-resource';
 import { HalResource } from 'core-app/features/hal/resources/hal-resource';
 import { TimeEntryBaseModal } from '../shared/modal/base.modal';
+
+export const SHOW_USER_HOVER_CARD = new InjectionToken('SHOW_USER_HOVER_CARD');
 
 @Component({
   templateUrl: '../shared/modal/base.modal.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     HalResourceEditingService,
+    { provide: SHOW_USER_HOVER_CARD, useValue: false },
   ],
 })
 export class TimeEntryCreateModalComponent extends TimeEntryBaseModal {
