@@ -63,7 +63,7 @@ class Projects::Settings::LifeCyclesController < Projects::SettingsController
   private
 
   def load_life_cycle_definitions
-    @life_cycle_definitions = Project::LifeCycleStepDefinition.all
+    @life_cycle_definitions = Project::LifeCycleStepDefinition.order(position: :asc)
   end
 
   def deny_access_on_feature_flag
