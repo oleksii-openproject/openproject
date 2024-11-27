@@ -36,7 +36,7 @@ RSpec.describe Reminders::CreateService do
     let(:factory) { :reminder }
 
     before do
-      allow(model_instance).to receive(:update_columns)
+      allow(model_instance).to receive(:update_columns).and_return(true)
       allow(Reminders::ScheduleReminderJob).to receive(:schedule)
         .with(model_instance)
         .and_return(instance_double(Reminders::ScheduleReminderJob, job_id: 1))

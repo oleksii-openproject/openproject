@@ -26,40 +26,11 @@
 # See COPYRIGHT and LICENSE files for more details.
 #++
 
-module Reminders
-  class ScheduleReminderJob < ApplicationJob
-    queue_with_priority :notification
+require "spec_helper"
 
-    def self.schedule(reminder)
-      set(wait_until: reminder.remind_at).perform_later(reminder)
-    end
-
-    def perform(reminder)
-      return if reminder.unread_notifications?
-
-      create_notification_service = create_notification_from_reminder(reminder)
-
-      create_notification_service.on_success do |service_result|
-        ReminderNotification.create!(reminder:, notification: service_result.result)
-      end
-
-      create_notification_service.on_failure do |service_result|
-        Rails.logger.error do
-          "Failed to create notification for reminder #{reminder.id}: #{service_result.message}"
-        end
-      end
-    end
-
-    private
-
-    def create_notification_from_reminder(reminder)
-      Notifications::CreateService
-        .new(user: reminder.creator)
-        .call(
-          recipient_id: reminder.creator_id,
-          resource: reminder.remindable,
-          reason: :reminder
-        )
-    end
+RSpec.describe ReminderNotification do
+  describe "Associations" do
+    it { is_expected.to belong_to(:reminder) }
+    it { is_expected.to belong_to(:notification) }
   end
 end

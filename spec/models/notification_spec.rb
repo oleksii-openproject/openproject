@@ -34,7 +34,8 @@ RSpec.describe Notification do
     it { is_expected.to belong_to(:actor).class_name("User") }
     it { is_expected.to belong_to(:recipient).class_name("User") }
 
-    it { is_expected.to have_one(:reminder).dependent(:nullify) }
+    it { is_expected.to have_one(:reminder_notification).dependent(:destroy) }
+    it { is_expected.to have_one(:reminder).through(:reminder_notification) }
   end
 
   describe "Enums" do

@@ -32,24 +32,27 @@ RSpec.describe Reminder do
   describe "Associations" do
     it { is_expected.to belong_to(:remindable) }
     it { is_expected.to belong_to(:creator).class_name("User") }
-    it { is_expected.to belong_to(:notification).optional }
+    it { is_expected.to have_many(:reminder_notifications).dependent(:destroy) }
+    it { is_expected.to have_many(:notifications).through(:reminder_notifications) }
   end
 
-  describe "DB Indexes" do
-    it { is_expected.to have_db_index(:notification_id).unique(true) }
-  end
+  describe "#unread_notifications?" do
+    context "with an unread notification" do
+      subject { create(:reminder, :with_unread_notifications) }
 
-  describe "#notified?" do
-    it "returns true if notification_id is present" do
-      reminder = build_stubbed(:reminder, :notified)
-
-      expect(reminder).to be_notified
+      it { is_expected.to be_an_unread_notification }
     end
 
-    it "returns false if notification_id is not present" do
-      reminder = build(:reminder, notification_id: nil)
+    context "with no unread notifications" do
+      subject { create(:reminder, :with_read_notifications) }
 
-      expect(reminder).not_to be_notified
+      it { is_expected.not_to be_an_unread_notification }
+    end
+
+    context "with no notifications" do
+      subject { build(:reminder, notifications: []) }
+
+      it { is_expected.not_to be_an_unread_notification }
     end
   end
 

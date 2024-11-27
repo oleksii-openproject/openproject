@@ -37,9 +37,21 @@ FactoryBot.define do
       job_id { SecureRandom.uuid }
     end
 
-    trait :notified do
-      job_id { SecureRandom.uuid }
-      notification factory: :notification
+    trait :with_unread_notifications do
+      after(:create) do |reminder|
+        create(:reminder_notification, reminder: reminder, notification: create(:notification, read_ian: false))
+      end
     end
+
+    trait :with_read_notifications do
+      after(:create) do |reminder|
+        create(:reminder_notification, reminder: reminder, notification: create(:notification, read_ian: true))
+      end
+    end
+  end
+
+  factory :reminder_notification do
+    reminder
+    notification
   end
 end

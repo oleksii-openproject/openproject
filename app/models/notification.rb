@@ -51,7 +51,8 @@ class Notification < ApplicationRecord
   belongs_to :journal
   belongs_to :resource, polymorphic: true
 
-  has_one :reminder, dependent: :nullify
+  has_one :reminder_notification, dependent: :destroy
+  has_one :reminder, through: :reminder_notification
 
   include Scopes::Scoped
   scopes :unsent_reminders_before,

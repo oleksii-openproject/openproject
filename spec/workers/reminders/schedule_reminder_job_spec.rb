@@ -49,32 +49,28 @@ RSpec.describe Reminders::ScheduleReminderJob do
 
     it "creates a notification from the reminder" do
       notification_svc = nil
-      expect { notification_svc = subject }.to change(Notification, :count).by(1)
-
-      notification = notification_svc.result
+      expect { notification_svc = subject }.to change(Notification, :count).by(1) & change(ReminderNotification, :count).by(1)
 
       aggregate_failures "notification attributes" do
+        notification = notification_svc.result
+
         expect(notification.recipient_id).to eq(reminder.creator_id)
         expect(notification.resource).to eq(reminder.remindable)
         expect(notification.reason).to eq("reminder")
       end
 
-      aggregate_failures "marks the reminder as notified" do
-        expect(reminder.reload).to be_notified
-        expect(reminder.notification).to eq(notification)
+      aggregate_failures "marks reminder as having unread notifications" do
+        expect(reminder.reload).to be_an_unread_notification
       end
     end
 
     context "when the reminder is already notified" do
-      let(:reminder) { build_stubbed(:reminder, :notified) }
-
       before do
-        allow(Notifications::CreateService).to receive(:new).and_call_original
+        create(:reminder_notification, reminder: reminder, notification: create(:notification, read_ian: false))
       end
 
       it "does not create a notification from the reminder" do
         expect { subject }.not_to change(Notification, :count)
-        expect(Notifications::CreateService).not_to have_received(:new)
       end
     end
   end
