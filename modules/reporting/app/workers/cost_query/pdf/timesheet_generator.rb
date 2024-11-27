@@ -15,7 +15,7 @@ class CostQuery::PDF::TimesheetGenerator
   end
 
   def heading
-    query.name || "Timesheet"
+    query.name || I18n.t(:"export.timesheet.timesheet")
   end
 
   def footer_title
@@ -103,7 +103,13 @@ class CostQuery::PDF::TimesheetGenerator
   # rubocop:enable Metrics/AbcSize
 
   def table_header_columns
-    with_times_column? ? ["Date", "Work package", "Time", "Hours", "Activity"] : ["Date", "Work package", "Hours", "Activity"]
+    [
+      I18n.t(:"activerecord.attributes.time_entry.spent_on"),
+      I18n.t(:"activerecord.models.work_package"),
+      with_times_column? ? I18n.t(:"export.timesheet.time") : nil,
+      I18n.t(:"activerecord.attributes.time_entry.hours"),
+      I18n.t(:"activerecord.attributes.time_entry.activity")
+    ].compact
   end
 
   def table_columns_widths
