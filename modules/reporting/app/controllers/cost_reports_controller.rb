@@ -83,12 +83,18 @@ class CostReportsController < ApplicationController
   def perform
     respond_to do |format|
       format.html do
-        session[report_engine.name.underscore.to_sym].try(:delete, :name)
+        session[session_name].try(:delete, :name)
+        # get rid of unsaved filters and grouping
+        store_query(@query) if @query&.id != session[session_name].try(:id)
         render locals: { menu_name: project_or_global_menu }
       end
       format.xls { export(:xls) }
       format.pdf { export(:pdf) }
     end
+  end
+
+  def session_name
+    report_engine.name.underscore.to_sym
   end
 
   def export(format)
@@ -255,7 +261,7 @@ class CostReportsController < ApplicationController
   # Get the filter params with an optional project context
   def filter_params
     filters = http_filter_parameters if set_filter?
-    filters ||= session[report_engine.name.underscore.to_sym].try(:[], :filters)
+    filters ||= session[session_name].try(:[], :filters)
     filters ||= default_filter_parameters
 
     update_project_context!(filters)
@@ -267,7 +273,7 @@ class CostReportsController < ApplicationController
   # Return the active group bys
   def group_params
     groups = http_group_parameters if set_filter?
-    groups ||= session[report_engine.name.underscore.to_sym].try(:[], :groups)
+    groups ||= session[session_name].try(:[], :groups)
     groups || default_group_parameters
   end
 
@@ -495,8 +501,8 @@ class CostReportsController < ApplicationController
   # Prepare the query from the request
   def prepare_query
     determine_settings
-    @query = build_query(session[report_engine.name.underscore.to_sym][:filters],
-                         session[report_engine.name.underscore.to_sym][:groups])
+    @query = build_query(session[session_name][:filters],
+                         session[session_name][:groups])
 
     set_cost_type if @unit_id.present?
   end
@@ -507,14 +513,14 @@ class CostReportsController < ApplicationController
   def determine_settings
     if force_default?
       filters = default_filter_parameters
-      groups  = default_group_parameters
-      session[report_engine.name.underscore.to_sym].try :delete, :name
+      groups = default_group_parameters
+      session[session_name].try :delete, :name
     else
       filters = filter_params
-      groups  = group_params
+      groups = group_params
     end
-    cookie = session[report_engine.name.underscore.to_sym] || {}
-    session[report_engine.name.underscore.to_sym] = cookie.merge(filters:, groups:)
+    cookie = session[session_name] || {}
+    session[session_name] = cookie.merge(filters:, groups:)
   end
 
   ##
@@ -549,7 +555,8 @@ class CostReportsController < ApplicationController
       h
     end
     cookie[:name] = @query.name if @query.name
-    session[report_engine.name.underscore.to_sym] = cookie
+    cookie[:id] = @query.id
+    session[session_name] = cookie
   end
 
   ##
