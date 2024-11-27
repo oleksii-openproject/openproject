@@ -15,12 +15,20 @@
     justify-content: flex-start
     align-items: center
 
+    &--heading,
+    &--row-item
+      &:not(:first-child)
+        padding-left: 6px
+
+      &:not(:last-child)
+        padding-right: 6px
+
     &--mobile-heading,
     &--row-label
       display: none
 
-    &--wide-column
-      grid-column: span 3
+    &--main-column
+      grid-column: span 2
 
 @media screen and (max-width: $breakpoint-md)
   .op-border-box-grid

@@ -3,7 +3,7 @@ module OpenIDConnect
     class TableComponent < ::OpPrimer::BorderBoxTableComponent
       columns :name, :type, :users, :creator, :created_at
 
-      wide_columns :name
+      main_column :name
 
       mobile_columns :name, :type, :users
 

@@ -59,22 +59,22 @@ module OpPrimer
         @mobile_labels = names.map(&:to_sym)
       end
 
-      # Declare wide columns, that will result in a grid column span of 3
+      # Declare main columns, that will result in a grid column span of 2 and not truncate text
       #
       #     column_grid_span :title
       #
-      def wide_columns(*names)
-        return Array(@wide_columns) if names.empty?
+      def main_column(*names)
+        return Array(@main_columns) if names.empty?
 
-        @wide_columns = names.map(&:to_sym)
+        @main_columns = names.map(&:to_sym)
       end
     end
 
     delegate :mobile_columns, :mobile_labels,
              to: :class
 
-    def wide_column?(column)
-      self.class.wide_columns.include?(column)
+    def main_column?(column)
+      self.class.main_column.include?(column)
     end
 
     def header_args(_column)
@@ -88,7 +88,7 @@ module OpPrimer
 
     def header_classes(column)
       classes = [heading_class]
-      classes << "op-border-box-grid--wide-column" if wide_column?(column)
+      classes << "op-border-box-grid--main-column" if main_column?(column)
 
       classes.join(" ")
     end
