@@ -41,18 +41,21 @@ RSpec.describe Reminder do
       subject { create(:reminder, :with_unread_notifications) }
 
       it { is_expected.to be_an_unread_notification }
+      it { expect(subject.unread_notifications).to be_present }
     end
 
     context "with no unread notifications" do
       subject { create(:reminder, :with_read_notifications) }
 
       it { is_expected.not_to be_an_unread_notification }
+      it { expect(subject.unread_notifications).to be_empty }
     end
 
     context "with no notifications" do
-      subject { build(:reminder, notifications: []) }
+      subject { build_stubbed(:reminder) }
 
       it { is_expected.not_to be_an_unread_notification }
+      it { expect(subject.unread_notifications).to be_empty }
     end
   end
 

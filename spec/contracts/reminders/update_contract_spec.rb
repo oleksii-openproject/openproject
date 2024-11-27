@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2024 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -26,22 +28,41 @@
 # See COPYRIGHT and LICENSE files for more details.
 #++
 
-class Reminder < ApplicationRecord
-  belongs_to :remindable, polymorphic: true
-  belongs_to :creator, class_name: "User"
+require "spec_helper"
+require "contracts/shared/model_contract_shared_context"
 
-  has_many :reminder_notifications, dependent: :destroy
-  has_many :notifications, through: :reminder_notifications
+RSpec.describe Reminders::UpdateContract do
+  include_context "ModelContract shared context"
 
-  def unread_notifications?
-    notifications.exists?(read_ian: [false, nil])
+  let(:contract) { described_class.new(reminder, user) }
+  let(:user) { build_stubbed(:admin) }
+  let(:creator) { user }
+  let(:reminder) { build_stubbed(:reminder, creator:) }
+
+  before do
+    User.current = user
+    allow(User).to receive(:exists?).with(user.id).and_return(true)
   end
 
-  def unread_notifications
-    notifications.where(read_ian: [false, nil])
+  describe "validate unchangeable attributes" do
+    context "when remindable changed" do
+      before do
+        reminder.remindable = build_stubbed(:work_package)
+      end
+
+      it_behaves_like "contract is invalid", base: :unchangeable_attributes
+    end
+
+    context "when creator_id changed" do
+      before do
+        new_creator = build_stubbed(:user)
+        reminder.creator = new_creator
+        allow(User).to receive(:exists?).with(new_creator.id).and_return(true)
+      end
+
+      it_behaves_like "contract is invalid", base: :unchangeable_attributes
+    end
   end
 
-  def scheduled?
-    job_id.present?
-  end
+  include_examples "contract reuses the model errors"
 end

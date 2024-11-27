@@ -26,22 +26,38 @@
 # See COPYRIGHT and LICENSE files for more details.
 #++
 
-class Reminder < ApplicationRecord
-  belongs_to :remindable, polymorphic: true
-  belongs_to :creator, class_name: "User"
+module Reminders
+  class UpdateService < ::BaseServices::Update
+    def after_perform(service_call)
+      reminder = service_call.result
 
-  has_many :reminder_notifications, dependent: :destroy
-  has_many :notifications, through: :reminder_notifications
+      if remind_at_changed?(reminder)
+        destroy_scheduled_reminder_job(reminder.job_id) if reminder.scheduled?
+        mark_unread_notifications_as_read_for(reminder) if reminder.unread_notifications?
 
-  def unread_notifications?
-    notifications.exists?(read_ian: [false, nil])
-  end
+        job = Reminders::ScheduleReminderJob.schedule(reminder)
+        reminder.update_columns(job_id: job.job_id)
+      end
 
-  def unread_notifications
-    notifications.where(read_ian: [false, nil])
-  end
+      service_call
+    end
 
-  def scheduled?
-    job_id.present?
+    private
+
+    def remind_at_changed?(reminder)
+      # For some reason reminder.remind_at_changed? returns false
+      # so we assume a change if remind_at is present in the params (would have passed contract validation)
+      params.key?(:remind_at) && reminder.remind_at == params[:remind_at]
+    end
+
+    def destroy_scheduled_reminder_job(job_id)
+      return unless job = GoodJob::Job.find_by(id: job_id)
+
+      job.destroy unless job.finished?
+    end
+
+    def mark_unread_notifications_as_read_for(reminder)
+      reminder.unread_notifications.update_all(read_ian: true)
+    end
   end
 end

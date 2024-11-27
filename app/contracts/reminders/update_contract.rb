@@ -26,22 +26,16 @@
 # See COPYRIGHT and LICENSE files for more details.
 #++
 
-class Reminder < ApplicationRecord
-  belongs_to :remindable, polymorphic: true
-  belongs_to :creator, class_name: "User"
+module Reminders
+  class UpdateContract < BaseContract
+    validate :unchangeable_attributes
 
-  has_many :reminder_notifications, dependent: :destroy
-  has_many :notifications, through: :reminder_notifications
+    private
 
-  def unread_notifications?
-    notifications.exists?(read_ian: [false, nil])
-  end
-
-  def unread_notifications
-    notifications.where(read_ian: [false, nil])
-  end
-
-  def scheduled?
-    job_id.present?
+    def unchangeable_attributes
+      if model.remindable_changed? || model.creator_id_changed?
+        errors.add(:base, :unchangeable_attributes)
+      end
+    end
   end
 end
