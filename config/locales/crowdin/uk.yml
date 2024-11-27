@@ -33,7 +33,7 @@ uk:
         label_activity_show_only_changes: "Показувати лише зміни"
         label_sort_asc: "Найновіші внизу"
         label_sort_desc: "Найновіші вгорі"
-        label_type_to_comment: "Add a comment. Type @ to notify people."
+        label_type_to_comment: "Додайте коментар. Введіть @, щоб сповістити людину."
         label_submit_comment: "Надіслати коментар"
         changed_on: "змінено"
         created_on: "створив(-ла)"
