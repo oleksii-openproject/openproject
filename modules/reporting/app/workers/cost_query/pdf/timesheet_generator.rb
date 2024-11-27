@@ -141,7 +141,7 @@ class CostQuery::PDF::TimesheetGenerator
       end
       table.columns(1).style do |c|
         if c.colspan > 1
-          c.borders = %i[left right]
+          c.borders = %i[left right bottom]
           c.padding = [0, 5, 8, 5]
           row_nr = c.row - 1
           values = table.columns(1..-1).rows(row_nr..row_nr)
