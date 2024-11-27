@@ -15,6 +15,8 @@ RSpec.describe "My Account 2FA configuration",
            password_confirmation: user_password)
   end
 
+  include Flash::Expectations
+
   before do
     login_as user
   end
@@ -117,6 +119,8 @@ RSpec.describe "My Account 2FA configuration",
     # Confirm again
     find(".two-factor--mark-default-button").click
     dialog.confirm_flow_with user_password, should_fail: false
+
+    expect_and_dismiss_flash(message: "Successful update")
 
     expect(page).to have_css(".mobile-otp--two-factor-device-row", count: 2)
     rows = page.all(".mobile-otp--two-factor-device-row")

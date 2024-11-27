@@ -7,7 +7,7 @@ module Saml
 
       mobile_labels :users
 
-      wide_columns :name
+      main_column :name
 
       def initial_sort
         %i[id asc]
