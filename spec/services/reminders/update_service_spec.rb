@@ -57,7 +57,7 @@ RSpec.describe Reminders::UpdateService do
       end
 
       it "reschedules the reminder" do
-        expect { subject }.to change(model_instance, :job_id).from("1").to("2")
+        expect { subject }.to change(model_instance.reload, :job_id).from("1").to("2")
 
         aggregate_failures "destroy existing job" do
           expect(GoodJob::Job).to have_received(:find_by).with(id: "1")
@@ -83,7 +83,7 @@ RSpec.describe Reminders::UpdateService do
       end
 
       it "schedules a new job" do
-        expect { subject }.to change(model_instance, :job_id).from("1").to("2")
+        expect { subject }.to change(model_instance.reload, :job_id).from("1").to("2")
 
         aggregate_failures "does NOT destroy existing job" do
           expect(GoodJob::Job).to have_received(:find_by).with(id: "1")
@@ -100,7 +100,7 @@ RSpec.describe Reminders::UpdateService do
       let(:call_attributes) { { remind_at: 2.days.from_now.in_time_zone("Africa/Nairobi") } }
 
       it "schedules the reminder" do
-        expect { subject }.to change(model_instance, :job_id).from("1").to("2")
+        expect { subject }.to change(model_instance.reload, :job_id).from("1").to("2")
       end
     end
   end
