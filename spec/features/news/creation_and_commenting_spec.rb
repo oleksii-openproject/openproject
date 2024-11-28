@@ -43,6 +43,8 @@ RSpec.describe "News creation and commenting", :js, :with_cuprite do
            member_with_permissions: { project => %i[manage_news comment_news] })
   end
 
+  include Flash::Expectations
+
   it "allows creating new and commenting it all of which will result in notifications and mails" do
     visit project_news_index_path(project)
 
@@ -81,7 +83,10 @@ RSpec.describe "News creation and commenting", :js, :with_cuprite do
 
     perform_enqueued_jobs do
       click_button "Add comment"
+      wait_for_network_idle
     end
+
+    expect_and_dismiss_flash message: "Comment added"
 
     # The new comment is visible on the show page
     expect(page)
