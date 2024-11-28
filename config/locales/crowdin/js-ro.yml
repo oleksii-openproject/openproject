@@ -615,7 +615,7 @@ ro:
         created: "Creat pe"
         scheduled: "Planificat"
         commented: "Cu comentarii"
-        processed: "Processed"
+        processed: "Procesat"
         prioritized: "Prioritized"
         dateAlert: "Alertă dată"
         shared: "Partajat"
@@ -958,7 +958,7 @@ ro:
         children_expanded: "Nivelul ierarhic %{level}, extins. Faceți clic pentru a restrânge copiii filtrați"
       faulty_query:
         title: Pachetele de lucru nu au putut fi încărcate.
-        description: Vizualizarea dvs. este eronată și nu a putut fi procesată.
+        description: Vederea ta este eronată și nu a putut fi prelucrată.
       no_results:
         title: Nu sunt pachete de lucru de afișat.
         description: Nu a fost creat niciun pachet de lucru, sau toate sunt eliminate prin filtru.

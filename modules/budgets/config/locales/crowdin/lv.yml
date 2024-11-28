@@ -26,8 +26,8 @@ lv:
     attributes:
       budget:
         author: "Autors"
-        available: "Available"
-        budget: "Planned"
+        available: "Pieejams"
+        budget: "Plānots"
         budget_ratio: "Spent (ratio)"
         description: "Apraksts"
         spent: "Pavadīts"
@@ -37,20 +37,20 @@ lv:
         labor_budget: "Planned labor costs"
         material_budget: "Planned unit costs"
       work_package:
-        budget_subject: "Budget title"
+        budget_subject: "Budžeta nosaukums"
     models:
       budget: "Budžets"
-      material_budget_item: "Unit"
+      material_budget_item: "Vienība"
   activity:
     filter:
       budget: "Budžets"
   attributes:
     budget: "Budžets"
-  button_add_budget_item: "Add planned costs"
-  button_add_budget: "Add budget"
-  button_add_cost_type: "Add cost type"
-  button_cancel_edit_budget: "Cancel editing budget"
-  button_cancel_edit_costs: "Cancel editing costs"
+  button_add_budget_item: "Pievienot plānotās izmaksas"
+  button_add_budget: "Pievienot budžetu"
+  button_add_cost_type: "Pievienot izmaksu veidu"
+  button_cancel_edit_budget: "Atcelt budžeta rediģēšanu"
+  button_cancel_edit_costs: "Atcelt izmaksu rediģēšanu"
   caption_labor: "Labor"
   caption_labor_costs: "Actual labor costs"
   caption_material_costs: "Actual unit costs"
