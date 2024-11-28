@@ -134,6 +134,14 @@
 </div>
 
 <ng-template let-item let-search="search" #defaultOption [ngSwitch]="true">
+  <ng-container *ngSwitchCase="!resource && !!item.depth">
+      <span [ngOptionHighlight]="search"
+            [textContent]="item.name"
+            [ngStyle]="{'padding-left.px': item.depth * 16}"
+            class="ng-option-label ellipsis">
+      </span>
+  </ng-container>
+
   <ng-container *ngSwitchCase="resource === 'work_packages' || resource === 'parent-child'">
     <div class="op-autocompleter--option-wrapper">
       <op-principal
@@ -167,7 +175,7 @@
         <span
           class="op-autocompleter--wp-id"
           [ngOptionHighlight]="search"
-        >#{{item.id}}</span>
+        >#{{ item.id }}</span>
 
         <span
           [textContent]="item.status?.name"
@@ -195,7 +203,7 @@
   </ng-container>
 
   <ng-container
-    *ngSwitchCase="resource ==='subproject' || resource ==='version' || resource ==='status' || resource ==='default' || !resource">
+    *ngSwitchCase="resource ==='subproject' || resource ==='version' || resource ==='status' || resource ==='default' || (!resource && !item.depth)">
     <span [ngOptionHighlight]="search">{{ item.name }}</span>
     <span
       class="op-autocompleter__option-principal-email"
@@ -212,7 +220,7 @@
       class="ng-value-label"
       [ngOptionHighlight]="search"
     >
-      {{item.type?.name }} #{{ item.id }} {{ item.subject || item.name }}
+      {{ item.type?.name }} #{{ item.id }} {{ item.subject || item.name }}
     </span>
   </ng-container>
 
@@ -220,6 +228,6 @@
     <span class="ng-value-icon left" (click)="clear(item)">×</span>
     <span
       [ngOptionHighlight]="search"
-      class="ng-value-label">{{item.name}}</span>
+      class="ng-value-label">{{ item.name }}</span>
   </ng-container>
 </ng-template>

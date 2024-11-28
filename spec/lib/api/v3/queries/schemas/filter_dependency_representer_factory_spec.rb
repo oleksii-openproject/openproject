@@ -157,6 +157,17 @@ RSpec.describe API::V3::Queries::Schemas::FilterDependencyRepresenterFactory do
         it_behaves_like "includes the cf json_cache_key mixin"
       end
 
+      describe "type hierarchy" do
+        let(:hierarchy_root) { build_stubbed(:hierarchy_item) }
+        let(:custom_field) { build_stubbed(:custom_field, field_format: "hierarchy", hierarchy_root:) }
+
+        it "is the hierarchy dependency" do
+          expect(subject).to be_a(API::V3::Queries::Schemas::HierarchyFilterDependencyRepresenter)
+        end
+
+        it_behaves_like "includes the cf json_cache_key mixin"
+      end
+
       context "type date" do
         let(:custom_field) { build_stubbed(:date_wp_custom_field) }
 

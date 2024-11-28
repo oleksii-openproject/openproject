@@ -38,6 +38,8 @@ module Meetings
 
     mobile_labels :project_name
 
+    main_column :title
+
     def sortable?
       true
     end

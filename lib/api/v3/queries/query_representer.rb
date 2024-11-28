@@ -344,8 +344,7 @@ module API
 
         def filters
           represented.filters.map do |filter|
-            ::API::V3::Queries::Filters::QueryFilterInstanceRepresenter
-              .new(filter)
+            ::API::V3::Queries::Filters::QueryFilterInstanceRepresenter.new(filter)
           end
         end
 

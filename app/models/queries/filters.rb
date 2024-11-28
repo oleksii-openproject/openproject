@@ -40,7 +40,8 @@ module Queries::Filters
     search: Queries::Filters::Strategies::Search,
     float: Queries::Filters::Strategies::Float,
     inexistent: Queries::Filters::Strategies::Inexistent,
-    empty_value: Queries::Filters::Strategies::EmptyValue
+    empty_value: Queries::Filters::Strategies::EmptyValue,
+    hierarchy: Queries::Filters::Strategies::Hierarchy
   }.freeze
 
   ##
