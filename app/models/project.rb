@@ -88,6 +88,8 @@ class Project < ApplicationRecord
   has_many :storages, through: :project_storages
   has_many :life_cycle_steps, class_name: "Project::LifeCycleStep", dependent: :destroy
 
+  accepts_nested_attributes_for :life_cycle_steps
+
   store_attribute :settings, :deactivate_work_package_attachments, :boolean
 
   acts_as_favorable

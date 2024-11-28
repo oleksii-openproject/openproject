@@ -33,32 +33,45 @@ module ProjectLifeCycles
         include ApplicationHelper
         include OpPrimer::ComponentHelpers
 
-        def initialize(life_cycle_step:)
-          super
-
-          @life_cycle_step = life_cycle_step
-        end
-
         private
 
         def not_set?
-          @life_cycle_step.not_set?
+          model.not_set?
         end
 
         def render_value
-          case @life_cycle_step
+          case model
           when Project::Gate
             render(Primer::Beta::Text.new) do
-              concat helpers.format_date(@life_cycle_step.date)
+              concat helpers.format_date(model.date)
             end
           when Project::Stage
             render(Primer::Beta::Text.new) do
               concat [
-                helpers.format_date(@life_cycle_step.start_date),
-                helpers.format_date(@life_cycle_step.end_date)
+                helpers.format_date(model.start_date),
+                helpers.format_date(model.end_date)
               ].join(" - ")
             end
           end
+        end
+
+        def icon
+          case model
+          when Project::Stage
+            :"git-commit"
+          when Project::Gate
+            :diamond
+          else
+            raise NotImplementedError, "Unknown model #{model.class} to render a LifeCycleForm with"
+          end
+        end
+
+        def icon_color_class
+          helpers.hl_inline_class("life_cycle_step_definition", model.definition)
+        end
+
+        def text
+          model.name
         end
       end
     end

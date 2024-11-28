@@ -83,10 +83,7 @@ module ::Overviews
 
     def project_life_cycles_dialog
       respond_with_dialog(
-        ProjectCustomFields::Sections::EditDialogComponent.new(
-          project: @project,
-          project_custom_field_section: ProjectCustomFieldSection.first
-        )
+        ProjectLifeCycles::Sections::EditDialogComponent.new(@project)
       )
     end
 

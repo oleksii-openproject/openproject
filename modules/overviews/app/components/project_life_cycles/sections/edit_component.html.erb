@@ -1,0 +1,18 @@
+<%= helpers.angular_component_tag 'opce-custom-modal-overlay' %>
+<%=
+  component_wrapper do
+    primer_form_with(
+      id: "project-life-cycles-edit-form",
+      model:,
+      method: :put,
+      data: { turbo: true, turbo_stream: true, "test-selector": "async-dialog-content" },
+      url: update_project_life_cycles_path(project_id: model.id),
+    ) do |f|
+      render(Primer::Forms::SpacingWrapper.new) do
+        f.fields_for(:life_cycle_steps, life_cycle_steps) do |lcf|
+          render(Projects::LifeCycles::Form.new(lcf))
+        end
+      end
+    end
+  end
+%>

@@ -4,7 +4,7 @@
       classes: 'op-project-life-cyle-section-container',
       test_selector: "project-life-cycle-section"
     )) do |section|
-      section.with_title { t('label_life_cycle_plural') }
+      section.with_title { t("label_life_cycle_plural") }
 
       if allowed_to_edit?
         section.with_action_icon(
@@ -24,7 +24,7 @@
           margin =  i == @life_cycle_steps.size - 1 ? 0 : 3
           details_container.with_row(mb: margin) do
             render(ProjectLifeCycles::Sections::ProjectLifeCycles::ShowComponent.new(
-              life_cycle_step:
+              life_cycle_step
             ))
           end
         end

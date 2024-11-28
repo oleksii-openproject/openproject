@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 #-- copyright
 # OpenProject is an open source project management software.
 # Copyright (C) the OpenProject GmbH
@@ -28,32 +26,12 @@
 # See COPYRIGHT and LICENSE files for more details.
 #++
 
-class ApplicationForm < Primer::Forms::Base
-  def self.settings_form
-    form do |f|
-      f = SettingsFormDecorator.new(f)
-      yield f
+module ProjectLifeCycles
+  module Sections
+    class EditDialogComponent < ApplicationComponent
+      include ApplicationHelper
+      include OpTurbo::Streamable
+      include OpPrimer::ComponentHelpers
     end
-  end
-
-  def url_helpers
-    Rails.application.routes.url_helpers
-  end
-
-  # @return [ActionView::Base] the view helper instance
-  def helpers
-    @view_context.helpers
-  end
-
-  # @return [ActiveRecord::Base] the model instance given to the form builder
-  def model
-    @builder.object
-  end
-
-  # @param field_name [Symbol] the name of the attribute for which to retrieve
-  #  the human-readable name
-  # @return [String] the human-readable name of the specified attribute
-  def attribute_name(field_name)
-    model.class.human_attribute_name(field_name)
   end
 end
