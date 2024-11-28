@@ -39,11 +39,12 @@ RSpec.describe Reminders::UpdateService do
   describe "remind_at changed" do
     subject { described_class.new(user:, model: model_instance).call(call_attributes) }
 
-    let(:model_instance) { create(:reminder, :scheduled, :with_unread_notifications, creator: user, job_id: 1) }
+    let(:model_instance) { create(:reminder, :scheduled, :with_unread_notifications, creator: user) }
     let(:user) { create(:admin) }
     let(:call_attributes) { { remind_at: 2.days.from_now } }
 
     before do
+      model_instance.update(job_id: 1)
       allow(Reminders::ScheduleReminderJob).to receive(:schedule)
         .with(model_instance)
         .and_return(instance_double(Reminders::ScheduleReminderJob, job_id: 2))
@@ -53,15 +54,16 @@ RSpec.describe Reminders::UpdateService do
       let(:job) { instance_double(GoodJob::Job, finished?: false, destroy: true) }
 
       before do
-        allow(GoodJob::Job).to receive(:find_by).with(id: "1").and_return(job)
+        allow(GoodJob::Job).to receive(:find_by).and_return(job)
       end
 
       it "reschedules the reminder" do
-        expect { subject }.to change(model_instance.reload, :job_id).from("1").to("2")
+        subject
 
         aggregate_failures "destroy existing job" do
           expect(GoodJob::Job).to have_received(:find_by).with(id: "1")
           expect(job).to have_received(:destroy)
+          expect(model_instance.reload.job_id).to eq("2")
         end
 
         aggregate_failures "marks unread notifications as read" do
@@ -79,15 +81,16 @@ RSpec.describe Reminders::UpdateService do
       let(:job) { instance_double(GoodJob::Job, finished?: true, destroy: true) }
 
       before do
-        allow(GoodJob::Job).to receive(:find_by).with(id: "1").and_return(job)
+        allow(GoodJob::Job).to receive(:find_by).and_return(job)
       end
 
       it "schedules a new job" do
-        expect { subject }.to change(model_instance.reload, :job_id).from("1").to("2")
+        subject
 
         aggregate_failures "does NOT destroy existing job" do
           expect(GoodJob::Job).to have_received(:find_by).with(id: "1")
           expect(job).not_to have_received(:destroy)
+          expect(model_instance.reload.job_id).to eq("2")
         end
 
         aggregate_failures "schedule new job" do
@@ -100,7 +103,8 @@ RSpec.describe Reminders::UpdateService do
       let(:call_attributes) { { remind_at: 2.days.from_now.in_time_zone("Africa/Nairobi") } }
 
       it "schedules the reminder" do
-        expect { subject }.to change(model_instance.reload, :job_id).from("1").to("2")
+        subject
+        expect(model_instance.reload.job_id).to eq("2")
       end
     end
   end
