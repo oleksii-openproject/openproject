@@ -14,7 +14,7 @@ lv:
       response_limit_text: 'The maximum number of characters to treat the HCaptcha response as valid.'
       website_key_text: 'Enter the website key you created on the reCAPTCHA admin console for this domain.'
       secret_key: 'Slepenā atslēga'
-      secret_key_text: 'Enter the secret key you created on the reCAPTCHA admin console.'
+      secret_key_text: 'Ievadiet slepeno atslēgu, ko izveidojāt reCAPTCHA admin konsole.'
       type: 'Use reCAPTCHA'
       type_disabled: 'Disable reCAPTCHA'
       type_v2: 'reCAPTCHA v2'

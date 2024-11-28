@@ -630,7 +630,7 @@ ko:
       action_bar_title: "Add relations to other work packages to create a link between them."
       no_results_title_text: There are currently no relations available.
       blankslate_heading: "No relations"
-      blankslate_description: "This work package does not yet have any relations yet."
+      blankslate_description: "This work package does not have any relations yet."
     label_add_x: "Add %{x}"
     label_edit_x: "Edit %{x}"
     label_add_description: "Add description"
@@ -2237,6 +2237,7 @@ ko:
   label_environment: "환경"
   label_estimates_and_progress: "견적 및 진행률"
   label_equals: "일치함"
+  label_equals_with_descendants: "is any with descendants"
   label_everywhere: "어디에 있든지"
   label_example: "예"
   label_experimental: "실험"
