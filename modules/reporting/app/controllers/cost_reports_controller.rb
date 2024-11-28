@@ -76,25 +76,20 @@ class CostReportsController < ApplicationController
 
   def index
     table
+    return if performed?
 
-    perform unless performed?
-  end
-
-  def perform
     respond_to do |format|
-      format.html do
-        session[session_name].try(:delete, :name)
-        # get rid of unsaved filters and grouping
-        store_query(@query) if @query&.id != session[session_name].try(:id)
-        render locals: { menu_name: project_or_global_menu }
-      end
+      format.html { render_html }
       format.xls { export(:xls) }
       format.pdf { export(:pdf) }
     end
   end
 
-  def session_name
-    report_engine.name.underscore.to_sym
+  def render_html
+    session[session_name].try(:delete, :name)
+    # get rid of unsaved filters and grouping
+    store_query(@query) if @query&.id != session[session_name].try(:id)
+    render locals: { menu_name: project_or_global_menu }
   end
 
   def export(format)
@@ -546,17 +541,25 @@ class CostReportsController < ApplicationController
   # Store query in the session
   def store_query(_query)
     cookie = {}
-    cookie[:groups] = @query.group_bys.inject({}) do |h, group|
-      ((h[:"#{group.type}s"] ||= []) << group.underscore_name.to_sym) && h
-    end
-    cookie[:filters] = @query.filters.inject(operators: {}, values: {}) do |h, filter|
+    cookie[:groups] = cookie_groups
+    cookie[:filters] = cookie_filters
+    cookie[:name] = @query.name if @query.name
+    cookie[:id] = @query.id
+    session[session_name] = cookie
+  end
+
+  def cookie_filters
+    @query.filters.inject(operators: {}, values: {}) do |h, filter|
       h[:operators][filter.underscore_name.to_sym] = filter.operator.to_s
       h[:values][filter.underscore_name.to_sym] = filter.values
       h
     end
-    cookie[:name] = @query.name if @query.name
-    cookie[:id] = @query.id
-    session[session_name] = cookie
+  end
+
+  def cookie_groups
+    @query.group_bys.inject({}) do |h, group|
+      ((h[:"#{group.type}s"] ||= []) << group.underscore_name.to_sym) && h
+    end
   end
 
   ##
@@ -588,5 +591,9 @@ class CostReportsController < ApplicationController
       @query.deserialize if @query
     end
   rescue ActiveRecord::RecordNotFound
+  end
+
+  def session_name
+    report_engine.name.underscore.to_sym
   end
 end

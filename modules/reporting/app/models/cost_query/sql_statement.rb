@@ -74,6 +74,8 @@ class CostQuery::SqlStatement < Report::SqlStatement
   #   cost_type_id              | -1                       | cost_type_id
   #   type                      | "TimeEntry"              | "CostEntry"
   #   count                     | 1                        | 1
+  #   start_time                | start_time               | nil
+  #   time_zone                 | time_zone                | nil
   #
   # Also: This _should_ handle joining activities and cost_types, as the logic differs for time_entries
   # and cost_entries.
@@ -102,7 +104,7 @@ class CostQuery::SqlStatement < Report::SqlStatement
   #
   # @param [CostQuery::SqlStatement] query The statement to adjust
   def self.unify_time_entries(query)
-    query.select :activity_id, :logged_by_id, units: :hours, cost_type_id: -1
+    query.select :activity_id, :logged_by_id, :start_time, :time_zone, units: :hours, cost_type_id: -1
     query.select cost_type: quoted_label(:caption_labor)
   end
 
@@ -111,7 +113,7 @@ class CostQuery::SqlStatement < Report::SqlStatement
   #
   # @param [CostQuery::SqlStatement] query The statement to adjust
   def self.unify_cost_entries(query)
-    query.select :units, :cost_type_id, :logged_by_id, activity_id: -1
+    query.select :units, :cost_type_id, :logged_by_id, activity_id: -1, start_time: nil, time_zone: nil
     query.select cost_type: "cost_types.name"
     query.join CostType
   end

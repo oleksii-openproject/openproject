@@ -285,4 +285,12 @@ module WorkPackage::PDFExport::Common::Common
   def current_page_nr
     pdf.page_number + @page_count - (with_cover? ? 1 : 0)
   end
+
+  def write_horizontal_line(y_position, height, color)
+    draw_horizontal_line(
+      y_position,
+      pdf.bounds.left, pdf.bounds.right,
+      height, color
+    )
+  end
 end

@@ -80,29 +80,37 @@ class CostQuery::PDF::TimesheetGenerator
       .group_by { |r| DateTime.parse(r.fields["spent_on"]) }
       .sort
       .each do |spent_on, lines|
-      day_rows = []
-      lines.each do |r|
-        day_rows.push(
-          [
-            { content: format_date(spent_on), rowspan: r.fields["comments"].present? ? 2 : 1 },
-            wp_subject(r.fields["work_package_id"]),
-            with_times_column? ? "??:00-??:00" : nil,
-            format_duration(r.fields["units"]),
-            activity_name(r.fields["activity_id"])
-          ].compact
-        )
-        if r.fields["comments"].present?
-          day_rows.push ([{ content: r.fields["comments"], text_color: "636C76", colspan: table_columns_span }])
-        end
-      end
-
-      # day_rows[0].unshift({ content: format_date(spent_on), rowspan: day_rows.length })
-      rows.concat(day_rows)
+      rows.concat(build_table_day_rows(spent_on, lines))
     end
     rows
   end
 
   # rubocop:enable Metrics/AbcSize
+
+  def build_table_day_rows(spent_on, lines)
+    day_rows = []
+    lines.each do |r|
+      day_rows.push(build_table_row(spent_on, r))
+      if r.fields["comments"].present?
+        day_rows.push(build_table_row_comment(r))
+      end
+    end
+    day_rows
+  end
+
+  def build_table_row(spent_on, result_entry)
+    [
+      { content: format_date(spent_on), rowspan: result_entry.fields["comments"].present? ? 2 : 1 },
+      wp_subject(result_entry.fields["work_package_id"]),
+      with_times_column? ? format_spent_on_time(result_entry) : nil,
+      format_duration(result_entry.fields["units"]),
+      activity_name(result_entry.fields["activity_id"])
+    ].compact
+  end
+
+  def build_table_row_comment(result_entry)
+    [{ content: result_entry.fields["comments"], text_color: "636C76", colspan: table_columns_span }]
+  end
 
   def table_header_columns
     [
@@ -180,6 +188,7 @@ class CostQuery::PDF::TimesheetGenerator
     end
     groups
   end
+
   # rubocop:enable Metrics/AbcSize
 
   def write_table(user_id, entries)
@@ -250,18 +259,11 @@ class CostQuery::PDF::TimesheetGenerator
     query.each_direct_result.map(&:itself)
   end
 
-  # rubocop:disable Metrics/AbcSize
   def write_hr!
     hr_style = styles.cover_header_border
-    pdf.stroke do
-      pdf.line_width = hr_style[:height]
-      pdf.stroke_color hr_style[:color]
-      pdf.stroke_horizontal_line pdf.bounds.left, pdf.bounds.right, at: pdf.cursor
-    end
+    write_horizontal_line(pdf.cursor, hr_style[:height], hr_style[:color])
     pdf.move_down(16)
   end
-
-  # rubocop:enable Metrics/AbcSize
 
   def write_heading!
     pdf.formatted_text([{ text: heading, size: 26, style: :bold }])
@@ -291,11 +293,20 @@ class CostQuery::PDF::TimesheetGenerator
     "#{hours}h"
   end
 
+  def format_spent_on_time(_result_entry)
+    # TODO implement times column
+    # date = result_entry.fields["spent_on"]
+    # hours = result_entry.fields["units"]
+    # start_time = result_entry.fields["start_time"]
+    # time_zone = result_entry.fields["time_zone"]
+    ""
+  end
+
   def with_times_column?
     true
   end
 
   def with_cover?
-    false
+    true
   end
 end
