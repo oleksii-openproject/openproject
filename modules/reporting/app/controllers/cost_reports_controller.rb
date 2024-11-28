@@ -506,16 +506,16 @@ class CostReportsController < ApplicationController
   # Determine the query settings the current request and save it to
   # the session.
   def determine_settings
-    if force_default?
-      filters = default_filter_parameters
-      groups = default_group_parameters
-      session[session_name].try :delete, :name
-    else
-      filters = filter_params
-      groups = group_params
-    end
+    return reset_settings if force_default?
+
     cookie = session[session_name] || {}
-    session[session_name] = cookie.merge(filters:, groups:)
+    session[session_name] = cookie.merge(filters: filter_params, groups: group_params)
+  end
+
+  def reset_settings
+    session[session_name].try :delete, :name
+    cookie = session[session_name] || {}
+    session[session_name] = cookie.merge(filters: default_filter_parameters, groups: default_group_parameters)
   end
 
   ##

@@ -73,7 +73,6 @@ class CostQuery::PDF::TimesheetGenerator
       .filter { |r| r.fields["type"] == "TimeEntry" }
   end
 
-  # rubocop:disable Metrics/AbcSize
   def build_table_rows(entries)
     rows = [table_header_columns]
     entries
@@ -84,8 +83,6 @@ class CostQuery::PDF::TimesheetGenerator
     end
     rows
   end
-
-  # rubocop:enable Metrics/AbcSize
 
   def build_table_day_rows(spent_on, lines)
     day_rows = []
@@ -188,7 +185,6 @@ class CostQuery::PDF::TimesheetGenerator
     end
     groups
   end
-
   # rubocop:enable Metrics/AbcSize
 
   def write_table(user_id, entries)
