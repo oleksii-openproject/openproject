@@ -49,8 +49,7 @@ class CustomActions::Actions::CustomField < CustomActions::Actions::Base
 
   def self.all
     WorkPackageCustomField
-      .where.not(field_format: %w(hierarchy))
-      .order(:name)
+      .usable_as_custom_action
       .map do |cf|
         create_subclass(cf)
       end
