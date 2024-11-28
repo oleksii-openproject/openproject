@@ -31,7 +31,7 @@ module CustomField::OrderStatements
   # value of the custom field.
   def order_statement
     case field_format
-    when "string", "date", "bool", "link", "int", "float", "list", "user", "version"
+    when "string", "date", "bool", "link", "int", "float", "list", "user", "version", "hierarchy"
       "cf_order_#{id}.value"
     end
   end
@@ -52,6 +52,8 @@ module CustomField::OrderStatements
       join_for_order_by_user_sql
     when "version"
       join_for_order_by_version_sql
+    when "hierarchy"
+      join_for_order_by_hierarchy_sql
     end
   end
 
@@ -166,5 +168,10 @@ module CustomField::OrderStatements
       join: "INNER JOIN #{Version.quoted_table_name} versions ON versions.id = cv.value::bigint",
       multi_value:
     )
+  end
+
+  def join_for_order_by_hierarchy_sql
+    table_name = CustomField::Hierarchy::Item.quoted_table_name
+    join_for_order_sql(value: "item.label", join: "INNER JOIN #{table_name} item ON item.id = cv.value::bigint")
   end
 end
