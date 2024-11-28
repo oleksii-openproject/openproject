@@ -47,7 +47,7 @@ module Reminders
     def remind_at_changed?(reminder)
       # For some reason reminder.remind_at_changed? returns false
       # so we assume a change if remind_at is present in the params (would have passed contract validation)
-      params.key?(:remind_at) && reminder.remind_at == params[:remind_at]
+      params.key?(:remind_at) && reminder.remind_at.to_i == params[:remind_at].to_i
     end
 
     def destroy_scheduled_reminder_job(job_id)

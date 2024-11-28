@@ -58,12 +58,11 @@ RSpec.describe Reminders::UpdateService do
       end
 
       it "reschedules the reminder" do
-        subject
+        expect { subject }.to change(model_instance, :job_id).from("1").to("2")
 
         aggregate_failures "destroy existing job" do
           expect(GoodJob::Job).to have_received(:find_by).with(id: "1")
           expect(job).to have_received(:destroy)
-          expect(model_instance.reload.job_id).to eq("2")
         end
 
         aggregate_failures "marks unread notifications as read" do
@@ -72,6 +71,7 @@ RSpec.describe Reminders::UpdateService do
         end
 
         aggregate_failures "schedule new job" do
+          expect(model_instance.remind_at.to_i).to eq(call_attributes[:remind_at].to_i)
           expect(Reminders::ScheduleReminderJob).to have_received(:schedule).with(model_instance)
         end
       end
@@ -85,15 +85,15 @@ RSpec.describe Reminders::UpdateService do
       end
 
       it "schedules a new job" do
-        subject
+        expect { subject }.to change(model_instance, :job_id).from("1").to("2")
 
         aggregate_failures "does NOT destroy existing job" do
           expect(GoodJob::Job).to have_received(:find_by).with(id: "1")
           expect(job).not_to have_received(:destroy)
-          expect(model_instance.reload.job_id).to eq("2")
         end
 
         aggregate_failures "schedule new job" do
+          expect(model_instance.remind_at.to_i).to eq(call_attributes[:remind_at].to_i)
           expect(Reminders::ScheduleReminderJob).to have_received(:schedule).with(model_instance)
         end
       end
@@ -102,9 +102,13 @@ RSpec.describe Reminders::UpdateService do
     context "with remind_at attribute in non-utc timezone" do
       let(:call_attributes) { { remind_at: 2.days.from_now.in_time_zone("Africa/Nairobi") } }
 
-      it "schedules the reminder" do
-        subject
-        expect(model_instance.reload.job_id).to eq("2")
+      it "reschedules the reminder" do
+        expect { subject }.to change(model_instance, :job_id).from("1").to("2")
+
+        aggregate_failures "schedule new job" do
+          expect(model_instance.remind_at.to_i).to eq(call_attributes[:remind_at].to_i)
+          expect(Reminders::ScheduleReminderJob).to have_received(:schedule).with(model_instance)
+        end
       end
     end
   end
