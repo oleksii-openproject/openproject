@@ -57,7 +57,7 @@ module Reminders
     end
 
     def mark_unread_notifications_as_read_for(reminder)
-      reminder.unread_notifications.update_all(read_ian: true)
+      reminder.unread_notifications.update_all(read_ian: true, updated_at: Time.zone.now)
     end
   end
 end
