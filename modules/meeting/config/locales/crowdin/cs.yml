@@ -162,7 +162,7 @@ cs:
   notice_meeting_updated: "This page has been updated by someone else. Reload to view changes."
   permission_create_meetings: "Vytvořit schůzku\n"
   permission_edit_meetings: "Upravit schůzku"
-  permission_delete_meetings: "Smazat schůzku"
+  permission_delete_meetings: "Odstranit schůzky"
   permission_view_meetings: "Zobrazit schůzky"
   permission_create_meeting_agendas: "Vytvořit agendy schůzek"
   permission_create_meeting_agendas_explanation: "Umožňuje upravovat obsah programu klasické schůzky."
