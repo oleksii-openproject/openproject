@@ -633,7 +633,7 @@ vi:
       action_bar_title: "Add relations to other work packages to create a link between them."
       no_results_title_text: There are currently no relations available.
       blankslate_heading: "No relations"
-      blankslate_description: "This work package does not yet have any relations yet."
+      blankslate_description: "This work package does not have any relations yet."
     label_add_x: "Add %{x}"
     label_edit_x: "Edit %{x}"
     label_add_description: "Add description"
@@ -2240,6 +2240,7 @@ vi:
   label_environment: "Môi trường"
   label_estimates_and_progress: "Ước lượng và tiến độ"
   label_equals: "là"
+  label_equals_with_descendants: "is any with descendants"
   label_everywhere: "mọi nơi"
   label_example: "Ví dụ"
   label_experimental: "Thử nghiệm"

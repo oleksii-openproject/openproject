@@ -134,7 +134,7 @@
 </div>
 
 <ng-template let-item let-search="search" #defaultOption [ngSwitch]="true">
-  <ng-container *ngSwitchCase="!resource && item.depth !== null">
+  <ng-container *ngSwitchCase="!resource && !!item.depth">
       <span [ngOptionHighlight]="search"
             [textContent]="item.name"
             [ngStyle]="{'padding-left.px': item.depth * 16}"
@@ -203,7 +203,7 @@
   </ng-container>
 
   <ng-container
-    *ngSwitchCase="resource ==='subproject' || resource ==='version' || resource ==='status' || resource ==='default' || (!resource && item.depth === null)">
+    *ngSwitchCase="resource ==='subproject' || resource ==='version' || resource ==='status' || resource ==='default' || (!resource && !item.depth)">
     <span [ngOptionHighlight]="search">{{ item.name }}</span>
     <span
       class="op-autocompleter__option-principal-email"

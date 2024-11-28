@@ -83,12 +83,12 @@ lv:
   text_costs_are_rounded_note: "Displayed values are rounded. All calculations are based on the non-rounded values."
   toggle_multiselect: "activate/deactivate multiselect"
   units: "Vienības"
-  validation_failure_date: "is not a valid date"
-  validation_failure_integer: "is not a valid integer"
+  validation_failure_date: "nav derīgs datums"
+  validation_failure_integer: "nav derīgs vesels skaitlis"
   export:
     cost_reports:
       title: "Your Cost Reports XLS export"
   reporting:
     group_by:
-      selected_columns: "Selected columns"
+      selected_columns: "Izvēlētās kolonnas"
       selected_rows: "Selected rows"
