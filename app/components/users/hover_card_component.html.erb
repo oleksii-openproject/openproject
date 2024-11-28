@@ -79,7 +79,8 @@ See COPYRIGHT and LICENSE files for more details.
     else
       render Primer::Beta::Blankslate.new(border: false, narrow: true) do |component|
         component.with_visual_icon(icon: "x-circle")
-        component.with_heading(tag: :h3).with_content(I18n.t("api_v3.errors.not_found.user"))
+        # Show a generic error message to avoid leaking information
+        component.with_heading(tag: :h3).with_content(I18n.t("http.response.unexpected"))
       end
     end
 %>

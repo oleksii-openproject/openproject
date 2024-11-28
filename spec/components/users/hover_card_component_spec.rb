@@ -53,6 +53,14 @@ RSpec.describe Users::HoverCardComponent, type: :component do
     page.find_test_selector("user-hover-card-name", text: user.name)
   end
 
+  context "when the user does not exist" do
+    let(:user) { instance_double(User, id: 9000) }
+
+    it "renders a generic error message" do
+      expect(page).to have_text(I18n.t("http.response.unexpected"))
+    end
+  end
+
   context "when displaying email addresses" do
     it "hides the email address of a user" do
       expect(page).not_to have_test_selector("user-hover-card-email")

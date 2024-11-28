@@ -35,7 +35,7 @@ class Users::HoverCardComponent < ApplicationComponent
     super
 
     @id = id
-    @user = User.find(@id)
+    @user = User.find_by(id: @id)
   end
 
   def show_email?
