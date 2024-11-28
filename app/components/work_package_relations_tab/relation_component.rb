@@ -61,7 +61,11 @@ class WorkPackageRelationsTab::RelationComponent < ApplicationComponent
     relation.description.present?
   end
 
-  def should_display_start_and_end_dates?
+  def lag_present?
+    relation.lag.present?
+  end
+
+  def should_display_dates_row?
     return false if parent_child_relationship?
 
     relation.follows? || relation.precedes?
