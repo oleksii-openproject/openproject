@@ -98,7 +98,7 @@ RSpec.describe CustomActions::Actions::CustomField do
   describe ".all" do
     before do
       allow(WorkPackageCustomField)
-        .to receive(:order)
+        .to receive(:usable_as_custom_action)
         .and_return(custom_fields)
     end
 

@@ -49,7 +49,7 @@ class CustomActions::Actions::CustomField < CustomActions::Actions::Base
 
   def self.all
     WorkPackageCustomField
-      .order(:name)
+      .usable_as_custom_action
       .map do |cf|
         create_subclass(cf)
       end
