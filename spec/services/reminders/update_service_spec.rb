@@ -39,7 +39,7 @@ RSpec.describe Reminders::UpdateService do
   describe "remind_at changed" do
     subject { described_class.new(user:, model: model_instance).call(call_attributes) }
 
-    let(:model_instance) { create(:reminder, :scheduled, creator: user, job_id: 1) }
+    let(:model_instance) { create(:reminder, :scheduled, :with_unread_notifications, creator: user, job_id: 1) }
     let(:user) { create(:admin) }
     let(:call_attributes) { { remind_at: 2.days.from_now } }
 
@@ -62,6 +62,11 @@ RSpec.describe Reminders::UpdateService do
         aggregate_failures "destroy existing job" do
           expect(GoodJob::Job).to have_received(:find_by).with(id: "1")
           expect(job).to have_received(:destroy)
+        end
+
+        aggregate_failures "marks unread notifications as read" do
+          expect(model_instance.notifications.count).to eq(1)
+          expect(model_instance.unread_notifications.count).to eq(0)
         end
 
         aggregate_failures "schedule new job" do

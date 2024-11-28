@@ -39,13 +39,13 @@ FactoryBot.define do
 
     trait :with_unread_notifications do
       after(:create) do |reminder|
-        create(:reminder_notification, reminder: reminder, notification: create(:notification, read_ian: false))
+        create(:reminder_notification, reminder:, notification: create(:notification, read_ian: false))
       end
     end
 
     trait :with_read_notifications do
       after(:create) do |reminder|
-        create(:reminder_notification, reminder: reminder, notification: create(:notification, read_ian: true))
+        create(:reminder_notification, reminder:, notification: create(:notification, read_ian: true))
       end
     end
   end
