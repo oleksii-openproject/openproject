@@ -123,12 +123,20 @@ class CostQuery::PDF::TimesheetGenerator
     with_times_column? ? [80, 193, 80, 70, 100] : [80, 270, 70, 100]
   end
 
+  def table_column_workpackage_text_width
+    (with_times_column? ? 193 : 270) - 10 # - padding
+  end
+
   def table_width
     table_columns_widths.sum
   end
 
   def table_columns_span
     with_times_column? ? 4 : 3
+  end
+
+  def table_cell_style_font_size
+    12
   end
 
   # rubocop:disable Metrics/AbcSize
@@ -139,6 +147,7 @@ class CostQuery::PDF::TimesheetGenerator
       width: table_width,
       column_widths: table_columns_widths,
       cell_style: {
+        size: table_cell_style_font_size,
         border_color: "BBBBBB",
         border_width: 0.5,
         borders: %i[top bottom],
@@ -185,6 +194,7 @@ class CostQuery::PDF::TimesheetGenerator
     end
     groups
   end
+
   # rubocop:enable Metrics/AbcSize
 
   def write_table(user_id, entries)
@@ -193,8 +203,8 @@ class CostQuery::PDF::TimesheetGenerator
     # for easier handling existing rowspan cells are grouped as one row
     grouped_rows = split_group_rows(rows)
     # start a new page if the username would be printed alone at the end of the page
-    pdf.start_new_page if available_space_from_bottom < grouped_rows[0][:height] + grouped_rows[1][:height] + 20
-    write_user(user_id)
+    pdf.start_new_page if available_space_from_bottom < grouped_rows[0][:height] + grouped_rows[1][:height] + username_height
+    write_username(user_id)
     write_grouped_tables(grouped_rows)
   end
 
@@ -266,7 +276,11 @@ class CostQuery::PDF::TimesheetGenerator
     pdf.move_down(2)
   end
 
-  def write_user(user_id)
+  def username_height
+    20 + 10
+  end
+
+  def write_username(user_id)
     pdf.formatted_text([{ text: user_name(user_id), size: 20 }])
     pdf.move_down(10)
   end
@@ -280,7 +294,8 @@ class CostQuery::PDF::TimesheetGenerator
   end
 
   def wp_subject(wp_id)
-    WorkPackage.find(wp_id).subject
+    text = WorkPackage.find(wp_id).subject
+    ellipsis_if_longer(text, table_column_workpackage_text_width, { size: table_cell_style_font_size })
   end
 
   def format_duration(hours)
