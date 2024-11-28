@@ -90,9 +90,14 @@ module CustomFields
 
       # Gets all descendant nodes in a tree starting from the item/node.
       # @param item [CustomField::Hierarchy::Item] the node
+      # @param include_self [Boolean] flag
       # @return [Success(Array<CustomField::Hierarchy::Item>)]
-      def get_descendants(item:)
-        Success(item.self_and_descendants)
+      def get_descendants(item:, include_self: true)
+        if include_self
+          Success(item.self_and_descendants)
+        else
+          Success(item.descendants)
+        end
       end
 
       # Move an item/node to a new parent item/node

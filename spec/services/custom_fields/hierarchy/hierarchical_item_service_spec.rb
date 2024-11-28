@@ -188,6 +188,17 @@ RSpec.describe CustomFields::Hierarchy::HierarchicalItemService do
         expect(result.value!).to match_array(subitem2)
       end
     end
+
+    context "when does not include self" do
+      it "returns all descendants not including the item passed" do
+        result = service.get_descendants(item: mara, include_self: false)
+        expect(result).to be_success
+
+        descendants = result.value!
+        expect(descendants.size).to eq(2)
+        expect(descendants).to contain_exactly(subitem, subitem2)
+      end
+    end
   end
 
   describe "#move_item" do
