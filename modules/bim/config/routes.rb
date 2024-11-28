@@ -33,7 +33,7 @@ Rails.application.routes.draw do
     scope "projects/:project_id", as: "project" do
       get "bcf/menu" => "bim/menus#show"
 
-      resources :issues, controller: "bim/bcf/issues" do
+      resources :issues, controller: "bim/bcf/issues", except: :index do
         get :upload, action: :upload, on: :collection
         post :prepare_import, action: :prepare_import, on: :collection
         post :configure_import, action: :configure_import, on: :collection
