@@ -31,7 +31,7 @@ module Reminders
     def after_perform(service_call)
       reminder = service_call.result
 
-      if remind_at_changed?(reminder)
+      if remind_at_changed?
         destroy_scheduled_reminder_job(reminder.job_id) if reminder.scheduled?
         mark_unread_notifications_as_read_for(reminder) if reminder.unread_notifications?
 
@@ -44,10 +44,10 @@ module Reminders
 
     private
 
-    def remind_at_changed?(reminder)
+    def remind_at_changed?
       # For some reason reminder.remind_at_changed? returns false
       # so we assume a change if remind_at is present in the params (would have passed contract validation)
-      params.key?(:remind_at) && reminder.remind_at.to_i == params[:remind_at].to_i
+      params[:remind_at].present?
     end
 
     def destroy_scheduled_reminder_job(job_id)
