@@ -45,7 +45,7 @@
                   url:,
                   relations: true, # Activates relations fetch mode in the autocomplete
                   openDirectly: false,
-                  focusDirectly: false,
+                  focusDirectly: true,
                   dropdownPosition: 'bottom',
                   appendTo: "##{DIALOG_ID}",
                   data: { test_selector: TO_ID_FIELD_TEST_SELECTOR}
@@ -56,6 +56,7 @@
             my_form.text_field(
               name: :description,
               label: Relation.human_attribute_name(:description),
+              autofocus: relation.persisted?
             )
           end
         end
