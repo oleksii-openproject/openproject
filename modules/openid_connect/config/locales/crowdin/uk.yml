@@ -59,10 +59,10 @@ uk:
       metadata_url: У мене є URL-адреса кінцевої точки виявлення
       client_id: ID клієнта, наданий вам постачальником OpenID Connect
       client_secret: Це клієнтський секрет ключ, наданий вам постачальником OpenID Connect
-      limit_self_registration: If enabled, users can only register using this provider if configuration on the provider's end allows it.
-      display_name: The name of the provider. This will be displayed as the login button and in the list of providers.
+      limit_self_registration: Якщо увімкнено, користувачі можуть зареєструватися за допомогою цього провайдера лише за умови, що конфігурація з боку провайдера це дозволяє.
+      display_name: Назва провайдера. Це буде зображено як кнопка входу та у списку провайдерів.
       tenant: 'Замініть клієнта за замовчуванням власним, якщо це можливо. Див. <a href=" https://learn.microsoft.com/en-us/entra/identity-platform/v2-protocols-oidc#find-your-apps-openid-configuration-document-uri">тут</a>.'
-      scope: If you want to request custom scopes, you can add one or multiple scope values separated by spaces here. For more information, see the [OpenID Connect documentation](docs_url).
+      scope: Якщо ви хочете запросити користувацькі області, ви можете додати одне або кілька значень областей, розділених пробілами, тут. Для отримання додаткової інформації дивіться [OpenID Connect documentation](docs_url).
       post_logout_redirect_uri: URL-адреса, на яку постачальник послуг OpenID Connect має виконувати переспрямування після отримання запиту на вихід.
       claims: >
         Ви також можете надсилати запити на кінцеві точки даних користувача й маркера ID. Щоб дізнатися більше, ознайомтеся з [нашою документацією щодо OpenID Connect](docs_url).

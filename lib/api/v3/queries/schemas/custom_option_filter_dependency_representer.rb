@@ -30,8 +30,7 @@ module API
   module V3
     module Queries
       module Schemas
-        class CustomOptionFilterDependencyRepresenter <
-          FilterDependencyRepresenter
+        class CustomOptionFilterDependencyRepresenter < FilterDependencyRepresenter
           schema_with_allowed_collection :values,
                                          type: ->(*) { type },
                                          writable: true,

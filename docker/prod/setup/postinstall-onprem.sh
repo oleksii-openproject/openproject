@@ -52,11 +52,5 @@ rm -rf /tmp/nulldb
 a2enmod proxy proxy_http
 rm -f /etc/apache2/sites-enabled/000-default.conf
 
-# gosu
-dpkgArch="$(dpkg --print-architecture | awk -F- '{ print $NF }')"
-wget -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$dpkgArch"
-chmod +x /usr/local/bin/gosu
-gosu nobody true
-
 rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 truncate -s 0 /var/log/*log

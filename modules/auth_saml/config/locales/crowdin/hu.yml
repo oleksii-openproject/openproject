@@ -2,15 +2,15 @@ hu:
   activemodel:
     attributes:
       saml/provider:
-        display_name: Name
-        identifier: Identifier
-        secret: Secret
-        scope: Scope
+        display_name: Név
+        identifier: Azonosító
+        secret: Titkos
+        scope: Terjedelem
         assertion_consumer_service_url: ACS (Assertion consumer service) URL
         limit_self_registration: Limit self registration
         sp_entity_id: Service entity ID
         metadata_url: Identity provider metadata URL
-        name_identifier_format: Name identifier format
+        name_identifier_format: Névazonosító formátum
         idp_sso_service_url: Identity provider login endpoint
         idp_slo_service_url: Identity provider logout endpoint
         idp_cert: Public certificate of identity provider

@@ -165,6 +165,31 @@ RSpec.describe CustomFields::Hierarchy::HierarchicalItemService do
     end
   end
 
+  describe "#get_descendants" do
+    let!(:subitem) { service.insert_item(parent: mara, label: "Sub1").value! }
+    let!(:subitem2) { service.insert_item(parent: mara, label: "sub two").value! }
+    let!(:unrelated_subitem) { service.insert_item(parent: luke, label: "not related").value! }
+
+    context "with a non-root node" do
+      it "returns all the descendants to that item" do
+        result = service.get_descendants(item: mara)
+        expect(result).to be_success
+
+        descendants = result.value!
+        expect(descendants.size).to eq(3)
+        expect(descendants).to contain_exactly(mara, subitem, subitem2)
+      end
+    end
+
+    context "with a leaf node" do
+      it "returns just the leaf node" do
+        result = service.get_descendants(item: subitem2)
+        expect(result).to be_success
+        expect(result.value!).to match_array(subitem2)
+      end
+    end
+  end
+
   describe "#move_item" do
     let(:lando) { service.insert_item(parent: root, label: "lando").value! }
 

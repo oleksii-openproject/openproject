@@ -215,6 +215,11 @@ module API
             "#{root}/custom_field_items/#{id}"
           end
 
+          # API::V3::Queries::Filters::QueryFilterInstanceRepresenter need a path derived from a class name.
+          def self.hierarchy_item_filter_adapter(id)
+            custom_field_item(id)
+          end
+
           def self.custom_field_item_branch(id)
             "#{custom_field_item(id)}/branch"
           end
