@@ -34,7 +34,7 @@ class Reminder < ApplicationRecord
   has_many :notifications, through: :reminder_notifications
 
   def unread_notifications?
-    notifications.exists?(read_ian: [false, nil])
+    unread_notifications.exists?
   end
 
   def unread_notifications
