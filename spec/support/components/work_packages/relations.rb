@@ -169,15 +169,7 @@ module Components
       end
 
       def add_description_to_relation(relatable, description)
-        actual_relatable = find_relatable(relatable)
-        relation_row = find_row(actual_relatable)
-
-        within relation_row do
-          page.find_test_selector("op-relation-row-#{actual_relatable.id}-action-menu").click
-          page.find_test_selector("op-relation-row-#{actual_relatable.id}-edit-button").click
-        end
-
-        wait_for_reload if using_cuprite?
+        open_relation_dialog(relatable)
 
         within "##{WorkPackageRelationsTab::WorkPackageRelationDialogComponent::DIALOG_ID}" do
           expect(page).to have_field("Work package", readonly: true)
@@ -192,15 +184,7 @@ module Components
       end
 
       def edit_relation_description(relatable, description)
-        actual_relatable = find_relatable(relatable)
-        relation_row = find_row(actual_relatable)
-
-        within relation_row do
-          page.find_test_selector("op-relation-row-#{actual_relatable.id}-action-menu").click
-          page.find_test_selector("op-relation-row-#{actual_relatable.id}-edit-button").click
-        end
-
-        wait_for_reload if using_cuprite?
+        open_relation_dialog(relatable)
 
         within "##{WorkPackageRelationsTab::WorkPackageRelationDialogComponent::DIALOG_ID}" do
           expect(page).to have_field("Work package", readonly: true)
@@ -212,6 +196,18 @@ module Components
 
           wait_for_reload if using_cuprite?
         end
+      end
+
+      def open_relation_dialog(relatable)
+        actual_relatable = find_relatable(relatable)
+        relation_row = find_row(actual_relatable)
+
+        within relation_row do
+          page.find_test_selector("op-relation-row-#{actual_relatable.id}-action-menu").click
+          page.find_test_selector("op-relation-row-#{actual_relatable.id}-edit-button").click
+        end
+
+        wait_for_reload if using_cuprite?
       end
 
       def expect_relation(relatable)
