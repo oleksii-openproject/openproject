@@ -41,7 +41,7 @@ export class UserDisplayField extends DisplayField {
 
   public get value() {
     if (this.schema) {
-      return this.typeSafeAttribute().name || '';
+      return this.typeSafeAttribute()?.name || '';
     }
     return null;
   }
@@ -54,7 +54,7 @@ export class UserDisplayField extends DisplayField {
         element,
         this.typeSafeAttribute() as PrincipalLike,
         { hide: false, link: false },
-        { hide: false, size: 'medium', hoverCard: { url: this.typeSafeAttribute().url || '' } },
+        { hide: false, size: 'medium', hoverCard: { url: this.typeSafeAttribute()?.url || '' } },
       );
     }
   }
