@@ -87,25 +87,7 @@ export class HoverCardTriggerService {
 
       // Set a delay before showing the hover card
       this.hoverTimeout = window.setTimeout(() => {
-        this.parseHoverCardOptions(el);
-
-        // There is only one possible slot to insert a modal. If that slot is taken, we assume the other modal
-        // to be more important than a hover card and give up.
-        const modal = this.opModalService.showIfNotActive(
-          HoverCardComponent,
-          this.injector,
-          { turboFrameSrc: cleanedTurboFrameUrl, event: e },
-          true,
-          false,
-          this.modalTarget,
-        );
-
-        modal?.subscribe((previewModal) => {
-          this.modalElement = previewModal.elementRef.nativeElement as HTMLElement;
-          previewModal.alignment = 'top';
-
-          void previewModal.reposition(this.modalElement, el);
-        });
+        this.showHoverCard(el, cleanedTurboFrameUrl, e);
       }, this.OPEN_DELAY_IN_MS);
     });
 
@@ -123,6 +105,31 @@ export class HoverCardTriggerService {
 
     jQuery(document.body).on('mouseenter', '.op-hover-card', () => {
       this.mouseInModal = true;
+    });
+  }
+
+  private showHoverCard(el:HTMLElement, cleanedTurboFrameUrl:string, e:JQuery.MouseOverEvent) {
+    // Abort if the element is no longer present in the DOM. This can happen when this method is called after a delay.
+    if (!document.body.contains(el)) { return; }
+
+    this.parseHoverCardOptions(el);
+
+    // There is only one possible slot to insert a modal. If that slot is taken, we assume the other modal
+    // to be more important than a hover card and give up.
+    const modal = this.opModalService.showIfNotActive(
+      HoverCardComponent,
+      this.injector,
+      { turboFrameSrc: cleanedTurboFrameUrl, event: e },
+      true,
+      false,
+      this.modalTarget,
+    );
+
+    modal?.subscribe((previewModal) => {
+      this.modalElement = previewModal.elementRef.nativeElement as HTMLElement;
+      previewModal.alignment = 'top';
+
+      void previewModal.reposition(this.modalElement, el);
     });
   }
 
