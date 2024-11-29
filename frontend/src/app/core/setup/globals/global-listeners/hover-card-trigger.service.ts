@@ -68,6 +68,9 @@ export class HoverCardTriggerService {
         // But we will not re-render the same card, abort here
         return;
       }
+
+      // Hovering over a new target. Close the old one (if any).
+      this.close(true);
       this.previousTarget = el;
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
@@ -144,13 +147,21 @@ export class HoverCardTriggerService {
   private closeAfterTimeout() {
     this.ngZone.runOutsideAngular(() => {
       this.closeTimeout = window.setTimeout(() => {
-        if (!this.mouseInModal) {
-          this.opModalService.close();
-          // Allow opening this target once more, since it has been orderly closed
-          this.previousTarget = null;
-        }
+        this.close();
       }, this.CLOSE_DELAY_IN_MS);
     });
+  }
+
+  private close(forceClose=false) {
+    if (forceClose) {
+      this.mouseInModal = false;
+    }
+
+    if (!this.mouseInModal) {
+      this.opModalService.close();
+      // Allow opening this target once more, since it has been orderly closed
+      this.previousTarget = null;
+    }
   }
 
   private parseHoverCardOptions(el:HTMLElement) {
