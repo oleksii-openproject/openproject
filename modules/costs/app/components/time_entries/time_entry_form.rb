@@ -23,6 +23,10 @@ module TimeEntries
       render_custom_fields(form: f)
     end
 
+    def additional_custom_field_input_arguments
+      { wrapper_id: "time-entry-dialog" }
+    end
+
     private
 
     delegate :project, :work_package, to: :model
