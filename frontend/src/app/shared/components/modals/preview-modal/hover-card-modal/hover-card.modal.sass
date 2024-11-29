@@ -1,6 +1,13 @@
 @import "helpers"
 
+@keyframes fade-in-hover-card
+  from
+    opacity: 0
+  to
+    opacity: 1
+
 .op-hover-card
+  animation: fade-in-hover-card .25s ease-in-out
   position: absolute
   background-color: var(--body-background)
   z-index: 5000
