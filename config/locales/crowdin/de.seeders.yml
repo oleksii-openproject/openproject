@@ -38,13 +38,13 @@ de:
         item_0:
           name: PM2 Orange
         item_1:
-          name: PM2 Purple
+          name: PM2 Lila
         item_2:
-          name: PM2 Red
+          name: PM2 Rot
         item_3:
-          name: PM2 Magenta
+          name: PM2 Rosa
         item_4:
-          name: PM2 Green Yellow
+          name: PM2 Grüngelb
       document_categories:
         item_0:
           name: Dokumentation
@@ -83,19 +83,19 @@ de:
     standard:
       life_cycles:
         item_0:
-          name: Initiating
+          name: Initiierung
         item_1:
-          name: Ready for Planning
+          name: Bereit für Planung
         item_2:
-          name: Planning
+          name: Planung
         item_3:
-          name: Ready for Executing
+          name: Bereit für Durchführung
         item_4:
-          name: Executing
+          name: Durchführung
         item_5:
-          name: Ready for Closing
+          name: Bereit für Abschluss
         item_6:
-          name: Closing
+          name: Abschluss
       priorities:
         item_0:
           name: Niedrig
