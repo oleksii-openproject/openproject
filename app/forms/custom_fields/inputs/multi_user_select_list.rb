@@ -33,11 +33,12 @@ class CustomFields::Inputs::MultiUserSelectList < CustomFields::Inputs::Base::Au
     # autocompleter does not set key with blank value if nothing is selected or input is cleared
     # in order to let acts_as_customizable handle the clearing of the value, we need to set the value to blank via a hidden field
     # which sends blank if autocompleter is cleared
-    custom_value_form.hidden(**input_attributes.merge(
+    custom_value_form.hidden(
+      **input_attributes,
       scope_name_to_model: false,
-      name: "#{@object.class.name.downcase}[custom_field_values][#{input_attributes[:name]}][]",
+      name: "#{@object.model_name.element}[custom_field_values][#{input_attributes[:name]}][]",
       value:
-    ))
+    )
 
     custom_value_form.autocompleter(**input_attributes)
   end
