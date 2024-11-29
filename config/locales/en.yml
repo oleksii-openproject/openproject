@@ -717,7 +717,8 @@ en:
     label_edit_x: "Edit %{x}"
     label_add_description: "Add description"
     lag:
-      title: "Lag"
+      subject: "Lag"
+      title: "Lag (in days)"
       caption: "The gap in number of working days in between the two work packages"
     relations:
       label_relates_singular: "related to"

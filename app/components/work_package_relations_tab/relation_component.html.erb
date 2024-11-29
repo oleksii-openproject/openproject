@@ -66,8 +66,7 @@ flex_layout do |flex|
         end
         dates_row.with_column(mr: 3) do
           render(Primer::Beta::Text.new) do
-            "#{I18n.t("work_package_relations_tab.lag.title")}: #{I18n.t('datetime.distance_in_words.x_days',
-                                                                         count: relation.lag)}"
+            lag_as_text(relation.lag)
           end
         end
       end
@@ -95,8 +94,7 @@ flex_layout do |flex|
         end
         dates_row.with_column(mr: 1) do
           render(Primer::Beta::Text.new) do
-            "#{I18n.t("work_package_relations_tab.lag.title")}: #{I18n.t('datetime.distance_in_words.x_days',
-                                                                         count: relation.lag)}"
+            lag_as_text(relation.lag)
           end
         end
       end

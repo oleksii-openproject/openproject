@@ -63,7 +63,8 @@
             if lag_shown
               my_form.text_field(
                 name: :lag,
-                label: Relation.human_attribute_name(:lag),
+                type: :number,
+                label: I18n.t("work_package_relations_tab.lag.title"),
                 caption: I18n.t("work_package_relations_tab.lag.caption"),
                 input_width: :small,
               )
