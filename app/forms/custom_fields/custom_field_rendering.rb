@@ -31,8 +31,7 @@ module CustomFields::CustomFieldRendering
   def form_arguments(custom_field)
     {
       custom_field: custom_field,
-      object: model,
-      wrapper_id: @wrapper_id
+      object: model
     }.merge(additional_custom_field_input_arguments)
   end
 

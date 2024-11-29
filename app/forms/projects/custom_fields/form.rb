@@ -48,7 +48,7 @@ module Projects::CustomFields
 
     # override since we want to add the model with @project
     def additional_custom_field_input_arguments
-      { model: @project }
+      { model: @project, wrapper_id: @wrapper_id }
     end
 
     private
