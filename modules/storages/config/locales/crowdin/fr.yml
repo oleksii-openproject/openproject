@@ -114,7 +114,7 @@ fr:
             hide_inactive_folders:
               permission_not_set: n'a pas pu définir les autorisations sur %{path}.
             remote_folders:
-              not_allowed: L'utilisateur %{username} n'a pas accès au dossier %{group_folder}. Veuillez vérifier les autorisations du dossier sur Nextcloud.
+              not_allowed: '%{username} n''a pas accès au dossier %{group_folder}. Veuillez vérifier les autorisations du dossier sur Nextcloud.'
               not_found: "Le dossier %{group_folder} est introuvable. Veuillez vérifier votre configuration Nextcloud."
             remove_user_from_group:
               conflict: 'L''utilisateur %{user} n''a pas pu être retiré du groupe %{group} pour la raison suivante : %{reason}'
@@ -363,7 +363,7 @@ fr:
       project_storage_members:
         subtitle: Vérifiez l'état de la connexion pour l'espace de stockage %{storage_name_link} de tous les membres du projet.
         title: Statut de connexion des membres
-    permission_header_explanation: Les droits d'accès aux fichiers sur les supports de stockage externes ne sont appliqués qu'aux dossiers et aux fichiers contenus dans les dossiers de projet gérés automatiquement. Notez que toutes les droits sur les fichiers ne sont pas pris en charge par tous les fournisseurs de stockage. Veuillez consulter la documentation sur <a target='_blank' href='https://www.openproject.org/fr/docs/system-admin-guide/users-permissions/roles-permissions/'>les autorisations de stockage de fichiers</a> pour plus d'informations.
+    permission_header_explanation: 'Les droits d''accès aux fichiers sur les supports de stockage externes ne sont appliqués qu''aux dossiers et aux fichiers contenus dans les dossiers de projet gérés automatiquement. Notez que toutes les droits sur les fichiers ne sont pas pris en charge par tous les fournisseurs de stockage. Veuillez consulter la documentation sur <a target=''_blank'' href=''https://www.openproject.org/fr/docs/system-admin-guide/users-permissions/roles-permissions/''>les autorisations de stockage de fichiers</a> pour plus d''informations.'
     provider_types:
       label: Type de fournisseur
       nextcloud:

@@ -114,7 +114,7 @@ pl:
             hide_inactive_folders:
               permission_not_set: nie można ustawić uprawnień do lokalizacji %{path}.
             remote_folders:
-              not_allowed: Użytkownik %{username} nie ma dostępu do folderu %{group_folder}. Sprawdź uprawnienia do folderu w Nextcloud.
+              not_allowed: 'Użytkownik %{username} nie ma dostępu do folderu %{group_folder}. Sprawdź uprawnienia do folderu w Nextcloud.'
               not_found: "Nie znaleziono folderu %{group_folder}. Sprawdź konfigurację Nextcloud."
             remove_user_from_group:
               conflict: 'Użytkownika %{user} nie można było usunąć z grupy %{group} z następującego powodu: %{reason}'

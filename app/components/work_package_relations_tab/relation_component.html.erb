@@ -1,21 +1,12 @@
 <%=
 flex_layout do |flex|
-  flex.with_row do
-    render(WorkPackages::InfoLineComponent.new(work_package: related_work_package))
-  end
-
-  flex.with_row(flex_layout: true, justify_content: :space_between, align_items: :flex_start) do |subject_line_row|
-    subject_line_row.with_column(py: 2) do
-      render(Primer::Beta::Link.new(href: work_package_path(related_work_package),
-                                    color: :default,
-                                    underline: false,
-                                    font_size: :normal,
-                                    font_weight: :bold,
-                                    target: "_blank")) { related_work_package.subject }
+  flex.with_row(flex_layout: true, justify_content: :space_between, align_items: :center) do |row|
+    row.with_column do
+      render(WorkPackages::InfoLineComponent.new(work_package: related_work_package))
     end
 
     if should_render_action_menu?
-      subject_line_row.with_column do
+      row.with_column do
         render(Primer::Alpha::ActionMenu.new(test_selector: action_menu_test_selector)) do |menu|
           menu.with_show_button(icon: "kebab-horizontal",
                                 "aria-label": I18n.t(:label_relation_actions),
@@ -52,16 +43,23 @@ flex_layout do |flex|
     end
   end
 
+  flex.with_row(mb: 2) do
+    render(Primer::Beta::Link.new(href: work_package_path(related_work_package),
+                                  color: :default,
+                                  underline: false,
+                                  font_size: :normal,
+                                  font_weight: :bold,
+                                  target: "_blank")) { related_work_package.subject }
+  end
+
   if should_display_description?
-    flex.with_row(flex_layout: true, mb: 2) do |description_row|
-      description_row.with_column do
-        render(Primer::Beta::Text.new(font_size: :small, color: :muted)) { format_text(relation, :description) }
-      end
+    flex.with_row(mb: 2) do
+      render(Primer::Beta::Text.new(font_size: :small, color: :muted)) { format_text(relation, :description) }
     end
   end
 
   if should_display_start_and_end_dates?
-    flex.with_row(flex_layout: true, align_items: :center) do |start_and_end_dates_row|
+    flex.with_row(flex_layout: true, align_items: :center, mb: 2) do |start_and_end_dates_row|
       start_and_end_dates_row.with_column(mr: 1) do
         icon = if follows?
                  :calendar
