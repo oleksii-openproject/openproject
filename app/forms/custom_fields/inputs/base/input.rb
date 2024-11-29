@@ -32,6 +32,8 @@ class CustomFields::Inputs::Base::Input < ApplicationForm
   attr_reader :options
 
   def initialize(custom_field:, object:, **options)
+    super()
+
     @custom_field = custom_field
     @object = object
     @options = options
