@@ -8,7 +8,9 @@ module TimeEntries
       end
       f.text_field name: :spent_on, label: "Date"
       f.group(layout: :horizontal) do |g|
-        g.text_field name: :start_time, label: "Start time"
+        g.text_field name: :start_time,
+                     label: "Start time",
+                     data: { "time-entry-target" => "startTimeInput" }
         g.text_field name: :end_time, label: "Finish time"
       end
       f.text_field name: :hours, label: "Hours"

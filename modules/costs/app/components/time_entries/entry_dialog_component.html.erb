@@ -1,4 +1,4 @@
-<%= render(Primer::Alpha::Dialog.new(title: 'Log Time', size: :large, id: MODAL_ID)) do |d| %>
+<%= render(Primer::Alpha::Dialog.new(title: 'Log Time', size: :large, id: MODAL_ID, data: { "controller" => "time-entry",  "application-target" => "dynamic" })) do |d| %>
   <% d.with_header(variant: :large, mb: 3) %>
   <%= render(TimeEntries::TimeEntryFormComponent.new(time_entry: time_entry)) %>
 <% end %>
