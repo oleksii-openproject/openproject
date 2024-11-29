@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2024 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -27,29 +27,20 @@
 #++
 
 module Reminders
-  class UpdateService < ::BaseServices::Update
-    include Reminders::ServiceHelpers
+  module ServiceHelpers
+    extend ActiveSupport::Concern
 
-    def after_perform(service_call)
-      reminder = service_call.result
+    def destroy_scheduled_reminder_job(reminder)
+      return unless reminder.scheduled?
+      return unless job = GoodJob::Job.find_by(id: reminder.job_id)
 
-      if remind_at_changed?
-        destroy_scheduled_reminder_job(reminder)
-        mark_unread_notifications_as_read_for(reminder)
-
-        job = Reminders::ScheduleReminderJob.schedule(reminder)
-        reminder.update_columns(job_id: job.job_id)
-      end
-
-      service_call
+      job.destroy unless job.finished?
     end
 
-    private
+    def mark_unread_notifications_as_read_for(reminder)
+      return unless reminder.unread_notifications?
 
-    def remind_at_changed?
-      # For some reason reminder.remind_at_changed? returns false
-      # so we assume a change if remind_at is present in the params (would have passed contract validation)
-      params[:remind_at].present?
+      reminder.unread_notifications.update_all(read_ian: true, updated_at: Time.zone.now)
     end
   end
 end
