@@ -27,31 +27,31 @@ nl:
     work_packages:
       activity_tab:
         no_results_title_text: No activity to display
-        no_results_description_text: "Choose \"Show everything\" to show all activity and comments"
-        label_activity_show_all: "Show everything"
-        label_activity_show_only_comments: "Show comments only"
-        label_activity_show_only_changes: "Show changes only"
-        label_sort_asc: "Newest at the bottom"
-        label_sort_desc: "Newest on top"
+        no_results_description_text: "Kies \"Alles tonen\" om alle activiteiten en opmerkingen te tonen"
+        label_activity_show_all: "Alles tonen"
+        label_activity_show_only_comments: "Alleen opmerkingen tonen"
+        label_activity_show_only_changes: "Alleen wijzigingen weergeven"
+        label_sort_asc: "Nieuwste onderaan"
+        label_sort_desc: "Nieuwste bovenaan"
         label_type_to_comment: "Add a comment. Type @ to notify people."
-        label_submit_comment: "Submit comment"
-        changed_on: "changed on"
-        created_on: "created this on"
-        changed: "changed"
-        created: "created"
-        commented: "commented"
+        label_submit_comment: "Verstuur reactie"
+        changed_on: "gewijzigd op"
+        created_on: "creëerde dit op"
+        changed: "gewijzigd"
+        created: "aangemaakt"
+        commented: "gaf commentaar op"
   admin:
     plugins:
-      no_results_title_text: There are currently no plugins installed.
-      no_results_content_text: See our integrations and plugins page for more information.
+      no_results_title_text: Er zijn momenteel geen plugins geïnstalleerd.
+      no_results_content_text: Zie onze pagina met integraties en plugins voor meer informatie.
     custom_styles:
       color_theme: "Kleurenschema"
       color_theme_custom: "(Custom)"
       tab_interface: "Interface"
-      tab_branding: "Branding"
-      tab_pdf_export_styles: "PDF export styles"
+      tab_branding: "Huisstijl"
+      tab_pdf_export_styles: "PDF-exportstijlen"
       colors:
-        primary-button-color: "Primary button"
+        primary-button-color: "Primaire knop"
         accent-color: "Accent"
         header-bg-color: "Koptekst achtergrond"
         header-item-bg-hover-color: "Header background on hover"
@@ -91,7 +91,7 @@ nl:
         contact: "Neem contact met ons op voor een demo"
       enterprise_info_html: "is een Enterprise <span class='spot-icon spot-icon_inline spot-icon_enterprise-addons'></span> add-on."
       upgrade_info: "Gelieve te upgraden naar een betaald abonnement om het te activeren en te beginnen met het gebruik ervan in uw team."
-    jemalloc_allocator: Jemalloc memory allocator
+    jemalloc_allocator: Jemalloc geheugentoewijzer
     journal_aggregation:
       explanation:
         text: "Individuele acties van een gebruiker (bijv. het bijwerken van een werkpakket twee keer) wordt samengevoegd tot een enkele actie als hun leeftijdverschil minder is dan de aangegeven timespat. Ze worden weergegeven als een enkele actie binnen de applicatie. Dit zal ook meldingen vertragen met dezelfde tijd die het aantal verstuurde e-mails vermindert en zal ook %{webhook_link} vertraging beïnvloeden."
@@ -102,15 +102,15 @@ nl:
     is_inactive: momenteel niet getoond
   antivirus_scan:
     not_processed_yet_message: "Downloaden is geblokkeerd, omdat het bestand nog niet op virussen is gescand. Probeer het later nog eens."
-    quarantined_message: "A virus was detected in file '%{filename}'. It has been quarantined and is not available for download."
+    quarantined_message: "Er is een virus gedetecteerd in bestand '%{filename}'. Het is in quarantaine geplaatst en kan niet worden gedownload."
     deleted_message: "Er is een virus gedetecteerd in bestand '%{filename}'. Het bestand is verwijderd."
     deleted_by_admin: "Het in quarantaine geplaatste bestand '%{filename}' is verwijderd door een beheerder."
-    overridden_by_admin: "The quarantine for file '%{filename}' has been removed by %{user}. The file can now be acccessed."
+    overridden_by_admin: "De quarantaine voor bestand '%{filename}' is verwijderd door %{user}. Het bestand kan nu worden geopend."
     quarantined_attachments:
       container: "Container"
-      delete: "Delete the quarantined file"
-      title: "Quarantined attachments"
-      error_cannot_act_self: "Cannot perform actions on your own uploaded files."
+      delete: "Verwijder het quarantaine bestand"
+      title: "In quarantaine geplaatste bijlagen"
+      error_cannot_act_self: "Kan geen acties uitvoeren op uw eigen geüploade bestanden."
   attribute_help_texts:
     note_public: "Alle tekst en afbeeldingen die u toevoegt aan dit veld zijn openbaar zichtbaar voor alle ingelogde gebruikers!"
     text_overview: "In deze weergave kunt u aangepaste helpteksten voor kenmerken weergave. Wanneer gedefinieerd, worden deze teksten door te klikken op het help-pictogram naast het behoren kenmerk weergegeven."
@@ -125,8 +125,8 @@ nl:
   ldap_auth_sources:
     ldap_error: "LDAP-fout: %{error_message}"
     ldap_auth_failed: "Kon niet authenticeren met LDAP-server."
-    sync_failed: "Failed to synchronize from LDAP: %{message}."
-    back_to_index: "Click here to go back to the list of connection."
+    sync_failed: "Synchronisatie met LDAP mislukt: %{message}."
+    back_to_index: "Klik hier om terug te gaan naar de connectielijst."
     technical_warning_html: |
       Dit LDAP-formulier vereist technische kennis van uw LDAP / Active Directory-configuratie.
       <br/>
@@ -215,16 +215,16 @@ nl:
     admin:
       custom_field_projects:
         is_for_all_blank_slate:
-          heading: For all projects
-          description: This custom field is enabled in all projects since the "For all projects" option is checked. It cannot be deactivated for individual projects.
+          heading: Voor alle projecten
+          description: Dit aangepaste veld is ingeschakeld in alle projecten omdat de optie "Voor alle projecten" is aangevinkt. Het kan niet worden uitgeschakeld voor individuele projecten.
       items:
-        actions: "Item actions"
+        actions: "Item acties"
         blankslate:
           root:
-            title: "Your list of items is empty"
-            description: "Start by adding items to the custom field of type hierarchy. Each item can be used to create a hierarchy bellow it. To navigate and create sub-items inside a hierarchy click on the created item."
+            title: "Uw lijst met items is leeg"
+            description: "Begin met het toevoegen van items aan het aangepaste veld van het type hiërarchie. Elk item kan gebruikt worden om een hiërarchie eronder te maken. Om te navigeren en subitems aan te maken binnen een hiërarchie klikt u op het aangemaakte item."
           item:
-            title: This item doesn't have any hierarchy level below
+            title: Dit item heeft geen onderstaand hiërarchie niveau
             description: Add items to this list to create sub-items inside another one
         placeholder:
           label: "Item label"
