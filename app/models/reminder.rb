@@ -41,7 +41,11 @@ class Reminder < ApplicationRecord
     notifications.where(read_ian: [false, nil])
   end
 
+  def completed?
+    completed_at.present?
+  end
+
   def scheduled?
-    job_id.present?
+    job_id.present? && !completed?
   end
 end

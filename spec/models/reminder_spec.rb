@@ -71,5 +71,25 @@ RSpec.describe Reminder do
 
       expect(reminder).not_to be_scheduled
     end
+
+    it "returns false if completed_at is present" do
+      reminder = build(:reminder, :scheduled, :completed)
+
+      expect(reminder).not_to be_scheduled
+    end
+  end
+
+  describe "#completed?" do
+    it "returns true if completed_at is present" do
+      reminder = build(:reminder, :completed)
+
+      expect(reminder).to be_completed
+    end
+
+    it "returns false if completed_at is not present" do
+      reminder = build(:reminder, completed_at: nil)
+
+      expect(reminder).not_to be_completed
+    end
   end
 end

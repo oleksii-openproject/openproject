@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) the OpenProject GmbH
+# Copyright (C) 2012-2024 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -26,37 +26,14 @@
 # See COPYRIGHT and LICENSE files for more details.
 #++
 
-FactoryBot.define do
-  factory :reminder do
-    remindable factory: :work_package
-    creator factory: :user
-    remind_at { 1.day.from_now }
-    note { "This is a reminder" }
+module Reminders
+  class DeleteService < ::BaseServices::Delete
+    include Reminders::ServiceHelpers
 
-    trait :scheduled do
-      job_id { SecureRandom.uuid }
+    def destroy(reminder)
+      destroy_scheduled_reminder_job(reminder)
+      mark_unread_notifications_as_read_for(reminder)
+      reminder.update(completed_at: Time.zone.now)
     end
-
-    trait :completed do
-      job_id { SecureRandom.uuid }
-      completed_at { Time.zone.now }
-    end
-
-    trait :with_unread_notifications do
-      after(:create) do |reminder|
-        create(:reminder_notification, reminder:, notification: create(:notification, read_ian: false))
-      end
-    end
-
-    trait :with_read_notifications do
-      after(:create) do |reminder|
-        create(:reminder_notification, reminder:, notification: create(:notification, read_ian: true))
-      end
-    end
-  end
-
-  factory :reminder_notification do
-    reminder
-    notification
   end
 end
