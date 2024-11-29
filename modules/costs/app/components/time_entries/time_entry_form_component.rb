@@ -44,20 +44,6 @@ module TimeEntries
 
     delegate :project, :work_package, to: :time_entry
 
-    def show_work_package_field?
-      work_package.blank?
-    end
-
-    def show_user_field?
-      # Only allow setting a different user, when the user has the
-      # permission to log time for others in the project
-      User.current.allowed_in_project?(:log_time, project)
-    end
-
-    def show_start_and_end_time_fields?
-      TimeEntry.can_track_start_and_end_time?
-    end
-
     def form_options
       base = {
         model: time_entry,

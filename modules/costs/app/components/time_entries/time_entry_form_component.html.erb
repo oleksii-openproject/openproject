@@ -31,26 +31,10 @@ See COPYRIGHT and LICENSE files for more details.
   component_wrapper do
     primer_form_with(**form_options) do |form|
       component_collection do |collection|
-        collection.with_component(Primer::Alpha::Dialog::Body.new(
-          aria: { label: I18n.t("my.access_token.new_access_token_dialog_title") }
-        )) do
-          flex_layout(my: 3) do |body|
-            body.with_row do
-              render(Primer::Alpha::Banner.new(scheme: :warning)) do
-                I18n.t("my.access_token.new_access_token_dialog_attention_text")
-              end
-            end
-
-            body.with_row(mt: 3) do
-              render(Primer::Beta::Text.new(tag: :p)) do
-                I18n.t("my.access_token.new_access_token_dialog_text")
-              end
-            end
-
-            body.with_row do
-              content_tag(:pre, time_entry.pretty_inspect)
-              # render(My::AccessToken::NewAccessTokenForm.new(form))
-            end
+        collection.with_component(Primer::Alpha::Dialog::Body.new) do
+          component_collection do |coll|
+            # coll.with_component content_tag(:pre, time_entry.pretty_inspect)
+            coll.with_component render(TimeEntries::TimeEntryForm.new(form))
           end
         end
 

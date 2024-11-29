@@ -1,5 +1,4 @@
 <%= render(Primer::Alpha::Dialog.new(title: 'Log Time', size: :large, id: MODAL_ID)) do |d| %>
   <% d.with_header(variant: :large, mb: 3) %>
-  <%- pp(time_entry) %>
   <%= render(TimeEntries::TimeEntryFormComponent.new(time_entry: time_entry)) %>
 <% end %>
