@@ -356,10 +356,10 @@ pt-BR:
           learn_about: "Saiba mais sobre os novos recursos"
           #Include the version to invalidate outdated translations in other locales.
           #Otherwise, e.g. chinese might still have the translations for 10.0 in the 12.0 release.
-          "15_0":
+          "15_1":
             standard:
               new_features_html: >
-                A versão traz vários recursos e melhorias para você, por exemplo: <br> <ul class="%{list_styling_class}"><li>Impulsione sua comunicação com uma guia de Atividades melhor estruturada, mensagens de carregamento em tempo real e notificações, reações com emojis e muito mais.</li> <li>Beneficie-se de configurações fáceis de autenticação Single Sign-On com SAML e OIDC na administração da sua Enterprise Cloud.</li> <li>Use o novo ‘Papel global padrão’ e habilite permissões para visualizar endereços de e-mail.</li> <li>Desfrute de navegação mais fácil nas listas de projetos com cabeçalhos de tabela de ações rápidas.</li> <li>Experimente configurações de design simplificadas, com menos variáveis de design na barra lateral necessárias.</li> <li>Reduza a limpeza manual ao adicionar um campo personalizado a um tipo (sem mais aplicação automática a todos os projetos).</li> <li>Beneficie-se de uma navegação mais clara – "Minha conta" foi renomeado para "Configurações da conta".</li> </ul>
+                The release brings various features and improvements for you, e.g. <br> <ul class="%{list_styling_class}"> <li>Custom fields of type hierarchy (Enterprise add-on).</li> <li>Redesign of the Relations tab in work packages.</li> <li>Redesign of the Meetings index page.</li> <li>Manual page breaks in PDF work package exports.</li> <li>Zen mode for project lists.</li> </ul>
     ical_sharing_modal:
       title: "Assinar calendário"
       inital_setup_error_message: "Ocorreu um erro ao buscar dados."

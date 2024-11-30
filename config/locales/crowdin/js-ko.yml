@@ -357,10 +357,10 @@ ko:
           learn_about: "새로운 기능에 대해 자세히 알아보기"
           #Include the version to invalidate outdated translations in other locales.
           #Otherwise, e.g. chinese might still have the translations for 10.0 in the 12.0 release.
-          "15_0":
+          "15_1":
             standard:
               new_features_html: >
-                이 릴리즈는 다음과 같은 다양한 기능과 개선 사항을 제공합니다. <br> <ul class="%{list_styling_class}"> <li>더욱 체계화된 활동 탭, 실시간 로딩 메시지 및 알림, 이모티콘 반응 등으로 커뮤니케이션을 강화합니다.</li> <li>Enterprise Cloud 관리에서 SAML 및 OIDC로 간편한 Single Sign-On 인증 설정의 장점을 누립니다.</li> <li>새로운 '표준 글로벌 역할'을 사용하고 이메일 주소를 볼 수 있는 권한을 활성화합니다.</li> <li>빠른 작업 테이블 헤더로 프로젝트 목록에서 더욱 쉽게 탐색합니다.</li> <li>필요한 사이드바 디자인 변수가 더 적은 간소화된 디자인 설정을 이용합니다.</li> <li>유형에 사용자 지정 필드를 추가할 때 수동 정리가 줄어듭니다. 더 이상 모든 프로젝트에 자동 적용되지 않습니다.</li> <li>탐색의 명확성이 개선되었습니다. '내 계정'이 '계정 설정'으로 이름이 변경되었습니다.</li> </ul>
+                The release brings various features and improvements for you, e.g. <br> <ul class="%{list_styling_class}"> <li>Custom fields of type hierarchy (Enterprise add-on).</li> <li>Redesign of the Relations tab in work packages.</li> <li>Redesign of the Meetings index page.</li> <li>Manual page breaks in PDF work package exports.</li> <li>Zen mode for project lists.</li> </ul>
     ical_sharing_modal:
       title: "캘린더 구독"
       inital_setup_error_message: "데이터를 가져오는 중에 오류가 발생했습니다."
