@@ -356,10 +356,10 @@ ru:
           learn_about: "Подробнее о новых функциях"
           #Include the version to invalidate outdated translations in other locales.
           #Otherwise, e.g. chinese might still have the translations for 10.0 in the 12.0 release.
-          "15_0":
+          "15_1":
             standard:
               new_features_html: >
-                Релиз содержит новые возможности и различные улучшения, такие как, <br>. <ul class="%{list_styling_class}"> <li>Повысьте эффективность общения благодаря более структурированной вкладке "Активность", загрузке сообщений и уведомлений в режиме реального времени, реакциям emoji и многому другому.</li> <li>Воспользуйтесь простыми настройками аутентификации Single Sign-On с помощью SAML и OIDC при администрировании Enterprise Cloud.</li> <li>Используйте новую "Стандартную глобальную роль" и включите разрешения на просмотр адресов электронной почты.</li> <li>Наслаждайтесь более удобной навигацией в списках проектов с помощью быстрых действий заголовков таблиц.</li> <li>Упрощенные настройки оформления боковой панели с меньшим количеством необходимых переменных.</li> <li>Сократите ручную очистку при добавлении пользовательского поля к типу - больше не нужно автоматически применять его ко всем проектам.</li> <li>Воспользуйтесь улучшенной ясностью навигации - "Мой аккаунт" переименован в "Настройки аккаунта".</li> </ul>
+                The release brings various features and improvements for you, e.g. <br> <ul class="%{list_styling_class}"> <li>Custom fields of type hierarchy (Enterprise add-on).</li> <li>Redesign of the Relations tab in work packages.</li> <li>Redesign of the Meetings index page.</li> <li>Manual page breaks in PDF work package exports.</li> <li>Zen mode for project lists.</li> </ul>
     ical_sharing_modal:
       title: "Подписаться на календарь"
       inital_setup_error_message: "Произошла ошибка при получении данных."

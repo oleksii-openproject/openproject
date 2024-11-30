@@ -357,10 +357,10 @@ uk:
           learn_about: "Дізнатися більше про нові функції"
           #Include the version to invalidate outdated translations in other locales.
           #Otherwise, e.g. chinese might still have the translations for 10.0 in the 12.0 release.
-          "15_0":
+          "15_1":
             standard:
               new_features_html: >
-                Цей випуск містить багато функцій і покращень, наприклад: <br> <ul class="%{list_styling_class}"> <li>Спілкуйтесь ефективніше за допомогою краще структурованої вкладки «Дії», завантаження повідомлень і сповіщень у реальному часі, реакцій за допомогою емодзі тощо.</li> <li>Скористайтеся простими налаштуваннями автентифікації SSO за допомогою протоколів SAML і OIDC на панелі адміністрування Enterprise Cloud.</li> <li>Використовуйте нову роль «Стандартна глобальна роль» і надавайте дозволи на перегляд електронних адрес.</li> <li>Насолоджуйтеся простішою навігацією списками проєктів із заголовками таблиці швидких дій.</li> <li>Полегшіть налаштування завдяки меншій кількості змінних оформлення бічної панелі.</li> <li>Заощаджуйте час на очищення, визначивши тип користувацького поля. Типи більше не визначаються автоматично для всіх проєктів.</li> <li>Скористайтеся перевагами чіткішої навігації — розділ «Мій обліковий запис» тепер має назву «Налаштування облікового запису».</li> </ul>
+                The release brings various features and improvements for you, e.g. <br> <ul class="%{list_styling_class}"> <li>Custom fields of type hierarchy (Enterprise add-on).</li> <li>Redesign of the Relations tab in work packages.</li> <li>Redesign of the Meetings index page.</li> <li>Manual page breaks in PDF work package exports.</li> <li>Zen mode for project lists.</li> </ul>
     ical_sharing_modal:
       title: "Підписатися на календар"
       inital_setup_error_message: "Під час отримання даних сталася помилка."
