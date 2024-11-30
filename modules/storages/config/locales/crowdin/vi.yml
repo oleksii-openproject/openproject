@@ -114,7 +114,7 @@ vi:
             hide_inactive_folders:
               permission_not_set: không thể thiết lập quyền trên %{path}.
             remote_folders:
-              not_allowed: '%{username} doesn''t have access to the %{group_folder} folder. Please check the folder permissions on Nextcloud.'
+              not_allowed: The %{username} doesn't have access to the %{group_folder} folder. Please check the folder permissions on Nextcloud.
               not_found: "%{group_folder} folder wasn't found. Please check your Nextcloud setup."
             remove_user_from_group:
               conflict: 'Không thể xóa người dùng %{user} khỏi nhóm %{group} vì lý do sau: %{reason}'
