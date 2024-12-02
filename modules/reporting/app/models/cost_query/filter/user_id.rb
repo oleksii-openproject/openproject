@@ -52,7 +52,7 @@ class CostQuery::Filter::UserId < Report::Filter::Base
   def self.available_values(*)
     # All users which are members in projects the user can see.
     # Excludes the anonymous user
-    users = User.visible
+    users = User.in_visible_project
                 .human
                 .ordered_by_name
                 .select(User::USER_FORMATS_STRUCTURE[Setting.user_format].map(&:to_s) << :id)
