@@ -77,9 +77,6 @@ export class HoverCardTriggerService {
       const turboFrameUrl = el.getAttribute('data-hover-card-url');
       if (!turboFrameUrl) { return; }
 
-      // When set in an angular component, the url attribute might be wrapped in additional quotes. Strip them.
-      const cleanedTurboFrameUrl = turboFrameUrl.replace(/^"(.*)"$/, '$1');
-
       // Reset close timer for when hovering over multiple triggers in quick succession.
       // A timer from a previous hover card might still be running. We do not want it to
       // close the new (i.e. this) hover card.
@@ -90,7 +87,7 @@ export class HoverCardTriggerService {
 
       // Set a delay before showing the hover card
       this.hoverTimeout = window.setTimeout(() => {
-        this.showHoverCard(el, cleanedTurboFrameUrl, e);
+        this.showHoverCard(el, turboFrameUrl, e);
       }, this.OPEN_DELAY_IN_MS);
     });
 
@@ -111,7 +108,7 @@ export class HoverCardTriggerService {
     });
   }
 
-  private showHoverCard(el:HTMLElement, cleanedTurboFrameUrl:string, e:JQuery.MouseOverEvent) {
+  private showHoverCard(el:HTMLElement, turboFrameUrl:string, e:JQuery.MouseOverEvent) {
     // Abort if the element is no longer present in the DOM. This can happen when this method is called after a delay.
     if (!document.body.contains(el)) { return; }
 
@@ -122,7 +119,7 @@ export class HoverCardTriggerService {
     const modal = this.opModalService.showIfNotActive(
       HoverCardComponent,
       this.injector,
-      { turboFrameSrc: cleanedTurboFrameUrl, event: e },
+      { turboFrameSrc: turboFrameUrl, event: e },
       true,
       false,
       this.modalTarget,
