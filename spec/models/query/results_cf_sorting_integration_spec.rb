@@ -343,4 +343,33 @@ RSpec.describe Query::Results, "Sorting by custom field" do
       end
     end
   end
+
+  context "for hierarchy format" do
+    include_examples "it sorts" do
+      let(:custom_field) { create(:hierarchy_wp_custom_field, hierarchy_root: nil) }
+      let(:root) { service.generate_root(custom_field).value! }
+      let(:service) { CustomFields::Hierarchy::HierarchicalItemService.new }
+
+      let!(:item_first) { service.insert_item(parent: root, label: "aa item").value! }
+      let!(:item_a) { service.insert_item(parent: root, label: "item_a").value! }
+      let!(:item_a1) { service.insert_item(parent: item_a, label: "item_a1").value! }
+      let!(:item_a2) { service.insert_item(parent: item_a, label: "item_a2").value! }
+      let!(:item_c) { service.insert_item(parent: root, label: "item_c").value! }
+      let!(:item_b) { service.insert_item(parent: root, label: "item_b").value! }
+      let!(:item_last) { service.insert_item(parent: root, label: "zz item").value! }
+
+      let(:work_packages) do
+        [
+          wp_without_cf_value,
+          wp_with_cf_value(item_first.id),
+          wp_with_cf_value(item_a.id),
+          wp_with_cf_value(item_a1.id),
+          wp_with_cf_value(item_a2.id),
+          wp_with_cf_value(item_b.id),
+          wp_with_cf_value(item_c.id),
+          wp_with_cf_value(item_last.id)
+        ]
+      end
+    end
+  end
 end

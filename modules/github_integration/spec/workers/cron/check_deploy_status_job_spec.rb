@@ -101,7 +101,7 @@ RSpec.describe Cron::CheckDeployStatusJob, type: :job, with_flag: { deploy_targe
       {
         "Accept" => "*/*",
         "Accept-Encoding" => "gzip, deflate",
-        "User-Agent" => "httpx.rb/1.3.3"
+        "User-Agent" => "httpx.rb/1.3.4"
       }
     end
 

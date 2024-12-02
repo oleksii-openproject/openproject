@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #-- copyright
 # OpenProject is an open source project management software.
 # Copyright (C) the OpenProject GmbH
@@ -26,43 +28,34 @@
 # See COPYRIGHT and LICENSE files for more details.
 #++
 
-class WorkPackageCustomField < CustomField
-  has_and_belongs_to_many :projects,
-                          join_table: "#{table_name_prefix}custom_fields_projects#{table_name_suffix}",
-                          foreign_key: "custom_field_id"
-  has_and_belongs_to_many :types,
-                          join_table: "#{table_name_prefix}custom_fields_types#{table_name_suffix}",
-                          foreign_key: "custom_field_id"
-  has_many :work_packages,
-           through: :custom_values,
-           source: :customized,
-           source_type: "WorkPackage"
+require "spec_helper"
 
-  scope :visible_by_user, ->(user) {
-    if user.allowed_in_any_project?(:select_custom_fields)
-      all
-    else
-      where(projects: { id: Project.visible(user) })
-        .where(types: { id: Type.enabled_in(Project.visible(user)) })
-        .or(where(is_for_all: true).references(:projects, :types))
-        .includes(:projects, :types)
+RSpec.describe CustomField::OrderStatements do
+  # integration tests at spec/models/query/results_cf_sorting_integration_spec.rb
+  context "when hierarchy" do
+    subject(:custom_field) { create(:hierarchy_wp_custom_field) }
+
+    describe "#order_statement" do
+      it { expect(subject.order_statement).to eq("cf_order_#{custom_field.id}.value") }
     end
-  }
 
-  scope :usable_as_custom_action, -> {
-    where.not(field_format: %w[hierarchy])
-    order(:name)
-  }
-
-  def self.summable
-    where(field_format: %w[int float])
-  end
-
-  def summable?
-    %w[int float].include?(field_format)
-  end
-
-  def type_name
-    :label_work_package_plural
+    describe "#order_join_statement" do
+      it do
+        expect(custom_field.order_join_statement).to eq(
+          <<-SQL.squish
+            LEFT OUTER JOIN (
+              SELECT DISTINCT ON (cv.customized_id) cv.customized_id , item.label "value"
+              FROM "custom_values" cv
+              INNER JOIN "hierarchical_items" item ON item.id = cv.value::bigint
+              WHERE cv.customized_type = 'WorkPackage'
+              AND cv.custom_field_id = #{custom_field.id}
+              AND cv.value IS NOT NULL
+              AND cv.value != ''
+              ORDER BY cv.customized_id, cv.id
+            ) cf_order_#{custom_field.id} ON cf_order_#{custom_field.id}.customized_id = "work_packages".id
+          SQL
+        )
+      end
+    end
   end
 end
