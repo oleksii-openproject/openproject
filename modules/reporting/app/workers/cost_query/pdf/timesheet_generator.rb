@@ -5,6 +5,21 @@ class CostQuery::PDF::TimesheetGenerator
   include WorkPackage::PDFExport::Export::Page
   include WorkPackage::PDFExport::Export::Style
 
+  H1_FONT_SIZE = 26
+  H1_MARGIN_BOTTOM = 2
+  HR_MARGIN_BOTTOM = 16
+  TABLE_CELL_FONT_SIZE = 10
+  TABLE_CELL_BORDER_COLOR = "BBBBBB"
+  TABLE_CELL_PADDING = 4
+  COMMENT_FONT_COLOR = "636C76"
+  H2_FONT_SIZE = 20
+  H2_MARGIN_BOTTOM = 10
+  COLUMN_DATE_WIDTH = 66
+  COLUMN_ACTIVITY_WIDTH = 100
+  COLUMN_HOURS_WIDTH = 60
+  COLUMN_TIME_WIDTH = 80
+  COLUMN_WP_WIDTH = 217
+
   attr_accessor :pdf
 
   def initialize(query, project, cost_types)
@@ -106,7 +121,12 @@ class CostQuery::PDF::TimesheetGenerator
   end
 
   def build_table_row_comment(result_entry)
-    [{ content: result_entry.fields["comments"], text_color: "636C76", colspan: table_columns_span }]
+    [{
+       content: result_entry.fields["comments"],
+       text_color: COMMENT_FONT_COLOR,
+       font_style: :italic,
+       colspan: table_columns_span
+     }]
   end
 
   def table_header_columns
@@ -120,11 +140,9 @@ class CostQuery::PDF::TimesheetGenerator
   end
 
   def table_columns_widths
-    with_times_column? ? [80, 193, 80, 70, 100] : [80, 270, 70, 100]
-  end
-
-  def table_column_workpackage_text_width
-    (with_times_column? ? 193 : 270) - 10 # - padding
+    @table_columns_widths ||= with_times_column? ?
+      [COLUMN_DATE_WIDTH, COLUMN_WP_WIDTH, COLUMN_TIME_WIDTH, COLUMN_HOURS_WIDTH, COLUMN_ACTIVITY_WIDTH] :
+      [COLUMN_DATE_WIDTH, COLUMN_WP_WIDTH + COLUMN_TIME_WIDTH, COLUMN_HOURS_WIDTH, COLUMN_ACTIVITY_WIDTH]
   end
 
   def table_width
@@ -132,11 +150,7 @@ class CostQuery::PDF::TimesheetGenerator
   end
 
   def table_columns_span
-    with_times_column? ? 4 : 3
-  end
-
-  def table_cell_style_font_size
-    12
+    table_columns_widths.size
   end
 
   # rubocop:disable Metrics/AbcSize
@@ -147,11 +161,11 @@ class CostQuery::PDF::TimesheetGenerator
       width: table_width,
       column_widths: table_columns_widths,
       cell_style: {
-        size: table_cell_style_font_size,
-        border_color: "BBBBBB",
+        size: TABLE_CELL_FONT_SIZE,
+        border_color: TABLE_CELL_BORDER_COLOR,
         border_width: 0.5,
         borders: %i[top bottom],
-        padding: [5, 5, 8, 5]
+        padding: [TABLE_CELL_PADDING, TABLE_CELL_PADDING, TABLE_CELL_PADDING + 2, TABLE_CELL_PADDING]
       }
     ) do |table|
       table.columns(0).borders = %i[top bottom left right]
@@ -209,7 +223,7 @@ class CostQuery::PDF::TimesheetGenerator
   end
 
   def available_space_from_bottom
-    margin_bottom = pdf.options[:bottom_margin] + 20
+    margin_bottom = pdf.options[:bottom_margin] + 20 # 20 is the safety margin
     pdf.y - margin_bottom
   end
 
@@ -268,12 +282,12 @@ class CostQuery::PDF::TimesheetGenerator
   def write_hr!
     hr_style = styles.cover_header_border
     write_horizontal_line(pdf.cursor, hr_style[:height], hr_style[:color])
-    pdf.move_down(16)
+    pdf.move_down(HR_MARGIN_BOTTOM)
   end
 
   def write_heading!
-    pdf.formatted_text([{ text: heading, size: 26, style: :bold }])
-    pdf.move_down(2)
+    pdf.formatted_text([{ text: heading, size: H1_FONT_SIZE, style: :bold }])
+    pdf.move_down(H1_MARGIN_BOTTOM)
   end
 
   def username_height
@@ -281,8 +295,8 @@ class CostQuery::PDF::TimesheetGenerator
   end
 
   def write_username(user_id)
-    pdf.formatted_text([{ text: user_name(user_id), size: 20 }])
-    pdf.move_down(10)
+    pdf.formatted_text([{ text: user_name(user_id), size: H2_FONT_SIZE }])
+    pdf.move_down(H2_MARGIN_BOTTOM)
   end
 
   def user_name(user_id)
@@ -294,8 +308,7 @@ class CostQuery::PDF::TimesheetGenerator
   end
 
   def wp_subject(wp_id)
-    text = WorkPackage.find(wp_id).subject
-    ellipsis_if_longer(text, table_column_workpackage_text_width, { size: table_cell_style_font_size })
+    WorkPackage.find(wp_id).subject
   end
 
   def format_duration(hours)
@@ -314,7 +327,7 @@ class CostQuery::PDF::TimesheetGenerator
   end
 
   def with_times_column?
-    true
+    Setting.allow_tracking_start_and_end_times
   end
 
   def with_cover?
