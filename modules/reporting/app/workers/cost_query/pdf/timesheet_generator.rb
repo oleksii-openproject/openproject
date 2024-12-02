@@ -164,25 +164,29 @@ class CostQuery::PDF::TimesheetGenerator
         padding: [TABLE_CELL_PADDING, TABLE_CELL_PADDING, TABLE_CELL_PADDING + 2, TABLE_CELL_PADDING]
       }
     ) do |table|
-      table.columns(0).borders = %i[top bottom left right]
-      table.columns(table_columns_widths.length - 1).style do |c|
-        c.borders = c.borders + [:right]
-      end
-      table.columns(1).style do |c|
-        if c.colspan > 1
-          c.borders = %i[left right bottom]
-          c.padding = [0, TABLE_CELL_PADDING, TABLE_CELL_PADDING + 2, TABLE_CELL_PADDING]
-          row_nr = c.row - 1
-          values = table.columns(1..-1).rows(row_nr..row_nr)
-          values.each do |cell|
-            cell.borders = cell.borders - [:bottom]
-          end
+      adjust_prawn_table_cell_borders(table)
+    end
+  end
+
+  def adjust_prawn_table_cell_borders(table)
+    table.columns(0).borders = %i[top bottom left right]
+    table.columns(table_columns_widths.length - 1).style do |c|
+      c.borders = c.borders + [:right]
+    end
+    table.columns(1).style do |c|
+      if c.colspan > 1
+        c.borders = %i[left right bottom]
+        c.padding = [0, TABLE_CELL_PADDING, TABLE_CELL_PADDING + 2, TABLE_CELL_PADDING]
+        row_nr = c.row - 1
+        values = table.columns(1..-1).rows(row_nr..row_nr)
+        values.each do |cell|
+          cell.borders = cell.borders - [:bottom]
         end
       end
-      table.rows(0).style do |c|
-        c.borders = c.borders + [:top]
-        c.font_style = :bold
-      end
+    end
+    table.rows(0).style do |c|
+      c.borders = c.borders + [:top]
+      c.font_style = :bold
     end
   end
 
