@@ -125,7 +125,7 @@ class CostQuery::PDF::TimesheetGenerator
        content: result_entry.fields["comments"],
        text_color: COMMENT_FONT_COLOR,
        font_style: :italic,
-       colspan: table_columns_span
+       colspan: table_columns_widths.size
      }]
   end
 
@@ -145,20 +145,12 @@ class CostQuery::PDF::TimesheetGenerator
       [COLUMN_DATE_WIDTH, COLUMN_WP_WIDTH + COLUMN_TIME_WIDTH, COLUMN_HOURS_WIDTH, COLUMN_ACTIVITY_WIDTH]
   end
 
-  def table_width
-    table_columns_widths.sum
-  end
-
-  def table_columns_span
-    table_columns_widths.size
-  end
-
   # rubocop:disable Metrics/AbcSize
   def build_table(rows)
     pdf.make_table(
       rows,
       header: true,
-      width: table_width,
+      width: table_columns_widths.sum,
       column_widths: table_columns_widths,
       cell_style: {
         size: TABLE_CELL_FONT_SIZE,
