@@ -193,7 +193,7 @@ export class PrincipalRendererService {
 
   private userHoverCardUrl(principal:PrincipalLike|IPrincipal):string|null {
     const id = principal.id || idFromLink(hrefFromPrincipal(principal));
-    return id ? `/users/${id}/hover_card` : null;
+    return id ? this.pathHelper.userHoverCardPath(id) : null;
   }
 
   private renderName(
