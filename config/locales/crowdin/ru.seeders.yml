@@ -36,15 +36,15 @@ ru:
           name: Чёрный
       life_cycle_colors:
         item_0:
-          name: PM2 Orange
+          name: PM2 Оранжевый
         item_1:
-          name: PM2 Purple
+          name: PM2 Фиолетовый
         item_2:
-          name: PM2 Red
+          name: PM2 Красный
         item_3:
-          name: PM2 Magenta
+          name: PM2 Пурпурный
         item_4:
-          name: PM2 Green Yellow
+          name: PM2 Зелено-жёлтый
       document_categories:
         item_0:
           name: Документация

@@ -357,10 +357,10 @@ pl:
           learn_about: "Dowiedz się więcej o nowych funkcjach"
           #Include the version to invalidate outdated translations in other locales.
           #Otherwise, e.g. chinese might still have the translations for 10.0 in the 12.0 release.
-          "15_0":
+          "15_1":
             standard:
               new_features_html: >
-                Ta wersja wprowadza różne funkcje i ulepszenia, takie jak: <br> <ul class="%{list_styling_class}"> <li>Usprawnienie komunikacji dzięki lepiej zorganizowanej karcie Aktywność, ładowaniu wiadomości i powiadomień w czasie rzeczywistym, reakcjom emoji itd.</li> <li>Korzystanie z łatwych ustawień uwierzytelniania logowania jednokrotnego przy użyciu SAML i OIDC w administracji Enterprise Cloud.</li> <li>Korzystanie z nowej „standardowej roli globalnej” i włączanie uprawnień do wyświetlania adresów e-mail.</li> <li>Łatwiejsza nawigacja na listach projektów dzięki nagłówkom tabel szybkich działań.</li> <li>Uproszczone ustawienia projektu z mniejszą liczbą potrzebnych zmiennych projektu paska bocznego.</li> <li>Ograniczenie ręcznego czyszczenia podczas dodawania niestandardowego pola do typu — koniec z automatycznym stosowaniem do wszystkich projektów.</li> <li>Lepsza przejrzystość nawigacji — nazwa „Moje konto” została zmieniona na „Ustawienia konta”.</li> </ul>
+                The release brings various features and improvements for you, e.g. <br> <ul class="%{list_styling_class}"> <li>Custom fields of type hierarchy (Enterprise add-on).</li> <li>Redesign of the Relations tab in work packages.</li> <li>Redesign of the Meetings index page.</li> <li>Manual page breaks in PDF work package exports.</li> <li>Zen mode for project lists.</li> </ul>
     ical_sharing_modal:
       title: "Subskrybuj kalendarz"
       inital_setup_error_message: "Podczas pobierania danych wystąpił błąd."

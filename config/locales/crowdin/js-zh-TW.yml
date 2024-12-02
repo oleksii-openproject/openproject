@@ -355,10 +355,10 @@ zh-TW:
           learn_about: "瞭解更多新功能的資訊"
           #Include the version to invalidate outdated translations in other locales.
           #Otherwise, e.g. chinese might still have the translations for 10.0 in the 12.0 release.
-          "15_0":
+          "15_1":
             standard:
               new_features_html: >
-                此版本為您帶來各種功能與改進，例如<br> <ul class="%{list_styling_class}"> <li>透過結構更完善的活動標籤、即時載入訊息與通知、表情符號反應等功能，提升您的溝通品質。</li> <li>在企業雲端管理中使用 SAML 和 OIDC 進行簡易的單一登入驗證設定，讓您獲益良多。</li> <li>使用新的「標準全局角色」並啟用檢視電子郵件地址的權限。</li> <li>使用快速行動表頭，享受專案清單中更簡易的導覽功能。</li> <li>使用更少的側邊欄設計變數，體驗簡化的設計設定。</li> <li>在類型中加入自訂欄位時減少手動清理 - 不再自動套用至所有專案。</li> <li>受益於更清晰的導覽 -「我的帳戶」更名為「帳戶設定」。</li> </ul>
+                該版本為您帶來了各種功能和改進，例如<br> <ul class="%{list_styling_class}"> <li>階層類型的自訂欄位 (企業附加元件)。</li> <li>重新設計工作套件中的「關係」標籤。</li> <li>重新設計會議索引頁。</li> <li>PDF 工作套件匯出中的手動分頁。</li> <li>專案清單的 Zen 模式。</li> </ul>
     ical_sharing_modal:
       title: "訂閱日曆"
       inital_setup_error_message: "更新資料時發生錯誤"

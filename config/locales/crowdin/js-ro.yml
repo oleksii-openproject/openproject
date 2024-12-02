@@ -102,7 +102,7 @@ ro:
     button_save: "Salvează"
     button_settings: "Setări"
     button_uncheck_all: "Deselectează tot"
-    button_update: "Actualizează"
+    button_update: "Actualizare"
     button_export-pdf: "Descarcă PDF"
     button_export-atom: "Descarcă Atom"
     button_generate_pdf: "Generate PDF"
@@ -356,10 +356,10 @@ ro:
           learn_about: "Aflați mai multe despre noile caracteristici"
           #Include the version to invalidate outdated translations in other locales.
           #Otherwise, e.g. chinese might still have the translations for 10.0 in the 12.0 release.
-          "15_0":
+          "15_1":
             standard:
               new_features_html: >
-                Versiunea aduce diverse caracteristici și îmbunătățiri pentru tine, de exemplu: <br> <ul class="%{list_styling_class}"> <li>Îmbunătățește-ți comunicarea cu o filă de activitate structurată mai bună, mesaje de încărcare și notificări în timp real, reacții emoji și multe altele.</li> <li>Beneficiază de setările de autentificare unice ușor cu SAML și OIDC în administrarea Enterprise Cloud (cloud).</li> <li>Utilizează noul 'rol global standard' și activează permisiunile pentru a vizualiza adresele de e-mail.</li> <li>Bucură-te de o navigare mai ușoară în listele de proiecte cu anteturi de masă cu acțiune rapidă.</li> <li>Experiență simplificată setările de design cu mai puține variabile de proiectare laterale.</li> <li>Redu curățarea manuală la adăugarea unui câmp personalizat la un tip – nu mai există auto-aplicare la toate proiectele.</li> <li>Beneficiază de o mai bună claritate a navigării – 'Contul meu' este redenumit în 'Setări cont'.</li> </ul>
+                The release brings various features and improvements for you, e.g. <br> <ul class="%{list_styling_class}"> <li>Custom fields of type hierarchy (Enterprise add-on).</li> <li>Redesign of the Relations tab in work packages.</li> <li>Redesign of the Meetings index page.</li> <li>Manual page breaks in PDF work package exports.</li> <li>Zen mode for project lists.</li> </ul>
     ical_sharing_modal:
       title: "Subscribe to calendar"
       inital_setup_error_message: "An error occured while fetching data."
@@ -757,7 +757,7 @@ ro:
           label: "Întrerupeți temporar memento-urile zilnice prin e-mail"
           first_day: "Prima zi"
           last_day: "Ultima zi"
-    text_are_you_sure: "Ești sigur?"
+    text_are_you_sure: "Sunteți sigur?"
     text_data_lost: "Toate datele introduse vor fi pierdute."
     text_user_wrote: "%{value} a scris:"
     types:

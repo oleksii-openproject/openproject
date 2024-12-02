@@ -42,10 +42,10 @@ nl:
     delete_warning:
       input_delete_confirmation: Voer de providernaam %{name} in om de verwijdering te bevestigen.
       irreversible_notice: Het verwijderen van een SSO provider is een onomkeerbare actie.
-      provider: 'Are you sure you want to delete the SSO provider %{name}? To confirm this action please enter the name of the provider in the field below, this will:'
-      delete_result_1: Remove the provider from the list of available providers.
+      provider: 'Weet u zeker dat u de SSO provider %{name} wilt verwijderen? Voer de naam van de provider in het onderstaande veld in om deze actie te bevestigen, dit wil:'
+      delete_result_1: Verwijder de provider uit de lijst met beschikbare providers.
       delete_result_user_count:
-        zero: No users are currently using this provider. No further action is required.
+        zero: Er zijn momenteel geen gebruikers die deze provider gebruiken. Er is geen verdere actie vereist.
         one: "One user is currently still using this provider. They will need to be re-invited or logging in with another provider."
         other: "%{count} users are currently still using this provider. They will need to be re-invited or logging in with another provider."
       delete_result_direct: This provider is marked as a direct login provider. The setting will be removed and users will no longer be redirected to the provider for login.
