@@ -12,7 +12,8 @@ OpenProject thrives on the strength and engagement of its community. Beyond codi
 
 ## Share your experience
 
-> [!IMPORTANT] By submitting your content, we assume that you grant us permission to publish it on our platforms. If you would like to review the content before it is published, please let us know explicitly, and we will be happy to accommodate your request.
+> [!IMPORTANT] 
+> By submitting your content, we assume that you grant us permission to publish it on our platforms. If you would like to review the content before it is published, please let us know explicitly, and we will be happy to accommodate your request.
 
 Your unique experience with OpenProject can inspire others and provide valuable feedback to our team. Here are some ideas for sharing your story:
 
