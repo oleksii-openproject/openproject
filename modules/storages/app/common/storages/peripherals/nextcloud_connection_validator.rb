@@ -58,7 +58,7 @@ module Storages
         host_url_not_found
           .or { missing_dependencies }
           .or { version_mismatch }
-          # .or { with_unexpected_content }
+          .or { with_unexpected_content }
           .or { capabilities_request_failed_with_unknown_error }
       end
 
