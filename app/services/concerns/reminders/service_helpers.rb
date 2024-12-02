@@ -30,6 +30,17 @@ module Reminders
   module ServiceHelpers
     extend ActiveSupport::Concern
 
+    def reschedule_reminder(reminder)
+      destroy_scheduled_reminder_job(reminder)
+      mark_unread_notifications_as_read_for(reminder)
+      schedule_new_reminder_job(reminder)
+    end
+
+    def schedule_new_reminder_job(reminder)
+      job = Reminders::ScheduleReminderJob.schedule(reminder)
+      reminder.update_columns(job_id: job.job_id)
+    end
+
     def destroy_scheduled_reminder_job(reminder)
       return unless reminder.scheduled?
       return unless job = GoodJob::Job.find_by(id: reminder.job_id)

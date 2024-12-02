@@ -31,15 +31,7 @@ module Reminders
     include Reminders::ServiceHelpers
 
     def after_perform(service_call)
-      reminder = service_call.result
-
-      if remind_at_changed?
-        destroy_scheduled_reminder_job(reminder)
-        mark_unread_notifications_as_read_for(reminder)
-
-        job = Reminders::ScheduleReminderJob.schedule(reminder)
-        reminder.update_columns(job_id: job.job_id)
-      end
+      reschedule_reminder(service_call.result) if remind_at_changed?
 
       service_call
     end

@@ -28,10 +28,10 @@
 
 module Reminders
   class CreateService < ::BaseServices::Create
+    include Reminders::ServiceHelpers
+
     def after_perform(service_call)
-      reminder = service_call.result
-      job = Reminders::ScheduleReminderJob.schedule(reminder)
-      reminder.update_columns(job_id: job.job_id)
+      schedule_new_reminder_job(service_call.result)
 
       service_call
     end
