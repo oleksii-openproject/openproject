@@ -89,10 +89,45 @@ module ::Query::Results::GroupBy
 
     if custom_field.list?
       transform_list_custom_field_keys(custom_field, groups)
+    elsif custom_field.field_format_hierarchy?
+      transform_hierarchy_custom_field_keys(custom_field, groups)
     else
       transform_single_custom_field_keys(custom_field, groups)
     end
   end
+
+  def transform_hierarchy_custom_field_keys(custom_field, groups)
+    items = hierarchy_items_for_keys(custom_field, groups)
+
+    groups.transform_keys do |key|
+      if custom_field.multi_value?
+        (key ? key.split(".") : []).map do |subkey|
+          items[subkey]
+        end
+      else
+        items[key] || nil
+      end
+    end
+  end
+
+  # rubocop:disable Metrics/AbcSize
+  def hierarchy_items_for_keys(custom_field, groups)
+    keys = groups.keys.map { |k| k ? k.split(".") : [] }.flatten.uniq
+
+    CustomFields::Hierarchy::HierarchicalItemService
+      .new
+      .get_descendants(item: custom_field.hierarchy_root, include_self: false)
+      .fmap { |list| list.filter { |item| keys.include?(item.label) } }
+      .fmap { |list| list.index_by(&:label) }
+      .either(
+        ->(list) { list },
+        ->(error) do
+          msg = "#{I18n.t('api_v3.errors.code_500')} #{error}"
+          raise ::API::Errors::InternalError.new(msg)
+        end
+      )
+  end
+  # rubocop:enable Metrics/AbcSize
 
   def transform_list_custom_field_keys(custom_field, groups)
     options = custom_options_for_keys(custom_field, groups)
@@ -103,7 +138,7 @@ module ::Query::Results::GroupBy
           options[subkey].first
         end
       else
-        options[key] ? options[key].first : nil
+        options[key]&.first
       end
     end
   end
@@ -111,7 +146,7 @@ module ::Query::Results::GroupBy
   def custom_options_for_keys(custom_field, groups)
     keys = groups.keys.map { |k| k ? k.split(".") : [] }
     # Because of multi select cfs we might end up having overlapping groups
-    # (e.g group "1" and group "1.3" and group "3" which represent concatenated ids).
+    # (e.g. group "1" and group "1.3" and group "3" which represent concatenated ids).
     # This can result in us having ids in the keys array multiple times (e.g. ["1", "1", "3", "3"]).
     # If we were to use the keys array with duplicates to find the actual custom options,
     # AR would throw an error as the number of records returned does not match the number

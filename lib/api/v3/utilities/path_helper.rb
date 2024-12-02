@@ -84,7 +84,6 @@ module API
           def self.resources(name,
                              except: [],
                              only: %i[index show create_form update_form schema])
-
             (Array(only) - Array(except)).each do |method|
               send(method, name)
             end
@@ -209,6 +208,11 @@ module API
 
           def self.custom_field(id)
             "#{root}/custom_fields/#{id}"
+          end
+
+          # Needed as the method is derived from the name of the class for the query API representation.
+          def self.custom_field_hierarchy_item(id)
+            custom_field_item(id)
           end
 
           def self.custom_field_item(id)
