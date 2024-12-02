@@ -1,0 +1,23 @@
+<%= render(FormControl.new(input: @input, tag: :"primer-datepicker-field")) do %>
+  <%= content_tag(:div, **@field_wrap_arguments) do %>
+    <%# leading spinner implies a leading visual %>
+    <% if @input.leading_visual || @input.leading_spinner? %>
+      <span class="FormControl-input-leadingVisualWrap">
+        <%= render(Primer::Beta::Octicon.new(**@input.leading_visual, data: { target: "primer-text-field.leadingVisual" })) %>
+        <% if @input.leading_spinner? %>
+          <%= render(Primer::Beta::Spinner.new(size: :small, hidden: true, data: { target: "primer-text-field.leadingSpinner" })) %>
+        <% end %>
+      </span>
+    <% end %>
+    <%= render Primer::ConditionalWrapper.new(condition: @input.auto_check_src, tag: "auto-check", csrf: auto_check_authenticity_token, src: @input.auto_check_src) do %>
+      <%= angular_component_tag @datepicker_options.fetch(:component),
+                              inputs: @datepicker_options.merge(
+                                id: @datepicker_options.fetch(:id) { builder.field_id(@input.name) },
+                                name: @datepicker_options.fetch(:name) { builder.field_name(@input.name) },
+                                value: @datepicker_options.fetch(:value) { @input.input_arguments[:value] },
+                                inputClassNames: @datepicker_options.fetch(:class) { @input.input_arguments[:class] }
+                              )
+      %>
+    <% end %>
+  <% end %>
+<% end %>

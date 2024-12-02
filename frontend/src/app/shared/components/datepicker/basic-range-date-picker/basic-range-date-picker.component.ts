@@ -115,6 +115,8 @@ export class OpBasicRangeDatePickerComponent implements OnInit, ControlValueAcce
 
   @Input() inputClassNames = '';
 
+  @Input() inDialog = false;
+
   @ViewChild('input') input:ElementRef;
 
   stringValue = '';
@@ -199,6 +201,7 @@ export class OpBasicRangeDatePickerComponent implements OnInit, ControlValueAcce
             !!this.minimalDate && dayElem.dateObj <= this.minimalDate,
           );
         },
+        static: this.inDialog,
       },
       this.input.nativeElement as HTMLInputElement,
     );

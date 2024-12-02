@@ -1,6 +1,5 @@
 @import '../../app/spot/styles/sass/variables'
 @import '../../global_styles/openproject/variables'
-
 .op-datepicker-modal
   display: flex
   flex-direction: column
@@ -88,3 +87,8 @@
     &--date-form
       &:only-child
         grid-column: 1 / 3
+
+.flatpickr-wrapper
+  // Make flatpickr behave correctly when it is instantiated
+  // inside a dialog using the static: true option.
+  width: 100%

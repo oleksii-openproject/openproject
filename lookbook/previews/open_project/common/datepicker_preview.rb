@@ -28,8 +28,10 @@ module OpenProject
       # before using or contributing to date pickers.
       #
       # @param value date
-      def single(value: Time.zone.today.iso8601)
-        render_with_template(locals: { value: })
+      # @param in_dialog toggle
+      # @param icon [Symbol] octicon
+      def single(value: Time.zone.today, in_dialog: false, icon: :calendar)
+        render_with_template(locals: { value:, in_dialog:, icon: })
       end
 
       ##
@@ -48,8 +50,10 @@ module OpenProject
       # before using or contributing to date pickers.
       #
       # @param value text
-      def range(value: "#{Time.zone.today.iso8601} - #{Time.zone.today.iso8601}")
-        render_with_template(locals: { value: })
+      # @param in_dialog toggle
+      # @param icon [Symbol] octicon
+      def range(value: "#{Time.zone.today.iso8601} - #{Time.zone.today.iso8601}", in_dialog: false, icon: :calendar)
+        render_with_template(locals: { value:, in_dialog:, icon: })
       end
     end
   end
