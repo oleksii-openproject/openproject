@@ -72,16 +72,10 @@ RSpec.describe Storages::Peripherals::StorageInteraction::Nextcloud::RemoveUserF
     before do
       create_group(auth, storage, group)
       add_user_to_group(user, group)
-
-      # There is a bug in the group folder API that does not allow to remove a user from a group,
-      # if this is its last group
-      create_group(auth, storage, "Sith Assassins Backup")
-      add_user_to_group(user, "Sith Assassins Backup")
     end
 
     after do
       remove_group(auth, storage, group)
-      remove_group(auth, storage, "Sith Assassins Backup")
     end
 
     it "returns a success" do
