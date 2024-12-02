@@ -358,7 +358,7 @@ zh-TW:
           "15_1":
             standard:
               new_features_html: >
-                The release brings various features and improvements for you, e.g. <br> <ul class="%{list_styling_class}"> <li>Custom fields of type hierarchy (Enterprise add-on).</li> <li>Redesign of the Relations tab in work packages.</li> <li>Redesign of the Meetings index page.</li> <li>Manual page breaks in PDF work package exports.</li> <li>Zen mode for project lists.</li> </ul>
+                該版本為您帶來了各種功能和改進，例如<br> <ul class="%{list_styling_class}"> <li>階層類型的自訂欄位 (企業附加元件)。</li> <li>重新設計工作套件中的「關係」標籤。</li> <li>重新設計會議索引頁。</li> <li>PDF 工作套件匯出中的手動分頁。</li> <li>專案清單的 Zen 模式。</li> </ul>
     ical_sharing_modal:
       title: "訂閱日曆"
       inital_setup_error_message: "更新資料時發生錯誤"
