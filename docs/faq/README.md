@@ -296,7 +296,7 @@ OpenProject changed the database from MySQL (rarely also MariaDB) in older Versi
 
 ### How can I contribute to OpenProject?
 
-We welcome everybody willing to help make OpenProject better. There are a lot of possibilities for helping, be it [improving the translations](../development/translate-openproject) via crowdin, answering questions in the [forums](https://community.openproject.org/projects/openproject/forums) or by fixing bugs and implementing features.
+We welcome everybody willing to help make OpenProject better. There are a lot of possibilities for helping, be it [improving the translations](../contributions-guide/translate-openproject) via crowdin, answering questions in the [forums](https://community.openproject.org/projects/openproject/forums) or by fixing bugs and implementing features.
 
 If you want to code, a good starting point would be to make yourself familiar with the [basic approaches for developing](../development/) in OpenProject and opening a pull request on GitHub referencing an existing bug report or feature request. Find our GitHub page [here](https://github.com/opf/openproject).
 
