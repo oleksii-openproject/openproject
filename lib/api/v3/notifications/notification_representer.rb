@@ -104,7 +104,7 @@ module API
           "Notification"
         end
 
-        self.to_eager_load = %i[actor journal]
+        self.to_eager_load = %i[actor journal reminder]
       end
     end
   end
