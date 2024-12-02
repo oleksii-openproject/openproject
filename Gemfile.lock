@@ -601,7 +601,7 @@ GEM
       i18n (>= 0.7)
       multi_json
       request_store (>= 1.0)
-    good_job (3.26.2)
+    good_job (3.99.1)
       activejob (>= 6.0.0)
       activerecord (>= 6.0.0)
       concurrent-ruby (>= 1.0.2)
@@ -1259,7 +1259,7 @@ DEPENDENCIES
   friendly_id (~> 5.5.0)
   fuubar (~> 2.5.0)
   gon (~> 6.4.0)
-  good_job (= 3.26.2)
+  good_job (= 3.99.1)
   google-apis-gmail_v1
   googleauth
   grape (~> 2.2.0)
