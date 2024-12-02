@@ -46,10 +46,6 @@ module Bim
 
       def upload; end
 
-      def index
-        redirect_to action: :upload
-      end
-
       def prepare_import
         render_next
       rescue StandardError => e

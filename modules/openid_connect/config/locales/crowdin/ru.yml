@@ -62,7 +62,7 @@ ru:
       limit_self_registration: Если эта опция включена, пользователи смогут регистрироваться у этого провайдера только в том случае, если конфигурация провайдера позволяет это делать.
       display_name: Это имя провайдера. Оно будет отображаться как кнопка входа и в списке провайдеров.
       tenant: 'Пожалуйста, замените владельца по умолчанию на своего собственного, если это применимо. См. <a href=" https://learn.microsoft.com/en-us/entra/identity-platform/v2-protocols-oidc#find-your-apps-openid-configuration-document-uri">это</a>.'
-      scope: If you want to request custom scopes, you can add one or multiple scope values separated by spaces here. For more information, see the [OpenID Connect documentation](docs_url).
+      scope: Если Вы хотите запросить пользовательские области видимости, Вы можете добавить здесь одно или несколько значений диапазона, разделенных пробелами. Более подробную информацию Вы найдете в [документации OpenID Connect](docs_url).
       post_logout_redirect_uri: URL-адрес, на который провайдер OpenID Connect должен перенаправить Вас после запроса на выход из системы.
       claims: >
         Вы можете запросить дополнительные требования к конечным точкам пользовательской информации и id токена. Пожалуйста, обратитесь к [нашей документации для OpenID подключения](docs_url) для получения дополнительной информации.

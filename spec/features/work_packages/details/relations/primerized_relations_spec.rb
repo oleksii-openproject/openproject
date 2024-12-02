@@ -170,6 +170,29 @@ RSpec.describe "Primerized work package relations tab",
         expect(page).to have_no_css("[data-test-selector='op-relation-row-#{child_wp.id}-edit-button']")
       end
     end
+
+    context "with the shown WorkPackage being the 'to' relation part" do
+      let(:another_wp) { create(:work_package, type: type2, subject: "related to main") }
+
+      let(:relation_to) do
+        create(:relation,
+               from: another_wp,
+               to: work_package,
+               relation_type: Relation::TYPE_FOLLOWS)
+      end
+
+      it "shows the correct related WorkPackage in the dialog (regression #59771)" do
+        scroll_to_element relations_panel
+
+        relations_tab.open_relation_dialog(relation_to)
+
+        within "##{WorkPackageRelationsTab::WorkPackageRelationDialogComponent::DIALOG_ID}" do
+          expect(page).to have_field("Work package",
+                                     readonly: true,
+                                     with: "#{another_wp.type.name.upcase} ##{another_wp.id} - #{another_wp.subject}")
+        end
+      end
+    end
   end
 
   describe "creating a relation" do

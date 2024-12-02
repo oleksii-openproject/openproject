@@ -356,10 +356,10 @@ de:
           learn_about: "Erfahren Sie mehr über die neuen Funktionen"
           #Include the version to invalidate outdated translations in other locales.
           #Otherwise, e.g. chinese might still have the translations for 10.0 in the 12.0 release.
-          "15_0":
+          "15_1":
             standard:
               new_features_html: >
-                Das Release beinhaltet verschiedene neue Funktionen und Verbesserungen für Sie, z.B. <br> <ul class="%{list_styling_class}"> <li>Verbessern Sie Ihre Kommunikation mit einer besser strukturierten Aktivitäts-Registerkarte, in Echtzeit ladenden Updates und Benachrichtigungen, Emoji-Reaktionen und mehr.</li> <li>Profitieren Sie von einfachen Single Sign-On-Authentifizierungseinstellungen mit SAML und OIDC in Ihrer Enterprise Cloud-Administration.</li> <li>Nutzen Sie die neue 'Standard global role' und aktivieren Sie Berechtigungen zum Anzeigen von E-Mail-Adressen.</li> <li>Profitieren Sie von einer einfacheren Navigation in Projektlisten mithilfe von Schnellzugriff-Tabellenüberschriften.</li> <li>Erleben Sie vereinfachte Design-Einstellungen durch weniger erforderliche Design-Variablen in der Seitenleiste.</li> <li>Sparen Sie sich manuelle Anpassungen, wenn Sie einem Arbeitspakettyp ein selbstdefiniertes Feld hinzufügen - dieses wird nicht mehr automatisch auf alle Projekte angewendet.</li> <li>Profitieren Sie von einer verbesserten Navigationsübersicht - 'Mein Konto' wurde in 'Kontoeinstellungen' umbenannt.</li> </ul>
+                The release brings various features and improvements for you, e.g. <br> <ul class="%{list_styling_class}"> <li>Custom fields of type hierarchy (Enterprise add-on).</li> <li>Redesign of the Relations tab in work packages.</li> <li>Redesign of the Meetings index page.</li> <li>Manual page breaks in PDF work package exports.</li> <li>Zen mode for project lists.</li> </ul>
     ical_sharing_modal:
       title: "Kalender abonnieren"
       inital_setup_error_message: "Beim Abrufen der Daten ist ein Fehler aufgetreten."
@@ -575,7 +575,7 @@ de:
         members: "Sie können hier neue <b>Mitglieder</b> zu Ihrem Projekt hinzufügen."
         quick_add_button: "Klicken Sie auf das Plus (+) Symbol in der Navigationsleiste um <b>neue Projekte zu erzeugen</b> oder <b>MitarbeiterInnen einzuladen</b>."
         sidebar_arrow: "Benutzen Sie den Pfeil in der oberen linken Ecke um zum <b>Hauptmenü</b> des Projekts zurückzukehren."
-        welcome: "Take a three-minute introduction tour to learn the most <b>important features</b>. <br> We recommend completing the steps until the end. You can restart the tour any time."
+        welcome: "Lernen Sie in drei Minuten die <b>wichtigen Funktionen</b> kennen. <br> Wir empfehlen Ihnen, die Tour vollständig abzuschließen. Sie können diese jederzeit wieder neu starten."
         wiki: "Im <b>Wiki</b> können Sie gemeinsam mit dem Team Informationen dokumentieren und eine Wissensdatenbank aufbauen."
         backlogs:
           overview: "Verwalten Sie Ihre Arbeit in der <b>-Backlogs</b> Ansicht."

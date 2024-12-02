@@ -71,7 +71,7 @@ nl:
           updated: "veranderd van %{old_value} naar %{value}"
           updated_html: "gewijzigd van <i>%{old_value}</i> naar <i>%{value}</i>"
         position:
-          updated: "reordered"
+          updated: "herschikken"
         work_package:
           updated: "veranderd van %{old_value} naar %{value}"
           updated_html: "gewijzigd van <i>%{old_value}</i> naar <i>%{value}</i>"
@@ -88,19 +88,19 @@ nl:
   label_meeting: "Vergadering"
   label_meeting_plural: "Vergaderingen"
   label_meeting_new: "Nieuwe vergadering"
-  label_meeting_new_dynamic: "New dynamic meeting"
-  label_meeting_create: "Create meeting"
-  label_meeting_copy: "Copy meeting"
+  label_meeting_new_dynamic: "Nieuwe dynamische vergadering"
+  label_meeting_create: "Creëer vergadering"
+  label_meeting_copy: "Kopie vergadering"
   label_meeting_edit: "Vergadering bewerken"
   label_meeting_agenda: "Agenda"
   label_meeting_minutes: "Notulen"
   label_meeting_close: "Sluiten"
   label_meeting_open: "Open"
-  label_meeting_index_delete: "Delete"
-  label_meeting_open_this_meeting: "Open this meeting"
+  label_meeting_index_delete: "Verwijderen"
+  label_meeting_open_this_meeting: "Open deze vergadering"
   label_meeting_agenda_close: "Sluit de agenda om de notulen te beginnen"
   label_meeting_date_time: "Datum/Tijd"
-  label_meeting_date_and_time: "Date and time"
+  label_meeting_date_and_time: "Datum en tijd"
   label_meeting_diff: "Diff"
   label_upcoming_meetings: "Geplande vergaderingen"
   label_past_meetings: "Eerdere vergaderingen"
@@ -119,20 +119,20 @@ nl:
   label_start_date: "Startdatum"
   meeting:
     attachments:
-      text: "Attached files are available to all meeting participants. You can also drag and drop these into agenda item notes."
+      text: "Bijgevoegde bestanden zijn beschikbaar voor alle deelnemers aan de vergadering. U kunt deze ook naar agendapunt notities slepen."
     copy:
       title: "Kopieer vergadering: %{title}"
       attachments: "Bijlagen kopiëren"
-      attachments_text: "Copy over all attached files to the new meeting"
+      attachments_text: "Kopieer alle bijgevoegde bestanden naar de nieuwe vergadering"
       agenda: "Agenda kopiëren"
-      agenda_items: "Copy agenda items"
+      agenda_items: "Agendapunten kopiëren"
       agenda_text: "Kopieer de agenda van de oude vergadering"
-      participants: "Copy list of participants"
+      participants: "Kopieer lijst van deelnemers"
     email:
       send_emails: "Email participants"
       send_invitation_emails: >
-        Send an email invitation immediately to the participants selected above. You can also do this manually at any time later.
-      send_invitation_emails_structured: "Send an email invitation immediately to all participants. You can also do this manually at any time later."
+        Stuur onmiddellijk een e-mailuitnodiging naar de hierboven geselecteerde deelnemers. U kunt dit ook later op elk gewenst moment handmatig doen.
+      send_invitation_emails_structured: "Stuur onmiddellijk een e-mailuitnodiging naar de hierboven geselecteerde deelnemers. U kunt dit ook later op elk gewenst moment handmatig doen."
       open_meeting_link: "Open vergadering"
       invited:
         summary: "%{actor} heeft je een uitnodiging gestuurd voor de meeting %{title}"
@@ -154,10 +154,10 @@ nl:
     untitled_title: "Naamloze sectie"
     delete_confirmation: "Deleting the section will also delete all of its agenda items. Are you sure you want to do this?"
     placeholder_title: "Nieuwe Sectie"
-    empty_text: "Drag items here or create a new one"
+    empty_text: "Sleep items hierheen of maak een nieuwe"
   notice_successful_notification: "Notificatie succesvol verzonden"
   notice_timezone_missing: Geen tijdzone is ingesteld en %{zone} is aangenomen. Om uw tijdzone te kiezen, klik dan hier.
-  notice_meeting_updated: "This page has been updated by someone else. Reload to view changes."
+  notice_meeting_updated: "Deze pagina is door iemand anders bijgewerkt. Herlaad om wijzigingen te bekijken."
   permission_create_meetings: "Creëer vergaderingen"
   permission_edit_meetings: "Vergaderingen bewerken"
   permission_delete_meetings: "Verwijder vergaderingen"
@@ -181,7 +181,7 @@ nl:
   text_meeting_minutes_for_meeting: 'minuten voor de vergadering "%{meeting}"'
   text_notificiation_invited: "Deze mail bevat een ics item voor de vergadering hieronder:"
   text_meeting_empty_heading: "Je vergadering is leeg"
-  text_meeting_empty_description_1: "Start by adding agenda items below. Each item can be as simple as just a title, but you can also add additional details like duration and notes."
+  text_meeting_empty_description_1: "Begin met het toevoegen van agendapunten hieronder. Elk item kan zo eenvoudig zijn als alleen een titel, maar u kunt ook extra gegevens toevoegen, zoals duur en aantekeningen."
   text_meeting_empty_description_2: 'Je kunt ook verwijzingen naar bestaande werkpakketten toevoegen. Wanneer je dit doet, zullen gerelateerde notities automatisch zichtbaar zijn in het tabblad "Vergaderingen" van het werkpakket.'
   label_meeting_empty_action: "Agendapunt toevoegen"
   label_meeting_actions: "Vergadering acties"
@@ -189,9 +189,9 @@ nl:
   label_meeting_delete: "Verwijder vergadering"
   label_meeting_created_by: "Gemaakt door"
   label_meeting_last_updated: "Laatst bijgewerkt"
-  label_meeting_reload: "Reload"
+  label_meeting_reload: "Herladen"
   label_agenda_items: "Agendapunten"
-  label_agenda_items_reordered: "reordered"
+  label_agenda_items_reordered: "herschikken"
   label_agenda_item_remove: "Van de agenda schrappen"
   label_agenda_item_undisclosed_wp: "Werkpakket #%{id} niet zichtbaar"
   label_agenda_item_deleted_wp: "Verwijderde verwijzing naar het werkpakket"
@@ -227,9 +227,9 @@ nl:
   label_add_work_package_to_meeting_dialog_title: "Werkpakket aan vergadering toevoegen"
   label_add_work_package_to_meeting_dialog_button: "Toevoegen aan vergadering"
   label_meeting_selection_caption: "It's only possible to add this work package to upcoming or ongoing open meetings."
-  text_add_work_package_to_meeting_description: "A work package can be added to one or multiple meetings for discussion. Any notes concerning it are also visible here."
+  text_add_work_package_to_meeting_description: "Een werkpakket kan worden toegevoegd aan één of meerdere vergaderingen voor bespreking. Eventuele notities zijn hier ook zichtbaar."
   text_agenda_item_no_notes: "Geen aantekeningen voorzien"
   text_agenda_item_not_editable_anymore: "Dit agendapunt kan niet meer bewerkt worden."
   text_work_package_has_no_upcoming_meeting_agenda_items: "Dit werkpakket staat nog niet op de agenda van een komende vergadering."
-  text_work_package_add_to_meeting_hint: 'Use the "Add to meeting" button to add this work package to an upcoming meeting.'
+  text_work_package_add_to_meeting_hint: 'Gebruik de knop "Aan vergadering toevoegen" om dit werkpakket aan een komende vergadering toe te voegen.'
   text_work_package_has_no_past_meeting_agenda_items: "Dit werkpakket werd tijdens een vorige vergadering niet genoemd."

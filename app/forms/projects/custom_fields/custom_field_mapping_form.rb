@@ -31,8 +31,7 @@ module Projects::CustomFields
     include OpPrimer::ComponentHelpers
 
     form do |form|
-      form.group(layout: :vertical) do |group|
-        group.project_autocompleter(
+      form.project_autocompleter(
           name: :id,
           label: Project.model_name.human,
           visually_hide_label: true,
@@ -48,13 +47,12 @@ module Projects::CustomFields
           }
         )
 
-        group.check_box(
+      form.check_box(
           name: :include_sub_projects,
           label: I18n.t(:label_include_sub_projects),
           checked: false,
           label_arguments: { class: "no-wrap" }
         )
-      end
     end
 
     def initialize(project_mapping:)

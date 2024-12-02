@@ -61,7 +61,7 @@ class WorkPackageRelationsTab::IndexComponent < ApplicationComponent
       end
 
       items.each do |item|
-        border_box.with_row(py: 3, test_selector: row_test_selector(item)) do
+        border_box.with_row(test_selector: row_test_selector(item)) do
           yield(item)
         end
       end
