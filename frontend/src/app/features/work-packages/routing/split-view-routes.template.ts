@@ -117,7 +117,7 @@ export function makeSplitViewRoutes(baseRoute:string,
         // Remember the base route so we can route back to it anywhere
         baseRoute,
         parent: baseRoute,
-        mobileAlternative: showMobileAlternative ? 'work-packages.show' : undefined,
+        mobileAlternative: showMobileAlternative ? 'work-packages.new' : undefined,
       },
       views: {
         // Retarget and by that override the grandparent views
