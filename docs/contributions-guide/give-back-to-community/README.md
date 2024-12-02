@@ -1,14 +1,14 @@
 ---
 sidebar_navigation:
-  title: Give back to community
+  title: Give back to Community
   priority: 700
-description: Guide on how to contribute to OpenProject community
+description: Guide on how to contribute to OpenProject Community
 keywords: community, review, video, blog, contribution
 ---
 
-# Give back to community
+# Give back to Community
 
-OpenProject thrives on the strength and engagement of its community. Beyond coding or documentation, there are many ways you can help spread the word, share your experiences, and inspire others to adopt and use OpenProject effectively. 
+OpenProject thrives on the strength and engagement of its Community. Beyond coding or documentation, there are many ways you can help spread the word, share your experiences, and inspire others to adopt and use OpenProject effectively. 
 
 ## Share your experience
 
@@ -66,6 +66,6 @@ Help OpenProject reach more users by engaging with our content and sharing it wi
 
 Let your network know how OpenProject has made an impact for you. Whether it’s during a team meeting, at an industry event, or simply in a conversation with a peer, sharing your experiences can inspire others to explore OpenProject.
 
-## Join our community
+## Join our Community
 
 Be part of the conversation! **Join us in our weekly team call** and share how you use OpenProject in your team or organization. 

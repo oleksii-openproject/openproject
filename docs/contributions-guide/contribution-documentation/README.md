@@ -43,7 +43,7 @@ To ensure clarity, accuracy, and completeness, the documentation is continuously
 
 As an open-source platform, OpenProject thrives on community collaboration. Contributions to our documentation are open to everyone, whether you're a developer, a long-time user, or someone new to the platform.
 
-By contributing to the documentation, you help ensure it remains accurate, clear, and up-to-date, benefiting the entire OpenProject community. We welcome contributions of all kinds, including improving existing content, fixing errors, and adding new sections.
+By contributing to the documentation, you help ensure it remains accurate, clear, and up-to-date, benefiting the entire OpenProject Community. We welcome contributions of all kinds, including improving existing content, fixing errors, and adding new sections.
 
 ## Contribution guidelines for documentation
 
@@ -55,7 +55,7 @@ If you would like to report a typo or an inconsistency in our documentation, the
 
 You can also join us directly through the [OpenProject Community installation](https://community.openproject.org). Here you can **leave a message on the [Forum](https://community.openproject.org/projects/openproject/forums)**, or **create a work package with the type *Documentation* ** and describe or request a documentation change.
 
-To gain access to the community installation at, please send an email to [support@openproject.com](mailto:support@openproject.com) with the subject line **"Joining Community"**. Our team will review your request and send you an invitation as soon as possible.
+To gain access to the Community installation at, please send an email to [support@openproject.com](mailto:support@openproject.com) with the subject line **"Joining Community"**. Our team will review your request and send you an invitation as soon as possible.
 
 ### Write your own pull request
 
