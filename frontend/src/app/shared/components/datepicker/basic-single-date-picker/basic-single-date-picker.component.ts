@@ -52,7 +52,6 @@ import { DayElement } from 'flatpickr/dist/types/instance';
 import { populateInputsFromDataset } from '../../dataset-inputs';
 import { DeviceService } from 'core-app/core/browser/device.service';
 
-
 @Component({
   selector: 'op-basic-single-date-picker',
   templateUrl: './basic-single-date-picker.component.html',
@@ -95,6 +94,8 @@ export class OpBasicSingleDatePickerComponent implements ControlValueAccessor, O
   @Input() inputClassNames = '';
 
   @Input() remoteFieldKey = null;
+
+  @Input() inDialog = false;
 
   @ViewChild('input') input:ElementRef;
 
@@ -179,6 +180,7 @@ export class OpBasicSingleDatePickerComponent implements ControlValueAccessor, O
             !!this.minimalDate && dayElem.dateObj <= this.minimalDate,
           );
         },
+        static: this.inDialog,
       },
       this.input.nativeElement as HTMLInputElement,
     );
