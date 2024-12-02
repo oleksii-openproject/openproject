@@ -9,16 +9,16 @@ class CostQuery::PDF::TimesheetGenerator
   H1_MARGIN_BOTTOM = 2
   HR_MARGIN_BOTTOM = 16
   TABLE_CELL_FONT_SIZE = 10
-  TABLE_CELL_BORDER_COLOR = "BBBBBB"
+  TABLE_CELL_BORDER_COLOR = "BBBBBB".freeze
   TABLE_CELL_PADDING = 4
-  COMMENT_FONT_COLOR = "636C76"
+  COMMENT_FONT_COLOR = "636C76".freeze
   H2_FONT_SIZE = 20
   H2_MARGIN_BOTTOM = 10
   COLUMN_DATE_WIDTH = 66
   COLUMN_ACTIVITY_WIDTH = 100
   COLUMN_HOURS_WIDTH = 60
-  COLUMN_TIME_WIDTH = 80
-  COLUMN_WP_WIDTH = 217
+  COLUMN_TIME_WIDTH = 100
+  COLUMN_WP_WIDTH = 200
 
   attr_accessor :pdf
 
@@ -75,9 +75,9 @@ class CostQuery::PDF::TimesheetGenerator
 
   def write_entries!
     all_entries
-      .group_by { |r| r.fields["user_id"] }
-      .each do |user_id, result|
-      write_table(user_id, result)
+      .group_by(&:user)
+      .each do |user, result|
+      write_table(user, result)
     end
   end
 
@@ -86,12 +86,13 @@ class CostQuery::PDF::TimesheetGenerator
       .each_direct_result
       .map(&:itself)
       .filter { |r| r.fields["type"] == "TimeEntry" }
+      .map { |r| TimeEntry.find(r.fields["id"]) }
   end
 
   def build_table_rows(entries)
     rows = [table_header_columns]
     entries
-      .group_by { |r| DateTime.parse(r.fields["spent_on"]) }
+      .group_by(&:spent_on)
       .sort
       .each do |spent_on, lines|
       rows.concat(build_table_day_rows(spent_on, lines))
@@ -99,34 +100,34 @@ class CostQuery::PDF::TimesheetGenerator
     rows
   end
 
-  def build_table_day_rows(spent_on, lines)
+  def build_table_day_rows(spent_on, entries)
     day_rows = []
-    lines.each do |r|
-      day_rows.push(build_table_row(spent_on, r))
-      if r.fields["comments"].present?
-        day_rows.push(build_table_row_comment(r))
+    entries.each do |entry|
+      day_rows.push(build_table_row(spent_on, entry))
+      if entry.comments.present?
+        day_rows.push(build_table_row_comment(entry))
       end
     end
     day_rows
   end
 
-  def build_table_row(spent_on, result_entry)
+  def build_table_row(spent_on, entry)
     [
-      { content: format_date(spent_on), rowspan: result_entry.fields["comments"].present? ? 2 : 1 },
-      wp_subject(result_entry.fields["work_package_id"]),
-      with_times_column? ? format_spent_on_time(result_entry) : nil,
-      format_duration(result_entry.fields["units"]),
-      activity_name(result_entry.fields["activity_id"])
+      { content: format_date(spent_on), rowspan: entry.comments.present? ? 2 : 1 },
+      entry.work_package.subject || "",
+      with_times_column? ? format_spent_on_time(entry) : nil,
+      format_duration(entry.hours),
+      entry.activity&.name || ""
     ].compact
   end
 
-  def build_table_row_comment(result_entry)
+  def build_table_row_comment(entry)
     [{
-       content: result_entry.fields["comments"],
-       text_color: COMMENT_FONT_COLOR,
-       font_style: :italic,
-       colspan: table_columns_widths.size
-     }]
+      content: entry.comments,
+      text_color: COMMENT_FONT_COLOR,
+      font_style: :italic,
+      colspan: table_columns_widths.size
+    }]
   end
 
   def table_header_columns
@@ -140,12 +141,15 @@ class CostQuery::PDF::TimesheetGenerator
   end
 
   def table_columns_widths
-    @table_columns_widths ||= with_times_column? ?
-      [COLUMN_DATE_WIDTH, COLUMN_WP_WIDTH, COLUMN_TIME_WIDTH, COLUMN_HOURS_WIDTH, COLUMN_ACTIVITY_WIDTH] :
-      [COLUMN_DATE_WIDTH, COLUMN_WP_WIDTH + COLUMN_TIME_WIDTH, COLUMN_HOURS_WIDTH, COLUMN_ACTIVITY_WIDTH]
+    @table_columns_widths ||= if with_times_column?
+                                [COLUMN_DATE_WIDTH, COLUMN_WP_WIDTH, COLUMN_TIME_WIDTH, COLUMN_HOURS_WIDTH,
+                                 COLUMN_ACTIVITY_WIDTH]
+                              else
+                                [COLUMN_DATE_WIDTH, COLUMN_WP_WIDTH + COLUMN_TIME_WIDTH, COLUMN_HOURS_WIDTH,
+                                 COLUMN_ACTIVITY_WIDTH]
+                              end
   end
 
-  # rubocop:disable Metrics/AbcSize
   def build_table(rows)
     pdf.make_table(
       rows,
@@ -161,13 +165,13 @@ class CostQuery::PDF::TimesheetGenerator
       }
     ) do |table|
       table.columns(0).borders = %i[top bottom left right]
-      table.columns(-1).style do |c|
+      table.columns(table_columns_widths.length - 1).style do |c|
         c.borders = c.borders + [:right]
       end
       table.columns(1).style do |c|
         if c.colspan > 1
           c.borders = %i[left right bottom]
-          c.padding = [0, 5, 8, 5]
+          c.padding = [0, TABLE_CELL_PADDING, TABLE_CELL_PADDING + 2, TABLE_CELL_PADDING]
           row_nr = c.row - 1
           values = table.columns(1..-1).rows(row_nr..row_nr)
           values.each do |cell|
@@ -201,16 +205,14 @@ class CostQuery::PDF::TimesheetGenerator
     groups
   end
 
-  # rubocop:enable Metrics/AbcSize
-
-  def write_table(user_id, entries)
+  def write_table(user, entries)
     rows = build_table_rows(entries)
     # prawn-table does not support splitting a rowspan cell on page break, so we have to merge the first column manually
     # for easier handling existing rowspan cells are grouped as one row
     grouped_rows = split_group_rows(rows)
     # start a new page if the username would be printed alone at the end of the page
     pdf.start_new_page if available_space_from_bottom < grouped_rows[0][:height] + grouped_rows[1][:height] + username_height
-    write_username(user_id)
+    write_username(user)
     write_grouped_tables(grouped_rows)
   end
 
@@ -286,36 +288,26 @@ class CostQuery::PDF::TimesheetGenerator
     20 + 10
   end
 
-  def write_username(user_id)
-    pdf.formatted_text([{ text: user_name(user_id), size: H2_FONT_SIZE }])
+  def write_username(user)
+    pdf.formatted_text([{ text: user.name, size: H2_FONT_SIZE }])
     pdf.move_down(H2_MARGIN_BOTTOM)
-  end
-
-  def user_name(user_id)
-    User.select_for_name.find(user_id).name
-  end
-
-  def activity_name(activity_id)
-    TimeEntryActivity.find(activity_id).name
-  end
-
-  def wp_subject(wp_id)
-    WorkPackage.find(wp_id).subject
   end
 
   def format_duration(hours)
     return "" if hours < 0
 
-    "#{hours}h"
+    ::OpenProject::Common::DurationComponent.new(hours.to_f, :hours, abbreviated: true).text
   end
 
-  def format_spent_on_time(_result_entry)
-    # TODO implement times column
-    # date = result_entry.fields["spent_on"]
-    # hours = result_entry.fields["units"]
-    # start_time = result_entry.fields["start_time"]
-    # time_zone = result_entry.fields["time_zone"]
-    ""
+  def format_spent_on_time(entry)
+    start_timestamp = entry.start_timestamp
+    return "" if start_timestamp.nil?
+
+    result = format_time(start_timestamp, include_date: false)
+    end_timestamp = entry.end_timestamp
+    return result if end_timestamp.nil?
+
+    "#{result} - #{format_time(end_timestamp, include_date: false)}"
   end
 
   def with_times_column?
