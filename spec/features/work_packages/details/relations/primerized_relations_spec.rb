@@ -216,13 +216,7 @@ RSpec.describe "Primerized work package relations tab",
       # wp_predecessor is already related to work_package as relation_follows
       # in a predecessor relation, so it should not be autocompleteable anymore
       # under the "Predecessor (before)" type
-      scroll_to_element relations_panel
-
-      relations_panel.find("[data-test-selector='new-relation-action-menu']").click
-
-      within page.find_by_id("new-relation-action-menu-list") do # Primer appends "list" to the menu id automatically
-        click_link_or_button "Predecessor (before)"
-      end
+      relations_tab.select_relation_type "Predecessor (before)"
 
       wait_for_reload
 
@@ -254,13 +248,7 @@ RSpec.describe "Primerized work package relations tab",
     end
 
     it "doesn't autocomplete parent, children, and WP itself" do
-      scroll_to_element relations_panel
-
-      relations_panel.find("[data-test-selector='new-relation-action-menu']").click
-
-      within page.find_by_id("new-relation-action-menu-list") do
-        click_link_or_button "Child"
-      end
+      relations_tab.select_relation_type "Child"
 
       wait_for_reload
 
