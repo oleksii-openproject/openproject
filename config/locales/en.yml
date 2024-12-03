@@ -928,6 +928,9 @@ en:
         lag: "Lag"
         from: "Work package"
         to: "Related work package"
+      reminder:
+        remind_at_date: "Date"
+        remind_at_time: "Time"
       repository:
         url: "URL"
       role:
@@ -1594,6 +1597,7 @@ en:
   button_create: "Create"
   button_create_and_continue: "Create and continue"
   button_delete: "Delete"
+  button_delete_reminder: "Delete reminder"
   button_decline: "Decline"
   button_delete_watcher: "Delete watcher %{name}"
   button_download: "Download"
@@ -1623,6 +1627,7 @@ en:
   button_save_as: "Save as"
   button_apply_changes: "Apply changes"
   button_save_back: "Save and back"
+  button_set_reminder: "Set reminder"
   button_show: "Show"
   button_sort: "Sort"
   button_submit: "Submit"
@@ -2743,6 +2748,7 @@ en:
   label_this_month: "this month"
   label_this_week: "this week"
   label_this_year: "this year"
+  label_time: "Time"
   label_time_entry_plural: "Spent time"
   label_time_entry_activity_plural: "Spent time activities"
   label_title: "Title"
@@ -4030,6 +4036,12 @@ en:
       edit_description: "Can view, comment and edit this work package."
       view: "View"
       view_description: "Can view this work package."
+    reminders:
+      label_remind_at: "Date"
+      note_placeholder: "Why are you setting this reminder?"
+      success_creation_message: "Reminder set successfully. You will receive a notification for this work package at the chosen time."
+      success_update_message: "Reminder updated successfully."
+      success_deletion_message: "Reminder deleted successfully."
   sharing:
     count:
       zero: "0 users"

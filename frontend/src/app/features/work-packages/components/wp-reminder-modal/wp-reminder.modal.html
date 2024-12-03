@@ -1,0 +1,46 @@
+<div
+  class="spot-modal op-reminder-dialog-modal"
+>
+  <div
+    class="spot-modal--header"
+  >
+    <div
+      id="spotModalTitle"
+      class="spot-modal--header-title"
+      [textContent]="(this.title$ | async) || this.text.new_title">
+    </div>
+
+    <button
+      class="button button_no-margin -transparent spot-modal--header-close-button"
+      [attr.aria-label]="text.button_close"
+      (click)="closeMe($event)"
+      data-test-selector="op-reminder-dialog-modal--close-icon"
+    >
+      <svg
+        x-icon
+        size="small"
+        class="spot-modal--header-close-button-icon"
+      ></svg>
+    </button>
+  </div>
+  <p
+    class="spot-modal--subheader fgColor-muted"
+    [textContent]="this.text.subtitle">
+  </p>
+
+  <div class="spot-modal--body spot-container">
+    <turbo-frame
+      #frameElement
+      id="reminder_modal_body"
+      src="{{this.frameSrc}}">
+      <op-content-loader
+        viewBox="0 0 180 80"
+      >
+        <svg:rect height="10" rx="2" ry="2" width="110" x="0" y="0"/>
+        <svg:rect height="10" rx="2" ry="2" width="25" x="120" y="0"/>
+        <svg:rect height="10" rx="2" ry="2" width="25" x="155" y="0"/>
+        <svg:rect height="25%" rx="2" ry="2" width="180" x="0" y="16"/>
+      </op-content-loader>
+    </turbo-frame>
+  </div>
+</div>

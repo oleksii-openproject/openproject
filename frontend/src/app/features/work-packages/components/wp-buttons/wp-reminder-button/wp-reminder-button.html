@@ -1,0 +1,18 @@
+<button
+  class="button toolbar-icon"
+  data-test-selector="op-wp-reminder-button"
+  (click)="openModal()"
+>
+  <svg
+    clock-icon
+    class="button--icon"
+    size="small"
+  ></svg>
+  <span class="button--text">
+    <span *ngIf="(reminderCount$ | async) as reminderCount"
+          class="badge -secondary"
+          [textContent]="reminderCount">
+    </span>
+  </span>
+
+</button>

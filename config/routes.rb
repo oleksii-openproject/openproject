@@ -610,6 +610,12 @@ Rails.application.routes.draw do
     resources :relations_tab, only: %i[index], controller: "work_package_relations_tab"
     resources :relations, only: %i[new create edit update destroy], controller: "work_package_relations"
 
+    resources :reminders,
+              controller: "work_packages/reminders",
+              only: %i[create update destroy] do
+      get :modal_body, on: :collection
+    end
+
     get "/export_dialog" => "work_packages#export_dialog", on: :collection, as: "export_dialog"
     get :show_conflict_flash_message, on: :collection # we don't need a specific work package for this
 

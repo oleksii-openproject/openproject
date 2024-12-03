@@ -40,6 +40,7 @@ module Reminders
     validate :validate_acting_user
     validate :validate_remindable_exists
     validate :validate_manage_reminders_permissions
+    validate :validate_remind_at_present
     validate :validate_remind_at_is_in_future
     validate :validate_note_length
 
@@ -57,6 +58,10 @@ module Reminders
 
     def validate_remindable_exists
       errors.add :remindable, :not_found if model.remindable.blank?
+    end
+
+    def validate_remind_at_present
+      errors.add :remind_at, :blank if model.remind_at.blank?
     end
 
     def validate_remind_at_is_in_future

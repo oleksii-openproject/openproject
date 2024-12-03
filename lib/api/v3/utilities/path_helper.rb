@@ -454,6 +454,10 @@ module API
           index :shares
           show :share
 
+          def self.work_package_reminders(id)
+            "#{work_package(id)}/reminders"
+          end
+
           def self.show_user(user_id)
             user_path(user_id)
           end

@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2024 the OpenProject GmbH
+# Copyright (C) the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -26,41 +26,24 @@
 # See COPYRIGHT and LICENSE files for more details.
 #++
 
-class Reminder < ApplicationRecord
-  belongs_to :remindable, polymorphic: true
-  belongs_to :creator, class_name: "User"
+module API
+  module V3
+    module Reminders
+      class RemindersAPI < ::API::OpenProjectAPI
+        resource :reminders do
+          after_validation do
+            authorize_in_project(:manage_own_reminders, project: @work_package.project)
+          end
 
-  has_many :reminder_notifications, dependent: :destroy
-  has_many :notifications, through: :reminder_notifications
-
-  # Currently, reminders are personal, meaning
-  # they are only visible to the user who created them.
-  def self.visible(user)
-    where(creator: user)
-  end
-
-  def self.upcoming_and_visible_to(user)
-    visible_reminders = visible(user)
-    reminder_notifications_for_reminders = ReminderNotification.where(reminder: visible_reminders)
-
-    visible_reminders
-      .where(completed_at: nil)
-      .where.not(id: reminder_notifications_for_reminders.select(:reminder_id))
-  end
-
-  def unread_notifications?
-    unread_notifications.exists?
-  end
-
-  def unread_notifications
-    notifications.where(read_ian: [false, nil])
-  end
-
-  def completed?
-    completed_at.present?
-  end
-
-  def scheduled?
-    job_id.present? && !completed?
+          get do
+            reminders = @work_package.reminders
+                                     .upcoming_and_visible_to(User.current)
+            ReminderCollectionRepresenter.new(reminders,
+                                              self_link: api_v3_paths.work_package_reminders(@work_package.id),
+                                              current_user: User.current)
+          end
+        end
+      end
+    end
   end
 end

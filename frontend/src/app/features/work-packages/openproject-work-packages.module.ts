@@ -408,6 +408,12 @@ import {
 import { OpenprojectTimeEntriesModule } from 'core-app/shared/components/time_entries/openproject-time-entries.module';
 import { RecentItemsService } from 'core-app/core/recent-items.service';
 import {
+  WorkPackageReminderButtonComponent,
+} from 'core-app/features/work-packages/components/wp-buttons/wp-reminder-button/wp-reminder-button.component';
+import {
+  WorkPackageReminderModalComponent,
+} from 'core-app/features/work-packages/components/wp-reminder-modal/wp-reminder.modal';
+import {
   WorkPackageShareButtonComponent,
 } from 'core-app/features/work-packages/components/wp-buttons/wp-share-button/wp-share-button.component';
 import {
@@ -612,6 +618,7 @@ import {
     WorkPackageBreadcrumbComponent,
     WorkPackageSplitViewToolbarComponent,
     WorkPackageWatcherButtonComponent,
+    WorkPackageReminderButtonComponent,
     WorkPackageShareButtonComponent,
     WorkPackageSubjectComponent,
 
@@ -632,6 +639,7 @@ import {
     SaveQueryModalComponent,
     WpDestroyModalComponent,
     WorkPackageShareModalComponent,
+    WorkPackageReminderModalComponent,
 
     // CustomActions
     WpCustomActionComponent,

@@ -4,6 +4,7 @@ import { OpIconComponent } from './icon.component';
 import {
   ChevronLeftIconComponent,
   ChevronRightIconComponent,
+  ClockIconComponent,
   HomeIconComponent,
   InfoIconComponent,
   OpCursorRectangleSelectIconComponent,
@@ -57,6 +58,7 @@ import {
 
     ChevronLeftIconComponent,
     ChevronRightIconComponent,
+    ClockIconComponent,
     HomeIconComponent,
     InfoIconComponent,
     OpCursorRectangleSelectIconComponent,
@@ -113,6 +115,7 @@ import {
 
     ChevronLeftIconComponent,
     ChevronRightIconComponent,
+    ClockIconComponent,
     HomeIconComponent,
     InfoIconComponent,
     OpCursorRectangleSelectIconComponent,

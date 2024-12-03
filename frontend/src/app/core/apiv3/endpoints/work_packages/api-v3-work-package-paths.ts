@@ -46,6 +46,9 @@ export class ApiV3WorkPackagePaths extends ApiV3Resource<WorkPackageResource> {
   // /api/v3/(?:projectPath)/work_packages/(:workPackageId)/available_watchers
   public readonly available_watchers = this.subResource('available_watchers');
 
+  // /api/v3/(?:projectPath)/work_packages/(:workPackageId)/reminders
+  public readonly reminders = this.subResource('reminders');
+
   // /api/v3/(?:projectPath)/work_packages/(:workPackageId)/available_projects
   public readonly available_projects = this.subResource('available_projects');
 

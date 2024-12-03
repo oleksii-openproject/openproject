@@ -42,6 +42,10 @@
                              [showText]="false">
           </wp-watcher-button>
         </li>
+        <li class="toolbar-item" *ngIf="displayReminderButton$ | async">
+          <wp-reminder-button [workPackage]="workPackage">
+          </wp-reminder-button>
+        </li>
         <li class="toolbar-item" *ngIf="(displayNotificationsButton$ | async)">
           <op-work-package-mark-notification-button
             [workPackage]="workPackage"

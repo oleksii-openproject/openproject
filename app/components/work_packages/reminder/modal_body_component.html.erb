@@ -1,0 +1,60 @@
+<%= component_wrapper(tag: "turbo-frame") do %>
+  <%= primer_form_with(
+        model: reminder,
+        url: submit_path,
+        id: FORM_ID
+      ) do |f| %>
+    <%= flex_layout(classes: "reminder-modal-body--form-flex-container") do |form_flex_container| %>
+      <%= form_flex_container.with_row do %>
+        <%= render(WorkPackages::Reminder::RemindAtDate.new(f, initial_value: remind_at_date_initial_value)) %>
+      <% end %>
+      <%= form_flex_container.with_row do %>
+        <%= render(WorkPackages::Reminder::RemindAtTime.new(f, initial_value: remind_at_time_initial_value)) %>
+      <% end %>
+      <%= form_flex_container.with_row do %>
+        <%= render(WorkPackages::Reminder::Note.new(f)) %>
+      <% end %>
+      <% if errors.present? %>
+        <%= form_flex_container.with_row(flex_layout: true) do |errors_container| %>
+          <% errors.full_messages.each do |error_message| %>
+            <%= errors_container.with_row(flex_layout: true) do |errors_row| %>
+              <%= errors_row.with_column(mr: 2) do %>
+                <%= render(Primer::Beta::Octicon.new(icon: :'alert-fill', color: :danger)) %>
+              <% end %>
+              <%= errors_row.with_column do %>
+                <%= render(Primer::Beta::Text.new(color: :danger)) do %>
+                  <%= error_message %>
+                <% end %>
+              <% end %>
+            <% end %>
+          <% end %>
+        <% end %>
+      <% end %>
+      <% if reminder.persisted? %>
+        <%= form_flex_container.with_row(flex_layout: true,
+                                         justify_content: :space_between) do |actions_row| %>
+          <%= actions_row.with_column do %>
+            <%= render(Primer::Beta::Button.new(
+                        scheme: :danger,
+                        type: :submit,
+                        formaction: work_package_reminder_path(remindable, reminder),
+                        formmethod: :delete
+                      )) { I18n.t(:button_delete_reminder) } %>
+          <% end %>
+          <%= actions_row.with_column do %>
+            <%= render(Primer::Beta::Button.new(scheme: :primary,
+                                              type: :submit)) { I18n.t(:button_save) } %>
+          <% end %>
+        <% end %>
+      <% else%>
+        <%= form_flex_container.with_row(flex_layout: true,
+                                         justify_content: :flex_end) do |actions_row| %>
+          <%= actions_row.with_column do %>
+            <%= render(Primer::Beta::Button.new(scheme: :primary,
+                                              type: :submit)) { I18n.t(:button_set_reminder) } %>
+          <% end %>
+        <% end %>
+      <% end%>
+    <% end %>
+  <% end %>
+<% end %>

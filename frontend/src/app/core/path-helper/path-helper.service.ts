@@ -276,6 +276,10 @@ export class PathHelperService {
     return this.workPackageDetailsPath(projectIdentifier, workPackageId, 'copy');
   }
 
+  public workPackageReminderModalBodyPath(workPackageId:string|number) {
+    return `${this.workPackagePath(workPackageId)}/reminders/modal_body`;
+  }
+
   public workPackageSharePath(workPackageId:string|number) {
     return `${this.workPackagePath(workPackageId)}/shares`;
   }
