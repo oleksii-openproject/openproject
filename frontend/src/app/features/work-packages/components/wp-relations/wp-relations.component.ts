@@ -93,7 +93,9 @@ export class WorkPackageRelationsComponent extends UntilDestroyedMixin implement
       .events$
       .pipe(
         filter((e:RelatedWorkPackageEvent) => {
-          return e.eventType === 'association' && e.id.toString() === this.workPackage.id?.toString();
+          return e.eventType === 'association'
+            && e.id.toString() === this.workPackage.id?.toString()
+            && e.relationType !== 'parent';
         }),
         debounceTime(500),
         this.untilDestroyed(),
