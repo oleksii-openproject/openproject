@@ -62,7 +62,7 @@ de:
       limit_self_registration: Wenn diese Option aktiviert ist, können sich Benutzer nur dann über diesen Anbieter registrieren, wenn die Konfiguration aufseiten des Anbieters dies zulässt.
       display_name: Der Name des Anbieters. Dieser wird als Anmeldeschaltfläche und in der Liste der Anbieter angezeigt.
       tenant: 'Bitte ersetzen Sie den vorgegebenen Mandanten durch Ihren eigenen, falls zutreffend. Siehe <a href="https://learn.microsoft.com/de-de/entra/identity-platform/v2-protocols-oidc#find-your-apps-openid-configuration-document-uri">diese Dokumentation von Microsoft Entra</a>.'
-      scope: If you want to request custom scopes, you can add one or multiple scope values separated by spaces here. For more information, see the [OpenID Connect documentation](docs_url).
+      scope: Wenn Sie benutzerdefinierte Scopes anfordern möchten, können Sie hier einen oder mehrere durch Leerzeichen getrennte Werte hinzufügen. Weitere Informationen finden Sie in der [OpenID Connect Dokumentation](docs_url).
       post_logout_redirect_uri: Die URL, an die der OpenID Connect-Anbieter nach einer erfolgreichen Abmeldung weiterleiten soll.
       claims: >
         Sie können zusätzliche Ansprüche (Claims) für die Endpunkte userinfo und id token anfordern. Weitere Informationen finden Sie in [unserer OpenID Connect Dokumentation](docs_url).
@@ -83,7 +83,7 @@ de:
       metadata_url: Ich habe eine Discovery-Endpunkt-URL
       endpoint_url: Endpunkt-URL
     providers:
-      label_providers: "Providers"
+      label_providers: "Provider"
       seeded_from_env: "Dieser Anbieter wurde über Umgebungsvariablen konfiguriert. Er kann nicht in der Oberfläche bearbeitet werden."
       google:
         name: Google

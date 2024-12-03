@@ -433,24 +433,24 @@ ru:
                 options:
                   name: Приступая к работе
                   text: |
-                    We are glad you joined! We suggest to try a few things to get started in OpenProject.
+                    Мы рады, что Вы присоединились! Мы предлагаем Вам попробовать несколько вещей, чтобы начать работу в OpenProject.
 
-                    This demo project offers roles, workflows and work packages that are specialized for BIM.
+                    Этот демонстрационный проект предлагает роли, рабочие процессы и рабочие пакеты, специализированные для BIM.
 
-                    _Try the following steps:_
+                    _Попробуйте выполнить следующие шаги:_
 
-                    1.  _Invite new members to your project:_ → Go to [Members]({{opSetting:base_url}}/projects/demo-bim-project/members) in the project navigation.
-                    2.  _Upload and view 3D-models in IFC format:_ → Go to [BCF]({{opSetting:base_url}}/projects/demo-bim-project/bcf) in the project navigation.
-                    3.  _Create and manage BCF issues linked directly in the IFC model:_ → Go to [BCF]({{opSetting:base_url}}/projects/demo-bim-project/bcf) → Create.
-                    4.  _View the work in your projects:_ → Go to [Work packages]({{opSetting:base_url}}/projects/demo-bim-project/work_packages?query_props=%7B%22c%22%3A%5B%22type%22%2C%22id%22%2C%22subject%22%2C%22status%22%2C%22assignee%22%2C%22priority%22%5D%2C%22hl%22%3A%22priority%22%2C%22hi%22%3Atrue%2C%22g%22%3A%22%22%2C%22t%22%3A%22startDate%3Aasc%22%2C%22f%22%3A%5B%7B%22n%22%3A%22bcfIssueAssociated%22%2C%22o%22%3A%22%3D%22%2C%22v%22%3A%5B%22f%22%5D%7D%5D%2C%22pa%22%3A1%2C%22pp%22%3A100%2C%22dr%22%3A%22list%22%7D) in the project navigation.
-                    5.  _Create a new work package:_ → Go to [Work packages → Create]({{opSetting:base_url}}/projects/demo-bim-project/work_packages/new?query_props=%7B%22c%22%3A%5B%22type%22%2C%22id%22%2C%22subject%22%2C%22status%22%2C%22assignee%22%2C%22priority%22%5D%2C%22hl%22%3A%22priority%22%2C%22hi%22%3Atrue%2C%22g%22%3A%22%22%2C%22t%22%3A%22startDate%3Aasc%22%2C%22f%22%3A%5B%7B%22n%22%3A%22bcfIssueAssociated%22%2C%22o%22%3A%22%3D%22%2C%22v%22%3A%5B%22f%22%5D%7D%5D%2C%22pa%22%3A1%2C%22pp%22%3A100%2C%22dr%22%3A%22list%22%7D&type=11).
-                    6.  _Create and update a Gantt chart:_ → Go to [Gantt chart]({{opSetting:base_url}}/projects/demo-bim-project/work_packages?query_props=%7B%22c%22%3A%5B%22type%22%2C%22id%22%2C%22subject%22%2C%22assignee%22%2C%22responsible%22%5D%2C%22tv%22%3Atrue%2C%22tzl%22%3A%22weeks%22%2C%22hl%22%3A%22priority%22%2C%22hi%22%3Atrue%2C%22g%22%3A%22%22%2C%22t%22%3A%22startDate%3Aasc%22%2C%22f%22%3A%5B%5D%2C%22pa%22%3A1%2C%22pp%22%3A100%2C%22dr%22%3A%22list%22%7D) in the project navigation.
-                    7.  _Activate further modules:_ → Go to [Project settings → Modules]({{opSetting:base_url}}/projects/demo-bim-project/settings/modules).
-                    8.  _Check out the tile view to get an overview of your BCF issues:_ → Go to [Work packages]({{opSetting:base_url}}/projects/demo-bim-project/work_packages?query_props=%7B%22c%22%3A%5B%22type%22%2C%22id%22%2C%22subject%22%2C%22status%22%2C%22assignee%22%2C%22priority%22%5D%2C%22hl%22%3A%22priority%22%2C%22hi%22%3Atrue%2C%22g%22%3A%22%22%2C%22t%22%3A%22id%3Aasc%22%2C%22f%22%3A%5B%5D%2C%22pa%22%3A1%2C%22pp%22%3A100%2C%22dr%22%3A%22card%22%7D)
-                    9.  _Working agile? Create a new board:_ → Go to [Boards]({{opSetting:base_url}}/projects/demo-bim-project/boards)
+                    1.  _Пригласите новых участников в Ваш проект:_ → Перейдите в раздел [Участники]({{opSetting:base_url}}/projects/demo-bim-project/members) в навигации проекта.
+                    2.  _Загрузка и просмотр 3D-моделей в формате IFC:_ → Перейдите к разделу [BCF]({{opSetting:base_url}}/projects/demo-bim-project/bcf) в навигации проекта.
+                    3.  _Создание и управление вопросами BCF, связанными непосредственно с моделью IFC:_ → Перейдите к [BCF]({{opSetting:base_url}}/projects/demo-bim-project/bcf) → Создать.
+                    4.  _Просмотр работ в Ваших проектах:_ → Перейдите в раздел [Рабочие пакеты]({{opSetting:base_url}}/projects/demo-bim-project/work_packages?query_props=%7B%22c%22%3A%5B%22type%22%2C%22id%22%2C%22subject%22%2C%22status%22%2C%22assignee%22%2C%22priority%22%5D%2C%22hl%22%3A%22priority%22%2C%22hi%22%3Atrue%2C%22g%22%3A%22%22%2C%22t%22%3A%22startDate%3Aasc%22%2C%22f%22%3A%5B%7B%22n%22%3A%22bcfIssueAssociated%22%2C%22o%22%3A%22%3D%22%2C%22v%22%3A%5B%22f%22%5D%7D%5D%2C%22pa%22%3A1%2C%22pp%22%3A100%2C%22dr%22%3A%22list%22%7D) в навигации проекта.
+                    5.  _Создайте новый рабочий пакет:_ → Перейдите в раздел [Рабочие пакеты → Создать]({{opSetting:base_url}}/projects/demo-bim-project/work_packages/new?query_props=%7B%22c%22%3A%5B%22type%22%2C%22id%22%2C%22subject%22%2C%22status%22%2C%22assignee%22%2C%22priority%22%5D%2C%22hl%22%3A%22priority%22%2C%22hi%22%3Atrue%2C%22g%22%3A%22%22%2C%22t%22%3A%22startDate%3Aasc%22%2C%22f%22%3A%5B%7B%22n%22%3A%22bcfIssueAssociated%22%2C%22o%22%3A%22%3D%22%2C%22v%22%3A%5B%22f%22%5D%7D%5D%2C%22pa%22%3A1%2C%22pp%22%3A100%2C%22dr%22%3A%22list%22%7D&type=11).
+                    6.  _Создание и обновление диаграммы Ганта:_ → Перейдите на страницу [Диаграмма Ганта]({{opSetting:base_url}}/projects/demo-bim-project/work_packages?query_props=%7B%22c%22%3A%5B%22type%22%2C%22id%22%2C%22subject%22%2C%22assignee%22%2C%22responsible%22%5D%2C%22tv%22%3Atrue%2C%22tzl%22%3A%22weeks%22%2C%22hl%22%3A%22priority%22%2C%22hi%22%3Atrue%2C%22g%22%3A%22%22%2C%22t%22%3A%22startDate%3Aasc%22%2C%22f%22%3A%5B%5D%2C%22pa%22%3A1%2C%22pp%22%3A100%2C%22dr%22%3A%22list%22%7D) в навигации проекта.
+                    7.  _Активируйте дальнейшие модули:_ → Перейдите в раздел [Настройки проекта → Модули]({{opSetting:base_url}}/projects/demo-bim-project/settings/modules).
+                    8.  _Проверьте плиточный вид, чтобы получить обзор Ваших BCF-проблем:_ → Перейдите в раздел [Рабочие пакеты]({{opSetting:base_url}}/projects/demo-bim-project/work_packages?query_props=%7B%22c%22%3A%5B%22type%22%2C%22id%22%2C%22subject%22%2C%22status%22%2C%22assignee%22%2C%22priority%22%5D%2C%22hl%22%3A%22priority%22%2C%22hi%22%3Atrue%2C%22g%22%3A%22%22%2C%22t%22%3A%22id%3Aasc%22%2C%22f%22%3A%5B%5D%2C%22pa%22%3A1%2C%22pp%22%3A100%2C%22dr%22%3A%22card%22%7D)
+                    9.  _Работаете в стиле agile? Создайте новую доску:_ → Перейдите в раздел [Доски]({{opSetting:base_url}}/projects/demo-bim-project/boards)
 
-                    Here you will find our [User Guides](https://www.openproject.org/docs/user-guide/).
-                    Please let us know if you have any questions or need support. Contact us: [support\[at\]openproject.com](mailto:support@openproject.com).
+                    Здесь Вы найдете наши [Руководства пользователя](https://www.openproject.org/docs/user-guide/).
+                    Пожалуйста, сообщите нам, если у Вас возникнут вопросы или Вам понадобится поддержка. Свяжитесь с нами: [support\[at\]openproject.com](mailto:support@openproject.com).
               item_4:
                 options:
                   name: Участники
@@ -709,23 +709,23 @@ ru:
                 options:
                   name: Приступая к работе
                   text: |
-                    We are glad you joined! We suggest to try a few things to get started in OpenProject.
+                    Мы рады, что Вы присоединились! Мы предлагаем Вам попробовать несколько вещей, чтобы начать работу в OpenProject.
 
-                    This demo project shows BCF management functionalities.
+                    Этот демо-проект демонстрирует функциональные возможности управления BCF.
 
-                    _Try the following steps:_
+                    _Попробуйте выполнить следующие шаги:_
 
-                    1.  _Invite new members to your project:_ → Go to [Members]({{opSetting:base_url}}/projects/demo-bcf-management-project/members?show_add_members=true) in the project navigation.
-                    2.  _Upload and view 3D-models in IFC format:_ → Go to [BCF]({{opSetting:base_url}}/projects/demo-bim-project/bcf) in the project navigation.
-                    3.  _Create and manage BCF issues linked directly in the IFC model:_ → Go to [BCF]({{opSetting:base_url}}/projects/demo-bim-project/bcf) → Create.
-                    4.  _View the BCF files in your project:_ → Go to [BCF]({{opSetting:base_url}}/projects/demo-bcf-management-project/work_packages?query_props=%7B%22c%22%3A%5B%22type%22%2C%22id%22%2C%22subject%22%2C%22status%22%2C%22assignee%22%2C%22priority%22%5D%2C%22hl%22%3A%22status%22%2C%22hi%22%3Atrue%2C%22g%22%3A%22%22%2C%22t%22%3A%22id%3Aasc%22%2C%22f%22%3A%5B%5D%2C%22pa%22%3A1%2C%22pp%22%3A100%2C%22dr%22%3A%22card%22%7D) in the project navigation.
-                    5.  _Load your BCF files:_ → Go to [BCF → Import.]({{opSetting:base_url}}/projects/demo-bcf-management-project/issues/upload)
-                    6.  _Create and update a Gantt chart:_ → Go to [Gantt chart]({{opSetting:base_url}}/projects/demo-bcf-management-project/work_packages?query_props=%7B%22c%22%3A%5B%22id%22%2C%22subject%22%2C%22startDate%22%2C%22dueDate%22%5D%2C%22tv%22%3Atrue%2C%22tzl%22%3A%22days%22%2C%22hi%22%3Atrue%2C%22g%22%3A%22%22%2C%22t%22%3A%22startDate%3Aasc%22%2C%22f%22%3A%5B%7B%22n%22%3A%22status%22%2C%22o%22%3A%22o%22%2C%22v%22%3A%5B%5D%7D%5D%2C%22pa%22%3A1%2C%22pp%22%3A100%7D) in the project navigation.
-                    7.  _Activate further modules:_ → Go to [Project settings → Modules.]({{opSetting:base_url}}/projects/demo-bcf-management-project/settings/modules)
-                    8.  _You love the agile approach? Create a board:_ → Go to [Boards]({{opSetting:base_url}}/projects/demo-bcf-management-project/boards).
+                    1.  _Пригласите новых участников в Ваш проект:_ → Перейдите в [Участники]({{opSetting:base_url}}/projects/demo-bcf-management-project/members?show_add_members=true) в навигации проекта.
+                    2.  _Загрузка и просмотр 3D-моделей в формате IFC:_ → Перейдите к [BCF]({{opSetting:base_url}}/projects/demo-bim-project/bcf) в навигации проекта.
+                    3.  _Создание и управление вопросами BCF, связанными непосредственно с моделью IFC:_ → Перейдите к [BCF]({{opSetting:base_url}}/projects/demo-bim-project/bcf) → Создать.
+                    4.  _Просмотр файлов BCF в Вашем проекте:_ → Перейдите к [BCF]({{opSetting:base_url}}/projects/demo-bcf-management-project/work_packages?query_props=%7B%22c%22%3A%5B%22type%22%2C%22id%22%2C%22subject%22%2C%22status%22%2C%22assignee%22%2C%22priority%22%5D%2C%22hl%22%3A%22status%22%2C%22hi%22%3Atrue%2C%22g%22%3A%22%22%2C%22t%22%3A%22id%3Aasc%22%2C%22f%22%3A%5B%5D%2C%22pa%22%3A1%2C%22pp%22%3A100%2C%22dr%22%3A%22card%22%7D) в навигации проекта.
+                    5.  _Загрузите файлы BCF:_ → Перейдите по ссылке [BCF → Импорт.]({{opSetting:base_url}}/projects/demo-bcf-management-project/issues/upload)
+                    6.  _Создание и обновление диаграммы Ганта:_ → Перейдите к [Диаграмма Ганта]({{opSetting:base_url}}/projects/demo-bcf-management-project/work_packages?query_props=%7B%22c%22%3A%5B%22id%22%2C%22subject%22%2C%22startDate%22%2C%22dueDate%22%5D%2C%22tv%22%3Atrue%2C%22tzl%22%3A%22days%22%2C%22hi%22%3Atrue%2C%22g%22%3A%22%22%2C%22t%22%3A%22startDate%3Aasc%22%2C%22f%22%3A%5B%7B%22n%22%3A%22status%22%2C%22o%22%3A%22o%22%2C%22v%22%3A%5B%5D%7D%5D%2C%22pa%22%3A1%2C%22pp%22%3A100%7D) в навигации проекта.
+                    7.  _Активируйте дальнейшие модули:_ → Перейдите в раздел [Настройки проекта → Модули.]({{opSetting:base_url}}/projects/demo-bcf-management-project/settings/modules)
+                    8.  _Вам нравится agile-подход? Создайте доску:_ → Перейдите в раздел [Доски]({{opSetting:base_url}}/projects/demo-bcf-management-project/boards).
 
-                    Here you will find our [User Guides](https://www.openproject.org/docs/user-guide/).
-                    Please let us know if you have any questions or need support. Contact us: [support\[at\]openproject.com](mailto:support@openproject.com).
+                    Здесь Вы найдете наши [Руководства пользователя](https://www.openproject.org/docs/user-guide/).
+                    Пожалуйста, сообщите нам, если у Вас возникнут вопросы или Вам понадобится поддержка. Свяжитесь с нами: [support\[at\]openproject.com](mailto:support@openproject.com).
               item_4:
                 options:
                   name: Участники

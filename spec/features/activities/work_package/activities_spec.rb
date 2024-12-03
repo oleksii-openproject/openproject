@@ -82,6 +82,14 @@ RSpec.describe "Work package activity", :js, :with_cuprite, with_flag: { primeri
              member_with_roles: { project => user_role_with_editing_permission })
     end
 
+    let(:comment_work_package_role) { create(:comment_work_package_role) }
+    let(:user_with_commenting_permission_via_a_work_package_share) do
+      create(:user,
+             firstname: "A",
+             lastname: "Commenter",
+             member_with_roles: { work_package => comment_work_package_role })
+    end
+
     let(:work_package) { create(:work_package, project:, author: admin) }
     let(:first_comment) do
       create(:work_package_journal, user: admin, notes: "First comment by admin", journable: work_package,
@@ -203,6 +211,22 @@ RSpec.describe "Work package activity", :js, :with_cuprite, with_flag: { primeri
           # allowed to quote other user's comments
           expect(page).to have_test_selector("op-wp-journal-#{first_comment.id}-quote")
         end
+      end
+    end
+
+    context "when a user has been shared a work package with at least comment rights" do
+      current_user { user_with_commenting_permission_via_a_work_package_share }
+
+      before do
+        wp_page.visit!
+        wp_page.wait_for_activity_tab
+      end
+
+      it "allows commenting on the work package" do
+        activity_tab.expect_input_field
+
+        activity_tab.add_comment(text: "First comment by user with commenting permission via a work package share")
+        activity_tab.expect_journal_notes(text: "First comment by user with commenting permission via a work package share")
       end
     end
   end

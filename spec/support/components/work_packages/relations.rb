@@ -168,16 +168,8 @@ module Components
         find_row(target_wp)
       end
 
-      def add_description_to_relation(relatable, description)
-        actual_relatable = find_relatable(relatable)
-        relation_row = find_row(actual_relatable)
-
-        within relation_row do
-          page.find_test_selector("op-relation-row-#{actual_relatable.id}-action-menu").click
-          page.find_test_selector("op-relation-row-#{actual_relatable.id}-edit-button").click
-        end
-
-        wait_for_reload if using_cuprite?
+      def edit_relation_description(relatable, description)
+        open_relation_dialog(relatable)
 
         within "##{WorkPackageRelationsTab::WorkPackageRelationDialogComponent::DIALOG_ID}" do
           expect(page).to have_field("Work package", readonly: true)
@@ -191,7 +183,22 @@ module Components
         end
       end
 
-      def edit_relation_description(relatable, description)
+      def edit_lag_of_relation(relatable, lag)
+        open_relation_dialog(relatable)
+
+        within "##{WorkPackageRelationsTab::WorkPackageRelationDialogComponent::DIALOG_ID}" do
+          expect(page).to have_field("Work package", readonly: true)
+          expect(page).to have_field("Lag")
+
+          fill_in "Lag", with: lag
+
+          click_link_or_button "Save"
+
+          wait_for_reload if using_cuprite?
+        end
+      end
+
+      def open_relation_dialog(relatable)
         actual_relatable = find_relatable(relatable)
         relation_row = find_row(actual_relatable)
 
@@ -201,17 +208,6 @@ module Components
         end
 
         wait_for_reload if using_cuprite?
-
-        within "##{WorkPackageRelationsTab::WorkPackageRelationDialogComponent::DIALOG_ID}" do
-          expect(page).to have_field("Work package", readonly: true)
-          expect(page).to have_field("Description")
-
-          fill_in "Description", with: description
-
-          click_link_or_button "Save"
-
-          wait_for_reload if using_cuprite?
-        end
       end
 
       def expect_relation(relatable)

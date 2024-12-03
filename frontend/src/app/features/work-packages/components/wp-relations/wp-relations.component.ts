@@ -32,6 +32,7 @@ import {
   Component,
   ElementRef,
   Input,
+  OnDestroy,
   OnInit,
   ViewChild,
 } from '@angular/core';
@@ -56,12 +57,14 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './wp-relations.template.html',
 })
-export class WorkPackageRelationsComponent extends UntilDestroyedMixin implements OnInit, AfterViewInit {
+export class WorkPackageRelationsComponent extends UntilDestroyedMixin implements OnInit, AfterViewInit, OnDestroy {
   @Input() public workPackage:WorkPackageResource;
 
   @ViewChild('frameElement') readonly relationTurboFrame:ElementRef<HTMLIFrameElement>;
 
   turboFrameSrc:string;
+
+  private turboFrameListener:EventListener = this.updateFrontendData.bind(this);
 
   constructor(
     private wpRelations:WorkPackageRelationsService,
@@ -77,6 +80,12 @@ export class WorkPackageRelationsComponent extends UntilDestroyedMixin implement
     this.turboFrameSrc = `${this.PathHelper.staticBase}/work_packages/${this.workPackage.id}/relations_tab`;
   }
 
+  ngOnDestroy() {
+    super.ngOnDestroy();
+
+    document.removeEventListener('turbo:submit-end', this.turboFrameListener);
+  }
+
   ngAfterViewInit() {
     // Listen to any changes to the relations and update the frame
     this
@@ -84,7 +93,9 @@ export class WorkPackageRelationsComponent extends UntilDestroyedMixin implement
       .events$
       .pipe(
         filter((e:RelatedWorkPackageEvent) => {
-          return e.eventType === 'association' && e.id.toString() === this.workPackage.id?.toString();
+          return e.eventType === 'association'
+            && e.id.toString() === this.workPackage.id?.toString()
+            && e.relationType !== 'parent';
         }),
         debounceTime(500),
         this.untilDestroyed(),
@@ -104,7 +115,16 @@ export class WorkPackageRelationsComponent extends UntilDestroyedMixin implement
     cannot listen to the submit end event on the relationTurboFrame element and have
     to rely on the form action URL.
     */
-    document.addEventListener('turbo:submit-end', (event:CustomEvent) => {
+    document.addEventListener('turbo:submit-end', this.turboFrameListener);
+  }
+
+  public updateCounter() {
+    const url = this.PathHelper.workPackageUpdateCounterPath(this.workPackage.id!, 'relations');
+    void this.turboRequests.request(url);
+  }
+
+  private updateFrontendData(event:CustomEvent) {
+    if (event) {
       const form = event.target as HTMLFormElement;
       const updateWorkPackage = !!form.dataset?.updateWorkPackage;
 
@@ -124,12 +144,7 @@ export class WorkPackageRelationsComponent extends UntilDestroyedMixin implement
           this.updateCounter();
         }
       }
-    });
-  }
-
-  public updateCounter() {
-    const url = this.PathHelper.workPackageUpdateCounterPath(this.workPackage.id!, 'relations');
-    void this.turboRequests.request(url);
+    }
   }
 
   private updateRelationsTab() {

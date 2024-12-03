@@ -235,4 +235,4 @@ Last but not least, we are very grateful for our very engaged translation contri
 - [hmmftg](https://crowdin.com/profile/hmmftg), for a great number of translations into Persian.
 - [william](https://crowdin.com/profile/WilliamFromTW), for a great number of translations into Chinese Simplified and Chinese Traditional.
 
-Would you like to help out with translations yourself? Then take a look at our [translation guide](../../development/translate-openproject/) and find out exactly how you can contribute. It is very much appreciated!
+Would you like to help out with translations yourself? Then take a look at our [translation guide](../../contributions-guide/translate-openproject/) and find out exactly how you can contribute. It is very much appreciated!

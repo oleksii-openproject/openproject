@@ -173,4 +173,4 @@ An important part is also the translations, for which we thank the following con
 - [Marek Bajon](https://crowdin.com/profile/mbajon), who translated to Polish
 - [Vlastislav Dockal](https://crowdin.com/profile/vdockal), who translated to Czech
 
-Would you like to help out with translations yourself? Then take a look at our [translation guide](../../development/translate-openproject/) and find out exactly how you can contribute. It is very much appreciated!
+Would you like to help out with translations yourself? Then take a look at our [translation guide](../../contributions-guide/translate-openproject/) and find out exactly how you can contribute. It is very much appreciated!

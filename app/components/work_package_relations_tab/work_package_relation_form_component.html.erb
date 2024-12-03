@@ -19,6 +19,7 @@
           # These are not available inside the render_inline_form block
           # so we need to re-define them here. Figure out solution for this.
           relation = @relation
+          lag_shown = show_lag?
           to_id_field_value = relation.to.present? ? "#{related_work_package.type.name.upcase} ##{related_work_package.id} - #{related_work_package.subject}" : nil
           url = ::API::V3::Utilities::PathHelper::ApiV3Path.work_package_available_relation_candidates(@work_package.id, type: relation.relation_type_for(@work_package))
           render_inline_form(f) do |my_form|
@@ -45,7 +46,7 @@
                   url:,
                   relations: true, # Activates relations fetch mode in the autocomplete
                   openDirectly: false,
-                  focusDirectly: false,
+                  focusDirectly: true,
                   dropdownPosition: 'bottom',
                   appendTo: "##{DIALOG_ID}",
                   data: { test_selector: TO_ID_FIELD_TEST_SELECTOR}
@@ -56,7 +57,19 @@
             my_form.text_field(
               name: :description,
               label: Relation.human_attribute_name(:description),
+              autofocus: relation.persisted?
             )
+
+            if lag_shown
+              my_form.text_field(
+                name: :lag,
+                type: :number,
+                min: 0,
+                label: I18n.t("work_package_relations_tab.lag.title"),
+                caption: I18n.t("work_package_relations_tab.lag.caption"),
+                input_width: :small,
+              )
+            end
           end
         end
       end %>

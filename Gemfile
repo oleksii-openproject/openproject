@@ -61,7 +61,7 @@ gem "friendly_id", "~> 5.5.0"
 
 gem "acts_as_list", "~> 1.2.0"
 gem "acts_as_tree", "~> 2.9.0"
-gem "awesome_nested_set", "~> 3.7.0"
+gem "awesome_nested_set", "~> 3.8.0"
 gem "closure_tree", "~> 7.4.0"
 gem "rubytree", "~> 2.1.0"
 # Only used in down migrations now.
@@ -140,7 +140,7 @@ gem "rack-attack", "~> 6.7.0"
 gem "secure_headers", "~> 7.0.0"
 
 # Browser detection for incompatibility checks
-gem "browser", "~> 6.0.0"
+gem "browser", "~> 6.1.0"
 
 # Providing health checks
 gem "okcomputer", "~> 1.18.1"

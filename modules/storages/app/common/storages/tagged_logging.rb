@@ -30,7 +30,7 @@
 
 module Storages
   module TaggedLogging
-    delegate :info, :error, to: :logger
+    delegate :info, :warn, :error, to: :logger
 
     # @param tag [Class, String, Array<Class, String>] the tag or list of tags to annotate the logs with
     # @yield [Logger]

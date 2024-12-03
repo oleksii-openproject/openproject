@@ -31,6 +31,7 @@
 module Storages
   module Peripherals
     class OneDriveConnectionValidator
+      include TaggedLogging
       include Dry::Monads[:maybe]
 
       using ServiceResultRefinements
@@ -40,17 +41,19 @@ module Storages
       end
 
       def validate
-        maybe_is_not_configured
-          .or { tenant_id_wrong }
-          .or { client_id_wrong }
-          .or { client_secret_wrong }
-          .or { drive_id_wrong }
-          .or { request_failed_with_unknown_error }
-          .or { drive_with_unexpected_content }
-          .value_or(ConnectionValidation.new(type: :healthy,
-                                             error_code: :none,
-                                             timestamp: Time.current,
-                                             description: nil))
+        with_tagged_logger do
+          maybe_is_not_configured
+            .or { tenant_id_wrong }
+            .or { client_id_wrong }
+            .or { client_secret_wrong }
+            .or { drive_id_wrong }
+            .or { request_failed_with_unknown_error }
+            .or { drive_with_unexpected_content }
+            .value_or(ConnectionValidation.new(type: :healthy,
+                                               error_code: :none,
+                                               timestamp: Time.current,
+                                               description: nil))
+        end
       end
 
       private
@@ -146,6 +149,11 @@ module Storages
         unexpected_files = query.result.files.reject { |file| expected_folder_ids.include?(file.id) }
         return None() if unexpected_files.empty?
 
+        file_representation = unexpected_files.map do |file|
+          "Name: #{file.name}, ID: #{file.id}, Location: #{file.location}"
+        end
+        warn "Unexpected files/folder found in group folder:\n\t#{file_representation.join("\n\t")}"
+
         Some(ConnectionValidation.new(type: :warning,
                                       error_code: :wrn_unexpected_content,
                                       timestamp: Time.current,
@@ -157,10 +165,10 @@ module Storages
       def request_failed_with_unknown_error
         return None() if query.success?
 
-        Rails.logger.error("Connection validation failed with unknown error:\n\t" \
-                           "storage: ##{@storage.id} #{@storage.name}\n\t" \
-                           "status: #{query.result}\n\t" \
-                           "response: #{query.error_payload}")
+        error "Connection validation failed with unknown error:\n\t" \
+              "storage: ##{@storage.id} #{@storage.name}\n\t" \
+              "status: #{query.result}\n\t" \
+              "response: #{query.error_payload}"
 
         Some(ConnectionValidation.new(type: :error,
                                       error_code: :err_unknown,

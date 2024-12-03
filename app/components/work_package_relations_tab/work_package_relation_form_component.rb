@@ -47,7 +47,12 @@ class WorkPackageRelationsTab::WorkPackageRelationFormComponent < ApplicationCom
   end
 
   def related_work_package
-    @related_work_package ||= @relation.to
+    @related_work_package ||= begin
+      related = @relation.to
+      # We cannot rely on the related WorkPackage being the "to",
+      # depending on the relation it can also be "from"
+      related.id == @work_package.id ? @relation.from : related
+    end
   end
 
   def submit_url_options
@@ -58,5 +63,9 @@ class WorkPackageRelationsTab::WorkPackageRelationFormComponent < ApplicationCom
       { method: :post,
         url: work_package_relations_path(@work_package) }
     end
+  end
+
+  def show_lag?
+    @relation.relation_type == Relation::TYPE_PRECEDES || @relation.relation_type == Relation::TYPE_FOLLOWS
   end
 end
