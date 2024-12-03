@@ -3,28 +3,59 @@ module TimeEntries
     include CustomFields::CustomFieldRendering
 
     form do |f|
-      if show_user_field?
-        f.text_field name: :user_id, label: "User"
-      end
+      f.autocompleter(
+        name: :user_id,
+        label: TimeEntry.human_attribute_name(:user),
+        autocomplete_options: {
+          defaultData: true,
+          component: "opce-user-autocompleter",
+          url: ::API::V3::Utilities::PathHelper::ApiV3Path.principals,
+          filters: [{ name: "type", operator: "=", values: %w[User Group] },
+                    { name: "member", operator: "=", values: [model.project_id] },
+                    { name: "status", operator: "=", values: [Principal.statuses[:active], Principal.statuses[:invited]] }],
+          searchKey: "any_name_attribute",
+          resource: "principals",
+          focusDirectly: false,
+          multiple: false,
+          appendTo: "#time-entry-dialog",
+          disabled: !show_user_field?
+        }
+      )
+
       f.text_field name: :spent_on, label: "Date"
+
       f.group(layout: :horizontal) do |g|
         g.text_field name: :start_time,
                      label: "Start time",
                      data: { "time-entry-target" => "startTimeInput" }
-        g.text_field name: :end_time, label: "Finish time"
+
+        g.text_field name: :end_time,
+                     label: "Finish time",
+                     data: { "time-entry-target" => "endTimeInput" }
       end
-      f.text_field name: :hours, label: "Hours"
+
+      f.text_field name: :hours,
+                   label: "Hours",
+                   data: { "time-entry-target" => "hoursInput" }
+
       if show_work_package_field?
-        f.text_field name: :work_package_id, label: "Work package"
+        f.work_package_autocompleter name: :work_package_id,
+                                     label: "Work package",
+                                     autocomplete_options: {
+                                       append_to: "#time-entry-dialog"
+
+                                     }
       end
+
       f.text_field name: :activity, label: "Activity"
+
       f.text_field name: :comments, label: "Comments"
 
       render_custom_fields(form: f)
     end
 
     def additional_custom_field_input_arguments
-      { wrapper_id: "time-entry-dialog" }
+      { wrapper_id: "#time-entry-dialog" }
     end
 
     private
