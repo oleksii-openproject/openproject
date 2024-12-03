@@ -64,4 +64,8 @@ class WorkPackageRelationsTab::WorkPackageRelationFormComponent < ApplicationCom
         url: work_package_relations_path(@work_package) }
     end
   end
+
+  def show_lag?
+    @relation.relation_type == Relation::TYPE_PRECEDES || @relation.relation_type == Relation::TYPE_FOLLOWS
+  end
 end
