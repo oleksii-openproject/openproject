@@ -453,9 +453,6 @@ GEM
     date_validator (0.12.0)
       activemodel (>= 3)
       activesupport (>= 3)
-    debug (1.9.2)
-      irb (~> 1.10)
-      reline (>= 0.3.8)
     deckar01-task_list (2.3.4)
       html-pipeline (~> 2.0)
     declarative (0.0.20)
@@ -1220,6 +1217,7 @@ DEPENDENCIES
   brakeman (~> 6.2.0)
   browser (~> 6.1.0)
   budgets!
+  byebug
   capybara (~> 3.40.0)
   capybara-screenshot (~> 1.0.17)
   capybara_accessible_selectors!
@@ -1237,7 +1235,6 @@ DEPENDENCIES
   dalli (~> 3.2.0)
   dashboards!
   date_validator (~> 0.12.0)
-  debug
   deckar01-task_list (~> 2.3.1)
   disposable (~> 0.6.2)
   doorkeeper (~> 5.8.0)
