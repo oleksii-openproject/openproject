@@ -119,7 +119,7 @@ export class MainMenuToggleService {
     }
   }
 
-  public toggleNavigation(event?:JQuery.TriggeredEvent | Event):void {
+  public toggleNavigation(event?:JQuery.TriggeredEvent|Event):void {
     if (event) {
       event.stopPropagation();
       event.preventDefault();
@@ -167,6 +167,8 @@ export class MainMenuToggleService {
 
     // Check if menu is open or closed and apply CSS class if needed
     this.toggleClassHidden();
+    this.snapBack();
+    this.setToggleTitle();
 
     // Save the width if it's open
     if (this.elementWidth > 0) {
