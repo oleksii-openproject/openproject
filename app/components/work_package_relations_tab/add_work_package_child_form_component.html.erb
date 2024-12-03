@@ -18,9 +18,7 @@
         flex.with_row do
           # @workpackage is not available inside the render_inline_form block
           # so we need to re-define them here. Figure out solution for this.
-          ancestors_id = @work_package.ancestors.pluck(:id)
-          children_id = @work_package.children.pluck(:id)
-          non_relatable_wp_ids = [@work_package.id] + ancestors_id + children_id
+          url = ::API::V3::Utilities::PathHelper::ApiV3Path.work_package_available_relation_candidates(@work_package.id, type: Relation::TYPE_CHILD)
           render_inline_form(f) do |my_form|
             my_form.work_package_autocompleter(
               name: :id,
@@ -29,11 +27,12 @@
               autocomplete_options: {
                 resource: 'work_packages',
                 searchKey: 'subjectOrId',
+                url:,
+                relations: true, # Activates relations fetch mode in the autocomplete
                 openDirectly: false,
                 focusDirectly: true,
                 dropdownPosition: 'bottom',
                 appendTo: "##{DIALOG_ID}",
-                filters: [{ name: "id", operator: "!", values:  non_relatable_wp_ids}],
                 data: { test_selector: ID_FIELD_TEST_SELECTOR }
               }
             )
