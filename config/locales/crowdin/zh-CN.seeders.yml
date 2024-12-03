@@ -91,11 +91,11 @@ zh-CN:
         item_3:
           name: 准备执行
         item_4:
-          name: 正在执行
+          name: 执行中
         item_5:
           name: 准备关闭
         item_6:
-          name: 正在关闭
+          name: 关闭中
       priorities:
         item_0:
           name: 低
