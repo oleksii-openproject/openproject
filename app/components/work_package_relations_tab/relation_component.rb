@@ -62,7 +62,7 @@ class WorkPackageRelationsTab::RelationComponent < ApplicationComponent
   end
 
   def lag_present?
-    relation.lag.present?
+    relation.lag.present? && relation.lag != 0
   end
 
   def should_display_dates_row?
