@@ -105,6 +105,7 @@ vi:
     button_update: "Cập Nhật"
     button_export-pdf: "Tải xuống PDF"
     button_export-atom: "Tải xuống Atom"
+    button_generate_pdf: "Generate PDF"
     button_create: "Tạo"
     card:
       add_new: "Thêm thẻ mới"
@@ -356,10 +357,10 @@ vi:
           learn_about: "Tìm hiểu thêm về các tính năng mới"
           #Include the version to invalidate outdated translations in other locales.
           #Otherwise, e.g. chinese might still have the translations for 10.0 in the 12.0 release.
-          "15_0":
+          "15_1":
             standard:
               new_features_html: >
-                The release brings various features and improvements for you, e.g. <br> <ul class="%{list_styling_class}"> <li>Boost your communication with a better structured Activity tab, real-time loading messages and notifications, emoji reactions, and more.</li> <li>Benefit from easy Single Sign-On authentication settings with SAML and OIDC in your Enterprise Cloud administration.</li> <li>Use the new 'Standard global role' and enable permissions to view email addresses.</li> <li>Enjoy easier navigation in project lists with quick action table headers.</li> <li>Experience simplified design settings with fewer sidebar design variables needed.</li> <li>Reduce manual cleanup when adding a custom field to a type – no more auto-applying to all projects.</li> <li>Benefit from improved navigation clarity – 'My account' is renamed to 'Account settings'.</li> </ul>
+                The release brings various features and improvements for you, e.g. <br> <ul class="%{list_styling_class}"> <li>Custom fields of type hierarchy (Enterprise add-on).</li> <li>Redesign of the Relations tab in work packages.</li> <li>Redesign of the Meetings index page.</li> <li>Manual page breaks in PDF work package exports.</li> <li>Zen mode for project lists.</li> </ul>
     ical_sharing_modal:
       title: "Đăng ký lịch"
       inital_setup_error_message: "Đã xảy ra lỗi khi lấy dữ liệu."
@@ -575,7 +576,7 @@ vi:
         members: "Mời <b>thành viên mới</b> tham gia dự án của bạn."
         quick_add_button: "Nhấp vào biểu tượng cộng (+) trong thanh điều hướng tiêu đề để <b>tạo một dự án mới</b> hoặc <b>mời đồng nghiệp</b>."
         sidebar_arrow: "Sử dụng mũi tên trở lại ở góc trên bên trái để quay lại <b>menu chính</b> của dự án."
-        welcome: "Tham gia tour giới thiệu ba phút để tìm hiểu những <b>tính năng quan trọng</b> nhất. <br> Chúng tôi khuyến nghị bạn hoàn thành các bước cho đến cuối. Bạn có thể khởi động lại tour bất kỳ lúc nào."
+        welcome: "Take a three-minute introduction tour to learn the most <b>important features</b>. <br> We recommend completing the steps until the end. You can restart the tour any time."
         wiki: "Trong <b>wiki</b>, bạn có thể tài liệu hóa và chia sẻ kiến thức cùng với nhóm của bạn."
         backlogs:
           overview: "Quản lý công việc của bạn trong chế độ xem <b>backlogs</b>."

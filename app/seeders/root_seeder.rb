@@ -75,6 +75,11 @@ class RootSeeder < Seeder
     seed_development_data if seed_development_data?
     seed_plugins_data
     seed_env_data
+    cleanup_seed_data
+  end
+
+  def cleanup_seed_data
+    admin_user.lock! if Setting.seed_admin_user_locked?
   end
 
   def seed_development_data?

@@ -105,6 +105,7 @@ fr:
     button_update: "Mettre à jour"
     button_export-pdf: "Télécharger le PDF"
     button_export-atom: "Télécharger Atom"
+    button_generate_pdf: "Générer un fichier PDF"
     button_create: "Créer"
     card:
       add_new: "Ajouter une nouvelle carte"
@@ -188,8 +189,8 @@ fr:
           without_type: "Créer un lot de travaux"
           with_type: "Créer un lot de travaux (Type : %{typename})"
         embedded_table:
-          button: "Tableau intégré de lots de travaux"
-          text: "[Placeholder] Tableau intégré de lots de travaux"
+          button: "Intégrer le lot de travaux"
+          text: "[Placeholder] Tableau du lot de travaux intégré"
         embedded_calendar:
           text: "[Placeholder] Calendrier embarqué"
     admin:
@@ -356,10 +357,10 @@ fr:
           learn_about: "En savoir plus sur les nouvelles fonctionnalités"
           #Include the version to invalidate outdated translations in other locales.
           #Otherwise, e.g. chinese might still have the translations for 10.0 in the 12.0 release.
-          "15_0":
+          "15_1":
             standard:
               new_features_html: >
-                Cette version apporte diverses fonctionnalités et améliorations, notamment : <br> <ul class="%{list_styling_class}"> <li>Améliorez votre communication grâce à un onglet Activité mieux structuré, au chargement en temps réel des messages et des notifications, aux réactions par émoji et plus encore.</li> <li>Bénéficiez de paramètres d'authentification simples avec SAML et OIDC dans votre interface d'administration Enterprise Cloud.</li> <li>Utilisez le nouveau « rôle global standard » et activez les autorisations pour voir les adresses e-mail.</li> <li>Profitez d'une navigation plus facile dans les listes de projets avec des en-têtes de tableau avec action rapide.</li> <li>Bénéficiez de paramètres de conception simplifiés avec la réduction du nombre de variables de conception de barre latérale nécessaires.</li> <li>Réduisez le nettoyage manuel lors de l'ajout d'un champ personnalisé à un type. Il n'y a plus d'application automatique à tous les projets.</li> <li>Bénéficiez d'une meilleure clarté de navigation : « Mon compte » est renommé « Paramètres du compte ».</li> </ul>
+                The release brings various features and improvements for you, e.g. <br> <ul class="%{list_styling_class}"> <li>Custom fields of type hierarchy (Enterprise add-on).</li> <li>Redesign of the Relations tab in work packages.</li> <li>Redesign of the Meetings index page.</li> <li>Manual page breaks in PDF work package exports.</li> <li>Zen mode for project lists.</li> </ul>
     ical_sharing_modal:
       title: "S'abonner au calendrier"
       inital_setup_error_message: "Une erreur est survenue lors de la récupération des données."
@@ -575,7 +576,7 @@ fr:
         members: "Invitez de nouveaux <b>membres</b> à rejoindre votre projet."
         quick_add_button: "Cliquez sur l'icône plus (+) dans l'en-tête de navigation pour <b>créer un nouveau projet</b> ou <b>inviter des collègues</b>."
         sidebar_arrow: "Utilisez la flèche de retour dans le coin supérieur gauche pour retourner au <b>menu principal</b> du projet."
-        welcome: "Faites une visite d’introduction de trois minutes d’apprendre le plus de caractéristiques importantes de <b></b>. <br> il est recommandé d’avoir effectué les étapes jusqu'à la fin. Vous pouvez redémarrer la tournée à tout moment."
+        welcome: "Faites une visite d’introduction de trois minutes pour apprendre <b>les fonctionnalités les plus importantes</b>.<br>Il est recommandé d’effectuer les étapes jusqu'à la fin. Vous pouvez redémarrer cette visite à tout moment."
         wiki: "Dans le <b>wiki</b> vous pouvez documenter et partager vos connaissances avec votre équipe."
         backlogs:
           overview: "Gérez votre travail dans la vue <b>backlogs</b>."

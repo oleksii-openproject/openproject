@@ -33,7 +33,7 @@ zh-TW:
         label_activity_show_only_changes: "僅顯示差異"
         label_sort_asc: "最新的在最下面"
         label_sort_desc: "最新的在最上面"
-        label_type_to_comment: "在此留言"
+        label_type_to_comment: "留言。輸入 @ 來通知他人。"
         label_submit_comment: "留言"
         changed_on: "異動於"
         created_on: "新增於"
@@ -238,6 +238,8 @@ zh-TW:
           zero: 無子項目
           one: 1 個子項目
           other: "%{count} 子項目"
+    upsale:
+      custom_field_format_hierarchy: "工作項目的自訂欄位需要分層嗎？"
     text_add_new_custom_field: >
       要加入客製欄位至一個專案，您必須先建立欄位才能將它們加入至此專案。
     is_enabled_globally: "已全域啟用"
@@ -264,7 +266,7 @@ zh-TW:
     single: "或者"
   dry_validation:
     errors:
-      integer?: "必須是整數"
+      int?: "必須是整數"
       filled?: "必填"
       greater_or_equal_zero: "必須大於或等於 0"
       not_found: "未找到"
@@ -273,11 +275,11 @@ zh-TW:
           root_item: "不能為根項目"
           not_persisted: "必須是已存在的項目"
         label:
-          not_unique: "在同一層級內必須唯一"
+          not_unique: "在同一階層內必須唯一"
         short:
           not_unique: "在同一階層內必須唯一"
         parent:
-          not_descendant: "必須是階層根的展開的"
+          not_descendant: "必須是層級展開的"
     rules:
       depth: "深度"
       item: "項目"
@@ -621,6 +623,66 @@ zh-TW:
           no_results_title_text: 目前沒有可用的類型
         version:
           no_results_title_text: 目前沒有可用的版本
+  work_package_relations_tab:
+    index:
+      action_bar_title: "新增關係至其他工作項目，以建立它們之間的連結。"
+      no_results_title_text: 目前沒有相關工作項目
+      blankslate_heading: "沒有關聯"
+      blankslate_description: "此工作項目尚未建立任何關係。"
+    label_add_x: "新增 %{x}"
+    label_edit_x: "編輯：%{x}"
+    label_add_description: "新增說明"
+    relations:
+      label_relates_singular: "相關於"
+      label_relates_plural: "相關於"
+      label_relates_to_singular: "相關於"
+      label_relates_to_plural: "相關於"
+      relates_description: "在兩個工作項目之間建立可見的連結，沒有額外影響"
+      relates_to_description: "在兩個工作項目之間建立可見的連結，沒有額外影響"
+      label_precedes_singular: "繼承(後)"
+      label_precedes_plural: "繼承(後)"
+      precedes_description: "相關的工作項目必須在完成後才開始執行"
+      label_follows_singular: "繼承(前)"
+      label_follows_plural: "繼承(前)"
+      follows_description: "在這個工作項目開始之前，相關的工作必須先完成"
+      label_child_singular: "子項目"
+      label_child_plural: "子項目"
+      child_description: "使相關工作項目成為目前（父）工作子項目"
+      label_blocks_singular: "區塊"
+      label_blocks_plural: "區塊"
+      blocks_description: "在本工作項目結束之前，關聯工作無法結束"
+      label_blocked_singular: "標示禁止"
+      label_blocked_plural: "標示禁止"
+      label_blocked_by_singular: "標示禁止"
+      label_blocked__by_plural: "標示禁止"
+      blocked_description: "在關聯工作項目先結束之前，此工作無法結束"
+      blocked_by_description: "在關聯工作項目先結束之前，此工作無法結束"
+      label_duplicates_singular: "重複"
+      label_duplicates_plural: "重複"
+      duplicates_description: "這是關聯工作項目的複本"
+      label_duplicated_singular: "重複於"
+      label_duplicated_plural: "重複於"
+      label_duplicated_by_singular: "重複於"
+      label_duplicated_by_plural: "重複於"
+      duplicated_by_description: "關聯工作項目於此複製"
+      duplicated_description: "關聯工作項目於此複製"
+      label_includes_singular: "包括"
+      label_includes_plural: "包括"
+      includes_description: "將關聯工作標示包含此工作項目，但無額外影響"
+      label_partof_singular: "部份於"
+      label_partof_plural: "部份於"
+      label_part_of_singular: "部份於"
+      label_part_of_plural: "部份於"
+      partof_description: "將相關工作項目標示為此工作一部分，但無額外影響"
+      part_of_description: "將相關工作項目標示為此工作一部分，但無額外影響"
+      label_requires_singular: "需要"
+      label_requires_plural: "需要"
+      requires_description: "將關聯工作項目標示為此工作套件的需求"
+      label_required_singular: "要求由"
+      label_required_plural: "要求由"
+      required_description: "將此工作項目標示為相關工作的需求"
+      label_parent_singular: "上層"
+      label_parent_plural: "上層"
   label_invitation: 邀請
   account:
     delete: "刪除帳號"
@@ -1017,6 +1079,20 @@ zh-TW:
           attributes:
             project_ids:
               blank: "請選擇一個專案"
+        project/life_cycle_step_definition:
+          attributes:
+            type:
+              must_be_a_stage_or_gate: ""
+        project/life_cycle_step:
+          attributes:
+            type:
+              must_be_a_stage_or_gate: ""
+              must_be_a_stage: ""
+              must_be_a_gate: "必須是 Project::Gate"
+        project/gate:
+          attributes:
+            base:
+              end_date_not_allowed: "無法指定 `end_date` 到 Project::Gate"
         query:
           attributes:
             project:
@@ -1291,7 +1367,7 @@ zh-TW:
     assigned_to: "執行者"
     assignee: "執行者"
     attachments: "附加檔"
-    author: "作者"
+    author: "工作項目發起者"
     base: "一般錯誤:"
     blocks_ids: "已被限制的工作項目 IDs"
     category: "類別"
@@ -1784,6 +1860,23 @@ zh-TW:
     units:
       hours: 小時
       days: 日
+  pdf_generator:
+    page_nr_footer: "頁面 %{page} of %{total}"
+    dialog:
+      title: 產生PDF檔案
+      submit: 產生
+      header_right:
+        label: 標題右側
+        caption: 要顯示在標頭右側的文字
+      footer_center:
+        label: 頁尾中心
+        caption: 要顯示在頁尾中央的文字
+      hyphenation:
+        label: 連字符
+        caption: 在行與行之間分隔字詞，以改善文字的正確性和可讀性。
+      paper_size:
+        label: 紙張大小
+        caption: PDF 要使用的紙張尺寸。
   extraction:
     available:
       pdftotext: "Pdftotext 可用 (非必要)"
@@ -2142,6 +2235,7 @@ zh-TW:
   label_environment: "環境"
   label_estimates_and_progress: "預估和進度"
   label_equals: "是"
+  label_equals_with_descendants: "任何子項目"
   label_everywhere: "全部"
   label_example: "範例"
   label_experimental: "實驗性"
@@ -2406,6 +2500,8 @@ zh-TW:
   label_related_work_packages: "相關的工作項目"
   label_relates: "相關於"
   label_relates_to: "相關於"
+  label_relation: "關聯"
+  label_relation_actions: "關聯動作"
   label_relation_delete: "刪除關聯"
   label_relation_new: "新增關聯"
   label_release_notes: "發行說明"

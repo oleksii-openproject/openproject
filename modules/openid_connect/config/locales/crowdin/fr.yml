@@ -59,9 +59,10 @@ fr:
       metadata_url: J'ai une URL de point de terminaison de découverte
       client_id: Il s'agit de l'ID de client qui vous a été attribué par votre fournisseur OpenID Connect
       client_secret: Il s'agit de la clé secrète du client qui vous a été communiquée par votre fournisseur OpenID Connect
-      limit_self_registration: Si cette option est activée, les utilisateurs peuvent s'inscrire par le biais de ce fournisseur uniquement si la configuration du côté du fournisseur le permet.
-      display_name: Le nom du fournisseur. Il sera affiché comme bouton de connexion et dans la liste des fournisseurs.
+      limit_self_registration: If enabled, users can only register using this provider if configuration on the provider's end allows it.
+      display_name: The name of the provider. This will be displayed as the login button and in the list of providers.
       tenant: 'Veuillez remplacer le locataire par défaut par le vôtre, le cas échéant. Vous pouvez en savoir plus <a href=" https://learn.microsoft.com/en-us/entra/identity-platform/v2-protocols-oidc#find-your-apps-openid-configuration-document-uri">ici</a>.'
+      scope: If you want to request custom scopes, you can add one or multiple scope values separated by spaces here. For more information, see the [OpenID Connect documentation](docs_url).
       post_logout_redirect_uri: L'URL vers laquelle le fournisseur OpenID Connect doit rediriger le client après une demande de déconnexion.
       claims: >
         Vous pouvez demander des réclamations supplémentaires pour les points de terminaison userinfo et id token. Veuillez consulter [notre documentation OpenID Connect](docs_url) pour obtenir plus d'informations.
@@ -82,6 +83,7 @@ fr:
       metadata_url: J'ai une URL de point de terminaison de découverte
       endpoint_url: URL du point de terminaison
     providers:
+      label_providers: "Providers"
       seeded_from_env: "Ce fournisseur a été ajouté à partir de la configuration de l'environnement. Il ne peut pas être modifié."
       google:
         name: Google

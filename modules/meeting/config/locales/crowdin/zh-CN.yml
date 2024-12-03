@@ -87,7 +87,7 @@ zh-CN:
   label_meeting: "会议"
   label_meeting_plural: "会议"
   label_meeting_new: "新增会议"
-  label_meeting_new_one_time: "新一次性会议"
+  label_meeting_new_dynamic: "新动态会议"
   label_meeting_create: "创建会议"
   label_meeting_copy: "复制会议"
   label_meeting_edit: "编辑会议"
@@ -145,7 +145,7 @@ zh-CN:
     types:
       classic: "经典"
       classic_text: "将您的会议以可格式化的文本议程和会议纪要的形式进行组织。"
-      structured: "一次性的"
+      structured: "动态"
       structured_text: "将您的会议组织为议程项目列表，并可选地将其与工作包链接。"
       structured_text_copy: "目前复制会议不会复制相关会议的议程项目，只会复制会议的详细信息。"
     copied: "从会议 #%{id} 复制"

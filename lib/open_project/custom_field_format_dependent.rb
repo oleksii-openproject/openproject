@@ -37,8 +37,9 @@ module OpenProject
       multiSelect: [:only, %w[list user version hierarchy]],
       possibleValues: [:only, %w[list]],
       regexp: [:except, %w[list bool date user version hierarchy]],
-      searchable: [:except, %w[bool date float int user version]],
-      textOrientation: [:only, %w[text]]
+      searchable: [:except, %w[bool date float int user version hierarchy]],
+      textOrientation: [:only, %w[text]],
+      enterpriseBanner: [:only, %w[hierarchy]]
     }.freeze
 
     def self.stimulus_config

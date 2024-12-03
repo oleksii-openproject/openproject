@@ -90,7 +90,7 @@ lt:
   label_meeting: "Pasitarimas"
   label_meeting_plural: "Pasitarimai"
   label_meeting_new: "Naujas pasitarimas"
-  label_meeting_new_one_time: "New one-time meeting"
+  label_meeting_new_dynamic: "New dynamic meeting"
   label_meeting_create: "Create meeting"
   label_meeting_copy: "Copy meeting"
   label_meeting_edit: "Redaguoti pasitarimą"
@@ -148,7 +148,7 @@ lt:
     types:
       classic: "Klasikinis"
       classic_text: "Organizuokite jūsų susitikimą su formatuojamo teksto darbotvarke ir protokolu."
-      structured: "One-time"
+      structured: "Dinaminis"
       structured_text: "Organizuokite jūsų susitikimą su darbotvarkės elementų sąrašu, pasirinktinai susiejant juos su darbo paketu."
       structured_text_copy: "Šiuo metu nukopijavus susitikimą, susiję susitikimo elmentai nebus kopijuojami, tik detalės."
     copied: "Nukopijuota iš susitikimo #%{id}"

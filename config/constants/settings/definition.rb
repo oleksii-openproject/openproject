@@ -923,6 +923,12 @@ module Settings
         default: "https://releases.openproject.com/v1/check.svg",
         writable: false
       },
+      seed_admin_user_locked: {
+        description: "Lock the created admin user after seeding, so it can not be used for logging in. " \
+                     "If set to true, an admin user has to be created manually or through an SSO provider.",
+        default: false,
+        writable: false
+      },
       seed_admin_user_password: {
         description: 'Password to set for the initially created admin user (Login remains "admin").',
         default: "admin",

@@ -89,6 +89,8 @@ module Queries::Filters::Shared
           :text
         when "date"
           :date
+        when "hierarchy"
+          :hierarchy
         else
           :string
         end

@@ -88,7 +88,7 @@ hu:
   label_meeting: "Megbeszélés"
   label_meeting_plural: "Megbeszélések"
   label_meeting_new: "Új megbeszélés"
-  label_meeting_new_one_time: "New one-time meeting"
+  label_meeting_new_dynamic: "New dynamic meeting"
   label_meeting_create: "Create meeting"
   label_meeting_copy: "Copy meeting"
   label_meeting_edit: "Megbeszélés szerkesztése"
@@ -146,7 +146,7 @@ hu:
     types:
       classic: "Szokásos"
       classic_text: "Szervezd meg a találkozódat formázott szöveges napirendben és protokollban."
-      structured: "One-time"
+      structured: "Dinamikus"
       structured_text: "Szervezd meg a találkozódat napirendi pontokkal, melyeket opcionálisan munkacsomagokhoz rendelhetsz."
       structured_text_copy: "A megbeszélés másolásával jelnleg nem fogja átmásolni a hozzákapcsolt napirendi pontokat, csak a megbeszélés részleteit."
     copied: "#%{id} megbeszélésből másolva"

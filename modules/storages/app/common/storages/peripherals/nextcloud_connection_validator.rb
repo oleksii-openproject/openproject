@@ -31,6 +31,7 @@
 module Storages
   module Peripherals
     class NextcloudConnectionValidator
+      include TaggedLogging
       include Dry::Monads[:maybe]
 
       using ServiceResultRefinements
@@ -40,13 +41,15 @@ module Storages
       end
 
       def validate
-        maybe_is_not_configured
-          .or { has_base_configuration_error? }
-          .or { has_ampf_configuration_error? }
-          .value_or(ConnectionValidation.new(type: :healthy,
-                                             error_code: :none,
-                                             timestamp: Time.current,
-                                             description: nil))
+        with_tagged_logger do
+          maybe_is_not_configured
+            .or { has_base_configuration_error? }
+            .or { has_ampf_configuration_error? }
+            .value_or(ConnectionValidation.new(type: :healthy,
+                                               error_code: :none,
+                                               timestamp: Time.current,
+                                               description: nil))
+        end
       end
 
       private
@@ -194,6 +197,11 @@ module Storages
         unexpected_files = files.result.files.reject { |file| expected_folder_ids.include?(file.id) }
         return None() if unexpected_files.empty?
 
+        file_representation = unexpected_files.map do |file|
+          "Name: #{file.name}, ID: #{file.id}, Location: #{file.location}"
+        end
+        warn "Unexpected files/folder found in group folder:\n\t#{file_representation.join("\n\t")}"
+
         Some(
           ConnectionValidation.new(
             type: :warning,
@@ -209,13 +217,11 @@ module Storages
       def capabilities_request_failed_with_unknown_error
         return None() if capabilities.success?
 
-        Rails.logger.error(
-          "Connection validation failed with unknown error:\n\t" \
-          "storage: ##{@storage.id} #{@storage.name}\n\t" \
-          "request: Nextcloud capabilities\n\t" \
-          "status: #{capabilities.result}\n\t" \
-          "response: #{capabilities.error_payload}"
-        )
+        error "Connection validation failed with unknown error:\n\t" \
+              "storage: ##{@storage.id} #{@storage.name}\n\t" \
+              "request: Nextcloud capabilities\n\t" \
+              "status: #{capabilities.result}\n\t" \
+              "response: #{capabilities.error_payload}"
 
         Some(ConnectionValidation.new(type: :error,
                                       error_code: :err_unknown,
@@ -226,13 +232,11 @@ module Storages
       def files_request_failed_with_unknown_error
         return None() if files.success?
 
-        Rails.logger.error(
-          "Connection validation failed with unknown error:\n\t" \
-          "storage: ##{@storage.id} #{@storage.name}\n\t" \
-          "request: Group folder content\n\t" \
-          "status: #{files.result}\n\t" \
-          "response: #{files.error_payload}"
-        )
+        error "Connection validation failed with unknown error:\n\t" \
+              "storage: ##{@storage.id} #{@storage.name}\n\t" \
+              "request: Group folder content\n\t" \
+              "status: #{files.result}\n\t" \
+              "response: #{files.error_payload}"
 
         Some(ConnectionValidation.new(type: :error,
                                       error_code: :err_unknown,

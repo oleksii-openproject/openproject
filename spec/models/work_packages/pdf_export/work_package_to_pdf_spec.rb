@@ -214,6 +214,7 @@ RSpec.describe WorkPackage::PDFExport::WorkPackageToPdf do
 
   subject(:pdf) do
     content = export_pdf.content
+    # If you want to actually see the PDF for debugging, uncomment the following line
     # File.binwrite('WorkPackageToPdf-test-preview.pdf', content)
     { strings: PDF::Inspector::Text.analyze(content).strings,
       images: PDF::Inspector::XObject.analyze(content).page_xobjects.flat_map do |o|

@@ -36,6 +36,9 @@ class TimeEntry < ApplicationRecord
   belongs_to :rate, -> { where(type: %w[HourlyRate DefaultHourlyRate]) }, class_name: "Rate"
   belongs_to :logged_by, class_name: "User"
 
+  MIN_TIME = 0 # => 00:00
+  MAX_TIME = (60 * 24) - 1 # => 23:59
+
   acts_as_customizable
 
   acts_as_journalized
@@ -43,6 +46,14 @@ class TimeEntry < ApplicationRecord
   validates_presence_of :user_id, :project_id, :spent_on
   validates_presence_of :hours, if: -> { !ongoing? }
   validates_numericality_of :hours, allow_nil: true, message: :invalid
+
+  validates :start_time, :hours,
+            presence: true,
+            if: -> { TimeEntry.must_track_start_and_end_time? }
+
+  validates :start_time,
+            numericality: { only_integer: true, greater_than_or_equal_to: MIN_TIME, less_than_or_equal_to: MAX_TIME },
+            allow_blank: true
 
   scope :on_work_packages, ->(work_packages) { where(work_package_id: work_packages) }
 
@@ -101,9 +112,41 @@ class TimeEntry < ApplicationRecord
       (user_id == usr.id && usr.allowed_in_project?(:view_own_hourly_rate, project))
   end
 
+  def start_timestamp
+    return nil if start_time.blank?
+    return nil if time_zone.blank?
+
+    time_zone_object.local(spent_on.year, spent_on.month, spent_on.day, start_time / 60, start_time % 60)
+  end
+
+  def end_timestamp
+    return nil if start_time.blank?
+    return nil if time_zone.blank?
+    return nil if hours.blank?
+
+    start_timestamp + hours.hours
+  end
+
+  class << self
+    def can_track_start_and_end_time?(_project: nil)
+      OpenProject::FeatureDecisions.track_start_and_end_times_for_time_entries_active? &&
+        Setting.allow_tracking_start_and_end_times?
+      # TODO: Add project check when we have decided if we also want a project specific flag
+    end
+
+    def must_track_start_and_end_time?(_project: nil)
+      can_track_start_and_end_time? && Setting.enforce_tracking_start_and_end_times?
+      # TODO: Add project check when we have decided if we also want a project specific flag
+    end
+  end
+
   private
 
   def cost_attribute
     hours
+  end
+
+  def time_zone_object
+    ActiveSupport::TimeZone[time_zone]
   end
 end

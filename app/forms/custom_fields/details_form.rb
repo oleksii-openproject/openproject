@@ -61,12 +61,6 @@ module CustomFields
         caption: I18n.t("custom_fields.instructions.is_filter")
       )
 
-      details_form.check_box(
-        name: :searchable,
-        label: I18n.t("activerecord.attributes.custom_field.searchable"),
-        caption: I18n.t("custom_fields.instructions.searchable")
-      )
-
       details_form.submit(name: :submit, label: I18n.t(:button_save), scheme: :default)
     end
   end

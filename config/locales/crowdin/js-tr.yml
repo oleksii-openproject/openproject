@@ -105,6 +105,7 @@ tr:
     button_update: "Güncelleştirme"
     button_export-pdf: "PDF indir"
     button_export-atom: "Atom İndir"
+    button_generate_pdf: "Generate PDF"
     button_create: "Oluştur"
     card:
       add_new: "Yeni kart ekleyin"
@@ -355,10 +356,10 @@ tr:
           learn_about: "Yeni özellikler hakkında daha fazla bilgi edinin"
           #Include the version to invalidate outdated translations in other locales.
           #Otherwise, e.g. chinese might still have the translations for 10.0 in the 12.0 release.
-          "15_0":
+          "15_1":
             standard:
               new_features_html: >
-                The release brings various features and improvements for you, e.g. <br> <ul class="%{list_styling_class}"> <li>Boost your communication with a better structured Activity tab, real-time loading messages and notifications, emoji reactions, and more.</li> <li>Benefit from easy Single Sign-On authentication settings with SAML and OIDC in your Enterprise Cloud administration.</li> <li>Use the new 'Standard global role' and enable permissions to view email addresses.</li> <li>Enjoy easier navigation in project lists with quick action table headers.</li> <li>Experience simplified design settings with fewer sidebar design variables needed.</li> <li>Reduce manual cleanup when adding a custom field to a type – no more auto-applying to all projects.</li> <li>Benefit from improved navigation clarity – 'My account' is renamed to 'Account settings'.</li> </ul>
+                The release brings various features and improvements for you, e.g. <br> <ul class="%{list_styling_class}"> <li>Custom fields of type hierarchy (Enterprise add-on).</li> <li>Redesign of the Relations tab in work packages.</li> <li>Redesign of the Meetings index page.</li> <li>Manual page breaks in PDF work package exports.</li> <li>Zen mode for project lists.</li> </ul>
     ical_sharing_modal:
       title: "Subscribe to calendar"
       inital_setup_error_message: "An error occured while fetching data."
@@ -574,7 +575,7 @@ tr:
         members: "Projenize katılmak için yeni <b>üyeler</b> davet edin."
         quick_add_button: "<b>Yeni bir proje oluşturmak</b> veya <b>iş arkadaşlarınızı davet etmek</b> için başlık bölümündeki artı (+) simgesini tıklayın."
         sidebar_arrow: "Projenin <b>ana menüsüne</b> dönmek için sol üst köşedeki dönüş okunu kullanın."
-        welcome: "En <b>önemli özellikleri</b> öğrenmek için üç dakikalık bir tanıtım gezintisine çıkın. <br> Tüm adımları tamamlamanızı öneririz. Turu istediğiniz zaman yeniden başlatabilirsiniz."
+        welcome: "Take a three-minute introduction tour to learn the most <b>important features</b>. <br> We recommend completing the steps until the end. You can restart the tour any time."
         wiki: "<b>wiki</b> içinde belgeleyebilir ve ekibinizle birlikte bilgi paylaşabilirsiniz."
         backlogs:
           overview: "İşinizi <b>birikimler</b> görünümünde yönetin."
@@ -728,7 +729,7 @@ tr:
       settings:
         daily:
           add_time: "Süre ekle"
-          enable: "Günlük email hatırlatıcılarını etkinleştir"
+          enable: "Günlük e-posta hatırlatıcılarını etkinleştir"
           explanation: "Bu hatırlatıcıları yalnızca okunmamış bildirimler için ve yalnızca sizin belirlediğiniz saatlerde alacaksınız. %{no_time_zone}"
           no_time_zone: "Hesabınız için bir saat dilimi yapılandırana kadar, saatler UTC olarak yorumlanacaktır."
           time_label: "Zaman %{counter}:"
@@ -750,9 +751,9 @@ tr:
           wiki_page_updated: "Viki sayfası güncellendi"
           membership_added: "Üyelik eklendi"
           membership_updated: "Üyelik güncellendi"
-        title: "Email hatırlatıcıları"
+        title: "E-posta hatırlatıcıları"
         pause:
-          label: "Email hatırlatıcılarını geçici olarak durdur"
+          label: "E-posta hatırlatıcılarını geçici olarak durdur"
           first_day: "İlk gün"
           last_day: "Son gün"
     text_are_you_sure: "Emin misiniz?"

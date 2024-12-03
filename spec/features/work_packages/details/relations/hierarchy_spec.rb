@@ -62,99 +62,31 @@ RSpec.shared_examples "work package relations tab", :js, :selenium do
     it "allows to manage hierarchy" do
       # Add parent
       relations.add_parent(parent.id, parent)
+      wp_page.expect_and_dismiss_toaster(message: "Successful update.")
       relations.expect_parent(parent)
 
       ##
       # Add child #1
-      relations.open_children_autocompleter
-
       relations.add_existing_child(child)
+      expect_and_dismiss_flash(message: "Successful update.")
       relations.expect_child(child)
 
       ##
       # Add child #2
-      relations.open_children_autocompleter
-
       relations.add_existing_child(child2)
+      expect_and_dismiss_flash(message: "Successful update.")
       relations.expect_child(child2)
 
       # Count child relations in split view
+      # Marking as "visible: :all" because the counter
+      # is hidden by some weird white element only in TEST mode
+      # in the header.
+
       tabs.expect_counter(relations_tab, 2)
-    end
-
-    context "when switching to custom field with required CF" do
-      let(:custom_field) do
-        create(
-          :work_package_custom_field,
-          field_format: "string",
-          default_value: nil,
-          is_required: true,
-          is_for_all: true
-        )
-      end
-      let(:type2) { create(:type, custom_fields: [custom_field]) }
-      let(:relations) { Components::WorkPackages::Relations.new(parent) }
-      let!(:status) { create(:status, is_default: true) }
-      let!(:priority) { create(:priority, is_default: true) }
-
-      before do
-        project.types << type2
-        project.save!
-        custom_field
-      end
-
-      it "shows the required field when switching" do
-        relations.inline_create_child "my new child"
-        table = relations.children_table
-
-        table.expect_work_package_subject "my new child"
-        wp = WorkPackage.find_by!(subject: "my new child")
-        type_field = table.edit_field(wp, :type)
-
-        type_field.activate!
-        type_field.set_value type2.name
-
-        wp_page.expect_toast message: "#{custom_field.name} can't be blank.",
-                             type: "error"
-
-        cf_field = wp_page.edit_field(custom_field.attribute_name(:camel_case))
-        cf_field.expect_active!
-        cf_field.expect_value("")
-
-        cf_field.set_value "my value"
-        cf_field.save!
-
-        wp_page.expect_toast message: "Successful update.",
-                             type: "success"
-
-        wp.reload
-        expect(wp.custom_value_for(custom_field).value).to eq "my value"
-      end
-    end
-
-    describe "inline create" do
-      let!(:status) { create(:status, is_default: true) }
-      let!(:priority) { create(:priority, is_default: true) }
-      let(:type_bug) { create(:type_bug) }
-      let!(:project) do
-        create(:project, types: [type_bug])
-      end
-
-      it "can inline-create children" do
-        relations.inline_create_child "my new child"
-        table = relations.children_table
-
-        table.expect_work_package_subject "my new child"
-        work_package.reload
-        expect(work_package.children.count).to eq(1)
-
-        # If new child is inline created, counter should increase
-        tabs.expect_counter(relations_tab, 1)
-      end
     end
   end
 
-  describe "relation group-by toggler" do
+  describe "as non-admin" do
     let(:project) { create(:project, types: [type1, type2]) }
     let(:type1) { create(:type) }
     let(:type2) { create(:type) }
@@ -175,7 +107,6 @@ RSpec.shared_examples "work package relations tab", :js, :selenium do
              relation_type: Relation::TYPE_RELATES)
     end
 
-    let(:toggle_btn_selector) { "#wp-relation-group-by-toggle" }
     let(:visit) { false }
 
     before do
@@ -202,18 +133,11 @@ RSpec.shared_examples "work package relations tab", :js, :selenium do
         let!(:work_package) { create(:work_package, parent:, project:, subject: "Child WP") }
 
         it "shows no links to create relations" do
-          # No create buttons should exist
-          expect(page).to have_no_css(".wp-relations-create-button")
-
-          # Test for add relation
-          expect(page).to have_no_css("#relation--add-relation")
+          # No create buttons should exist (relation or children)
+          relations.expect_no_add_relation_button
 
           # Test for add parent
           expect(page).to have_no_css(".wp-relation--parent-change")
-
-          # Test for add children
-          expect(page).to have_no_css("#hierarchy--add-existing-child")
-          expect(page).to have_no_css("#hierarchy--add-new-child")
 
           # But it should show the linked parent
           expect(page).to have_test_selector("op-wp-breadcrumb-parent", text: parent.subject)
@@ -236,10 +160,8 @@ RSpec.shared_examples "work package relations tab", :js, :selenium do
 
           ##
           # Add child
-          relations.open_children_autocompleter
-
           relations.add_existing_child(child)
-          wp_page.expect_and_dismiss_toaster(message: "Successful update.")
+          expect_and_dismiss_flash(message: "Successful update.")
           relations.expect_child(child)
 
           # Expect counter to add up child to the existing relations
@@ -253,6 +175,7 @@ RSpec.shared_examples "work package relations tab", :js, :selenium do
           # Remove child
           relations.remove_child(child)
           # Should also check for successful update but no message is shown, yet.
+          expect_and_dismiss_flash(message: "Successful update.")
           relations.expect_not_child(child)
 
           # Expect counter to count the two relations

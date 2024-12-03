@@ -57,12 +57,12 @@ module OpenProject::Bim
                    dependencies: %i[view_ifc_models],
                    contract_actions: { ifc_models: %i[create update destroy] }
         permission :view_linked_issues,
-                   { "bim/bcf/issues": %i[index] },
+                   {},
                    permissible_on: :project,
                    dependencies: %i[view_work_packages],
                    contract_actions: { bcf: %i[read] }
         permission :manage_bcf,
-                   { "bim/bcf/issues": %i[index upload prepare_import configure_import perform_import] },
+                   { "bim/bcf/issues": %i[upload prepare_import configure_import perform_import] },
                    permissible_on: :project,
                    dependencies: %i[view_linked_issues
                                     view_work_packages

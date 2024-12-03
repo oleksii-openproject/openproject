@@ -28,7 +28,7 @@ ja:
   activerecord:
     attributes:
       meeting:
-        type: "Meeting type"
+        type: ""
         location: "場所"
         duration: "期間"
         notes: "注記"
@@ -57,7 +57,7 @@ ja:
       meeting_agenda_item: "Agenda item"
       meeting_agenda: "アジェンダ"
       meeting_minutes: "議事録"
-      meeting_section: "Section"
+      meeting_section: "セクション"
   activity:
     filter:
       meeting: "会議"
@@ -87,7 +87,7 @@ ja:
   label_meeting: "会議"
   label_meeting_plural: "会議"
   label_meeting_new: "新しい会議"
-  label_meeting_new_one_time: "New one-time meeting"
+  label_meeting_new_dynamic: "New dynamic meeting"
   label_meeting_create: "Create meeting"
   label_meeting_copy: "Copy meeting"
   label_meeting_edit: "会議を編集"
@@ -132,7 +132,7 @@ ja:
       send_invitation_emails: >
         Send an email invitation immediately to the participants selected above. You can also do this manually at any time later.
       send_invitation_emails_structured: "Send an email invitation immediately to all participants. You can also do this manually at any time later."
-      open_meeting_link: "Open meeting"
+      open_meeting_link: "会議を開く"
       invited:
         summary: "%{actor} has sent you an invitation for the meeting %{title}"
       rescheduled:
@@ -145,10 +145,10 @@ ja:
     types:
       classic: "Classic"
       classic_text: "Organize your meeting in a formattable text agenda and protocol."
-      structured: "One-time"
+      structured: "Dynamic"
       structured_text: "Organize your meeting as a list of agenda items, optionally linking them to a work package."
-      structured_text_copy: "Copying a meeting will currently not copy the associated meeting agenda items, just the details"
-    copied: "ミーティング#%{id}からコピーしました"
+      structured_text_copy: "会議をコピーする場合、現在は関連する議題項目はコピーされず、詳細のみがコピーされます。"
+    copied: "ミーティング#%{id} からコピーしました"
   meeting_section:
     untitled_title: "Untitled section"
     delete_confirmation: "Deleting the section will also delete all of its agenda items. Are you sure you want to do this?"

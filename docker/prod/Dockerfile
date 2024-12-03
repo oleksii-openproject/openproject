@@ -96,7 +96,9 @@ FROM base AS all-in-one
 ENV OPENPROJECT_RAILS__CACHE__STORE=memcache
 ENV DATABASE_URL=postgres://openproject:openproject@127.0.0.1/openproject
 ENV PGDATA=/var/openproject/pgdata
-ENV GOSU_VERSION="1.17"
+
+COPY --from=openproject/gosu /go/bin/gosu /usr/local/bin/gosu
+RUN chmod +x /usr/local/bin/gosu && gosu nobody true
 
 RUN ./docker/prod/setup/postinstall-onprem.sh && \
   ln -s /app/docker/prod/setup/.irbrc /root/

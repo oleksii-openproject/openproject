@@ -59,9 +59,10 @@ zh-TW:
       metadata_url: 我有一個發現端點 URL
       client_id: 這是 OpenID Connect 提供者給予您的用戶端 ID
       client_secret: 這是 OpenID Connect 提供者給予您的用戶端密鑰
-      limit_self_registration: 如果啟用，使用者只能在 prvoder 端設定允許的情況下使用此提供者註冊。
-      display_name: 提供商的名稱。這將會顯示在登入按鈕及提供者清單中。
+      limit_self_registration: 如果啟用，只有在提供商端的設定允許的情況下，使用者才能使用此提供商註冊。
+      display_name: 提供商的名稱。這將會顯示在登入按鈕及提供商清單中。
       tenant: '如果適用，請用您自己的租戶取代預設租戶。請參閱<a href=" https://learn.microsoft.com/en-us/entra/identity-platform/v2-protocols-oidc#find-your-apps-openid-configuration-document-uri">此內容</a>。'
+      scope: 如果您想要要求自訂範圍，您可以在此新增一個或多個範圍值，並以空格分隔。如需詳細資訊，請參閱 [OpenID Connect 文件](docs_url)。
       post_logout_redirect_uri: OpenID Connect 提供者應在登出請求後重定向至的 URL。
       claims: >
         您可以針對 使用者資訊 和 id token(權杖) 端點要求額外的資料。請參閱 [我們的 OpenID connect 文件](docs_url) 以取得更多資訊。
@@ -82,6 +83,7 @@ zh-TW:
       metadata_url: 我有發現一個端點 URL
       endpoint_url: 端點 URL
     providers:
+      label_providers: "提供商"
       seeded_from_env: "此提供者是從環境組態根植的。無法編輯。"
       google:
         name: Google

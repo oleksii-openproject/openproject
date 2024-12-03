@@ -34,6 +34,17 @@ zh-CN:
           name: 灰色（深）
         item_13:
           name: 黑色
+      life_cycle_colors:
+        item_0:
+          name: PM2 橙色
+        item_1:
+          name: PM2 紫色
+        item_2:
+          name: PM2 红色
+        item_3:
+          name: PM2 品红
+        item_4:
+          name: PM2 绿黄
       document_categories:
         item_0:
           name: 文档
@@ -70,6 +81,21 @@ zh-CN:
         item_1:
           name: 默认全局角色
     standard:
+      life_cycles:
+        item_0:
+          name: 正在启动
+        item_1:
+          name: 准备计划
+        item_2:
+          name: 计划中
+        item_3:
+          name: 准备执行
+        item_4:
+          name: 执行中
+        item_5:
+          name: 准备关闭
+        item_6:
+          name: 关闭中
       priorities:
         item_0:
           name: 低

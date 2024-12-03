@@ -33,7 +33,7 @@ de:
         label_activity_show_only_changes: "Nur Änderungen anzeigen"
         label_sort_asc: "Neueste unten"
         label_sort_desc: "Neueste oben"
-        label_type_to_comment: "Tippen Sie hier, um zu kommentieren"
+        label_type_to_comment: "Einen Kommentar hinzufügen. @ tippen, um Personen zu benachrichtigen."
         label_submit_comment: "Kommentar absenden"
         changed_on: "geändert am"
         created_on: "erstellte dies am"
@@ -236,6 +236,8 @@ de:
           zero: keine Unterelemente
           one: 1 Unterelement
           other: "%{count} Unterelemente"
+    upsale:
+      custom_field_format_hierarchy: "Benötigen Sie eine Hierarchie in den benutzerdefinierten Feldern ihrer Arbeitspakete?"
     text_add_new_custom_field: >
       Um neue benutzerdefinierte Felder einem Projekt zuzuweisen, müssen Sie diese erst global erstellen, um Sie dann an dieser Stelle aktivieren zu können.
     is_enabled_globally: "Für alle Projekte aktiviert"
@@ -262,26 +264,26 @@ de:
     single: "oder"
   dry_validation:
     errors:
-      integer?: "muss eine ganze Zahl sein"
-      filled?: "muss ausgefüllt sein"
-      greater_or_equal_zero: "muss größer oder gleich 0 sein"
-      not_found: "nicht gefunden"
+      int?: "muss eine ganze Zahl sein."
+      filled?: "muss ausgefüllt werden."
+      greater_or_equal_zero: "muss größer oder gleich 0 sein."
+      not_found: "nicht gefunden."
       rules:
         item:
-          root_item: "cannot be a root item"
-          not_persisted: "must be an already existing item"
+          root_item: "kann keine Hierarchiewurzel sein."
+          not_persisted: "muss ein bereits vorhandenes Element sein."
         label:
-          not_unique: "muss innerhalb der gleichen Hierarchieebene eindeutig sein"
+          not_unique: "muss innerhalb der gleichen Hierarchieebene eindeutig sein."
         short:
-          not_unique: "must be unique within the same hierarchy level"
+          not_unique: "muss innerhalb der gleichen Hierarchieebene eindeutig sein."
         parent:
-          not_descendant: "must be a descendant of the hierarchy root"
+          not_descendant: "muss ein Abkömmling der Hierarchiewurzel sein."
     rules:
-      depth: "Depth"
-      item: "Item"
+      depth: "Tiefe"
+      item: "Element"
       label: "Bezeichnung"
-      short: "Short name"
-      parent: "Parent"
+      short: "Kurzname"
+      parent: "Übergeordnetes Arbeitspaket"
   global_search:
     placeholder: "Suche in %{app_title}"
     overwritten_tabs:
@@ -625,6 +627,66 @@ de:
           no_results_title_text: Derzeit stehen keine Typen zur Verfügung.
         version:
           no_results_title_text: Derzeit sind keine Versionen verfügbar.
+  work_package_relations_tab:
+    index:
+      action_bar_title: "Fügen Sie eine Beziehung mit einem anderen Arbeitspaket hinzu, um eine Verbindung zwischen ihnen herzustellen."
+      no_results_title_text: Derzeit sind keine Beziehungen verfügbar.
+      blankslate_heading: "Keine Beziehungen"
+      blankslate_description: "Dieses Arbeitspaket hat noch keine Beziehungen."
+    label_add_x: "%{x} hinzufügen"
+    label_edit_x: "%{x} editieren"
+    label_add_description: "Beschreibung hinzufügen"
+    relations:
+      label_relates_singular: "Beziehung mit"
+      label_relates_plural: "Beziehungen mit"
+      label_relates_to_singular: "Beziehung mit"
+      label_relates_to_plural: "Beziehung mit"
+      relates_description: "Erstellt eine sichtbare Beziehung zwischen den zwei Arbeitspaketen ohne weitere Auswirkungen"
+      relates_to_description: "Erstellt eine sichtbare Beziehung zwischen den zwei Arbeitspaketen ohne weitere Auswirkungen"
+      label_precedes_singular: "Nachfolger"
+      label_precedes_plural: "Nachfolger"
+      precedes_description: "Das verknüpfte Arbeitspaket kann erst nach dem Ende dieses Arbeitspakets starten"
+      label_follows_singular: "Vorgänger"
+      label_follows_plural: "Vorgänger"
+      follows_description: "Das verknüpfte Arbeitspaket muss beendet sein bevor dieses Arbeitspaket starten kann"
+      label_child_singular: "Untergeordnetes Arbeitspaket"
+      label_child_plural: "Untergeordnete Arbeitspakete"
+      child_description: "Ordnet das verknüpfte Arbeitspaket diesem Arbeitspaket unter"
+      label_blocks_singular: "Blockiert"
+      label_blocks_plural: "Blockiert"
+      blocks_description: "Das verknüpfte Arbeitspaket kann erst geschlossen werden, wenn dieses Arbeitspaket geschlossen ist"
+      label_blocked_singular: "Blockiert durch"
+      label_blocked_plural: "Blockiert durch"
+      label_blocked_by_singular: "Blockiert durch"
+      label_blocked__by_plural: "Blockiert durch"
+      blocked_description: "Dieses Arbeitspaket kann erst geschlossen werden, nachdem das verknüpfte Arbeitspaket geschlossen wurde"
+      blocked_by_description: "Dieses Arbeitspaket kann erst geschlossen werden, nachdem das verknüpfte Arbeitspaket geschlossen wurde"
+      label_duplicates_singular: "Dupliziert"
+      label_duplicates_plural: "Dupliziert"
+      duplicates_description: "Dies ist eine Kopie des verknüpften Arbeitspakets"
+      label_duplicated_singular: "Dupliziert durch"
+      label_duplicated_plural: "Dupliziert durch"
+      label_duplicated_by_singular: "Dupliziert durch"
+      label_duplicated_by_plural: "Dupliziert durch"
+      duplicated_by_description: "Das zugehörige Arbeitspaket ist eine Kopie dieses Arbeitspakets"
+      duplicated_description: "Das zugehörige Arbeitspaket ist eine Kopie dieses Arbeitspakets"
+      label_includes_singular: "Beinhaltet"
+      label_includes_plural: "Beinhaltet"
+      includes_description: "Das verknüpfte Arbeitspaket beinhaltet dieses Arbeitspaket, ohne dass dies zusätzliche Auswirkungen hat"
+      label_partof_singular: "Teil von"
+      label_partof_plural: "Teil von"
+      label_part_of_singular: "Teil von"
+      label_part_of_plural: "Teil von"
+      partof_description: "Dieses Arbeitspaket enthält das verknüpfte Arbeitspaket, ohne dass dies zusätzliche Auswirkungen hat"
+      part_of_description: "Dieses Arbeitspaket enthält das verknüpfte Arbeitspaket, ohne dass dies zusätzliche Auswirkungen hat"
+      label_requires_singular: "Benötigt"
+      label_requires_plural: "Benötigt"
+      requires_description: "Markiert dieses Arbeitspaket als Voraussetzung für das verknüpfte Arbeitspaket"
+      label_required_singular: "Benötigt von"
+      label_required_plural: "Benötigt von"
+      required_description: "Markiert dieses Arbeitspaket als Voraussetzung für das verknüpfte Arbeitspaket"
+      label_parent_singular: "Übergeordnetes Arbeitspaket"
+      label_parent_plural: "Übergeordnete Arbeitspakete"
   label_invitation: Einladung
   account:
     delete: "Konto löschen"
@@ -1021,6 +1083,20 @@ de:
           attributes:
             project_ids:
               blank: "Bitte wählen Sie ein Projekt aus."
+        project/life_cycle_step_definition:
+          attributes:
+            type:
+              must_be_a_stage_or_gate: "muss entweder ein Project::StageDefinition oder Project::GateDefinition sein"
+        project/life_cycle_step:
+          attributes:
+            type:
+              must_be_a_stage_or_gate: "muss entweder ein Project::Stage oder Project::Gate sein"
+              must_be_a_stage: "muss ein Project::Stage sein"
+              must_be_a_gate: "muss ein Project::Gate sein"
+        project/gate:
+          attributes:
+            base:
+              end_date_not_allowed: "Einem Project::Gate kann kein `end_date` zugewiesen werden"
         query:
           attributes:
             project:
@@ -1816,6 +1892,23 @@ de:
     units:
       hours: h
       days: d
+  pdf_generator:
+    page_nr_footer: "Seite %{page} von %{total}"
+    dialog:
+      title: PDF generieren
+      submit: Generieren
+      header_right:
+        label: Kopfzeile rechts
+        caption: Text, der rechts neben der Kopfzeile angezeigt werden soll
+      footer_center:
+        label: Fußzeile mittig
+        caption: Text, der in der Mitte der Fußzeile angezeigt werden soll
+      hyphenation:
+        label: Silbentrennung
+        caption: Wörter zwischen den Zeilen umbrechen, um die Textausrichtung und die Lesbarkeit zu verbessern.
+      paper_size:
+        label: Papierformat
+        caption: Die Größe des Papiers, das für das PDF verwendet werden soll.
   extraction:
     available:
       pdftotext: "Pdftotext verfügbar (optional)"
@@ -2174,6 +2267,7 @@ de:
   label_environment: "Umgebung"
   label_estimates_and_progress: "Schätzungen und Fortschritt"
   label_equals: "ist"
+  label_equals_with_descendants: "ist (ODER) inkl. Unterelementen "
   label_everywhere: "überall"
   label_example: "Beispiel"
   label_experimental: "Experimentel"
@@ -2438,6 +2532,8 @@ de:
   label_related_work_packages: "Zugehörige Arbeitspakete"
   label_relates: "Verwandt mit"
   label_relates_to: "Verwandt mit"
+  label_relation: "Beziehung"
+  label_relation_actions: "Beziehungsaktionen"
   label_relation_delete: "Beziehung löschen"
   label_relation_new: "Neue Beziehung"
   label_release_notes: "Release Notes"
@@ -2836,9 +2932,9 @@ de:
   notice_locking_conflict: "Die Informationen wurde zwischenzeitlich von einem anderen Benutzer geändert."
   notice_locking_conflict_additional_information: "Die Änderung(en) wurde(n) durchgeführt von %{users}."
   notice_locking_conflict_reload_page: "Bitte laden Sie die Seite neu, prüfen Sie die Anpassungen und geben Sie Ihre Änderungen noch einmal ein."
-  notice_locking_conflict_warning: "This page has been updated by someone else. To not lose your edits, copy them locally and reload to view the updated version."
-  notice_locking_conflict_danger: "Could not save your changes because of conflicting modifications. To not lose your edits, copy them locally and reload to view the updated version."
-  notice_locking_conflict_action_button: "Discard changes and reload"
+  notice_locking_conflict_warning: "Diese Seite wurde von jemand anderem aktualisiert. Um Ihre Änderungen nicht zu verlieren, kopieren Sie sie lokal und laden Sie sie erneut, um die aktualisierte Version anzuzeigen."
+  notice_locking_conflict_danger: "Ihre Änderungen konnten wegen in Konflikt stehender Änderungen nicht gespeichert werden. Um Ihre Änderungen nicht zu verlieren, kopieren Sie sie lokal und laden Sie sie erneut, um die aktualisierte Version anzuzeigen."
+  notice_locking_conflict_action_button: "Änderungen verwerfen und neu laden"
   notice_member_added: '%{name} zum Projekt hinzugefügt.'
   notice_members_added: '%{number} Benutzer zum Projekt hinzugefügt.'
   notice_member_removed: "%{user} aus dem Projekt entfernt."

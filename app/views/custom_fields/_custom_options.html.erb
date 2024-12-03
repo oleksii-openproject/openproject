@@ -86,13 +86,17 @@ See COPYRIGHT and LICENSE files for more details.
           >
             <td>
               <span class="dragula-handle icon icon-table icon-drag-handle"></span>
-              <%= co_f.hidden_field :id, class: 'custom-option-id' %>
+              <%= co_f.hidden_field :id,
+                                    disabled:true,
+                                    class: 'custom-option-id' %>
               <%= co_f.text_field :value,
+                                  disabled: true,
                                   container_class: 'custom-option-value',
                                   no_label: true %>
             </td>
             <td>
               <%= co_f.check_box :default_value,
+                                 disabled: true,
                                  container_class: 'custom-option-default-value',
                                  data: {
                                    'admin--custom-fields-target': 'customOptionDefaults',

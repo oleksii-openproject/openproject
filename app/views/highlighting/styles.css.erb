@@ -1,7 +1,10 @@
 <%# Highlightable resources %>
 <%= resource_color_css('status', ::Status) %>
 <%= resource_color_css('priority', ::IssuePriority) %>
-<%= resource_color_css('type', ::Type) %>
+<%= resource_color_css('type', ::Type, inline_foreground: true) %>
+<%# Color coded icons %>
+<%= resource_color_css('life_cycle_step_definition', Project::LifeCycleStepDefinition, inline_foreground: true) %>
+
 <%= color_css() %>
 
 <%# Overdue tasks %>

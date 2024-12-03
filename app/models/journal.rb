@@ -177,6 +177,16 @@ class Journal < ApplicationRecord
     cause_type.present?
   end
 
+  def has_unread_notifications_for_user?(user)
+    # we optionally set the instance variable @unread_notifications in the ActivityEagerLoadingWrapper
+    # in order to avoid N+1 queries
+    if instance_variable_defined?(:@unread_notifications)
+      @unread_notifications&.any? { |notification| notification.recipient_id == user.id }
+    else
+      notifications.where(read_ian: false, recipient_id: user.id).any?
+    end
+  end
+
   private
 
   def has_file_links?

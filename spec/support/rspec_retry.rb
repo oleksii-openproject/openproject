@@ -21,7 +21,7 @@ RSpec.configure do |config|
   # Retry JS feature specs, but not during single runs
   if ENV["CI"]
     config.around :each, :js do |ex|
-      ex.run_with_retry retry: 2
+      ex.run_with_retry retry: ENV["RSPEC_RETRY_RETRY_COUNT"].to_i
     end
   end
 end

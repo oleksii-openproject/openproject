@@ -87,7 +87,7 @@ vi:
   label_meeting: "Cuộc họp"
   label_meeting_plural: "Những cuộc họp"
   label_meeting_new: "Cuộc họp mới"
-  label_meeting_new_one_time: "New one-time meeting"
+  label_meeting_new_dynamic: "New dynamic meeting"
   label_meeting_create: "Create meeting"
   label_meeting_copy: "Copy meeting"
   label_meeting_edit: "Chỉnh sửa cuộc họp"
@@ -145,7 +145,7 @@ vi:
     types:
       classic: "Cổ điển"
       classic_text: "Tổ chức cuộc họp của bạn bằng một chương trình nghị sự và biên bản định dạng văn bản."
-      structured: "One-time"
+      structured: "Dạng động"
       structured_text: "Tổ chức cuộc họp của bạn dưới dạng danh sách các mục chương trình nghị sự, có thể liên kết chúng với một gói công việc."
       structured_text_copy: "Sao chép một cuộc họp hiện tại sẽ không sao chép các mục chương trình nghị sự liên quan, chỉ sao chép các chi tiết"
     copied: "Sao chép từ Cuộc họp #%{id}"

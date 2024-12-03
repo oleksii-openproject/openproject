@@ -90,7 +90,7 @@ sl:
   label_meeting: "Sestanek"
   label_meeting_plural: "Sestanki"
   label_meeting_new: "Nov sestanek"
-  label_meeting_new_one_time: "New one-time meeting"
+  label_meeting_new_dynamic: "New dynamic meeting"
   label_meeting_create: "Create meeting"
   label_meeting_copy: "Copy meeting"
   label_meeting_edit: "Uredi sestanek"
@@ -148,7 +148,7 @@ sl:
     types:
       classic: "Classic"
       classic_text: "Organize your meeting in a formattable text agenda and protocol."
-      structured: "One-time"
+      structured: "Dynamic"
       structured_text: "Organize your meeting as a list of agenda items, optionally linking them to a work package."
       structured_text_copy: "Copying a meeting will currently not copy the associated meeting agenda items, just the details"
     copied: "Kopirano iz sestanka #%{id}"

@@ -229,7 +229,7 @@ class BudgetsController < ApplicationController
   def render_item_as_json(element_id, costs, unit, project, permission)
     response = {
       "#{element_id}_unit_name" => ActionController::Base.helpers.sanitize(unit),
-      "#{element_id}_currency" => Setting.plugin_costs["costs_currency"]
+      "#{element_id}_currency" => Setting.costs_currency
     }
 
     if current_user.allowed_in_project?(permission, project)

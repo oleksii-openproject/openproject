@@ -32,7 +32,13 @@ module Meetings
   class TableComponent < ::OpPrimer::BorderBoxTableComponent
     options :current_project # used to determine if displaying the projects column
 
-    columns :title, :project_name, :start_time, :duration, :location
+    columns :title, :start_time, :project_name, :duration, :location
+
+    mobile_columns :title, :start_time, :project_name
+
+    mobile_labels :project_name
+
+    main_column :title
 
     def sortable?
       true
@@ -46,19 +52,15 @@ module Meetings
       true
     end
 
-    def header_args(column)
-      if column == :title
-        { style: "grid-column: span 2" }
-      else
-        super
-      end
+    def mobile_title
+      I18n.t(:label_meeting_plural)
     end
 
     def headers
       @headers ||= [
         [:title, { caption: Meeting.human_attribute_name(:title) }],
-        current_project.blank? ? [:project_name, { caption: Meeting.human_attribute_name(:project) }] : nil,
         [:start_time, { caption: I18n.t(:label_meeting_date_and_time) }],
+        current_project.blank? ? [:project_name, { caption: Meeting.human_attribute_name(:project) }] : nil,
         [:duration, { caption: Meeting.human_attribute_name(:duration) }],
         [:location, { caption: Meeting.human_attribute_name(:location) }]
       ].compact

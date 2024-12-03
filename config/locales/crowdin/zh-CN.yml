@@ -33,7 +33,7 @@ zh-CN:
         label_activity_show_only_changes: "仅显示更改"
         label_sort_asc: "时间升序"
         label_sort_desc: "时间降序"
-        label_type_to_comment: "在此输入评论"
+        label_type_to_comment: "添加评论。输入 @ 以通知他人。"
         label_submit_comment: "提交评论"
         changed_on: "更改于"
         created_on: "创建于"
@@ -236,6 +236,8 @@ zh-CN:
           zero: 无子项目
           one: 1个子项目
           other: "%{count} 个子项目"
+    upsale:
+      custom_field_format_hierarchy: "工作包的自定义字段需要层级结构？"
     text_add_new_custom_field: >
       要向项目添加新的自定义字段，您需要先创建字段，然后才能将其添加到此项目中。
     is_enabled_globally: "已全局启用"
@@ -262,7 +264,7 @@ zh-CN:
     single: "或"
   dry_validation:
     errors:
-      integer?: "必须是整数"
+      int?: "必须为整数"
       filled?: "必须填写"
       greater_or_equal_zero: "必须大于或等于 0"
       not_found: "未找到"
@@ -619,6 +621,66 @@ zh-CN:
           no_results_title_text: 目前有可用的类型。
         version:
           no_results_title_text: 目前有可用的版本。
+  work_package_relations_tab:
+    index:
+      action_bar_title: "将关系添加到其他工作包以创建它们之间的链接。"
+      no_results_title_text: 目前没有任何关系。
+      blankslate_heading: "没有关系"
+      blankslate_description: "此工作包还没有任何关系。"
+    label_add_x: "添加 %{x}"
+    label_edit_x: "编辑 %{x}"
+    label_add_description: "添加说明"
+    relations:
+      label_relates_singular: "关联到"
+      label_relates_plural: "关联到"
+      label_relates_to_singular: "关联到"
+      label_relates_to_plural: "关联到"
+      relates_description: "在两个工作包之间建立一个可见的链接，不产生额外效果"
+      relates_to_description: "在两个工作包之间建立一个可见的链接，不产生额外效果"
+      label_precedes_singular: "继承者(以后)"
+      label_precedes_plural: "继承者(以后)"
+      precedes_description: "相关的工作包必然需要在这个完成后启动"
+      label_follows_singular: "前任(之前)"
+      label_follows_plural: "前任(之前)"
+      follows_description: "相关工作包必须在本工作包启动前完成"
+      label_child_singular: "子节点"
+      label_child_plural: "子节点"
+      child_description: "使相关工作包成为当前(父) 工作包的子项目"
+      label_blocks_singular: "阻止"
+      label_blocks_plural: "阻止"
+      blocks_description: "在本工作包结束之前，相关工作包不能关闭"
+      label_blocked_singular: "被阻止"
+      label_blocked_plural: "被阻止"
+      label_blocked_by_singular: "被阻止"
+      label_blocked__by_plural: "被阻止"
+      blocked_description: "在本工作包结束之前，相关工作包不能关闭"
+      blocked_by_description: "在本工作包结束之前，相关工作包不能关闭"
+      label_duplicates_singular: "复制"
+      label_duplicates_plural: "复制"
+      duplicates_description: "这是相关工作包的副本"
+      label_duplicated_singular: "复制于"
+      label_duplicated_plural: "复制于"
+      label_duplicated_by_singular: "复制于"
+      label_duplicated_by_plural: "复制于"
+      duplicated_by_description: "相关的工作包是这个副本的"
+      duplicated_description: "相关的工作包是这个副本的"
+      label_includes_singular: "包括"
+      label_includes_plural: "包括"
+      includes_description: "将相关工作包标记为包括本工作包，不产生额外效果"
+      label_partof_singular: "隶属于"
+      label_partof_plural: "隶属于"
+      label_part_of_singular: "隶属于"
+      label_part_of_plural: "隶属于"
+      partof_description: "将相关工作包标记为包括本工作包，不产生额外效果"
+      part_of_description: "将相关工作包标记为包括本工作包，不产生额外效果"
+      label_requires_singular: "需求"
+      label_requires_plural: "需求"
+      requires_description: "将相关工作包标记为该工作包的需求"
+      label_required_singular: "需求于"
+      label_required_plural: "需求于"
+      required_description: "将此工作包标记为相关工作包的需求"
+      label_parent_singular: "父级"
+      label_parent_plural: "父级"
   label_invitation: 邀请
   account:
     delete: "删除帐户"
@@ -1015,6 +1077,20 @@ zh-CN:
           attributes:
             project_ids:
               blank: "请选择一个项目。"
+        project/life_cycle_step_definition:
+          attributes:
+            type:
+              must_be_a_stage_or_gate: "必须是 Project::StageDefinition 或 Project::GateDefinition"
+        project/life_cycle_step:
+          attributes:
+            type:
+              must_be_a_stage_or_gate: "必须是 Project::Stage 或 Project::Gate"
+              must_be_a_stage: "必须是 Project::Stage"
+              must_be_a_gate: "必须是 Project::Gate"
+        project/gate:
+          attributes:
+            base:
+              end_date_not_allowed: "无法将 `end_date` 分配给一个项目::Gate"
         query:
           attributes:
             project:
@@ -1782,6 +1858,23 @@ zh-CN:
     units:
       hours: 时
       days: 天
+  pdf_generator:
+    page_nr_footer: "第 %{page} 页，共%{total} 页"
+    dialog:
+      title: 生成 PDF
+      submit: 生成
+      header_right:
+        label: 页眉右侧
+        caption: 标题右侧显示的文本
+      footer_center:
+        label: 页脚中心
+        caption: 在页脚中心显示的文本
+      hyphenation:
+        label: 断字
+        caption: 在行之间打断单词，以改进文本解释和可读性。
+      paper_size:
+        label: 纸张大小
+        caption: 用于PDF的纸张大小。
   extraction:
     available:
       pdftotext: "Pdftotext 可用 (可选)"
@@ -2140,6 +2233,7 @@ zh-CN:
   label_environment: "环境"
   label_estimates_and_progress: "预估和进度"
   label_equals: "是"
+  label_equals_with_descendants: "是任何与子节点相关的"
   label_everywhere: "任何位置"
   label_example: "示例"
   label_experimental: "实验"
@@ -2404,6 +2498,8 @@ zh-CN:
   label_related_work_packages: "相关的工作包"
   label_relates: "关于"
   label_relates_to: "关于"
+  label_relation: "关系"
+  label_relation_actions: "关联操作"
   label_relation_delete: "删除关系"
   label_relation_new: "新的关系"
   label_release_notes: "更新日志"

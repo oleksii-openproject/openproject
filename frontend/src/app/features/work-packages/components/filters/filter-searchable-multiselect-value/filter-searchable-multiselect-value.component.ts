@@ -109,17 +109,27 @@ export class FilterSearchableMultiselectValueComponent extends UntilDestroyedMix
         switchMap((initialLoad) => {
           // If we already loaded all values, just compare in the frontend
           if (initialLoad.count === initialLoad.total) {
-            return this.matchingItems(initialLoad.elements, matching);
+            return this.matchingItems(this.filterEmptyElements(initialLoad.elements), matching);
           }
 
           // Otherwise, request the matching API call
           return this
             .loadCollection(matching)
             .pipe(
-              switchMap((collection) => this.withMeValue(matching, collection.elements)),
+              switchMap(
+                (collection) =>
+                  this.withMeValue(
+                    matching,
+                    this.filterEmptyElements(collection.elements),
+                  ),
+              ),
             );
         }),
       );
+  }
+
+  private filterEmptyElements(elements:HalResource[]):HalResource[] {
+    return elements.filter((element) => element.name.trim().length !== 0);
   }
 
   matchingItems(elements:HalResource[], matching:string):Observable<HalResource[]> {

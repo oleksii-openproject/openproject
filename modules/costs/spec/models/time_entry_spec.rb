@@ -52,13 +52,16 @@ RSpec.describe TimeEntry do
   let!(:default_hourly_three) { create(:default_hourly_rate, valid_from: 4.days.ago, project:, user: user2) }
   let!(:default_hourly_five) { create(:default_hourly_rate, valid_from: 6.days.ago, project:, user: user2) }
   let(:hours) { 5.0 }
+  let(:start_time) { 10 * 60 } # 10:00
   let(:time_entry) do
     create(:time_entry,
            project:,
            work_package:,
            spent_on: date,
            hours:,
+           start_time: start_time,
            user:,
+           time_zone: user.time_zone,
            rate: hourly_one,
            comments: "lorem")
   end
@@ -74,7 +77,7 @@ RSpec.describe TimeEntry do
            comments: "lorem")
   end
 
-  def is_member(project, user, permissions)
+  def ensure_membership(project, user, permissions)
     create(:member,
            project:,
            user:,
@@ -296,7 +299,7 @@ RSpec.describe TimeEntry do
       describe "WHEN the time_entry is assigned to the user " \
                "WHEN the user has the view_own_hourly_rate permission" do
         before do
-          is_member(project, user, [:view_own_hourly_rate])
+          ensure_membership(project, user, [:view_own_hourly_rate])
 
           time_entry.user = user
         end
@@ -307,7 +310,7 @@ RSpec.describe TimeEntry do
       describe "WHEN the time_entry is assigned to the user " \
                "WHEN the user lacks permissions" do
         before do
-          is_member(project, user, [])
+          ensure_membership(project, user, [])
 
           time_entry.user = user
         end
@@ -318,7 +321,7 @@ RSpec.describe TimeEntry do
       describe "WHEN the time_entry is assigned to another user " \
                "WHEN the user has the view_hourly_rates permission" do
         before do
-          is_member(project, user2, [:view_hourly_rates])
+          ensure_membership(project, user2, [:view_hourly_rates])
 
           time_entry.user = user
         end
@@ -329,7 +332,7 @@ RSpec.describe TimeEntry do
       describe "WHEN the time_entry is assigned to another user " \
                "WHEN the user has the view_hourly_rates permission in another project" do
         before do
-          is_member(project2, user2, [:view_hourly_rates])
+          ensure_membership(project2, user2, [:view_hourly_rates])
 
           time_entry.user = user
         end
@@ -342,7 +345,7 @@ RSpec.describe TimeEntry do
   describe "visible_by?" do
     context "when not having the necessary permissions" do
       before do
-        is_member(project, user, [])
+        ensure_membership(project, user, [])
       end
 
       it "is visible" do
@@ -352,7 +355,7 @@ RSpec.describe TimeEntry do
 
     context "when having the view_time_entries permission" do
       before do
-        is_member(project, user, [:view_time_entries])
+        ensure_membership(project, user, [:view_time_entries])
       end
 
       it "is visible" do
@@ -363,7 +366,7 @@ RSpec.describe TimeEntry do
     context "when having the view_own_time_entries permission " \
             "and being the owner of the time entry" do
       before do
-        is_member(project, user, [:view_own_time_entries])
+        ensure_membership(project, user, [:view_own_time_entries])
 
         time_entry.user = user
       end
@@ -376,13 +379,164 @@ RSpec.describe TimeEntry do
     context "when having the view_own_time_entries permission " \
             "and not being the owner of the time entry" do
       before do
-        is_member(project, user, [:view_own_time_entries])
+        ensure_membership(project, user, [:view_own_time_entries])
 
         time_entry.user = build :user
       end
 
       it "is visible" do
         expect(time_entry.visible_by?(user)).to be_falsey
+      end
+    end
+  end
+
+  describe ".can_track_start_and_end_time?" do
+    context "with the feature flag enabled", with_flag: { track_start_and_end_times_for_time_entries: true } do
+      context "with the setting enabled", with_settings: { allow_tracking_start_and_end_times: true } do
+        it { expect(described_class).to be_can_track_start_and_end_time }
+      end
+
+      context "with the setting disabled", with_settings: { allow_tracking_start_and_end_times: false } do
+        it { expect(described_class).not_to be_can_track_start_and_end_time }
+      end
+    end
+
+    context "with the feature flag disabled", with_flag: { track_start_and_end_times_for_time_entries: false } do
+      context "with the setting enabled", with_settings: { allow_tracking_start_and_end_times: true } do
+        it { expect(described_class).not_to be_can_track_start_and_end_time }
+      end
+
+      context "with the setting disabled", with_settings: { allow_tracking_start_and_end_times: false } do
+        it { expect(described_class).not_to be_can_track_start_and_end_time }
+      end
+    end
+  end
+
+  describe "validations" do
+    describe "start_time" do
+      it "allows blank values" do
+        time_entry.start_time = nil
+        expect(time_entry).to be_valid
+      end
+
+      it "allows integer values between 0 and 1440" do
+        time_entry.start_time = (5 * 60) + 30
+        expect(time_entry).to be_valid
+      end
+
+      it "does not allow non integer values" do
+        time_entry.start_time = 1.5
+        expect(time_entry).not_to be_valid
+      end
+
+      it "does not allow negative values" do
+        time_entry.start_time = -42
+        expect(time_entry).not_to be_valid
+      end
+    end
+
+    describe "start_time and end_time" do
+      context "when enforcing times" do
+        before do
+          allow(described_class).to receive(:must_track_start_and_end_time?).and_return(true)
+        end
+
+        it "validates that both values are present" do
+          time_entry.start_time = nil
+
+          expect(time_entry).not_to be_valid
+
+          time_entry.start_time = 10 * 60
+
+          expect(time_entry).to be_valid
+        end
+      end
+    end
+  end
+
+  describe "#start_timestamp" do
+    it "returns nil if start_time is nil" do
+      time_entry.start_time = nil
+      expect(time_entry.start_timestamp).to be_nil
+    end
+
+    it "returns nil if timezone is nil" do
+      time_entry.time_zone = nil
+      expect(time_entry.start_timestamp).to be_nil
+    end
+
+    it "generates a proper timestamp from the stored information" do
+      time_entry.start_time = 14 * 60
+      time_entry.spent_on = Date.new(2024, 12, 24)
+      time_entry.time_zone = "America/Los_Angeles"
+
+      expect(time_entry.start_timestamp.iso8601).to eq("2024-12-24T14:00:00-08:00")
+    end
+  end
+
+  describe "#end_timestamp" do
+    it "returns nil if start_time is nil" do
+      time_entry.start_time = nil
+      expect(time_entry.end_timestamp).to be_nil
+    end
+
+    it "returns nil if timezone is nil" do
+      time_entry.time_zone = nil
+      expect(time_entry.end_timestamp).to be_nil
+    end
+
+    it "generates a proper timestamp from the stored information" do
+      time_entry.start_time = 8 * 60
+      time_entry.hours = 2.5
+      time_entry.spent_on = Date.new(2024, 12, 24)
+      time_entry.time_zone = "America/Los_Angeles"
+
+      expect(time_entry.end_timestamp.iso8601).to eq("2024-12-24T10:30:00-08:00")
+    end
+  end
+
+  describe ".must_track_start_and_end_time?" do
+    context "with the feature flag enabled", with_flag: { track_start_and_end_times_for_time_entries: true } do
+      context "with the allow setting enabled", with_settings: { allow_tracking_start_and_end_times: true } do
+        context "with the enforce setting enabled", with_settings: { enforce_tracking_start_and_end_times: true } do
+          it { expect(described_class).to be_must_track_start_and_end_time }
+        end
+
+        context "with the enforce setting disabled", with_settings: { enforce_tracking_start_and_end_times: false } do
+          it { expect(described_class).not_to be_must_track_start_and_end_time }
+        end
+      end
+
+      context "with the allow setting disabled", with_settings: { allow_tracking_start_and_end_times: false } do
+        context "with the enforce setting enabled", with_settings: { enforce_tracking_start_and_end_times: true } do
+          it { expect(described_class).not_to be_must_track_start_and_end_time }
+        end
+
+        context "with the enforce setting disabled", with_settings: { enforce_tracking_start_and_end_times: false } do
+          it { expect(described_class).not_to be_must_track_start_and_end_time }
+        end
+      end
+    end
+
+    context "with the feature flag disabled", with_flag: { track_start_and_end_times_for_time_entries: false } do
+      context "with the allow setting enabled", with_settings: { allow_tracking_start_and_end_times: true } do
+        context "with the enforce setting enabled", with_settings: { enforce_tracking_start_and_end_times: true } do
+          it { expect(described_class).not_to be_must_track_start_and_end_time }
+        end
+
+        context "with the enforce setting disabled", with_settings: { enforce_tracking_start_and_end_times: false } do
+          it { expect(described_class).not_to be_must_track_start_and_end_time }
+        end
+      end
+
+      context "with the allow setting disabled", with_settings: { allow_tracking_start_and_end_times: false } do
+        context "with the enforce setting enabled", with_settings: { enforce_tracking_start_and_end_times: true } do
+          it { expect(described_class).not_to be_must_track_start_and_end_time }
+        end
+
+        context "with the enforce setting disabled", with_settings: { enforce_tracking_start_and_end_times: false } do
+          it { expect(described_class).not_to be_must_track_start_and_end_time }
+        end
       end
     end
   end

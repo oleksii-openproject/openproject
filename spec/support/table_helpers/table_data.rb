@@ -101,8 +101,12 @@ module TableHelpers
       end
 
       def create
-        table_data.work_package_identifiers.map do |identifier|
+        table_data.work_package_identifiers.each do |identifier|
           create_work_package(identifier)
+        end
+        # create relations only after having created all work packages
+        table_data.work_package_identifiers.each do |identifier| # rubocop:disable Style/CombinableLoops
+          create_follows_relations(identifier)
         end
         work_packages_by_identifier
       end
@@ -115,6 +119,20 @@ module TableHelpers
             attributes[:status] = status
           end
           FactoryBot.create(:work_package, attributes)
+        end
+      end
+
+      def create_follows_relations(identifier)
+        relations = work_package_relations(identifier)
+        relations.each do |relation|
+          predecessor = work_packages_by_identifier[relation[:predecessor].to_sym]
+          follower = work_packages_by_identifier[identifier]
+          FactoryBot.create(
+            :follows_relation,
+            from: follower,
+            to: predecessor,
+            lag: relation[:lag]
+          )
         end
       end
 
@@ -137,9 +155,16 @@ module TableHelpers
         @statuses_by_name ||= Status.all.index_by(&:name)
       end
 
+      def work_package_data(identifier)
+        table_data.work_packages_data.find { |wpa| wpa[:identifier] == identifier.to_sym }
+      end
+
       def work_package_attributes(identifier)
-        data = table_data.work_packages_data.find { |wpa| wpa[:identifier] == identifier.to_sym }
-        data[:attributes]
+        work_package_data(identifier)[:attributes]
+      end
+
+      def work_package_relations(identifier)
+        work_package_data(identifier)[:relations] || []
       end
     end
   end

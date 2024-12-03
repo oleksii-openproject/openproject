@@ -88,7 +88,7 @@ bg:
   label_meeting: "среща"
   label_meeting_plural: "Срещи"
   label_meeting_new: "Нова среща"
-  label_meeting_new_one_time: "New one-time meeting"
+  label_meeting_new_dynamic: "New dynamic meeting"
   label_meeting_create: "Create meeting"
   label_meeting_copy: "Copy meeting"
   label_meeting_edit: "Редактиране на срещата"
@@ -146,7 +146,7 @@ bg:
     types:
       classic: "Класически"
       classic_text: "Организирайте срещата си в текстова програма и протокол, които могат да се форматират."
-      structured: "One-time"
+      structured: "Динамичен"
       structured_text: "Организирайте срещата си като списък с точки от дневния ред, като по желание ги свържете с работен пакет."
       structured_text_copy: "Копирането на среща понастоящем не копира свързаните с нея точки от дневния ред, а само подробностите."
     copied: "Копирано от среща #%{id}"

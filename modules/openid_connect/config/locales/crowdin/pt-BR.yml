@@ -47,7 +47,7 @@ pt-BR:
       delete_result_user_count:
         zero: Nenhum usuário está utilizando este provedor no momento. Não é necessária nenhuma ação adicional.
         one: "Há um usuário utilizando este provedor. Ele precisará ser re-convidado ou fazer login com outro provedor."
-        other: "Atualmente, %{count} usuários ainda estão usando este provedor. Eles precisarão ser re-convidados ou fazer login com outro provedor."
+        other: "Há %{count} usuários utilizando este provedor. Eles precisarão ser re-convidados ou fazer login com outro provedor."
       delete_result_direct: Este provedor está configurado como provedor de login direto. A configuração será removida e os usuários não serão mais redirecionados para ele para realizar o login.
   openid_connect:
     menu_title: Provedores OpenID
@@ -62,6 +62,7 @@ pt-BR:
       limit_self_registration: Se ativado, os usuários só poderão se registrar usando este provedor se a configuração no lado do provedor permitir.
       display_name: Nome do provedor. Ele será exibido como o botão de login e na lista de provedores.
       tenant: 'Substitua o locatário padrão pelo seu, se necessário. Consulte <a href=" https://learn.microsoft.com/en-us/entra/identity-platform/v2-protocols-oidc#find-your-apps-openid-configuration-document-uri">aqui</a>.'
+      scope: If you want to request custom scopes, you can add one or multiple scope values separated by spaces here. For more information, see the [OpenID Connect documentation](docs_url).
       post_logout_redirect_uri: O URL para a qual o provedor OpenID Connect deve redirecionar após a solicitação de logout.
       claims: >
         Você pode solicitar reivindicações adicionais para os endpoints userinfo e id token. Consulte [nossa documentação sobre OpenID Connect](docs_url) para obter mais informações.
@@ -82,6 +83,7 @@ pt-BR:
       metadata_url: Tenho um URL de endpoint de descoberta
       endpoint_url: URL de Endpoint
     providers:
+      label_providers: "Providers"
       seeded_from_env: "Este provedor foi configurado a partir das configurações do ambiente e não pode ser editado."
       google:
         name: Google

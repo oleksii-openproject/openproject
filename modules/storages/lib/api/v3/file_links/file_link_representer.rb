@@ -91,7 +91,7 @@ module API::V3::FileLinks
     link :status, uncacheable: true do
       next if represented.origin_status.nil?
 
-      PERMISSION_LINKS[represented.origin_status]
+      PERMISSION_LINKS[represented.origin_status.to_sym]
     end
 
     link :staticOriginOpen do

@@ -137,10 +137,14 @@ module Storages
           # rubocop:enable Metrics/AbcSize
 
           def get_folder_id(auth_strategy, destination_path)
+            # file_path_to_id_map query returns keys without trailing slashes
+            # TODO: Harden this with https://community.openproject.org/wp/57850
+            sanitized_path = destination_path.chomp("/")
+
             Registry
               .resolve("nextcloud.queries.file_path_to_id_map")
-              .call(storage: @storage, auth_strategy:, folder: ParentFolder.new(destination_path), depth: 0)
-              .map { |result| @data.with(id: result[destination_path].id) }
+              .call(storage: @storage, auth_strategy:, folder: ParentFolder.new(sanitized_path), depth: 0)
+              .map { |result| @data.with(id: result[sanitized_path].id) }
           end
 
           def source = self.class

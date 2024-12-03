@@ -1,34 +1,61 @@
 <%=
-  component_wrapper(class: "work-packages-activities-tab-journals-index-component") do
-    flex_layout(data: { test_selector: "op-wp-journals-#{filter}-#{journal_sorting}" }) do |journals_index_wrapper_container|
-      journals_index_wrapper_container.with_row(
-        classes: "work-packages-activities-tab-journals-index-component--journals-inner-container",
-        mb: inner_container_margin_bottom
-      ) do
-        flex_layout(id: insert_target_modifier_id,
-                    data: { test_selector: "op-wp-journals-container" }) do |journals_index_container|
-          if empty_state?
-            journals_index_container.with_row(mt: 2, mb: 3) do
-              render(
-                WorkPackages::ActivitiesTab::Journals::EmptyComponent.new
-              )
+  unless deferred
+    component_wrapper(class: "work-packages-activities-tab-journals-index-component") do
+      flex_layout(data: { test_selector: "op-wp-journals-#{filter}-#{journal_sorting}" }) do |journals_index_wrapper_container|
+        journals_index_wrapper_container.with_row(
+          classes: "work-packages-activities-tab-journals-index-component--journals-inner-container",
+          mb: inner_container_margin_bottom
+        ) do
+          flex_layout(id: insert_target_modifier_id,
+                      data: { test_selector: "op-wp-journals-container" }) do |journals_index_container|
+            if empty_state?
+              journals_index_container.with_row(mt: 2, mb: 3) do
+                render(
+                  WorkPackages::ActivitiesTab::Journals::EmptyComponent.new
+                )
+              end
             end
-          end
 
-          journals.each do |journal|
-            journals_index_container.with_row do
-              render(WorkPackages::ActivitiesTab::Journals::ItemComponent.new(
-                      journal:, filter:,
-                      grouped_emoji_reactions: wp_journals_grouped_emoji_reactions[journal.id]
-                    ))
+            if !journal_sorting_desc? && journals.count > MAX_RECENT_JOURNALS
+              journals_index_container.with_row do
+                helpers.turbo_frame_tag("work-package-activities-tab-content-older-journals", src: work_package_activities_path(work_package, filter:, deferred: true))
+              end
+            end
+
+            recent_journals.each do |journal|
+              journals_index_container.with_row do
+                render(WorkPackages::ActivitiesTab::Journals::ItemComponent.new(
+                        journal:, filter:,
+                        grouped_emoji_reactions: wp_journals_grouped_emoji_reactions[journal.id]
+                      ))
+              end
+            end
+
+            if journal_sorting_desc? && journals.count > MAX_RECENT_JOURNALS
+              journals_index_container.with_row do
+                helpers.turbo_frame_tag("work-package-activities-tab-content-older-journals", src: work_package_activities_path(work_package, filter:, deferred: true))
+              end
             end
           end
         end
-      end
 
-      unless empty_state? || journal_sorting_desc?
-        journals_index_wrapper_container
-          .with_row(classes: "work-packages-activities-tab-journals-index-component--stem-connection")
+        unless empty_state? || journal_sorting_desc?
+          journals_index_wrapper_container
+            .with_row(classes: "work-packages-activities-tab-journals-index-component--stem-connection")
+        end
+      end
+    end
+  else
+    helpers.turbo_frame_tag("work-package-activities-tab-content-older-journals") do
+      flex_layout do |older_journals_container|
+        older_journals.each do |journal|
+          older_journals_container.with_row do
+          render(WorkPackages::ActivitiesTab::Journals::ItemComponent.new(
+                  journal:, filter:,
+                  grouped_emoji_reactions: wp_journals_grouped_emoji_reactions[journal.id]
+                ))
+          end
+        end
       end
     end
   end

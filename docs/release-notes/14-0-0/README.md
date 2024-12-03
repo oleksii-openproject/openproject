@@ -297,4 +297,4 @@ Silas Kropf, Philipp Schulz, Benjamin Rönnau, Mario Haustein, Matt User, Mario 
 Last but not least, we are very grateful for our very engaged translation contributors on Crowdin, who translated quite a few OpenProject strings! This release we would like to highlight user [izzahk](https://crowdin.com/profile/izzahk)
 who has done an outstanding number of translations for the Malaysian language in recent weeks.
 
-Would you like to help out with translations yourself? Then take a look at our [translation guide](../../development/translate-openproject/) and find out exactly how you can contribute. It is very much appreciated!
+Would you like to help out with translations yourself? Then take a look at our [translation guide](../../contributions-guide/translate-openproject/) and find out exactly how you can contribute. It is very much appreciated!
