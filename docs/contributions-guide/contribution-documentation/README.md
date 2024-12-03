@@ -37,11 +37,11 @@ The OpenProject documentation provides comprehensive resources, including user g
 
 The documentation supports current and future users by offering step-by-step instructions for setup, configuration, and integration of OpenProject. It also provides detailed use cases, feature guides, and instructions for using OpenProject alongside other applications.
 
-To ensure clarity, accuracy, and completeness, the documentation is continuously updated to reflect new features, improvements, and community feedback.
+To ensure clarity, accuracy, and completeness, the documentation is continuously updated to reflect new features, improvements, and Community feedback.
 
 ### Contributing to OpenProject Documentation
 
-As an open-source platform, OpenProject thrives on community collaboration. Contributions to our documentation are open to everyone, whether you're a developer, a long-time user, or someone new to the platform.
+As an open-source platform, OpenProject thrives on Community collaboration. Contributions to our documentation are open to everyone, whether you're a developer, a long-time user, or someone new to the platform.
 
 By contributing to the documentation, you help ensure it remains accurate, clear, and up-to-date, benefiting the entire OpenProject Community. We welcome contributions of all kinds, including improving existing content, fixing errors, and adding new sections.
 
