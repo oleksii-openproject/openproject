@@ -62,5 +62,22 @@ module Costs::Patches::PermittedParamsPatch
       params.require(:user).permit(new_rate_attributes: %i[valid_from rate],
                                    existing_rate_attributes: %i[valid_from rate])
     end
+
+    def time_entries
+      params
+        .require(:time_entry)
+        .permit(
+          :hours,
+          :comments,
+          :spent_on,
+          :start_time,
+          :work_package_id,
+          :activity,
+          :project_id,
+          :issue_id,
+          :user_id
+        )
+        .merge(custom_field_values(:time_entry))
+    end
   end
 end

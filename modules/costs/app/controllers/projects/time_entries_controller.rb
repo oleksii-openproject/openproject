@@ -45,8 +45,16 @@ module Projects
                     end
     end
 
-    def create; end
+    def create
+      puts "*" * 100
+      pp(permitted_params.time_entries)
+      puts "*" * 100
+    end
 
-    def update; end
+    def update
+      puts "*" * 100
+      pp(permitted_params.time_entries)
+      puts "*" * 100
+    end
   end
 end
