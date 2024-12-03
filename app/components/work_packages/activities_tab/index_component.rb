@@ -78,7 +78,7 @@ module WorkPackages
       end
 
       def adding_comment_allowed?
-        User.current.allowed_in_project?(:add_work_package_notes, @work_package.project)
+        User.current.allowed_in_work_package?(:add_work_package_notes, @work_package)
       end
     end
   end
