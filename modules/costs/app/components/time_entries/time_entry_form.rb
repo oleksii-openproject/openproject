@@ -22,9 +22,14 @@ module TimeEntries
         }
       )
 
-      f.text_field name: :spent_on, label: "Date"
+      # TODO: Repalce with single date picker from
+      # https://github.com/opf/openproject/pull/17223/commits/db765ac3862ded78139e6b8827e33cf2b8b3bce8
+      f.text_field name: :spent_on,
+                   type: "date",
+                   label: "Date"
 
       f.group(layout: :horizontal) do |g|
+        # TODO: Add a time picker based on the date picker linked above
         g.text_field name: :start_time,
                      label: "Start time",
                      data: { "time-entry-target" => "startTimeInput" }
@@ -42,7 +47,8 @@ module TimeEntries
         f.work_package_autocompleter name: :work_package_id,
                                      label: "Work package",
                                      autocomplete_options: {
-                                       append_to: "#time-entry-dialog"
+                                       append_to: "#time-entry-dialog",
+                                       filters: [{ name: "project_id", operator: "=", values: [model.project_id] }]
 
                                      }
       end

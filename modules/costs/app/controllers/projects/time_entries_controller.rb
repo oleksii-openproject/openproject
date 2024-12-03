@@ -41,7 +41,7 @@ module Projects
                       # TODO: Properly handle authorization
                       TimeEntry.find_by(id: params[:time_entry_id])
                     else
-                      TimeEntry.new(project: @project)
+                      TimeEntry.new(project: @project, user: User.current)
                     end
     end
 
