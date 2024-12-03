@@ -80,6 +80,14 @@ module Components
         expect(page).not_to have_test_selector("op-relation-row-#{actual_relatable.id}")
       end
 
+      def select_relation_type(relation_type)
+        page.find_test_selector("new-relation-action-menu").click
+
+        within page.find_by_id("new-relation-action-menu-list") do
+          click_link_or_button relation_type
+        end
+      end
+
       def remove_relation(relatable)
         actual_relatable = find_relatable(relatable)
         relatable_row = find_row(actual_relatable)
@@ -131,12 +139,10 @@ module Components
         # Open create form
 
         SeleniumHubWaiter.wait
-        page.find_test_selector("new-relation-action-menu").click
 
         label_text_for_relation_type = I18n.t("#{i18n_namespace}.label_#{type}_singular")
-        within page.find_by_id("new-relation-action-menu-list") do # Primer appends "list" to the menu id automatically
-          click_link_or_button label_text_for_relation_type.capitalize
-        end
+
+        select_relation_type label_text_for_relation_type.capitalize
 
         wait_for_reload if using_cuprite?
 
@@ -272,11 +278,7 @@ module Components
         SeleniumHubWaiter.wait
 
         retry_block do
-          page.find_test_selector("new-relation-action-menu").click
-
-          within page.find_by_id("new-relation-action-menu-list") do # Primer appends "list" to the menu id automatically
-            click_link_or_button "Child"
-          end
+          select_relation_type "Child"
         end
 
         within "##{WorkPackageRelationsTab::AddWorkPackageChildFormComponent::DIALOG_ID}" do
