@@ -44,17 +44,52 @@ module Projects::LifeCycles
       end
     end
 
+    def invalid?
+      model.errors.any?
+    end
+
+    def validation_message
+      model.errors.full_messages.join(", ") if invalid?
+    end
+
+    def qa_field_name
+      "life-cycle-step-#{model.id}"
+    end
+
+    def base_input_attributes
+      {
+        label: "#{icon} #{text}".html_safe, # rubocop:disable Rails/OutputSafety
+        leading_visual: { icon: :calendar },
+        required: true,
+        invalid: invalid?,
+        validation_message:,
+        datepicker_options: { inDialog: true },
+        wrapper_data_attributes: {
+          "qa-field-name": qa_field_name
+        }
+      }
+    end
+
     def single_value_life_cycle_input(form)
-      form.text_field name: :date, label: "#{icon} #{text}".html_safe, type: :date # rubocop:disable Rails/OutputSafety
+      input_attributes = base_input_attributes.merge(
+        name: :start_date,
+        value: model.start_date
+      )
+
+      form.single_date_picker **input_attributes
     end
 
     def multi_value_life_cycle_input(form)
-      helpers.angular_component_tag "opce-range-date-picker",
-                                    inputs: {
-                                      name: "my-datepicker",
-                                      value: model.start_date
-                                    }
-      form.text_field name: :start_date, label: "#{icon} #{text}".html_safe, type: :date # rubocop:disable Rails/OutputSafety
+      value = [
+        helpers.format_date(model.start_date),
+        helpers.format_date(model.end_date)
+      ].compact.join(" - ")
+
+      input_attributes = base_input_attributes.merge(
+        name: :start_date,
+        value:
+      )
+      form.range_date_picker **input_attributes
     end
 
     def text

@@ -9,8 +9,9 @@
       url: update_project_life_cycles_path(project_id: model.id),
     ) do |f|
       render(Primer::Forms::SpacingWrapper.new) do
-        f.fields_for(:life_cycle_steps, life_cycle_steps) do |lcf|
-          render(Projects::LifeCycles::Form.new(lcf))
+        f.fields_for(:life_cycle_steps, life_cycle_steps) do |life_cycle_form|
+          render(Projects::LifeCycles::Form.new(life_cycle_form)
+        )
         end
       end
     end
