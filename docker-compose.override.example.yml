@@ -8,7 +8,7 @@ services:
       - "${PORT:-3000}:3000"
 
   frontend:
-    # use these ports to be able to access the stack under http://localhost:3000
+    # use these ports to be able to access the stack under http://localhost:4200
     ports:
       - "${FE_PORT:-4200}:4200"
 
