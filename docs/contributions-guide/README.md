@@ -10,7 +10,7 @@ keywords: contributions guide, translate OpenProject, contribute, community, doc
 
 Welcome to the OpenProject **Contributions guide**.
 
-This platform thrives on the support of its community, and there are many ways you can help make it even better. Whether you're a developer, a user, or simply someone passionate about improving open-source tools, your contributions matter.
+This platform thrives on the support of its Community, and there are many ways you can help make it even better. Whether you're a developer, a user, or simply someone passionate about improving open-source tools, your contributions matter.
 
 ## Overview
 
@@ -18,7 +18,7 @@ This platform thrives on the support of its community, and there are many ways y
 | ------------------------------------------------------------ | :-------------------------------------------------------- |
 | [Contribute to documentation](contribution-documentation)    | Learn how you can contribute to OpenProject documentation |
 | [Translate OpenProject](translate-openproject)               | Help translate OpenProject                                |
-| [Give back to Community](give-back-to-community)             | Learn how you can support OpenProject community           |
+| [Give back to Community](give-back-to-community)             | Learn how you can support OpenProject Community           |
 | [Report a bug](../development/report-a-bug/)                 | Learn how to report a bug in OpenProject                  |
 | [Submit a feature idea](../development/submit-feature-idea/) | See how you can submit an new feature idea                |
 
