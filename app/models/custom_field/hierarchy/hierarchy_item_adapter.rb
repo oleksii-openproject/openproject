@@ -28,22 +28,17 @@
 # See COPYRIGHT and LICENSE files for more details.
 #++
 
-module Queries
-  module Filters
-    module Shared
-      module CustomFields
-        class Hierarchy < Base
-          def ar_object_filter?
-            true
-          end
+class CustomField::Hierarchy::HierarchyItemAdapter
+  attr_reader :name
 
-          def value_objects
-            CustomField::Hierarchy::Item
-              .where(id: @values)
-              .map { |item| CustomField::Hierarchy::HierarchyItemAdapter.new(item:) }
-          end
-        end
-      end
-    end
+  delegate :id, :label, :short, :to_s, to: :item
+
+  def initialize(item:)
+    @item = item
+    @name = item.label
   end
+
+  private
+
+  attr_accessor :item
 end

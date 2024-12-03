@@ -210,17 +210,12 @@ module API
             "#{root}/custom_fields/#{id}"
           end
 
-          # Needed as the method is derived from the name of the class for the query API representation.
-          def self.custom_field_hierarchy_item(id)
-            custom_field_item(id)
-          end
-
           def self.custom_field_item(id)
             "#{root}/custom_field_items/#{id}"
           end
 
           # API::V3::Queries::Filters::QueryFilterInstanceRepresenter need a path derived from a class name.
-          def self.hierarchy_item_filter_adapter(id)
+          def self.hierarchy_item_adapter(id)
             custom_field_item(id)
           end
 

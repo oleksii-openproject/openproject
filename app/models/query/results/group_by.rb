@@ -117,8 +117,11 @@ module ::Query::Results::GroupBy
     CustomFields::Hierarchy::HierarchicalItemService
       .new
       .get_descendants(item: custom_field.hierarchy_root, include_self: false)
-      .fmap { |list| list.filter { |item| keys.include?(item.label) } }
-      .fmap { |list| list.index_by(&:label) }
+      .fmap do |list|
+        list.map { |item| CustomField::Hierarchy::HierarchyItemAdapter.new(item:) }
+            .filter { |item| keys.include?(item.label) }
+            .index_by(&:label)
+      end
       .either(
         ->(list) { list },
         ->(error) do
@@ -127,6 +130,7 @@ module ::Query::Results::GroupBy
         end
       )
   end
+
   # rubocop:enable Metrics/AbcSize
 
   def transform_list_custom_field_keys(custom_field, groups)
