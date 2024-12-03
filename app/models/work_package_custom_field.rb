@@ -51,7 +51,7 @@ class WorkPackageCustomField < CustomField
 
   scope :usable_as_custom_action, -> {
     where.not(field_format: %w[hierarchy])
-    order(:name)
+         .order(:name)
   }
 
   def self.summable
