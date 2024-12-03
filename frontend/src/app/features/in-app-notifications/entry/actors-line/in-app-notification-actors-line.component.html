@@ -1,8 +1,6 @@
-<div
-  class="op-ian-actors--date"
-  [title]="fixedTime"
-  [textContent]="relativeTime$ | async"
-></div>
+<op-in-app-notification-relative-time
+  [notification]="notification"
+/>
 <div class="op-ian-actors--container">
   <ng-container *ngFor="let actor of actors | slice:0:3; let idx = index; let last = last">
     <span *ngIf="last && actors.length > 1 && actors.length < 4" textContent=" {{ text.and }} "></span>
