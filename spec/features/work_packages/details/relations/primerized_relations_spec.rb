@@ -41,7 +41,8 @@ RSpec.describe "Primerized work package relations tab",
     set_factory_default(:project_with_types, project)
   end
 
-  shared_let(:work_package) { create(:work_package, subject: "main") }
+  shared_let(:parent_work_package) { create(:work_package, subject: "parent") }
+  shared_let(:work_package) { create(:work_package, subject: "main", parent: parent_work_package) }
   shared_let(:type1) { create(:type) }
   shared_let(:type2) { create(:type) }
 
@@ -250,6 +251,49 @@ RSpec.describe "Primerized work package relations tab",
 
       # Bumped by one
       tabs.expect_counter("relations", 5)
+    end
+
+    it "doesn't autocomplete parent, children, and WP itself" do
+      scroll_to_element relations_panel
+
+      relations_panel.find("[data-test-selector='new-relation-action-menu']").click
+
+      within page.find_by_id("new-relation-action-menu-list") do
+        click_link_or_button "Child"
+      end
+
+      wait_for_reload
+
+      within "##{WorkPackageRelationsTab::AddWorkPackageChildFormComponent::DIALOG_ID}" do
+        autocomplete_field = page.find("[data-test-selector='work-package-child-form-id']")
+
+        # It doesn't autocomplete children
+        search_autocomplete(autocomplete_field,
+                            query: child_wp.subject,
+                            results_selector: "body")
+
+        expect_no_ng_option(autocomplete_field,
+                            child_wp.subject,
+                            results_selector: "body")
+
+        # It doesn't autocomplete parent
+        search_autocomplete(autocomplete_field,
+                            query: parent_work_package.subject,
+                            results_selector: "body")
+
+        expect_no_ng_option(autocomplete_field,
+                            parent_work_package.subject,
+                            results_selector: "body")
+
+        # It doesn't autocomplete work package itself
+        search_autocomplete(autocomplete_field,
+                            query: work_package.id,
+                            results_selector: "body")
+
+        expect_no_ng_option(autocomplete_field,
+                            work_package.id,
+                            results_selector: "body")
+      end
     end
   end
 
