@@ -164,15 +164,22 @@ class CostQuery::PDF::TimesheetGenerator
         padding: [TABLE_CELL_PADDING, TABLE_CELL_PADDING, TABLE_CELL_PADDING + 2, TABLE_CELL_PADDING]
       }
     ) do |table|
-      adjust_prawn_table_cell_borders(table)
+      adjust_borders_first_column(table)
+      adjust_borders_last_column(table)
+      adjust_borders_spanned_column(table)
+      adjust_border_header_row(table)
     end
   end
 
-  def adjust_prawn_table_cell_borders(table)
+  def adjust_borders_first_column(table)
     table.columns(0).borders = %i[top bottom left right]
-    table.columns(table_columns_widths.length - 1).style do |c|
-      c.borders = c.borders + [:right]
-    end
+  end
+
+  def adjust_borders_last_column(table)
+    table.columns(0).borders = %i[top bottom left right]
+  end
+
+  def adjust_borders_spanned_column(table)
     table.columns(1).style do |c|
       if c.colspan > 1
         c.borders = %i[left right bottom]
@@ -184,6 +191,9 @@ class CostQuery::PDF::TimesheetGenerator
         end
       end
     end
+  end
+
+  def adjust_border_header_row(table)
     table.rows(0).style do |c|
       c.borders = c.borders + [:top]
       c.font_style = :bold
