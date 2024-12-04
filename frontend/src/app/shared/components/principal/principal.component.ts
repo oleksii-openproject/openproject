@@ -40,14 +40,12 @@ import { PathHelperService } from 'core-app/core/path-helper/path-helper.service
 import { ApiV3Service } from 'core-app/core/apiv3/api-v3.service';
 
 import { TimezoneService } from 'core-app/core/datetime/timezone.service';
-import {
-  AvatarSize,
-  PrincipalRendererService,
-} from './principal-renderer.service';
+import { AvatarOptions, AvatarSize, PrincipalRendererService } from './principal-renderer.service';
 import { PrincipalLike } from './principal-types';
 import { populateInputsFromDataset } from 'core-app/shared/components/dataset-inputs';
 import { PrincipalType } from 'core-app/shared/components/principal/principal-helper';
 import { PrincipalsResourceService } from 'core-app/core/state/principals/principals.service';
+import { PortalOutletTarget } from 'core-app/shared/components/modal/portal-outlet-target.enum';
 
 export const principalSelector = 'op-principal';
 
@@ -76,6 +74,12 @@ export class OpPrincipalComponent implements OnInit {
 
   @Input() size:AvatarSize = 'default';
 
+  @Input() avatarClasses? = '';
+
+  @Input() hoverCard= true;
+  @Input() hoverCardUrl= '';
+  @Input() hoverCardModalTarget:'default'|'custom' = 'default';
+
   @Input() title = '';
 
   public constructor(
@@ -93,6 +97,19 @@ export class OpPrincipalComponent implements OnInit {
 
   ngOnInit() {
     if (this.principal.name) {
+      const avatarOptions:AvatarOptions = {
+        hide: this.hideAvatar,
+        size: this.size,
+      };
+
+      if (this.hoverCard) {
+        avatarOptions.hoverCard = {
+          url: this.hoverCardUrl,
+          modalTarget: this.hoverCardModalTarget === 'custom'
+            ? PortalOutletTarget.Custom : PortalOutletTarget.Default,
+        };
+      }
+
       this.principalRenderer.render(
         this.elementRef.nativeElement as HTMLElement,
         this.principal,
@@ -101,10 +118,7 @@ export class OpPrincipalComponent implements OnInit {
           link: this.link,
           classes: this.nameClasses,
         },
-        {
-          hide: this.hideAvatar,
-          size: this.size,
-        },
+        avatarOptions,
         this.title === '' ? null : this.title,
       );
     }

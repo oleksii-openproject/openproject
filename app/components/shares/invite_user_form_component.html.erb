@@ -10,7 +10,7 @@
       ) do |form|
         grid_layout('invite-user-form', tag: :div) do |invite_form|
           invite_form.with_area('invitee') do
-            render(Shares::Invitee.new(form))
+            render(Shares::Invitee.new(form, allow_hover_cards:))
           end
 
           invite_form.with_area('permission') do

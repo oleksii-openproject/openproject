@@ -36,6 +36,7 @@ module Shares
     attr_reader :strategy,
                 :entity,
                 :errors,
+                :allow_hover_cards,
                 :modal_content
 
     def initialize(strategy:, modal_content:, errors: nil)
@@ -45,6 +46,7 @@ module Shares
       @entity = strategy.entity
       @errors = errors
       @modal_content = modal_content
+      @allow_hover_cards = strategy.allow_hover_cards?
     end
 
     def self.wrapper_key
