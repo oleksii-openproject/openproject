@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) the OpenProject GmbH
+# Copyright (C) 2012-2024 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -26,42 +26,14 @@
 # See COPYRIGHT and LICENSE files for more details.
 #++
 
-class Notification < ApplicationRecord
-  REASONS = {
-    mentioned: 0,
-    assigned: 1,
-    watched: 2,
-    subscribed: 3,
-    commented: 4,
-    created: 5,
-    processed: 6,
-    prioritized: 7,
-    scheduled: 8,
-    responsible: 9,
-    date_alert_start_date: 10,
-    date_alert_due_date: 11,
-    shared: 12,
-    reminder: 13
-  }.freeze
+module Reminders
+  class CreateService < ::BaseServices::Create
+    include Reminders::ServiceHelpers
 
-  enum :reason, REASONS, prefix: true
+    def after_perform(service_call)
+      schedule_new_reminder_job(service_call.result)
 
-  belongs_to :recipient, class_name: "User"
-  belongs_to :actor, class_name: "User"
-  belongs_to :journal
-  belongs_to :resource, polymorphic: true
-
-  has_one :reminder_notification, dependent: :destroy
-  has_one :reminder, through: :reminder_notification
-
-  include Scopes::Scoped
-  scopes :unsent_reminders_before,
-         :mail_reminder_unsent,
-         :mail_alert_unsent,
-         :recipient,
-         :visible
-
-  def date_alert?
-    reason.in?(["date_alert_start_date", "date_alert_due_date"])
+      service_call
+    end
   end
 end

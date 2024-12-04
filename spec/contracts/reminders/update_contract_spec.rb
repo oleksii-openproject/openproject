@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #-- copyright
 # OpenProject is an open source project management software.
 # Copyright (C) the OpenProject GmbH
@@ -26,42 +28,41 @@
 # See COPYRIGHT and LICENSE files for more details.
 #++
 
-class Notification < ApplicationRecord
-  REASONS = {
-    mentioned: 0,
-    assigned: 1,
-    watched: 2,
-    subscribed: 3,
-    commented: 4,
-    created: 5,
-    processed: 6,
-    prioritized: 7,
-    scheduled: 8,
-    responsible: 9,
-    date_alert_start_date: 10,
-    date_alert_due_date: 11,
-    shared: 12,
-    reminder: 13
-  }.freeze
+require "spec_helper"
+require "contracts/shared/model_contract_shared_context"
 
-  enum :reason, REASONS, prefix: true
+RSpec.describe Reminders::UpdateContract do
+  include_context "ModelContract shared context"
 
-  belongs_to :recipient, class_name: "User"
-  belongs_to :actor, class_name: "User"
-  belongs_to :journal
-  belongs_to :resource, polymorphic: true
+  let(:contract) { described_class.new(reminder, user) }
+  let(:user) { build_stubbed(:admin) }
+  let(:creator) { user }
+  let(:reminder) { build_stubbed(:reminder, creator:) }
 
-  has_one :reminder_notification, dependent: :destroy
-  has_one :reminder, through: :reminder_notification
-
-  include Scopes::Scoped
-  scopes :unsent_reminders_before,
-         :mail_reminder_unsent,
-         :mail_alert_unsent,
-         :recipient,
-         :visible
-
-  def date_alert?
-    reason.in?(["date_alert_start_date", "date_alert_due_date"])
+  before do
+    User.current = user
+    allow(User).to receive(:exists?).with(user.id).and_return(true)
   end
+
+  describe "validate unchangeable attributes" do
+    context "when remindable changed" do
+      before do
+        reminder.remindable = build_stubbed(:work_package)
+      end
+
+      it_behaves_like "contract is invalid", base: :unchangeable
+    end
+
+    context "when creator_id changed" do
+      before do
+        new_creator = build_stubbed(:user)
+        reminder.creator = new_creator
+        allow(User).to receive(:exists?).with(new_creator.id).and_return(true)
+      end
+
+      it_behaves_like "contract is invalid", base: :unchangeable
+    end
+  end
+
+  include_examples "contract reuses the model errors"
 end

@@ -26,42 +26,40 @@
 # See COPYRIGHT and LICENSE files for more details.
 #++
 
-class Notification < ApplicationRecord
-  REASONS = {
-    mentioned: 0,
-    assigned: 1,
-    watched: 2,
-    subscribed: 3,
-    commented: 4,
-    created: 5,
-    processed: 6,
-    prioritized: 7,
-    scheduled: 8,
-    responsible: 9,
-    date_alert_start_date: 10,
-    date_alert_due_date: 11,
-    shared: 12,
-    reminder: 13
-  }.freeze
+module Reminders
+  class ScheduleReminderJob < ApplicationJob
+    queue_with_priority :notification
 
-  enum :reason, REASONS, prefix: true
+    def self.schedule(reminder)
+      set(wait_until: reminder.remind_at).perform_later(reminder)
+    end
 
-  belongs_to :recipient, class_name: "User"
-  belongs_to :actor, class_name: "User"
-  belongs_to :journal
-  belongs_to :resource, polymorphic: true
+    def perform(reminder)
+      return if reminder.unread_notifications?
 
-  has_one :reminder_notification, dependent: :destroy
-  has_one :reminder, through: :reminder_notification
+      create_notification_service = create_notification_from_reminder(reminder)
 
-  include Scopes::Scoped
-  scopes :unsent_reminders_before,
-         :mail_reminder_unsent,
-         :mail_alert_unsent,
-         :recipient,
-         :visible
+      create_notification_service.on_success do |service_result|
+        ReminderNotification.create!(reminder:, notification: service_result.result)
+      end
 
-  def date_alert?
-    reason.in?(["date_alert_start_date", "date_alert_due_date"])
+      create_notification_service.on_failure do |service_result|
+        Rails.logger.error do
+          "Failed to create notification for reminder #{reminder.id}: #{service_result.message}"
+        end
+      end
+    end
+
+    private
+
+    def create_notification_from_reminder(reminder)
+      Notifications::CreateService
+        .new(user: reminder.creator)
+        .call(
+          recipient_id: reminder.creator_id,
+          resource: reminder.remindable,
+          reason: :reminder
+        )
+    end
   end
 end

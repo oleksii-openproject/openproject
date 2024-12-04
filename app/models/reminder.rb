@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) the OpenProject GmbH
+# Copyright (C) 2012-2024 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -26,42 +26,26 @@
 # See COPYRIGHT and LICENSE files for more details.
 #++
 
-class Notification < ApplicationRecord
-  REASONS = {
-    mentioned: 0,
-    assigned: 1,
-    watched: 2,
-    subscribed: 3,
-    commented: 4,
-    created: 5,
-    processed: 6,
-    prioritized: 7,
-    scheduled: 8,
-    responsible: 9,
-    date_alert_start_date: 10,
-    date_alert_due_date: 11,
-    shared: 12,
-    reminder: 13
-  }.freeze
+class Reminder < ApplicationRecord
+  belongs_to :remindable, polymorphic: true
+  belongs_to :creator, class_name: "User"
 
-  enum :reason, REASONS, prefix: true
+  has_many :reminder_notifications, dependent: :destroy
+  has_many :notifications, through: :reminder_notifications
 
-  belongs_to :recipient, class_name: "User"
-  belongs_to :actor, class_name: "User"
-  belongs_to :journal
-  belongs_to :resource, polymorphic: true
+  def unread_notifications?
+    unread_notifications.exists?
+  end
 
-  has_one :reminder_notification, dependent: :destroy
-  has_one :reminder, through: :reminder_notification
+  def unread_notifications
+    notifications.where(read_ian: [false, nil])
+  end
 
-  include Scopes::Scoped
-  scopes :unsent_reminders_before,
-         :mail_reminder_unsent,
-         :mail_alert_unsent,
-         :recipient,
-         :visible
+  def completed?
+    completed_at.present?
+  end
 
-  def date_alert?
-    reason.in?(["date_alert_start_date", "date_alert_due_date"])
+  def scheduled?
+    job_id.present? && !completed?
   end
 end

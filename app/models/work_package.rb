@@ -41,6 +41,7 @@ class WorkPackage < ApplicationRecord
   include WorkPackages::Relations
   include ::Scopes::Scoped
   include HasMembers
+  include Remindable
 
   include OpenProject::Journal::AttachmentHelper
 
