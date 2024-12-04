@@ -30,26 +30,7 @@ See COPYRIGHT and LICENSE files for more details.
 <%=
   component_wrapper do
     primer_form_with(**form_options) do |form|
-      component_collection do |collection|
-        collection.with_component(Primer::Alpha::Dialog::Body.new) do
-          component_collection do |coll|
-            # coll.with_component content_tag(:pre, time_entry.pretty_inspect)
-            coll.with_component render(TimeEntries::TimeEntryForm.new(form))
-          end
-        end
-
-        collection.with_component(Primer::Alpha::Dialog::Footer.new) do
-          component_collection do |footer|
-            footer.with_component(Primer::ButtonComponent.new(data: { 'close-dialog-id': "time-entry-dialog" })) do
-              I18n.t("button_cancel")
-            end
-
-            footer.with_component(Primer::ButtonComponent.new(scheme: :primary, type: :submit, test_selector: "create-api-token-button")) do
-              I18n.t("my.access_token.new_access_token_dialog_submit_button_text")
-            end
-          end
+            render(TimeEntries::TimeEntryForm.new(form))
         end
       end
-    end
-  end
 %>

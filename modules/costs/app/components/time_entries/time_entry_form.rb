@@ -47,13 +47,13 @@ module TimeEntries
         f.work_package_autocompleter name: :work_package_id,
                                      label: "Work package",
                                      autocomplete_options: {
+                                       focusDirectly: false,
                                        append_to: "#time-entry-dialog",
                                        filters: [{ name: "project_id", operator: "=", values: [model.project_id] }]
-
                                      }
       end
 
-      f.text_field name: :activity, label: "Activity"
+      f.text_field name: :activity_id, label: "Activity"
 
       f.text_field name: :comments, label: "Comments"
 

@@ -47,7 +47,8 @@ module TimeEntries
     def form_options
       base = {
         model: time_entry,
-        data: { turbo: true }
+        data: { turbo: true },
+        id: "time-entry-form"
       }
 
       if time_entry.persisted?

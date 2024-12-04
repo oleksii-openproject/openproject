@@ -1,4 +1,10 @@
 <%= render(Primer::Alpha::Dialog.new(title: 'Log Time', size: :large, id: MODAL_ID, data: { "controller" => "time-entry",  "application-target" => "dynamic" })) do |d| %>
   <% d.with_header(variant: :large, mb: 3) %>
+  <% d.with_body do %>
   <%= render(TimeEntries::TimeEntryFormComponent.new(time_entry: time_entry)) %>
+  <% end %>
+  <% d.with_footer(variant: :large) do %>
+    <%= render(Primer::ButtonComponent.new(data: { 'close-dialog-id': "time-entry-dialog" })) { I18n.t("button_cancel") } %>
+    <%= render(Primer::ButtonComponent.new(scheme: :primary, type: :submit, test_selector: "create-time-entry-button", form: 'time-entry-form')) { "Create Time Entry" } %>
+   <%  end %>
 <% end %>
