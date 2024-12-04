@@ -95,7 +95,7 @@ RSpec.describe "Recurring meetings CRUD",
     show_page.create_from_template date: "01/07/2025 01:30 PM"
     wait_for_reload
 
-    expect(page).to have_current_path project_meeting_path(project, Meeting.reorder(id: :asc).last)
+    expect(page).to have_current_path project_meeting_path(project, Meeting.last)
 
     show_page.visit!
 
