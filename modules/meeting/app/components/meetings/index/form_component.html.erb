@@ -3,77 +3,113 @@
     primer_form_with(
       scope: :meeting,
       model: @meeting,
-      method: :post,
-      data: { turbo: true },
-      html: { :id => 'meeting-form' },
-      url: {:controller => '/meetings', :action => 'create', :project_id => @project}
+      method: form_method,
+      data: {
+        turbo: true,
+        controller: "show-when-value-selected"
+      },
+      html: {
+        id: 'meeting-form'
+      },
+      url: {
+        controller: form_controller,
+        action: form_action,
+        project_id: @project
+      }
     ) do |f|
-      component_collection do |collection|
-        collection.with_component(Primer::Alpha::Dialog::Body.new) do
-          flex_layout(mb: 3) do |modal_body|
-            if @project.nil?
-              modal_body.with_row(mt: 3) do
-                render(Meeting::ProjectAutocompleter.new(f))
-              end
-            end
-
-            modal_body.with_row(mt: 3) do
-              render(Meeting::Title.new(f))
-            end
-
-            modal_body.with_row(mt: 3) do
-              render(Meeting::StartDate.new(f, initial_value: start_date_initial_value))
-            end
-
-            modal_body.with_row(mt: 3) do
-              render(Meeting::StartTime.new(f, initial_value: start_time_initial_value))
-            end
-
-            modal_body.with_row(mt: 3) do
-              render(Meeting::Duration.new(f))
-            end
-
-            modal_body.with_row(mt: 3) do
-              render(Meeting::Location.new(f))
-            end
-
-            modal_body.with_row do
-              render(Meeting::Type.new(f))
-            end
-
-            unless @type == :new
-              modal_body.with_row do
-                render(Meeting::CopiedFrom.new(f, id: @type.id))
-              end
-
-              modal_body.with_row(mt: 3) do
-                render(Meeting::CopyItems.new(f))
-              end
-
-              modal_body.with_row(mt: 3) do
-                render(Meeting::CopyParticipants.new(f))
-              end
-
-              modal_body.with_row(mt: 3) do
-                render(Meeting::CopyAttachments.new(f))
-              end
-
-              modal_body.with_row(mt: 3) do
-                render(Meeting::EmailParticipants.new(f))
-              end
-            end
+      flex_layout(mb: 3) do |modal_body|
+        if @meeting.errors[:base].present?
+          modal_body.with_row do
+            render(Primer::Alpha::Banner.new(mb: 3, icon: :stop, scheme: :danger)) { @meeting.errors[:base].join("\n") }
           end
         end
 
-        collection.with_component(Primer::Alpha::Dialog::Footer.new) do
-          component_collection do |modal_footer|
-            modal_footer.with_component(Primer::ButtonComponent.new(data: { 'close-dialog-id': "new-meeting-dialog" })) do
-              I18n.t("button_cancel")
-            end
+        if @project.nil?
+          modal_body.with_row(mt: 3) do
+            render(Meeting::ProjectAutocompleter.new(f))
+          end
+        end
 
-            modal_footer.with_component(Primer::ButtonComponent.new(scheme: :primary, type: :submit)) do
-              I18n.t("label_meeting_create")
-            end
+        modal_body.with_row(mt: 3) do
+          render(Meeting::Title.new(f))
+        end
+
+        modal_body.with_row(mt: 3) do
+          render(Meeting::TimeGroup.new(f, meeting: @meeting))
+        end
+
+        modal_body.with_row(mt: 3) do
+          render(Meeting::Duration.new(f, meeting: @meeting))
+        end
+
+        modal_body.with_row(mt: 3) do
+          render(Meeting::Location.new(f, meeting: @meeting))
+        end
+
+        if @meeting.is_a?(RecurringMeeting)
+          modal_body.with_row(mt: 3) do
+            render(RecurringMeeting::Frequency.new(f))
+          end
+
+          modal_body.with_row(
+            mt: 3,
+            hidden: @meeting.frequency_working_days?,
+            data: {
+              target_name: "frequency",
+              not_value: "working_days",
+              "show-when-value-selected-target": "effect"
+            }) do
+            render(RecurringMeeting::Interval.new(f))
+          end
+
+          modal_body.with_row(mt: 3) do
+            render(RecurringMeeting::EndAfter.new(f))
+          end
+
+          modal_body.with_row(mt: 3,
+                              hidden: @meeting.end_after_iterations?,
+                              data: {
+                                value: "specific_date",
+                                target_name: "end_after",
+                                "show-when-value-selected-target": "effect" }
+          ) do
+            render(RecurringMeeting::SpecificDate.new(f, meeting: @meeting))
+          end
+
+          modal_body.with_row(mt: 3,
+                              hidden: @meeting.end_after_specific_date?,
+                              data: {
+                                value: "iterations",
+                                target_name: "end_after",
+                                "show-when-value-selected-target": "effect"
+                              }) do
+            render(RecurringMeeting::Iterations.new(f))
+          end
+        else
+          modal_body.with_row do
+            render(Meeting::Type.new(f))
+          end
+        end
+
+        if @copy_from
+          modal_body.with_row do
+            render(Meeting::CopiedFrom.new(f, id: @copy_from.id))
+          end
+
+          modal_body.with_row(mt: 3) do
+            render(Meeting::CopyItems.new(f))
+          end
+
+          modal_body.with_row(mt: 3) do
+            render(Meeting::CopyParticipants.new(f))
+          end
+
+          modal_body.with_row(mt: 3) do
+            render(Meeting::CopyAttachments.new(f))
+          end
+
+          modal_body.with_row(mt: 3) do
+            render(Meeting::EmailParticipants.new(f))
           end
         end
       end

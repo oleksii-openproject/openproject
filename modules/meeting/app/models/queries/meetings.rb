@@ -34,5 +34,8 @@ module Queries::Meetings
     filter Filters::InvitedUserFilter
     filter Filters::AuthorFilter
     filter Filters::DatesIntervalFilter
+    filter Filters::RecurringFilter
+
+    order Orders::DefaultOrder
   end
 end

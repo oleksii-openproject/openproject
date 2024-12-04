@@ -30,10 +30,22 @@ class Meeting::Location < ApplicationForm
   form do |meeting_form|
     meeting_form.text_field(
       name: :location,
+      value: @value,
       placeholder: Meeting.human_attribute_name(:location),
       label: Meeting.human_attribute_name(:location),
       visually_hide_label: false,
       leading_visual: { icon: :location }
     )
+  end
+
+  def initialize(meeting:)
+    super()
+
+    @value =
+      if meeting.is_a?(RecurringMeeting) && meeting.template
+        meeting.template.location
+      else
+        meeting.location
+      end
   end
 end

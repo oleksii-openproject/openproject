@@ -26,21 +26,20 @@
 # See COPYRIGHT and LICENSE files for more details.
 #++
 
-class Meeting::StartDate < ApplicationForm
+class RecurringMeeting::Frequency < ApplicationForm
   form do |meeting_form|
-    meeting_form.text_field(
-      name: :start_date,
-      type: "date",
-      value: @initial_value,
-      placeholder: Meeting.human_attribute_name(:start_date),
-      label: Meeting.human_attribute_name(:start_date),
-      leading_visual: { icon: :calendar },
-      required: true,
-      autofocus: false
-    )
-  end
-
-  def initialize(initial_value: DateTime.now.strftime("%Y-%m-%d"))
-    @initial_value = initial_value
+    meeting_form.select_list(
+      name: "frequency",
+      label: I18n.t("activerecord.attributes.recurring_meeting.frequency"),
+      data: {
+        target_name: "frequency",
+        "show-when-value-selected-target": "cause"
+      }
+    ) do |list|
+      RecurringMeeting.frequencies.each_key do |value|
+        label = I18n.t(:"recurring_meeting.frequency.#{value}")
+        list.option(label:, value:)
+      end
+    end
   end
 end

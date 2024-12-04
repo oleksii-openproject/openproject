@@ -29,8 +29,11 @@
 module Meetings
   class CreateContract < BaseContract
     attribute :type
+    attribute :recurring_meeting_id
+
     validate :user_allowed_to_add
     validate :type_in_allowed
+    validate :recurring_meeting_visible
 
     private
 
@@ -42,6 +45,14 @@ module Meetings
 
     def user_allowed_to_add
       unless user.allowed_in_project?(:create_meetings, model.project)
+        errors.add :base, :error_unauthorized
+      end
+    end
+
+    def recurring_meeting_visible
+      return if model.recurring_meeting.nil?
+
+      unless user.allowed_in_project?(:view_meetings, model.recurring_meeting.project)
         errors.add :base, :error_unauthorized
       end
     end

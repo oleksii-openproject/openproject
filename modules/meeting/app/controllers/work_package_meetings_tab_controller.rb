@@ -130,7 +130,7 @@ class WorkPackageMeetingsTabController < ApplicationController
   def get_agenda_items_of_work_package(direction)
     agenda_items = MeetingAgendaItem
         .includes(:meeting)
-        .where(meeting_id: Meeting.visible(current_user))
+        .where(meeting_id: Meeting.not_templated.visible(current_user))
         .where(work_package_id: @work_package.id)
         .reorder(sort_clause(direction))
 

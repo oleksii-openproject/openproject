@@ -35,6 +35,8 @@ module MeetingAgendaItems
     def self.assignable_meetings(user)
       StructuredMeeting
         .open
+        .not_templated
+        .not_cancelled
         .visible(user)
     end
 

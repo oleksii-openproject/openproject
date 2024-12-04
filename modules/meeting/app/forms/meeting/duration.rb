@@ -34,6 +34,7 @@ class Meeting::Duration < ApplicationForm
       min: 0,
       max: 24,
       step: 0.05,
+      value: @value,
       placeholder: Meeting.human_attribute_name(:duration),
       label: Meeting.human_attribute_name(:duration),
       visually_hide_label: false,
@@ -41,5 +42,16 @@ class Meeting::Duration < ApplicationForm
       leading_visual: { icon: :stopwatch },
       caption: I18n.t("text_in_hours")
     )
+  end
+
+  def initialize(meeting:)
+    super()
+
+    @value =
+      if meeting.is_a?(RecurringMeeting) && meeting.template
+        meeting.template.duration
+      else
+        meeting.duration
+      end
   end
 end

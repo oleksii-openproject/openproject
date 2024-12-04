@@ -31,6 +31,7 @@ module Meetings
     def initialize(meeting)
       super
       @meeting = meeting
+      @series = meeting.recurring_meeting
     end
 
     def last_updated_at

@@ -14,19 +14,15 @@
             end
 
             modal_body.with_row(mt: 3) do
-              render(Meeting::StartDate.new(f, initial_value: start_date_initial_value))
+              render(Meeting::TimeGroup.new(f, meeting: @meeting))
             end
 
             modal_body.with_row(mt: 3) do
-              render(Meeting::StartTime.new(f, initial_value: start_time_initial_value))
+              render(Meeting::Duration.new(f, meeting: @meeting))
             end
 
             modal_body.with_row(mt: 3) do
-              render(Meeting::Duration.new(f))
-            end
-
-            modal_body.with_row(mt: 3) do
-              render(Meeting::Location.new(f))
+              render(Meeting::Location.new(f, meeting: @meeting))
             end
 
             modal_body.with_row do

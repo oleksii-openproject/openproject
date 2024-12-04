@@ -91,6 +91,81 @@ allowing to put some content in between:
 
 This is the regular way of using Primer forms.
 
+
+
+### Basic Interactivity
+
+In many cases, you want to show or hide a certain field based on the value of another field. For this purpose, there is the Stimulus controller `show-when-value-selected`.
+
+To use it, pass the controller to the form, and then use `cause` and `effect` targets together with a `data-value`.
+
+Basic example:
+
+```ruby
+primer_form_with(
+  ...
+  data: { controller: "show-when-value-selected" }
+) do |f|
+  render_inline_form(f) do |my_form|
+    my_form.select_list(
+      name: "frequency",
+      label: "Choose frequency",
+      data: {
+        target_name: "frequency",
+        "show-when-value-selected-target": "cause"
+      }
+    ) do |list|
+      list.option(label: "Foo", value: "foo")
+			list.option(label: "Bar", value: "bar")
+			list.option(label: "Third option", value: "other")
+    end
+
+    # Will be shown when "Foo" is selected
+    my_form.text_field(
+     name: :interval,
+     type: :number,
+     data: {
+        target_name: "frequency",
+        value: "foo"
+        "show-when-value-selected-target": "cause"
+      }
+    end
+
+    # Will be shown when "Bar" is selected
+    my_form.text_field(
+     name: :random,
+     type: :text,
+     data: {
+        target_name: "frequency",
+        value: "bar"
+        "show-when-value-selected-target": "effect"
+      }
+    end
+
+    # Will be shown when not "other" is selected
+    my_form.text_field(
+     name: :random,
+     type: :text,
+     hidden: @my_object.state == 'other'
+     data: {
+        target_name: "frequency",
+        not_value: "other"
+        "show-when-value-selected-target": "effect"
+      }
+    end
+end
+```
+
+Important data inputs:
+
+- `"show-when-value-selected-target": "cause"` marks a field as the emitter of a change. Whenever this input changes, the other fields visibility will be toggled.
+- `"show-when-value-selected-target": "effect"` is the input that will get hidden or shown depending on the selected value
+- `data: { value: 'XYZ'}` or `data-value="XYZ"` the value to be checked against the cause
+- `data: { not_value: 'XYZ'}` or `data-not-value="XYZ"` the value to be checked against the cause, resulting in it being hidden if the selected value is NOT the given one.
+- data: `{ target_name: "abc"}` or `data-target-name="abc"` allows you to define multiple sets of cause/effect handlers
+
+
+
 ### Accessing the form model
 
 When defining a form, the model sometimes needs to be accessed, for instance to remove or add some fields depending on the state of the model.
@@ -308,22 +383,22 @@ administration pages.
 So far, the following helpers are available:
 
   * `text_field(name:, **options)`: renders a text field for the setting called
-  `name`, automatically setting the label, value, and disabled state from the
-  setting's attributes.
+    `name`, automatically setting the label, value, and disabled state from the
+    setting's attributes.
 
   * `check_box(name:, **options)`: renders a checkbox for the setting called
-  `name`, automatically setting the label, checked state, and disabled state
-  from the setting's attributes.
+    `name`, automatically setting the label, checked state, and disabled state
+    from the setting's attributes.
 
   * `radio_button_group(name:, values:, button_options: {}, **options)`: renders
-  a radio button group for the setting called `name` and radio button for each
-  element of `values`, automatically setting the label, checked state, html
-  caption, and disabled state from the setting's attributes.
+    a radio button group for the setting called `name` and radio button for each
+    element of `values`, automatically setting the label, checked state, html
+    caption, and disabled state from the setting's attributes.
 
   * `submit`: renders a submit button with the label "Save" and the primary
-  scheme.
+    scheme.
 
   * `form`: the form builder instance if you need to render some form elements
-  normally handled by the settings form decorator in another way than intended.
-  Any call to a method that is not defined on the settings form decorator will
-  be forwarded to this form builder instance so its usage is transparent.
+    normally handled by the settings form decorator in another way than intended.
+    Any call to a method that is not defined on the settings form decorator will
+    be forwarded to this form builder instance so its usage is transparent.

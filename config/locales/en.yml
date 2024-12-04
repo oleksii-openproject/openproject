@@ -1025,6 +1025,7 @@ en:
       messages:
         accepted: "must be accepted."
         after: "must be after %{date}."
+        after_today: "must be in the future."
         after_or_equal_to: "must be after or equal to %{date}."
         before: "must be before %{date}."
         before_or_equal_to: "must be before or equal to %{date}."
@@ -3102,6 +3103,7 @@ en:
   notice_successful_connection: "Successful connection."
   notice_successful_create: "Successful creation."
   notice_successful_delete: "Successful deletion."
+  notice_successful_cancel: "Successful cancellation."
   notice_successful_update: "Successful update."
   notice_successful_update_custom_fields_added_to_project: |
     Successful update. The custom fields of the activated types are automatically activated

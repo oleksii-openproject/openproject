@@ -125,8 +125,7 @@ module Redmine
     def format_time_as_date(time, format: nil)
       return nil unless time
 
-      zone = User.current.time_zone
-      local_date = time.in_time_zone(zone).to_date
+      local_date = in_user_zone(time).to_date
 
       if format
         local_date.strftime(format)
@@ -148,21 +147,29 @@ module Redmine
     def format_time(time, include_date: true, format: Setting.time_format)
       return nil unless time
 
-      zone = User.current.time_zone
-      local = time.in_time_zone(zone)
+      local = in_user_zone(time)
 
       (include_date ? "#{format_date(local)} " : "") +
         (format.blank? ? ::I18n.l(local, format: :time) : local.strftime(format))
     end
 
+    ##
+    # Formats the given time as a time string according to the +user+'s time zone
+    # @param time [Time] The time to format.
+    # @param user [User] The user to use for the time zone. Defaults to +User.current+.
+    # @return [Time] The time with the user's time zone applied.
+    def in_user_zone(time, user: User.current)
+      time.in_time_zone(user.time_zone)
+    end
+
     # Returns the offset to UTC (with utc prepended) currently active
     # in the current users time zone. DST is factored in so the offset can
     # shift over the course of the year
-    def formatted_time_zone_offset
+    def formatted_time_zone_offset(user: User.current)
       # Doing User.current.time_zone and format that will not take heed of DST as it has no notion
       # of a current time.
       # https://github.com/rails/rails/issues/7297
-      "UTC#{User.current.time_zone.now.formatted_offset}"
+      "UTC#{user.time_zone.now.formatted_offset}"
     end
 
     def day_name(day)

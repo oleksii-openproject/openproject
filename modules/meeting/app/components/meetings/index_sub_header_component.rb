@@ -34,10 +34,11 @@ module Meetings
     # rubocop:enable OpenProject/AddPreviewForViewComponent
     include ApplicationHelper
 
-    def initialize(query:, project: nil)
+    def initialize(query:, params:, project: nil)
       super
       @query = query
       @project = project
+      @params = params
     end
 
     def render_create_button?

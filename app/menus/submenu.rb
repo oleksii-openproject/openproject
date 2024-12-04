@@ -29,7 +29,7 @@ class Submenu
   include Rails.application.routes.url_helpers
   attr_reader :view_type, :project, :params
 
-  def initialize(view_type:, project: nil, params: nil)
+  def initialize(view_type:, params:, project: nil)
     @view_type = view_type
     @project = project
     @params = params
@@ -108,12 +108,13 @@ class Submenu
     { query_id: id }
   end
 
-  def menu_item(title:, icon_key: nil, count: nil, show_enterprise_icon: false, query_params: {})
+  def menu_item(title:, icon_key: nil, count: nil, show_enterprise_icon: false,
+                query_params: {}, selected: selected?(query_params))
     OpenProject::Menu::MenuItem.new(title:,
                                     href: query_path(query_params),
                                     icon: icon_map.fetch(icon_key, icon_key),
                                     count:,
-                                    selected: selected?(query_params),
+                                    selected:,
                                     favored: favored?(query_params),
                                     show_enterprise_icon:)
   end
@@ -143,5 +144,9 @@ class Submenu
 
   def query_path(query_params)
     raise NotImplementedError
+  end
+
+  def url_helpers
+    @url_helpers ||= OpenProject::StaticRouting::StaticRouter.new.url_helpers
   end
 end

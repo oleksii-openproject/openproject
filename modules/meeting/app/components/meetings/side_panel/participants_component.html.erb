@@ -4,6 +4,10 @@
       section.with_title { Meeting.human_attribute_name(:participants) }
       section.with_counter(count: @meeting.invited_or_attended_participants.count)
 
+      if @meeting.templated?
+        section.with_description { I18n.t('meeting.participants.template') }
+      end
+
       if @meeting.editable?
         section.with_action_icon(
           icon: :gear,

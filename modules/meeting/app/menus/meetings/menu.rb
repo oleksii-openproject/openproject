@@ -27,42 +27,70 @@
 # ++
 module Meetings
   class Menu < Submenu
-    attr_reader :view_type, :project
-
-    def initialize(project: nil, params: nil)
-      @project = project
-      @params = params
-
-      super(view_type:, project:, params:)
+    def initialize(params:, project: nil)
+      super(view_type: nil, project:, params:)
     end
 
     def menu_items
       [
         OpenProject::Menu::MenuGroup.new(header: nil, children: top_level_menu_items),
+        meeting_series_menu_group,
         OpenProject::Menu::MenuGroup.new(header: I18n.t(:label_involvement), children: involvement_sidebar_menu_items)
-      ]
+      ].compact
     end
 
     def top_level_menu_items
-      upcoming_filter = [{ time: { operator: "=", values: ["future"] } }].to_json
-      past_filter = [{ time: { operator: "=", values: ["past"] } }].to_json
+      all_filter = [{ invited_user_id: { operator: "*", values: [] } }].to_json
+      my_meetings_href = polymorphic_path([project, :meetings])
 
       [
-        menu_item(title: I18n.t(:label_upcoming_meetings),
-                  query_params: { filters: upcoming_filter, sort: "start_time" }),
-        menu_item(title: I18n.t(:label_past_meetings),
-                  query_params: { filters: past_filter, sort: "start_time:desc" })
-      ]
+        menu_item(title: I18n.t(:label_my_meetings), selected: params[:current_href] == my_meetings_href),
+        recurring_menu_item,
+        menu_item(title: I18n.t(:label_all_meetings),
+                  query_params: { filters: all_filter })
+      ].compact
+    end
+
+    def meeting_series_menu_group
+      return unless OpenProject::FeatureDecisions.recurring_meetings_active?
+
+      OpenProject::Menu::MenuGroup.new(header: I18n.t(:label_meeting_series), children: meeting_series_menu_items)
+    end
+
+    def meeting_series_menu_items
+      series = RecurringMeeting.visible
+
+      if project
+        series = series.where(project_id: project.id)
+      end
+
+      series.pluck(:id, :title)
+            .map do |id, title|
+        href = polymorphic_path([project, :recurring_meeting], { id: })
+        OpenProject::Menu::MenuItem.new(title:,
+                                        selected: params[:current_href] == href,
+                                        href:)
+      end
+    end
+
+    def recurring_menu_item
+      return unless OpenProject::FeatureDecisions.recurring_meetings_active?
+
+      recurring_filter = [{ type: { operator: "=", values: ["t"] } }].to_json
+
+      menu_item(title: I18n.t("label_recurring_meeting_plural"),
+                query_params: { filters: recurring_filter, sort: "start_time" })
     end
 
     def involvement_sidebar_menu_items
+      invitation_filter = [{ invited_user_id: { operator: "=", values: [User.current.id.to_s] } }].to_json
+
       [
-        menu_item(title: I18n.t(:label_upcoming_invitations)),
-        menu_item(title: I18n.t(:label_past_invitations),
-                  query_params: { filters: past_filter, sort: "start_time:desc" }),
-        menu_item(title: I18n.t(:label_attendee),
+        menu_item(title: I18n.t(:label_invitations),
+                  query_params: { filters: invitation_filter, sort: "start_time" }),
+        menu_item(title: I18n.t(:label_attended),
                   query_params: { filters: attendee_filter }),
-        menu_item(title: I18n.t(:label_author),
+        menu_item(title: I18n.t(:label_created_by_me),
                   query_params: { filters: author_filter })
       ]
     end
@@ -88,6 +116,10 @@ module Meetings
 
     def author_filter
       [{ author_id: { operator: "=", values: [User.current.id.to_s] } }].to_json
+    end
+
+    def recurring_meeting_type_filter
+      [{ type: { operator: "=", values: [RecurringMeeting.to_s] } }].to_json
     end
   end
 end
