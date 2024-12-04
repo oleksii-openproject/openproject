@@ -63,9 +63,22 @@ module Projects
     end
 
     def update
-      puts "*" * 100
-      pp(permitted_params.time_entries)
-      puts "*" * 100
+      time_entry = TimeEntry.find_by(id: params[:id])
+
+      call = TimeEntries::UpdateService
+        .new(user: current_user, model: time_entry)
+        .call(time_entry_params)
+
+      @time_entry = call.result
+
+      if call.success?
+      # TODO: just close here?
+      else
+        form_component = TimeEntries::TimeEntryFormComponent.new(time_entry: @time_entry)
+        update_via_turbo_stream(component: form_component, status: :bad_request)
+
+        respond_with_turbo_streams
+      end
     end
 
     private

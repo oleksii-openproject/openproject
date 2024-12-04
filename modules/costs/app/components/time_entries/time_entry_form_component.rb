@@ -54,7 +54,7 @@ module TimeEntries
       if time_entry.persisted?
         base.merge({
                      url: project_time_entry_path(project, time_entry),
-                     method: :post
+                     method: :patch
                    })
       else
 

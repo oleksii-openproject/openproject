@@ -69,6 +69,8 @@ module TimeEntries
     attribute :user_id,
               permission: :log_time
 
+    attribute :start_time # TODO: Add validation with global setting
+
     def assignable_activities
       if model.project
         TimeEntryActivity.active_in_project(model.project)
