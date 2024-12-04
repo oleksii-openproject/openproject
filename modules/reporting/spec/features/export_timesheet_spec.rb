@@ -28,7 +28,6 @@
 
 require_relative "../spec_helper"
 require_relative "support/pages/cost_report_page"
-require "pdf/inspector"
 
 RSpec.describe "Timesheet PDF export", :js do
   shared_let(:project) { create(:project) }
