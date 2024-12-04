@@ -58,7 +58,9 @@ module Meetings
     end
 
     def meeting_series_menu_items
-      series = RecurringMeeting.visible
+      series = RecurringMeeting
+        .visible
+        .reorder("LOWER(title)")
 
       if project
         series = series.where(project_id: project.id)
