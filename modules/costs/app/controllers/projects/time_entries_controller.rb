@@ -46,15 +46,34 @@ module Projects
     end
 
     def create
-      puts "*" * 100
-      pp(permitted_params.time_entries)
-      puts "*" * 100
+      call = TimeEntries::CreateService
+        .new(user: current_user)
+        .call(time_entry_params)
+
+      @time_entry = call.result
+
+      if call.success?
+      # TODO: just close here?
+      else
+        form_component = TimeEntries::TimeEntryFormComponent.new(time_entry: @time_entry)
+        update_via_turbo_stream(component: form_component, status: :bad_request)
+
+        respond_with_turbo_streams
+      end
     end
 
     def update
       puts "*" * 100
       pp(permitted_params.time_entries)
       puts "*" * 100
+    end
+
+    private
+
+    def time_entry_params
+      permitted_params.time_entries.merge(
+        project_id: @project.id
+      )
     end
   end
 end

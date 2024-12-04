@@ -72,7 +72,7 @@ module Costs::Patches::PermittedParamsPatch
           :spent_on,
           :start_time,
           :work_package_id,
-          :activity,
+          :activity_id,
           :project_id,
           :issue_id,
           :user_id
