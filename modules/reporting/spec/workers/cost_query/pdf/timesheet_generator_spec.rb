@@ -126,7 +126,7 @@ RSpec.describe CostQuery::PDF::TimesheetGenerator do
     [
       t_entry.work_package.subject,
       with_times_column && time_column.present? ? time_column : nil,
-      generator.format_duration(t_entry.hours),
+      generator.format_hours(t_entry.hours),
       t_entry.activity.name,
       t_entry.comments
     ].compact

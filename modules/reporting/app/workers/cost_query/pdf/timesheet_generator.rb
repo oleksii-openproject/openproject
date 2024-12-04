@@ -134,7 +134,7 @@ class CostQuery::PDF::TimesheetGenerator
       { content: format_date(spent_on), rowspan: entry.comments.present? ? 2 : 1 },
       entry.work_package.subject || "",
       with_times_column? ? format_spent_on_time(entry) : nil,
-      format_duration(entry.hours),
+      format_hours(entry.hours),
       entry.activity&.name || ""
     ].compact
   end
@@ -327,7 +327,7 @@ class CostQuery::PDF::TimesheetGenerator
     pdf.move_down(H2_MARGIN_BOTTOM)
   end
 
-  def format_duration(hours)
+  def format_hours(hours)
     return "" if hours < 0
 
     DurationConverter.output(hours)
@@ -341,7 +341,19 @@ class CostQuery::PDF::TimesheetGenerator
     end_timestamp = entry.end_timestamp
     return result if end_timestamp.nil?
 
-    "#{result} - #{format_time(end_timestamp, include_date: false)}"
+    days_between_suffix = format_days_between(start_timestamp, end_timestamp)
+    "#{result} - #{format_time(end_timestamp, include_date: false)}#{days_between_suffix}"
+  end
+
+  def format_days_between(start_timestamp, end_timestamp)
+    days_between = (end_timestamp.to_date - start_timestamp.to_date).to_i
+    if days_between.positive?
+      " (+#{days_formatter.format_value(days_between, nil).delete(' ')})"
+    end
+  end
+
+  def days_formatter
+    @days_formatter ||= WorkPackage::Exports::Formatters::Days.new(nil)
   end
 
   def with_times_column?
