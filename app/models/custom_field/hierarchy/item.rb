@@ -36,5 +36,5 @@ class CustomField::Hierarchy::Item < ApplicationRecord
 
   scope :including_children, -> { includes(children: :children) }
 
-  def to_s = label
+  def to_s = short.nil? ? label : "#{label} (#{short})"
 end

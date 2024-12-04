@@ -29,14 +29,11 @@
 #++
 
 class CustomField::Hierarchy::HierarchyItemAdapter
-  attr_reader :name
-
   delegate :id, :label, :short, :to_s, to: :item
 
-  def initialize(item:)
-    @item = item
-    @name = item.label
-  end
+  def initialize(item:) = @item = item
+
+  def name = @item.label
 
   private
 
