@@ -38,45 +38,45 @@ RSpec.describe CostQuery::PDF::TimesheetGenerator do
   let(:time_entry_user) { create(:user, firstname: "TimeEntry", lastname: "User") }
   let(:project) { create(:project) }
   let(:generator) { described_class.new(query, project) }
-  let(:export_time) { DateTime.new(2024, 12, 04, 23, 59) }
+  let(:export_time) { DateTime.new(2024, 12, 4, 23, 59) }
   let(:export_time_formatted) { format_time(export_time, include_date: true) }
-  let(:user_time_entry) {
+  let(:user_time_entry) do
     create(:time_entry,
            project:,
            user: user,
-           spent_on: Date.new(2024, 12, 01),
+           spent_on: Date.new(2024, 12, 0o1),
            start_time: 8 * 60,
-           time_zone: "UTC"
-    ) }
-  let(:time_entry) {
+           time_zone: "UTC")
+  end
+  let(:time_entry) do
     create(:time_entry,
            project:,
            user: time_entry_user,
-           spent_on: Date.new(2024, 12, 01),
+           spent_on: Date.new(2024, 12, 0o1),
            start_time: 9 * 60,
-           time_zone: "UTC"
-    ) }
-  let(:other_time_entry) {
+           time_zone: "UTC")
+  end
+  let(:other_time_entry) do
     create(:time_entry,
            project:,
            user: time_entry_user,
-           spent_on: Date.new(2024, 12, 01),
+           spent_on: Date.new(2024, 12, 0o1),
            start_time: 10 * 60,
-           time_zone: "UTC"
-    ) }
-  let(:time_entry_with_comment) {
+           time_zone: "UTC")
+  end
+  let(:time_entry_with_comment) do
     create(:time_entry,
            project:,
            user: time_entry_user,
            comments: "This is a comment",
-           spent_on: Date.new(2024, 12, 02)
-    ) }
-  let(:time_entry_without_time) {
+           spent_on: Date.new(2024, 12, 0o2))
+  end
+  let(:time_entry_without_time) do
     create(:time_entry,
            project:,
            user: time_entry_user,
-           spent_on: Date.new(2024, 12, 03)
-    ) }
+           spent_on: Date.new(2024, 12, 0o3))
+  end
   let(:time_entries) { [user_time_entry, time_entry, other_time_entry, time_entry_with_comment, time_entry_without_time] }
 
   before do
