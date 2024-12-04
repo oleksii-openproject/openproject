@@ -176,7 +176,9 @@ class CostQuery::PDF::TimesheetGenerator
   end
 
   def adjust_borders_last_column(table)
-    table.columns(0).borders = %i[top bottom left right]
+    table.columns(table_columns_widths.length - 1).style do |c|
+      c.borders = c.borders + [:right]
+    end
   end
 
   def adjust_borders_spanned_column(table)
