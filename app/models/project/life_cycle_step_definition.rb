@@ -42,6 +42,8 @@ class Project::LifeCycleStepDefinition < ApplicationRecord
 
   acts_as_list
 
+  default_scope { order(:position) }
+
   def initialize(*args)
     if instance_of? Project::LifeCycleStepDefinition
       # Do not allow directly instantiating this class
