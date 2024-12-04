@@ -658,6 +658,10 @@ ru:
     label_add_x: "Добавить %{x}"
     label_edit_x: "Редактировать %{x}"
     label_add_description: "Добавить описание"
+    lag:
+      subject: "Lag"
+      title: "Lag (in days)"
+      caption: "The gap in number of working days in between the two work packages"
     relations:
       label_relates_singular: "связан с"
       label_relates_plural: "связаны с"

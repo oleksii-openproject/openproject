@@ -90,7 +90,7 @@ pl:
   label_meeting: "Spotkanie"
   label_meeting_plural: "Spotkania"
   label_meeting_new: "Nowe spotkanie"
-  label_meeting_new_dynamic: "New dynamic meeting"
+  label_meeting_new_dynamic: "Nowe spotkanie dynamiczne"
   label_meeting_create: "Utwórz spotkanie"
   label_meeting_copy: "Skopiuj spotkanie"
   label_meeting_edit: "Edycja spotkania"

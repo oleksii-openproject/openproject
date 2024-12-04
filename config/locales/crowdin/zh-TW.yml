@@ -632,6 +632,10 @@ zh-TW:
     label_add_x: "新增 %{x}"
     label_edit_x: "編輯：%{x}"
     label_add_description: "新增說明"
+    lag:
+      subject: "Lag"
+      title: "Lag (in days)"
+      caption: "The gap in number of working days in between the two work packages"
     relations:
       label_relates_singular: "相關於"
       label_relates_plural: "相關於"

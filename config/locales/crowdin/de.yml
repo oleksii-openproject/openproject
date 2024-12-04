@@ -636,6 +636,10 @@ de:
     label_add_x: "%{x} hinzufügen"
     label_edit_x: "%{x} editieren"
     label_add_description: "Beschreibung hinzufügen"
+    lag:
+      subject: "Lag"
+      title: "Lag (in days)"
+      caption: "The gap in number of working days in between the two work packages"
     relations:
       label_relates_singular: "Beziehung mit"
       label_relates_plural: "Beziehungen mit"

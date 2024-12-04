@@ -83,7 +83,7 @@ uk:
       metadata_url: У мене є URL-адреса кінцевої точки виявлення
       endpoint_url: URL кінцевої точки
     providers:
-      label_providers: "Providers"
+      label_providers: "Постачальники"
       seeded_from_env: "Цього постачальника послуг додано з конфігурації середовища. Його не можна змінити."
       google:
         name: Google

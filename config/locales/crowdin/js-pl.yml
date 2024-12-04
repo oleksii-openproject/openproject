@@ -105,7 +105,7 @@ pl:
     button_update: "Aktualizacja"
     button_export-pdf: "Pobierz plik PDF"
     button_export-atom: "Pobierz Atom"
-    button_generate_pdf: "Generate PDF"
+    button_generate_pdf: "Wygeneruj PDF"
     button_create: "Utwórz"
     card:
       add_new: "Dodaj nową kartę"
@@ -360,7 +360,7 @@ pl:
           "15_1":
             standard:
               new_features_html: >
-                The release brings various features and improvements for you, e.g. <br> <ul class="%{list_styling_class}"> <li>Custom fields of type hierarchy (Enterprise add-on).</li> <li>Redesign of the Relations tab in work packages.</li> <li>Redesign of the Meetings index page.</li> <li>Manual page breaks in PDF work package exports.</li> <li>Zen mode for project lists.</li> </ul>
+                Ta wersja wprowadza różne funkcje i ulepszenia, np. <br> <ul class="%{list_styling_class}"> <li>Niestandardowe pola hierarchii typów (dodatek wersji Enterprise).</li> <li>Przeprojektowanie karty Relacje w pakietach roboczych.</li> <li>Przeprojektowanie strony indeksu Spotkania.</li> <li>Ręczne podziały stron w eksporcie pakietów roboczych w formacie PDF.</li> <li>Tryb Zen dla list projektów.</li> </ul>
     ical_sharing_modal:
       title: "Subskrybuj kalendarz"
       inital_setup_error_message: "Podczas pobierania danych wystąpił błąd."
@@ -576,7 +576,7 @@ pl:
         members: "Zaproś nowych <b>członków</b> do swojego projektu."
         quick_add_button: "Kliknij ikonę plus (+) w nawigacji nagłówka, aby <b>utworzyć nowy projekt</b> lub <b>zaprosić współpracowników</b>."
         sidebar_arrow: "Użyj strzałki powrotu w lewym górnym rogu, aby wrócić do <b>menu głównego</b> projektu."
-        welcome: "Take a three-minute introduction tour to learn the most <b>important features</b>. <br> We recommend completing the steps until the end. You can restart the tour any time."
+        welcome: "Poświęć trzy minuty na zapoznanie się z <b>najważniejszymi funkcjami</b>. \n <br> Zalecamy wykonanie tych kroków do końca. Zwiedzanie można w każdej chwili zacząć od nowa."
         wiki: "W <b>wiki</b> możesz dokumentować wiedzę i dzielić się nią z zespołem."
         backlogs:
           overview: "Zarządzaj swoją pracą w widoku <b>backlogs</b>."

@@ -36,15 +36,15 @@ pl:
           name: Czarny
       life_cycle_colors:
         item_0:
-          name: PM2 Orange
+          name: PM2 pomarańczowy
         item_1:
-          name: PM2 Purple
+          name: PM2 fioletowy
         item_2:
-          name: PM2 Red
+          name: PM2 czerwony
         item_3:
-          name: PM2 Magenta
+          name: PM2 amarantowy
         item_4:
-          name: PM2 Green Yellow
+          name: PM2 żółtozielony
       document_categories:
         item_0:
           name: Dokumentacja
@@ -83,19 +83,19 @@ pl:
     standard:
       life_cycles:
         item_0:
-          name: Initiating
+          name: Inicjowanie
         item_1:
-          name: Ready for Planning
+          name: Gotowy do planowania
         item_2:
-          name: Planning
+          name: Planowanie
         item_3:
-          name: Ready for Executing
+          name: Gotowy do wykonania
         item_4:
-          name: Executing
+          name: Wykonywanie
         item_5:
-          name: Ready for Closing
+          name: Gotowy do zamknięcia
         item_6:
-          name: Closing
+          name: Zamykanie
       priorities:
         item_0:
           name: Niski
