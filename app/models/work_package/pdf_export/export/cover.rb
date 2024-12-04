@@ -40,19 +40,19 @@ module WorkPackage::PDFExport::Export::Cover
   def write_cover_hero
     max_width = pdf.bounds.width - styles.cover_hero_padding[:right_padding]
     float_top = write_background_image
-    float_top -= write_hero_title(float_top, max_width) if cover_page_title.present?
-    float_top -= write_hero_heading(float_top, max_width) if cover_page_heading.present?
-    float_top -= write_hero_dates(float_top, max_width) if cover_page_dates.present?
-    write_hero_subheading(float_top, max_width) if cover_page_subheading.present?
+    float_top -= write_hero_title(float_top, max_width)
+    float_top -= write_hero_heading(float_top, max_width)
+    float_top -= write_hero_dates(float_top, max_width)
+    write_hero_subheading(float_top, max_width)
   end
 
   def available_title_height(current_y)
-    result = current_y
-    result -= styles.cover_hero_title_max_height + styles.cover_hero_title_spacing if cover_page_title.present?
-    result -= styles.cover_hero_heading_spacing if cover_page_heading.present?
-    result -= styles.cover_hero_dates_spacing if cover_page_dates.present?
-    result -= styles.cover_hero_subheading_max_height if cover_page_subheading.present?
-    result
+    current_y - [
+      (styles.cover_hero_title_max_height + styles.cover_hero_title_spacing if cover_page_title.present?),
+      (styles.cover_hero_heading_spacing if cover_page_heading.present?),
+      (styles.cover_hero_dates_max_height if cover_page_dates.present?),
+      (styles.cover_hero_subheading_max_height if cover_page_subheading.present?)
+    ].compact.sum
   end
 
   def write_cover_hr
@@ -83,6 +83,8 @@ module WorkPackage::PDFExport::Export::Cover
   end
 
   def write_hero_title(top, width)
+    return 0 if cover_page_title.blank?
+
     write_hero_text(
       top:, width:,
       text: cover_page_title,
@@ -92,6 +94,8 @@ module WorkPackage::PDFExport::Export::Cover
   end
 
   def write_hero_heading(top, width)
+    return 0 if cover_page_heading.blank?
+
     write_hero_text(
       top:, width:,
       text: cover_page_heading,
@@ -101,6 +105,8 @@ module WorkPackage::PDFExport::Export::Cover
   end
 
   def write_hero_dates(top, width)
+    return 0 if cover_page_dates.blank?
+
     write_hero_text(
       top:, width:,
       text: cover_page_dates,
@@ -110,6 +116,8 @@ module WorkPackage::PDFExport::Export::Cover
   end
 
   def write_hero_subheading(top, width)
+    return 0 if cover_page_subheading.blank?
+
     write_hero_text(
       top:, width:,
       text: cover_page_subheading,
