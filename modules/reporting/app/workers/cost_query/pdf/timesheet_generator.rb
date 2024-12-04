@@ -330,7 +330,7 @@ class CostQuery::PDF::TimesheetGenerator
   def format_duration(hours)
     return "" if hours < 0
 
-    ::OpenProject::Common::DurationComponent.new(hours.to_f, :hours, abbreviated: true).text
+    DurationConverter.output(hours)
   end
 
   def format_spent_on_time(entry)
