@@ -11,13 +11,14 @@ class WorkPackageRelationsTab::IndexComponent < ApplicationComponent
 
   attr_reader :work_package, :relations, :children, :directionally_aware_grouped_relations
 
-  def initialize(work_package:, relations:, children:)
+  def initialize(work_package:, relations:, children:, scroll_target_id: nil)
     super()
 
     @work_package = work_package
     @relations = relations
     @children = children
     @directionally_aware_grouped_relations = group_relations_by_directional_context
+    @scroll_target_id = scroll_target_id
   end
 
   def self.wrapper_key
