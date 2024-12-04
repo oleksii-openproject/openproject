@@ -74,6 +74,7 @@ export class LocationPickerModalComponent extends FilePickerBaseModalComponent {
       submitEmptySelection: this.i18n.t('js.storages.file_links.selection_none'),
       cancel: this.i18n.t('js.button_cancel'),
       selectAll: this.i18n.t('js.storages.file_links.select_all'),
+      newFolder: this.i18n.t('js.storages.new_folder'),
     },
     tooltip: {
       directory_not_writeable: this.i18n.t('js.storages.files.directory_not_writeable'),
@@ -142,6 +143,10 @@ export class LocationPickerModalComponent extends FilePickerBaseModalComponent {
   public chooseLocation():void {
     this.submitted = true;
     this.service.close();
+  }
+
+  public newFolder():void {
+    // console.log("this button does nothing. To be implemented");
   }
 
   protected storageFileToListItem(file:IStorageFile, index:number):StorageFileListItem {

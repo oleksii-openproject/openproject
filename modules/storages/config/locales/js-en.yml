@@ -13,6 +13,7 @@ en:
       open_storage: "Open %{storageType}"
       select_location: "Select location"
       choose_location: "Choose location"
+      new_folder: "New folder"
 
       types:
         nextcloud: "Nextcloud"
