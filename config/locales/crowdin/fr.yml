@@ -33,7 +33,7 @@ fr:
         label_activity_show_only_changes: "Afficher uniquement les modifications"
         label_sort_asc: "Les plus récents en bas"
         label_sort_desc: "Les plus récents en haut"
-        label_type_to_comment: "Add a comment. Type @ to notify people."
+        label_type_to_comment: "Ajoutez un commentaire. Saisissez @ pour informer les gens."
         label_submit_comment: "Envoyer le commentaire"
         changed_on: "modifié le"
         created_on: "a créé ce lot de travaux le"
@@ -240,7 +240,7 @@ fr:
           one: 1 sous-élément
           other: "%{count} sous-éléments"
     upsale:
-      custom_field_format_hierarchy: "Need a hierarchy in your custom fields for work packages?"
+      custom_field_format_hierarchy: "Vous avez besoin d'une hiérarchie dans vos champs personnalisés pour les lots de travaux ?"
     text_add_new_custom_field: >
       Pour ajouter de nouveaux champs personnalisés à un projet, vous devez d’abord les créer avant de pouvoir les ajouter à ce projet.
     is_enabled_globally: "Est activé globalement"
@@ -267,20 +267,20 @@ fr:
     single: "ou"
   dry_validation:
     errors:
-      int?: "must be an integer."
-      filled?: "must be filled."
-      greater_or_equal_zero: "must be greater or equal to 0."
-      not_found: "not found."
+      int?: "doit être un nombre entier."
+      filled?: "doit être rempli."
+      greater_or_equal_zero: "doit être supérieur ou égal à 0."
+      not_found: "introuvable."
       rules:
         item:
-          root_item: "cannot be a root item."
-          not_persisted: "must be an already existing item."
+          root_item: "ne peut pas être un élément racine."
+          not_persisted: "doit être un élément déjà existant."
         label:
-          not_unique: "must be unique within the same hierarchy level."
+          not_unique: "doit être unique au sein d'un même niveau hiérarchique."
         short:
-          not_unique: "must be unique within the same hierarchy level."
+          not_unique: "doit être unique au sein d'un même niveau hiérarchique."
         parent:
-          not_descendant: "must be a descendant of the hierarchy root."
+          not_descendant: "doit être un descendant de la racine de la hiérarchie."
     rules:
       depth: "Profondeur"
       item: "Élément"
@@ -634,62 +634,62 @@ fr:
           no_results_title_text: Il n'y a actuellement aucune version disponible.
   work_package_relations_tab:
     index:
-      action_bar_title: "Add relations to other work packages to create a link between them."
-      no_results_title_text: There are currently no relations available.
-      blankslate_heading: "No relations"
-      blankslate_description: "This work package does not have any relations yet."
-    label_add_x: "Add %{x}"
-    label_edit_x: "Edit %{x}"
-    label_add_description: "Add description"
+      action_bar_title: "Ajoutez des relations à d'autres lots de travaux pour créer un lien entre eux."
+      no_results_title_text: Il n'y a actuellement aucune relation disponible.
+      blankslate_heading: "Aucune relation"
+      blankslate_description: "Ce lot de travaux n'a pas encore de relations."
+    label_add_x: "Ajouter %{x}"
+    label_edit_x: "Modifier %{x}"
+    label_add_description: "Ajouter une description"
     relations:
-      label_relates_singular: "related to"
-      label_relates_plural: "related to"
-      label_relates_to_singular: "related to"
-      label_relates_to_plural: "related to"
-      relates_description: "Creates a visible link between the two work packages with no additional effect"
-      relates_to_description: "Creates a visible link between the two work packages with no additional effect"
-      label_precedes_singular: "successor (after)"
-      label_precedes_plural: "successors (after)"
-      precedes_description: "The related work package necessarily needs to start after this one finishes"
-      label_follows_singular: "predecessor (before)"
-      label_follows_plural: "predecessors (before)"
-      follows_description: "The related work package necessarily needs to finish before this one can start"
-      label_child_singular: "child"
-      label_child_plural: "children"
-      child_description: "Makes the related a work package a sub-item of the current (parent) work package"
-      label_blocks_singular: "blocks"
-      label_blocks_plural: "blocks"
-      blocks_description: "The related work package cannot be closed until this one is closed first"
-      label_blocked_singular: "blocked by"
-      label_blocked_plural: "blocked by"
-      label_blocked_by_singular: "blocked by"
-      label_blocked__by_plural: "blocked by"
-      blocked_description: "This work package cannot be closed until the related one is closed first"
-      blocked_by_description: "This work package cannot be closed until the related one is closed first"
-      label_duplicates_singular: "duplicates"
-      label_duplicates_plural: "duplicates"
-      duplicates_description: "This is a copy of the related work package"
-      label_duplicated_singular: "duplicated by"
-      label_duplicated_plural: "duplicated by"
-      label_duplicated_by_singular: "duplicated by"
-      label_duplicated_by_plural: "duplicated by"
-      duplicated_by_description: "The related work package is a copy of this"
-      duplicated_description: "The related work package is a copy of this"
-      label_includes_singular: "includes"
-      label_includes_plural: "includes"
-      includes_description: "Marks the related work package as including this one with no additional effect"
-      label_partof_singular: "part of"
-      label_partof_plural: "part of"
-      label_part_of_singular: "part of"
-      label_part_of_plural: "part of"
-      partof_description: "Marks the related work package as being part of this one with no additional effect"
-      part_of_description: "Marks the related work package as being part of this one with no additional effect"
-      label_requires_singular: "requires"
-      label_requires_plural: "requires"
-      requires_description: "Marks the related work package as a requirement to this one"
-      label_required_singular: "required by"
-      label_required_plural: "required by"
-      required_description: "Marks this work package as being a requirement to the related one"
+      label_relates_singular: "lié à"
+      label_relates_plural: "liés à"
+      label_relates_to_singular: "lié à"
+      label_relates_to_plural: "liés à"
+      relates_description: "Crée un lien visible entre les deux lots de travaux sans effet supplémentaire"
+      relates_to_description: "Crée un lien visible entre les deux lots de travaux sans effet supplémentaire"
+      label_precedes_singular: "successeur (après)"
+      label_precedes_plural: "successeurs (après)"
+      precedes_description: "Le lot de travaux lié doit nécessairement commencer après la fin de celui-ci"
+      label_follows_singular: "prédécesseur (avant)"
+      label_follows_plural: "prédécesseurs (avant)"
+      follows_description: "Le lot de travaux lié doit nécessairement se terminer avant que celui-ci puisse commencer"
+      label_child_singular: "enfant"
+      label_child_plural: "enfants"
+      child_description: "Fait du lot de travaux apparenté un sous-élément du lot de travaux actuel (parent)"
+      label_blocks_singular: "blocs"
+      label_blocks_plural: "blocs"
+      blocks_description: "Le lot de travaux associé ne peut pas être fermé avant que celui-ci soit fermé en premier"
+      label_blocked_singular: "bloqué par"
+      label_blocked_plural: "bloqués par"
+      label_blocked_by_singular: "bloqué par"
+      label_blocked__by_plural: "bloqués par"
+      blocked_description: "Ce lot de travaux ne peut pas être fermé avant que le lot associé soit fermé en premier"
+      blocked_by_description: "Ce lot de travaux ne peut pas être fermé avant que le lot associé soit fermé en premier"
+      label_duplicates_singular: "doublon"
+      label_duplicates_plural: "doublons"
+      duplicates_description: "Il s'agit d'une copie du lot de travaux correspondant"
+      label_duplicated_singular: "dupliqué par"
+      label_duplicated_plural: "dupliqués par"
+      label_duplicated_by_singular: "dupliqué par"
+      label_duplicated_by_plural: "dupliqués par"
+      duplicated_by_description: "Le lot de travaux correspondant est une copie de ceci"
+      duplicated_description: "Le lot de travaux correspondant est une copie de ceci"
+      label_includes_singular: "inclut"
+      label_includes_plural: "inclut"
+      includes_description: "Marque le lot de travaux lié comme incluant celui-ci sans effet supplémentaire"
+      label_partof_singular: "partie de"
+      label_partof_plural: "partie de"
+      label_part_of_singular: "partie de"
+      label_part_of_plural: "partie de"
+      partof_description: "Marque le lot de travaux lié comme faisant partie de celui-ci sans effet supplémentaire"
+      part_of_description: "Marque le lot de travaux lié comme faisant partie de celui-ci sans effet supplémentaire"
+      label_requires_singular: "requiert"
+      label_requires_plural: "requiert"
+      requires_description: "Marque le lot de travaux lié comme obligatoire pour celui-ci"
+      label_required_singular: "requis par"
+      label_required_plural: "requis par"
+      required_description: "Marque ce lot de travaux comme étant une exigence pour le lot de travaux correspondant"
       label_parent_singular: "parent"
       label_parent_plural: "parent"
   label_invitation: Invitation
@@ -1091,17 +1091,17 @@ fr:
         project/life_cycle_step_definition:
           attributes:
             type:
-              must_be_a_stage_or_gate: "must be either Project::StageDefinition or Project::GateDefinition"
+              must_be_a_stage_or_gate: "doit être soit Project::StageDefinition soit Project::GateDefinition"
         project/life_cycle_step:
           attributes:
             type:
-              must_be_a_stage_or_gate: "must be either Project::Stage or Project::Gate"
-              must_be_a_stage: "must be a Project::Stage"
-              must_be_a_gate: "must be a Project::Gate"
+              must_be_a_stage_or_gate: "doit être soit Project::Stage soit Project::Gate"
+              must_be_a_stage: "doit être un Project::Stage"
+              must_be_a_gate: "doit être un Project::Gate"
         project/gate:
           attributes:
             base:
-              end_date_not_allowed: "Cannot assign `end_date` to a Project::Gate"
+              end_date_not_allowed: "Impossible d'affecter `end_date` à un Project::Gate"
         query:
           attributes:
             project:
@@ -1898,22 +1898,22 @@ fr:
       hours: h
       days: j
   pdf_generator:
-    page_nr_footer: "Page %{page} of %{total}"
+    page_nr_footer: "Page %{page} sur %{total}"
     dialog:
-      title: Generate PDF
-      submit: Generate
+      title: Générer un fichier PDF
+      submit: Générer
       header_right:
-        label: Header right
-        caption: Text to be displayed in the right of the header
+        label: En-tête droit
+        caption: Texte à afficher à droite de l'en-tête
       footer_center:
-        label: Footer center
-        caption: Text to be displayed in the center of the footer
+        label: Centre du pied de page
+        caption: Texte à afficher au centre du pied de page
       hyphenation:
-        label: Hyphenation
-        caption: Break words between lines to improve text justification and readability.
+        label: Division syllabique
+        caption: Séparez les mots entre les lignes pour améliorer la justification et la lisibilité du texte.
       paper_size:
-        label: Paper size
-        caption: The size of the paper to use for the PDF.
+        label: Format du papier
+        caption: La taille du papier à utiliser pour le PDF.
   extraction:
     available:
       pdftotext: "Pdftotext disponible (optionnel)"
@@ -2272,7 +2272,7 @@ fr:
   label_environment: "Environement"
   label_estimates_and_progress: "Estimations et progression"
   label_equals: "est"
-  label_equals_with_descendants: "is any with descendants"
+  label_equals_with_descendants: "est l'un des éléments avec des descendants"
   label_everywhere: "partout"
   label_example: "Exemple"
   label_experimental: "Expérimental"
@@ -2538,7 +2538,7 @@ fr:
   label_relates: "En relation avec"
   label_relates_to: "En relation avec"
   label_relation: "Relation"
-  label_relation_actions: "Relation actions"
+  label_relation_actions: "Actions de relation"
   label_relation_delete: "Supprimer la relation"
   label_relation_new: "Nouvelle relation"
   label_release_notes: "Notes de version"

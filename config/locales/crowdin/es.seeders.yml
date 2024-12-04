@@ -36,15 +36,15 @@ es:
           name: Negro
       life_cycle_colors:
         item_0:
-          name: PM2 Orange
+          name: PM2 Naranja
         item_1:
-          name: PM2 Purple
+          name: PM2 Morado
         item_2:
-          name: PM2 Red
+          name: PM2 Rojo
         item_3:
           name: PM2 Magenta
         item_4:
-          name: PM2 Green Yellow
+          name: PM2 Verde amarillo
       document_categories:
         item_0:
           name: Documentación
@@ -83,19 +83,19 @@ es:
     standard:
       life_cycles:
         item_0:
-          name: Initiating
+          name: Iniciando
         item_1:
-          name: Ready for Planning
+          name: Listo para la planificación
         item_2:
-          name: Planning
+          name: Planificación
         item_3:
-          name: Ready for Executing
+          name: Listo para la ejecución
         item_4:
-          name: Executing
+          name: Ejecutando
         item_5:
-          name: Ready for Closing
+          name: Listo para el cierre
         item_6:
-          name: Closing
+          name: Cierre
       priorities:
         item_0:
           name: Baja
