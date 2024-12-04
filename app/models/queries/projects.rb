@@ -62,6 +62,7 @@ module Queries::Projects
     select Selects::CustomField
     select Selects::Default
     select Selects::LatestActivityAt
+    select Selects::LifeCycleStep
     select Selects::RequiredDiskSpace
     select Selects::Status
     select Selects::Favored
