@@ -341,6 +341,12 @@ Redmine::MenuManager.map :admin_menu do |menu|
             caption: :label_project_plural,
             icon: "project"
 
+  menu.push :project_life_cycle_step_definitions_settings,
+            { controller: "/admin/settings/project_life_cycle_step_definitions", action: :index },
+            if: Proc.new { User.current.admin? },
+            caption: :label_project_lifecycle,
+            parent: :admin_projects_settings
+
   menu.push :project_custom_fields_settings,
             { controller: "/admin/settings/project_custom_fields", action: :index },
             if: Proc.new { User.current.admin? },
