@@ -138,7 +138,7 @@ module Redmine::MenuManager::TopMenuHelper
   end
 
   def render_user_drop_down(items)
-    avatar = avatar(User.current, class: "op-top-menu-user-avatar")
+    avatar = avatar(User.current, class: "op-top-menu-user-avatar", hover_card: { active: false })
     render_menu_dropdown_with_items(
       label: avatar.presence || "",
       label_options: {

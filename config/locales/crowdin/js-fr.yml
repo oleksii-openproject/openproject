@@ -360,7 +360,7 @@ fr:
           "15_1":
             standard:
               new_features_html: >
-                The release brings various features and improvements for you, e.g. <br> <ul class="%{list_styling_class}"> <li>Custom fields of type hierarchy (Enterprise add-on).</li> <li>Redesign of the Relations tab in work packages.</li> <li>Redesign of the Meetings index page.</li> <li>Manual page breaks in PDF work package exports.</li> <li>Zen mode for project lists.</li> </ul>
+                Cette version apporte diverses fonctionnalités et améliorations, par exemple <br> <ul class="%{list_styling_class}"> <li>Champs personnalisés de type hiérarchique (module Enterprise).</li> <li>Refonte de l'onglet Relations dans les lots de travaux.</li> <li>Refonte de la page d'index des réunions.</li> <li>Sauts de page manuels dans les exportations de lots de travaux PDF.</li> <li>Mode Zen pour les listes de projets.</li> </ul>
     ical_sharing_modal:
       title: "S'abonner au calendrier"
       inital_setup_error_message: "Une erreur est survenue lors de la récupération des données."

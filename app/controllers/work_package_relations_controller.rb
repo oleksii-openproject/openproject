@@ -121,12 +121,12 @@ class WorkPackageRelationsController < ApplicationController
 
   def create_relation_params
     params.require(:relation)
-          .permit(:relation_type, :to_id, :description)
+          .permit(:relation_type, :to_id, :description, :lag)
           .merge(from_id: @work_package.id)
   end
 
   def update_relation_params
     params.require(:relation)
-          .permit(:description)
+          .permit(:description, :lag)
   end
 end

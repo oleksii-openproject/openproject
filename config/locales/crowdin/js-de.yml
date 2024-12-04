@@ -359,7 +359,7 @@ de:
           "15_1":
             standard:
               new_features_html: >
-                The release brings various features and improvements for you, e.g. <br> <ul class="%{list_styling_class}"> <li>Custom fields of type hierarchy (Enterprise add-on).</li> <li>Redesign of the Relations tab in work packages.</li> <li>Redesign of the Meetings index page.</li> <li>Manual page breaks in PDF work package exports.</li> <li>Zen mode for project lists.</li> </ul>
+                Die Version bringt verschiedene Funktionen und Verbesserungen für Sie, z.B. <br> <ul class="%{list_styling_class}"> <li>Benutzerdefinierte Felder vom Typ Hierarchie (Enterprise Add-on).</li> <li>Neugestaltung des Beziehungen-Tabs in Arbeitspaketen.</li> <li>Neugestaltung der Meeting-Indexseite.</li> <li>Manuelle Seitenumbrüche beim Export von PDF-Arbeitspaketen.</li> <li>Zen-Modus für Projektlisten.</li> </ul>
     ical_sharing_modal:
       title: "Kalender abonnieren"
       inital_setup_error_message: "Beim Abrufen der Daten ist ein Fehler aufgetreten."

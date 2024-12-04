@@ -56,6 +56,7 @@ import { addFiltersToPath } from 'core-app/core/apiv3/helpers/add-filters-to-pat
 import { UserAutocompleterTemplateComponent } from 'core-app/shared/components/autocompleter/user-autocompleter/user-autocompleter-template.component';
 import { IUser } from 'core-app/core/state/principals/user.model';
 import { compareByAttribute } from 'core-app/shared/helpers/angular/tracking-functions';
+import { SHOW_USER_HOVER_CARD } from 'core-app/shared/components/time_entries/create/create.modal';
 
 export const usersAutocompleterSelector = 'op-user-autocompleter';
 
@@ -87,18 +88,31 @@ export interface IUserAutocompleteItem {
 export class UserAutocompleterComponent extends OpAutocompleterComponent<IUserAutocompleteItem> implements OnInit, ControlValueAccessor {
   @Input() public inviteUserToProject:string|undefined;
 
+  @Input() public isOpenedInModal:boolean = false;
+  @Input() public hoverCards:boolean = true;
+
   @Input() public url:string = this.apiV3Service.users.path;
 
   @Output() public userInvited = new EventEmitter<HalResource>();
 
   @InjectField(OpInviteUserModalService) opInviteUserModalService:OpInviteUserModalService;
+  @InjectField(SHOW_USER_HOVER_CARD, true) showUserHoverCard:boolean;
 
   getOptionsFn = this.getAvailableUsers.bind(this);
 
   ngOnInit():void {
     super.ngOnInit();
 
-    this.applyTemplates(UserAutocompleterTemplateComponent, { inviteUserToProject: this.inviteUserToProject });
+    // Disabling hover cards by injection takes precedence over the input setting
+    if (!this.showUserHoverCard) {
+      this.hoverCards = false;
+    }
+
+    this.applyTemplates(UserAutocompleterTemplateComponent, {
+      inviteUserToProject: this.inviteUserToProject,
+      isOpenedInModal: this.isOpenedInModal,
+      hoverCards: this.hoverCards,
+    });
 
     this
       .opInviteUserModalService

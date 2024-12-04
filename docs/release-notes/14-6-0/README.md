@@ -143,4 +143,4 @@ Last but not least, we are very grateful for our very engaged translation contri
 - [BigSeung](https://crowdin.com/profile/BigSeung), for translations into Korean.
 - [Raffaele Brevetti](https://crowdin.com/profile/rbrevetti), for translations into Italian.
 
-Would you like to help out with translations yourself? Then take a look at our [translation guide](../../development/translate-openproject/) and find out exactly how you can contribute. It is very much appreciated!
+Would you like to help out with translations yourself? Then take a look at our [translation guide](../../contributions-guide/translate-openproject/) and find out exactly how you can contribute. It is very much appreciated!

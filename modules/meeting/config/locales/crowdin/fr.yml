@@ -88,7 +88,7 @@ fr:
   label_meeting: "Réunion"
   label_meeting_plural: "Réunions"
   label_meeting_new: "Nouvelle réunion"
-  label_meeting_new_dynamic: "New dynamic meeting"
+  label_meeting_new_dynamic: "Nouvelle réunion dynamique"
   label_meeting_create: "Créer une réunion"
   label_meeting_copy: "Copier la réunion"
   label_meeting_edit: "Modifier la réunion"

@@ -630,6 +630,10 @@ zh-CN:
     label_add_x: "添加 %{x}"
     label_edit_x: "编辑 %{x}"
     label_add_description: "添加说明"
+    lag:
+      subject: "Lag"
+      title: "Lag (in days)"
+      caption: "The gap in number of working days in between the two work packages"
     relations:
       label_relates_singular: "关联到"
       label_relates_plural: "关联到"
