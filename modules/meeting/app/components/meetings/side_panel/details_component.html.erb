@@ -39,7 +39,7 @@
                 @meeting.recurring_meeting.human_day_of_week
               end
             end
-          end if  @meeting.recurring_meeting.frequency != "daily"
+          end if @meeting.recurring_meeting.frequency_weekly?
         else
           if @series.present?
             details.with_row(mb: 2) do

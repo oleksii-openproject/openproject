@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #-- copyright
 # OpenProject is an open source project management software.
 # Copyright (C) the OpenProject GmbH
@@ -26,25 +28,49 @@
 # See COPYRIGHT and LICENSE files for more details.
 #++
 
-FactoryBot.define do
-  factory :recurring_meeting, class: "RecurringMeeting" do |m|
-    author factory: :user
-    project
-    start_time { Date.tomorrow + 10.hours }
-    end_date { 1.year.from_now }
-    duration { 1.0 }
-    frequency { "weekly" }
-    interval { 1 }
-    iterations { 10 }
-    end_after { "specific_date" }
+require "rails_helper"
 
-    location { "https://some-url.com" }
-    m.sequence(:title) { |n| "Meeting series #{n}" }
+RSpec.describe Meetings::SidePanel::DetailsComponent, type: :component do
+  let(:user) { build_stubbed(:user) }
 
-    after(:create) do |recurring_meeting, evaluator|
-      project = evaluator.project
-      recurring_meeting.project = project
-      recurring_meeting.template = create(:structured_meeting_template, recurring_meeting:, project:)
+  subject do
+    render_inline(described_class.new(meeting:))
+    page
+  end
+
+  before do
+    login_as(user)
+  end
+
+  context "with templated meeting and working_days frequency" do
+    let(:series) do
+      build_stubbed(:recurring_meeting,
+                    start_time: DateTime.parse("2024-12-04T10:00:00Z"),
+                    frequency: "working_days")
+    end
+    let(:meeting) do
+      build_stubbed(:structured_meeting_template,
+                    recurring_meeting: series)
+    end
+
+    it "doesn't show the weekday" do
+      expect(subject).to have_no_text("Wednesday")
+    end
+  end
+
+  context "with templated meeting and weekly frequency" do
+    let(:series) do
+      build_stubbed(:recurring_meeting,
+                    start_time: DateTime.parse("2024-12-04T10:00:00Z"),
+                    frequency: "weekly")
+    end
+    let(:meeting) do
+      build_stubbed(:structured_meeting_template,
+                    recurring_meeting: series)
+    end
+
+    it "shows the weekday" do
+      expect(subject).to have_text("Wednesday")
     end
   end
 end

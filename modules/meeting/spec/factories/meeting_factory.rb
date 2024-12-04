@@ -49,8 +49,9 @@ FactoryBot.define do
       recurring_meeting
 
       after(:build) do |template, evaluator|
-        template.author = evaluator.recurring_meeting.author
-        template.project = evaluator.recurring_meeting.project
+        %w[author project start_time].each do |attr|
+          template.send(:"#{attr}=", evaluator.recurring_meeting.send(attr))
+        end
       end
     end
   end
