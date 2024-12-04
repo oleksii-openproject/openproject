@@ -148,6 +148,15 @@ RSpec.describe TimeEntries::SetAttributesService, type: :model do
     end
   end
 
+  context "with a user with a defined timezone" do
+    it "extracts the current timezone from the user and stores it in the time entry" do
+      user.pref[:time_zone] = "America/Los_Angeles"
+      subject
+
+      expect(time_entry_instance.time_zone).to eq "America/Los_Angeles"
+    end
+  end
+
   context "with hours == 0" do
     let(:params) do
       {

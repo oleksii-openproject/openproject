@@ -41,6 +41,11 @@ module TimeEntries
 
       set_default_attributes(params) if model.new_record?
 
+      # move the timezone from the user
+      model.change_by_system do
+        model.time_zone = model.user.time_zone.name
+      end
+
       # Always set the logging user as logged_by
       set_logged_by
     end
