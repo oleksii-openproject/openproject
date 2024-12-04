@@ -184,6 +184,15 @@ By selecting *Overall activity* you can open a view in which all the latest glob
 
 ![overall activity meeting filter](actvity-global-filter.png)
 
+### Zen mode
+
+In order to work on project lists uninterrupted, you can use the Zen mode. To activate it, select the menu in the far right corner (three dots) and click **Zen mode**. Once the Zen mode is selected, the header and the sidebar will be hidden. 
+
+![Select zen mode in OpenProject project lists](openproject_project_list_select_zen_mode.png)
+
+
+
+
 ## Favorite project lists
 
 You can mark project lists as favorites, both shared and private, but not the static ones. To mark a project list as favorite click the star icon in the top right corner. 
