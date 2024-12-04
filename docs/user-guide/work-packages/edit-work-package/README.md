@@ -21,7 +21,10 @@ keywords: edit work packages
 
 To edit a work package, double-click a work package row in [table view](../../work-packages/work-package-views/#table-view) or open the [split screen view](../../work-packages/work-package-views/#split-screen-view) to see the details.
 
-In the work package details, you can click in any field to update it, e.g. change the description, status, priority, assignee, or add a comment.
+In the work package details, you can click in any field to update it, e.g. change the description, status, priority, assignee, or add a comment. 
+
+> [!TIP]
+> You can also insert a page break into the description field if you intend to [export a work package in PDF format](../exporting/#pdf-report) and want to the description to be displayed on separate pages of a PDF report.
 
 To save changes in the description, click the **checkmark** icon.
 
