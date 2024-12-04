@@ -47,12 +47,27 @@ module WorkPackage::PDFExport::Export::Cover
   end
 
   def available_title_height(current_y)
-    current_y - [
-      cover_page_title&.then { styles.cover_hero_title_max_height + styles.cover_hero_title_spacing } || 0,
-      cover_page_heading&.then { styles.cover_hero_heading_spacing } || 0,
-      cover_page_dates&.then { styles.cover_hero_dates_max_height } || 0,
-      cover_page_subheading&.then { styles.cover_hero_subheading_max_height } || 0
-    ].sum
+    current_y -
+      cover_hero_title_max_height -
+      cover_hero_heading_max_height -
+      cover_hero_dates_max_height -
+      cover_hero_subheading_max_height
+  end
+
+  def cover_hero_title_max_height
+    cover_page_title&.then { styles.cover_hero_title_max_height + styles.cover_hero_title_spacing } || 0
+  end
+
+  def cover_hero_heading_max_height
+    cover_page_heading&.then { styles.cover_hero_heading_spacing } || 0
+  end
+
+  def cover_hero_dates_max_height
+    cover_page_dates&.then { styles.cover_hero_dates_max_height } || 0
+  end
+
+  def cover_hero_subheading_max_height
+    cover_page_title&.then { styles.cover_hero_title_max_height + styles.cover_hero_title_spacing } || 0
   end
 
   def write_cover_hr
