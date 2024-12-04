@@ -215,17 +215,27 @@ RSpec.describe CustomField do
     let(:project) { build_stubbed(:project) }
     let(:user1) { build_stubbed(:user) }
     let(:user2) { build_stubbed(:user) }
+    let(:in_visible_scope) { instance_double(ActiveRecord::Relation) }
+    let(:principals_scope) { instance_double(ActiveRecord::Relation) }
 
     context "for a user custom field" do
       before do
         field.field_format = "user"
         allow(project)
           .to receive(:principals)
-          .and_return([user1, user2])
+                .and_return(principals_scope)
+
+        allow(principals_scope)
+          .to receive(:select)
+                .and_return([user1, user2])
 
         allow(Principal)
           .to receive(:in_visible_project_or_me)
-          .and_return([user2])
+                .and_return(in_visible_scope)
+
+        allow(in_visible_scope)
+          .to receive(:select)
+                .and_return([user2])
       end
 
       context "for a project" do

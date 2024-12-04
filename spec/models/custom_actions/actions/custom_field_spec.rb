@@ -441,12 +441,17 @@ RSpec.describe CustomActions::Actions::CustomField do
          build_stubbed(:user),
          build_stubbed(:user)]
       end
+      let(:scope) { instance_double(ActiveRecord::Relation) }
 
       before do
         allow(Principal)
           .to receive(:in_visible_project_or_me)
-          .with(User.current)
-          .and_return(users)
+                .with(User.current)
+                .and_return(scope)
+
+        allow(scope)
+          .to receive(:select)
+                .and_return(users)
       end
 
       context "for a non required field" do
@@ -515,12 +520,17 @@ RSpec.describe CustomActions::Actions::CustomField do
          build_stubbed(:user),
          build_stubbed(:user)]
       end
+      let(:scope) { instance_double(ActiveRecord::Relation) }
 
       before do
         allow(Principal)
           .to receive(:in_visible_project_or_me)
-          .with(User.current)
-          .and_return(users)
+                .with(User.current)
+                .and_return(scope)
+
+        allow(scope)
+          .to receive(:select)
+                .and_return(users)
       end
 
       it_behaves_like "associated custom action validations" do

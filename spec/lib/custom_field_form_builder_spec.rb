@@ -255,6 +255,7 @@ RSpec.describe CustomFieldFormBuilder do
       let(:project) { build_stubbed(:project) }
       let(:user1) { build_stubbed(:user) }
       let(:user2) { build_stubbed(:user) }
+      let(:scope) { instance_double(ActiveRecord::Relation) }
 
       let(:resource) { project }
 
@@ -268,8 +269,12 @@ RSpec.describe CustomFieldFormBuilder do
         end
 
         allow(project)
-          .to(receive(:principals))
-          .and_return([user1, user2])
+          .to receive(:principals)
+                .and_return(scope)
+
+        allow(scope)
+          .to receive(:select)
+                .and_return([user1, user2])
       end
 
       it_behaves_like "wrapped in container", "select-container" do
