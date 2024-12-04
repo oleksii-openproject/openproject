@@ -505,7 +505,12 @@ Rails.application.routes.draw do
       resource :progress_tracking, controller: "/admin/settings/progress_tracking", only: %i[show update]
       resource :projects, controller: "/admin/settings/projects_settings", only: %i[show update]
       resource :new_project, controller: "/admin/settings/new_project_settings", only: %i[show update]
-      resources :project_lifecycle, controller: "/admin/settings/project_life_cycle_step_definitions", only: %i[index]
+      resources :project_lifecycle_steps, controller: "/admin/settings/project_life_cycle_step_definitions", only: %i[index] do
+        collection do
+          get :new_stage
+          get :new_gate
+        end
+      end
       resources :project_custom_fields, controller: "/admin/settings/project_custom_fields" do
         member do
           delete "options/:option_id", action: "delete_option", as: :delete_option_of
