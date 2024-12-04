@@ -193,6 +193,42 @@
             }
           ]
         },
+        "dates" : {
+          "title" : "The dates block in the hero",
+          "type" : "object",
+          "x-example" : {
+            "heading" : {
+              "spacing" : 10,
+              "max_height" : 20,
+              "size" : 32,
+              "color" : "414d5f",
+              "styles" : [
+                "bold"
+              ]
+            }
+          },
+          "properties" : {
+            "max_height" : {
+              "title" : "Maximum height of the block",
+              "examples" : [
+                30
+              ],
+              "$ref" : "#/$defs/measurement"
+            },
+            "spacing" : {
+              "title" : "Minimum spacing between dates and subheading",
+              "examples" : [
+                10
+              ],
+              "$ref" : "#/$defs/measurement"
+            }
+          },
+          "allOf" : [
+            {
+              "$ref" : "#/$defs/font"
+            }
+          ]
+        },
         "subheading" : {
           "title" : "The last block in the hero",
           "type" : "object",

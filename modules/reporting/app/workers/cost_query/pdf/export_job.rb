@@ -7,10 +7,6 @@ class CostQuery::PDF::ExportJob < Exports::ExportJob
     options[:project]
   end
 
-  def cost_types
-    options[:cost_types]
-  end
-
   def title
     I18n.t("export.timesheet.title")
   end
@@ -38,7 +34,7 @@ class CostQuery::PDF::ExportJob < Exports::ExportJob
   end
 
   def generate_timesheet
-    generator = ::CostQuery::PDF::TimesheetGenerator.new(query, project, cost_types)
+    generator = ::CostQuery::PDF::TimesheetGenerator.new(query, project)
     generator.generate!
   end
 end

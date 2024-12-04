@@ -275,9 +275,14 @@ cover:
       styles:
         - bold
       size: 16
+    dates:
+      spacing: 4
+      max_height: 16
+      color: '414d5f'
+      size: 10
+      styles:
+        - bold
     subheading:
       max_height: 30
       color: '414d5f'
-      styles:
-        - italic
       size: 10

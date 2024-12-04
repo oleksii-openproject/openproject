@@ -111,6 +111,22 @@ class WorkPackage::PDFExport::WorkPackageListToPdf < WorkPackage::Exports::Query
     wants_report?
   end
 
+  def cover_page_title
+    project&.name
+  end
+
+  def cover_page_heading
+    heading
+  end
+
+  def cover_page_subheading
+    User.current&.name
+  end
+
+  def cover_page_dates
+    nil
+  end
+
   def render_work_packages_pdfs(work_packages, filename)
     write_cover_page! if with_cover?
     if wants_gantt?

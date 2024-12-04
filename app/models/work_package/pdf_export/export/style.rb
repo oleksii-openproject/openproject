@@ -253,6 +253,18 @@ module WorkPackage::PDFExport::Export::Style
       resolve_pt(@styles.dig(:cover, :hero, :heading, :spacing), 0)
     end
 
+    def cover_hero_dates
+      resolve_font(@styles.dig(:cover, :hero, :dates))
+    end
+
+    def cover_hero_dates_spacing
+      resolve_pt(@styles.dig(:cover, :hero, :dates, :spacing), 0)
+    end
+
+    def cover_hero_dates_max_height
+      resolve_pt(@styles.dig(:cover, :hero, :dates, :max_height), 0)
+    end
+
     def cover_hero_subheading
       resolve_font(@styles.dig(:cover, :hero, :subheading))
     end

@@ -22,10 +22,9 @@ class CostQuery::PDF::TimesheetGenerator
 
   attr_accessor :pdf
 
-  def initialize(query, project, cost_types)
+  def initialize(query, project)
     @query = query
     @project = project
-    @cost_types = cost_types
     setup_page!
   end
 
@@ -35,6 +34,25 @@ class CostQuery::PDF::TimesheetGenerator
 
   def footer_title
     heading
+  end
+
+  def cover_page_title
+    "OpenProject"
+  end
+
+  def cover_page_heading
+    heading
+  end
+
+  def cover_page_dates
+    dates_range = all_entries.group_by(&:spent_on).sort
+    start_date = dates_range.first&.first
+    end_date = dates_range.last&.first
+    "#{format_date(start_date)} - #{format_date(end_date)}" if start_date && end_date
+  end
+
+  def cover_page_subheading
+    User.current&.name
   end
 
   def project
@@ -82,11 +100,11 @@ class CostQuery::PDF::TimesheetGenerator
   end
 
   def all_entries
-    query
-      .each_direct_result
-      .map(&:itself)
-      .filter { |r| r.fields["type"] == "TimeEntry" }
-      .map { |r| TimeEntry.find(r.fields["id"]) }
+    @all_entries ||= query
+                       .each_direct_result
+                       .map(&:itself)
+                       .filter { |r| r.fields["type"] == "TimeEntry" }
+                       .map { |r| TimeEntry.find(r.fields["id"]) }
   end
 
   def build_table_rows(entries)
