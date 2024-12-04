@@ -41,7 +41,8 @@ RSpec.describe "Primerized work package relations tab",
     set_factory_default(:project_with_types, project)
   end
 
-  shared_let(:work_package) { create(:work_package, subject: "main") }
+  shared_let(:parent_work_package) { create(:work_package, subject: "parent") }
+  shared_let(:work_package) { create(:work_package, subject: "main", parent: parent_work_package) }
   shared_let(:type1) { create(:type) }
   shared_let(:type2) { create(:type) }
 
@@ -142,10 +143,13 @@ RSpec.describe "Primerized work package relations tab",
 
       relation_row = relations_tab.expect_relation(relation_follows)
 
-      relations_tab.add_description_to_relation(relation_follows, "Discovered relations have descriptions!")
+      relations_tab.edit_relation_description(relation_follows, "Discovered relations have descriptions!")
 
-      # Reflects new description
+      relations_tab.edit_lag_of_relation(relation_follows, 5)
+
+      # Reflects new description and lag
       expect(relation_row).to have_text("Discovered relations have descriptions!")
+      expect(relation_row).to have_text("5 days")
 
       # Unchanged
       tabs.expect_counter("relations", 4)
@@ -168,6 +172,17 @@ RSpec.describe "Primerized work package relations tab",
       within(child_row) do
         page.find("[data-test-selector='op-relation-row-#{child_wp.id}-action-menu']").click
         expect(page).to have_no_css("[data-test-selector='op-relation-row-#{child_wp.id}-edit-button']")
+      end
+    end
+
+    it "does not show the lag field for all relation types" do
+      scroll_to_element relations_panel
+
+      relations_tab.open_relation_dialog(relation_relates)
+
+      within "##{WorkPackageRelationsTab::WorkPackageRelationDialogComponent::DIALOG_ID}" do
+        expect(page).to have_field("Work package", readonly: true)
+        expect(page).to have_no_field("Lag")
       end
     end
 
@@ -215,13 +230,7 @@ RSpec.describe "Primerized work package relations tab",
       # wp_predecessor is already related to work_package as relation_follows
       # in a predecessor relation, so it should not be autocompleteable anymore
       # under the "Predecessor (before)" type
-      scroll_to_element relations_panel
-
-      relations_panel.find("[data-test-selector='new-relation-action-menu']").click
-
-      within page.find_by_id("new-relation-action-menu-list") do # Primer appends "list" to the menu id automatically
-        click_link_or_button "Predecessor (before)"
-      end
+      relations_tab.select_relation_type "Predecessor (before)"
 
       wait_for_reload
 
@@ -250,6 +259,43 @@ RSpec.describe "Primerized work package relations tab",
 
       # Bumped by one
       tabs.expect_counter("relations", 5)
+    end
+
+    it "doesn't autocomplete parent, children, and WP itself" do
+      relations_tab.select_relation_type "Child"
+
+      wait_for_reload
+
+      within "##{WorkPackageRelationsTab::AddWorkPackageChildFormComponent::DIALOG_ID}" do
+        autocomplete_field = page.find("[data-test-selector='work-package-child-form-id']")
+
+        # It doesn't autocomplete children
+        search_autocomplete(autocomplete_field,
+                            query: child_wp.subject,
+                            results_selector: "body")
+
+        expect_no_ng_option(autocomplete_field,
+                            child_wp.subject,
+                            results_selector: "body")
+
+        # It doesn't autocomplete parent
+        search_autocomplete(autocomplete_field,
+                            query: parent_work_package.subject,
+                            results_selector: "body")
+
+        expect_no_ng_option(autocomplete_field,
+                            parent_work_package.subject,
+                            results_selector: "body")
+
+        # It doesn't autocomplete work package itself
+        search_autocomplete(autocomplete_field,
+                            query: work_package.id,
+                            results_selector: "body")
+
+        expect_no_ng_option(autocomplete_field,
+                            work_package.id,
+                            results_selector: "body")
+      end
     end
   end
 

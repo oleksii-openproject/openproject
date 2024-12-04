@@ -100,7 +100,10 @@ See COPYRIGHT and LICENSE files for more details.
   <% if @custom_field.new_record? || @custom_field.multi_value_possible? %>
     <div class="form--field" <%= format_dependent.attributes(:multiSelect) %>>
       <%= f.check_box :multi_value,
-                      data: { action: 'admin--custom-fields#checkOnlyOne' } %>
+                      data: { action: "admin--custom-fields#checkOnlyOne" } %>
+      <div class="form--field-instructions">
+        <p><%= t("custom_fields.instructions.multi_select") %></p>
+      </div>
     </div>
 
     <fieldset class="form--fieldset" <%= format_dependent.attributes(:possibleValues) %>>

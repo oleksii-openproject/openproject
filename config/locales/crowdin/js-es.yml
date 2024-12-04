@@ -105,7 +105,7 @@ es:
     button_update: "Actualizar"
     button_export-pdf: "Descargar PDF"
     button_export-atom: "Descargar Atom"
-    button_generate_pdf: "Generate PDF"
+    button_generate_pdf: "Generar PDF"
     button_create: "Crear"
     card:
       add_new: "Añadir nueva tarjeta"
@@ -360,7 +360,7 @@ es:
           "15_1":
             standard:
               new_features_html: >
-                The release brings various features and improvements for you, e.g. <br> <ul class="%{list_styling_class}"> <li>Custom fields of type hierarchy (Enterprise add-on).</li> <li>Redesign of the Relations tab in work packages.</li> <li>Redesign of the Meetings index page.</li> <li>Manual page breaks in PDF work package exports.</li> <li>Zen mode for project lists.</li> </ul>
+                La versión trae varias características y mejoras para usted, por ejemplo <br> <ul class="%{list_styling_class}"> <li>Campos personalizados de tipo jerarquía (extensión Enterprise).</li> <li>Rediseño de la pestaña Relaciones en los paquetes de trabajo.</li> <li>Rediseño de la página de índice de Reuniones.</li> <li>Saltos de página manuales en las exportaciones de paquetes de trabajo en PDF.</li> <li>Modo Zen para las listas de proyectos.</li> </ul>
     ical_sharing_modal:
       title: "Suscribirse al calendario"
       inital_setup_error_message: "Se ha producido un error al obtener los datos."
@@ -576,7 +576,7 @@ es:
         members: "Invitar a nuevos <b>miembros</b> a unirse a tu proyecto."
         quick_add_button: "Haga clic en el icono del signo más (+) en el menú de navegación del encabezado para <b>crear un proyecto</b> o <b>invitar a compañeros</b>."
         sidebar_arrow: "Usa la flecha de retorno en la esquina superior izquierda para regresar al <b>menú principal</b> del proyecto."
-        welcome: "Take a three-minute introduction tour to learn the most <b>important features</b>. <br> We recommend completing the steps until the end. You can restart the tour any time."
+        welcome: "Realice un recorrido de introducción de tres minutos para conocer las <b>funciones más importantes</b>. <br> Le recomendamos que complete todos los pasos. Puede volver a iniciar el paseo en cualquier momento."
         wiki: "En la <b>wiki</b>, puede elaborar documentos y compartir conocimientos con su equipo."
         backlogs:
           overview: "Administre su trabajo en la vista de <b>trabajos pendientes</b>."

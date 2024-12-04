@@ -214,4 +214,4 @@ Last but not least, we are very grateful for our very engaged translation contri
 - [Sebvita_devinci](https://crowdin.com/profile/sebvita_devinci), for proof reading French translations.
 - [Alin Marcu](https://crowdin.com/profile/deconfcom), for proof reading Romanian translations.
 
-Would you like to help out with translations yourself? Then take a look at our [translation guide](../../development/translate-openproject/) and find out exactly how you can contribute. It is very much appreciated!
+Would you like to help out with translations yourself? Then take a look at our [translation guide](../../contributions-guide/translate-openproject/) and find out exactly how you can contribute. It is very much appreciated!
