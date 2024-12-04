@@ -60,10 +60,12 @@ class WorkPackageRelationsController < ApplicationController
                                              .call(create_relation_params)
 
     if service_result.success?
+      target_work_package_id = params[:relation][:to_id]
       @work_package.reload
       component = WorkPackageRelationsTab::IndexComponent.new(work_package: @work_package,
                                                               relations: @work_package.relations,
-                                                              children: @work_package.children)
+                                                              children: @work_package.children,
+                                                              scroll_target_id: target_work_package_id)
       replace_via_turbo_stream(component:)
       respond_with_turbo_streams
     else

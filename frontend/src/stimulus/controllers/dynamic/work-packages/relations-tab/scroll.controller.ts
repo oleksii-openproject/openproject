@@ -5,6 +5,7 @@ export default class ScrollController extends Controller {
   declare targetIdValue:string;
 
   connect() {
+    // Wait to ensure DOM is fully loaded
     setTimeout(() => {
       if (this.targetIdValue) {
          const element = document.querySelector(`[data-test-selector='op-relation-row-${this.targetIdValue}']`) as HTMLElement;
