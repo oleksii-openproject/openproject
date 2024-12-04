@@ -183,6 +183,9 @@ RSpec.describe "Work Package boards spec",
 
     # Add a new WP on the board
     board_page = board_index.open_board board_view
+
+    wait_for_network_idle
+
     board_page.expect_query "List 1", editable: true
     board_page.add_card "List 1", "Task 1"
     board_page.expect_toast message: I18n.t(:notice_successful_create)
@@ -203,7 +206,10 @@ RSpec.describe "Work Package boards spec",
     destroy_modal.expect_listed(wp)
     destroy_modal.confirm_deletion
 
-    board_page.expect_empty
+    wait_for_network_idle
+
+    board_page.expect_query "List 1", editable: true
+    board_page.expect_not_any_card
     board_page.expect_path
   end
 end
