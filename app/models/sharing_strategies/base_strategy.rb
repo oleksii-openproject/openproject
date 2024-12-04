@@ -50,6 +50,10 @@ module SharingStrategies
       raise NotImplementedError, "Override in a subclass and return true if the current user can manage sharing"
     end
 
+    def allow_hover_cards?
+      raise NotImplementedError, "Override in a subclass and return true if hover cards should appear hovering users"
+    end
+
     def create_contract_class
       raise NotImplementedError, "Override in a subclass and return the contract class for creating a share"
     end

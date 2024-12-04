@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #-- copyright
 # OpenProject is an open source project management software.
 # Copyright (C) the OpenProject GmbH
@@ -25,32 +27,11 @@
 #
 # See COPYRIGHT and LICENSE files for more details.
 #++
+class Users::HoverCardController < ApplicationController
+  no_authorization_required! :show
 
-module Shares
-  class InviteUserFormComponent < ApplicationComponent # rubocop:disable OpenProject/AddPreviewForViewComponent
-    include ApplicationHelper
-    include OpTurbo::Streamable
-    include OpPrimer::ComponentHelpers
-
-    attr_reader :entity, :strategy, :errors, :allow_hover_cards
-
-    def initialize(strategy:, errors: nil, allow_hover_cards: false)
-      super
-
-      @strategy = strategy
-      @entity = strategy.entity
-      @errors = errors
-      @allow_hover_cards = allow_hover_cards
-    end
-
-    def new_share
-      @new_share ||= Member.new(entity:, roles: [Role.new(id: default_role[:value])])
-    end
-
-    private
-
-    def default_role
-      strategy.available_roles.find { |role_hash| role_hash[:default] } || strategy.available_roles.first
-    end
+  def show
+    @id = params[:id]
+    render layout: nil
   end
 end

@@ -220,6 +220,10 @@ export class PathHelperService {
     return `${this.usersPath()}/${id}`;
   }
 
+  public userHoverCardPath(id:string|number) {
+    return `${this.usersPath()}/${id}/hover_card`;
+  }
+
   public placeholderUserPath(id:string|number) {
     return `${this.placeholderUsersPath()}/${id}`;
   }

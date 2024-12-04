@@ -53,6 +53,13 @@ module SharingStrategies
       user.allowed_in_project?(:view_shared_work_packages, @entity.project)
     end
 
+    # Since the work package share dialog is embedded into an angular page, hover cards would compete for the
+    # portal outlet when rendering, causing bugs. Until the work package share dialog is refactored to be an
+    # async-dialog, we must disable hover cards for it.
+    def allow_hover_cards?
+      false
+    end
+
     def share_description(share) # rubocop:disable Metrics/PerceivedComplexity,Metrics/AbcSize
       scope = %i[sharing user_details]
 
