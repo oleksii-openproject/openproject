@@ -48,10 +48,6 @@ module Projects::LifeCycles
       model.errors.any?
     end
 
-    def validation_message
-      model.errors.full_messages.join(", ") if invalid?
-    end
-
     def qa_field_name
       "life-cycle-step-#{model.id}"
     end
@@ -62,7 +58,6 @@ module Projects::LifeCycles
         leading_visual: { icon: :calendar },
         required: true,
         invalid: invalid?,
-        validation_message:,
         datepicker_options: { inDialog: true },
         wrapper_data_attributes: {
           "qa-field-name": qa_field_name

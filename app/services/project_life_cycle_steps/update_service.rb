@@ -27,13 +27,6 @@
 #++
 
 module ProjectLifeCycleSteps
-  class BaseContract < ::ModelContract
-    validate :select_custom_fields_permission
-
-    def select_custom_fields_permission
-      return if user.allowed_in_project?(:edit_project_stages_and_gates, model)
-
-      errors.add :base, :error_unauthorized
-    end
+  class UpdateService < ::BaseServices::Update
   end
 end

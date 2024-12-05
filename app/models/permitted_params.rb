@@ -290,6 +290,12 @@ class PermittedParams
     whitelist.merge(custom_field_values(:project))
   end
 
+  def project_life_cycles
+    params.require(:project).permit(
+      available_life_cycle_steps_attributes: %i[id date start_date end_date]
+    )
+  end
+
   def project_custom_field_project_mapping
     params.require(:project_custom_field_project_mapping)
       .permit(*self.class.permitted_attributes[:project_custom_field_project_mapping])

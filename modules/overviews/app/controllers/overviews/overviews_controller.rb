@@ -55,7 +55,6 @@ module ::Overviews
 
     def update_project_custom_values
       section = find_project_custom_field_section
-
       service_call = ::Projects::UpdateService
                       .new(
                         user: current_user,
@@ -87,7 +86,21 @@ module ::Overviews
       )
     end
 
-    def update_project_life_cycles; end
+    def update_project_life_cycles
+      service_call = ::ProjectLifeCycleSteps::UpdateService
+                      .new(user: current_user, model: @project)
+                      .call(permitted_params.project_life_cycles)
+
+      if service_call.success?
+        update_sidebar_component
+      else
+        update_via_turbo_stream(
+          component: ::ProjectLifeCycles::Sections::EditComponent.new(service_call.result)
+        )
+      end
+
+      respond_to_with_turbo_streams(status: service_call.success? ? :ok : :unprocessable_entity)
+    end
 
     def jump_to_project_menu_item
       if params[:jump]
