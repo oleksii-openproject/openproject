@@ -63,7 +63,7 @@ RSpec.describe "Structured meetings CRUD",
 
   let(:current_user) { user }
   let(:new_page) { Pages::Meetings::New.new(project) }
-  let(:meeting) { StructuredMeeting.order(id: :asc).last }
+  let(:meeting) { StructuredMeeting.last }
   let(:show_page) { Pages::StructuredMeeting::Show.new(meeting) }
   let(:meetings_page) { Pages::Meetings::Index.new(project:) }
 

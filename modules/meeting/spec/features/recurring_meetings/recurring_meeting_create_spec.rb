@@ -60,7 +60,7 @@ RSpec.describe "Recurring meetings creation",
   end
 
   let(:current_user) { user }
-  let(:meeting) { RecurringMeeting.order(id: :asc).last }
+  let(:meeting) { RecurringMeeting.last }
   let(:show_page) { Pages::RecurringMeeting::Show.new(meeting) }
   let(:meetings_page) { Pages::Meetings::Index.new(project:) }
 

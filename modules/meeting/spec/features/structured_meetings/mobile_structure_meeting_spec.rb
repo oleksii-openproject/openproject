@@ -61,7 +61,7 @@ RSpec.describe "Structured meetings CRUD",
   end
 
   let(:current_user) { user }
-  let(:show_page) { Pages::StructuredMeeting::Mobile::Show.new(StructuredMeeting.order(id: :asc).last) }
+  let(:show_page) { Pages::StructuredMeeting::Mobile::Show.new(StructuredMeeting.last) }
 
   include_context "with mobile screen size"
 
