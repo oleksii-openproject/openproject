@@ -23,12 +23,11 @@ module TimeEntries
         }
       )
 
-      # TODO: Repalce with single date picker from
-      # https://github.com/opf/openproject/pull/17223/commits/db765ac3862ded78139e6b8827e33cf2b8b3bce8
-      f.text_field name: :spent_on,
-                   type: "date",
-                   required: true,
-                   label: TimeEntry.human_attribute_name(:spent_on)
+      f.single_date_picker name: :spent_on,
+                           type: "date",
+                           required: true,
+                           datepicker_options: { inDialog: true },
+                           label: TimeEntry.human_attribute_name(:spent_on)
 
       f.group(layout: :horizontal) do |g|
         # TODO: Add a time picker based on the date picker linked above
@@ -48,17 +47,15 @@ module TimeEntries
                    label: TimeEntry.human_attribute_name(:hours),
                    data: { "time-entry-target" => "hoursInput" }
 
-      if show_work_package_field?
-        f.work_package_autocompleter name: :work_package_id,
-                                     label: TimeEntry.human_attribute_name(:work_package),
-                                     autocomplete_options: {
-                                       focusDirectly: false,
-                                       append_to: "#time-entry-dialog",
-                                       filters: [
-                                         { name: "project_id", operator: "=", values: [model.project_id] }
-                                       ]
-                                     }
-      end
+      f.work_package_autocompleter name: :work_package_id,
+                                   label: TimeEntry.human_attribute_name(:work_package),
+                                   autocomplete_options: {
+                                     focusDirectly: false,
+                                     append_to: "#time-entry-dialog",
+                                     filters: [
+                                       { name: "project_id", operator: "=", values: [model.project_id] }
+                                     ]
+                                   }
 
       f.select_list name: :activity_id, label: TimeEntry.human_attribute_name(:activity), include_blank: true do |list|
         activities.each do |activity|
@@ -82,10 +79,6 @@ module TimeEntries
 
     def custom_fields
       @custom_fields ||= model.available_custom_fields
-    end
-
-    def show_work_package_field?
-      work_package.blank?
     end
 
     def show_user_field?
