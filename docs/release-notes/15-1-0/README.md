@@ -25,7 +25,7 @@ Each custom field of type hierarchy can be given a short name (e.g. B for Berlin
 
 ### Redesign of the Relations tab in work packages
 
-The Relations tab in work packages has been completely redesigned, including a **new dropdown menu that allows you to directly choose the type of relation**, e.g. if the related work packages is a successor and necessarily needs to start after the selected one finishes. Additionally, you can now add a description to add further information about the relation. Please note that the description will be desplayed on both work packages, below the related other work package.
+The Relations tab in work packages has been completely redesigned using Primer design system, including a **new dropdown menu that allows you to directly choose the type of relation**, e.g. if the related work packages is a successor and necessarily needs to start after the selected one finishes. Additionally, you can now add a description to add further information about the relation. Please note that the description will be desplayed on both work packages, below the related other work package.
 
 > [!NOTE]
 > Important information: With this redesign, **you will no longer be able to create new work packages directly on the Relations tab**. Please tell us if you were using this feature a lot. If it will be missed by many users, we will find a way to bring it back.
@@ -33,6 +33,14 @@ The Relations tab in work packages has been completely redesigned, including a *
 ![Screenshot showing the new Relations tab in a work package](openproject-15-1-relations.png)
 
 ### Redesign of the Meetings index page
+
+The index page of the Meetings module has been redesigned with Primer as well, making it easier to read and have a more modern look. You see your list of meetings in some kind of table view, with the columns being: Title, Date and time, Duration, and Location.
+
+The + Meeting button on the top right corner now offers a dropdown menu where you can directly choose wheather you want to add a dynamic or classig meeting.
+
+Here's an example screenshot of the redesigned Meetings index page:
+
+![Example screenshot of the redesigned Meetings index page](openproject-15-1-meetings.png)
 
 ### Manual page breaks in PDF work package exports
 
@@ -89,7 +97,7 @@ The Relations tab in work packages has been completely redesigned, including a *
 
 ## Contributions
 
-A very special thank you goes to our sponsors of this release: Deutsche Bahn for sponsoring custom fields of type hierarchy, and City of Cologne for sponsoring zen mode for project lists.
+A very special thank you goes to our sponsors of this release: Deutsche Bahn for sponsoring custom fields of type hierarchy, and City of Cologne for sponsoring custom fields of type hierarchy as well as zen mode for project lists.
 
 Also a big thanks to our Community members for reporting bugs and helping us identify and provide fixes. Special thanks for reporting and finding bugs go to Bill Bai, Sam Yelman, Knight Chang, Gábor Alexovics, Gregor Buergisser, Andrey Dermeyko, Various Interactive, Clayton Belcher, Александр Татаринцев, and Keno Krewer.
 
