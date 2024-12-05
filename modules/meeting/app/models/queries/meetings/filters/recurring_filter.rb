@@ -26,23 +26,26 @@
 # See COPYRIGHT and LICENSE files for more details.
 #++
 
-class Meeting::StartTime < ApplicationForm
-  include Redmine::I18n
+class Queries::Meetings::Filters::RecurringFilter < Queries::Meetings::Filters::MeetingFilter
+  include Queries::Filters::Shared::BooleanFilter
 
-  form do |meeting_form|
-    meeting_form.text_field(
-      name: :start_time_hour,
-      type: "time",
-      value: @initial_value,
-      placeholder: Meeting.human_attribute_name(:start_time),
-      label: Meeting.human_attribute_name(:start_time),
-      leading_visual: { icon: :clock },
-      required: true,
-      caption: formatted_time_zone_offset
-    )
+  def self.key
+    :type
   end
 
-  def initialize(initial_value: DateTime.now.strftime("%H:%M"))
-    @initial_value = initial_value
+  def human_name
+    I18n.t("label_recurring_meeting_part_of")
+  end
+
+  def available?
+    OpenProject::FeatureDecisions.recurring_meetings_active?
+  end
+
+  def apply_to(query_scope)
+    if allowed_values.first.intersect?(values)
+      query_scope.recurring
+    else
+      query_scope.not_recurring
+    end
   end
 end

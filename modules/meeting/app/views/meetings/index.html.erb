@@ -29,7 +29,7 @@ See COPYRIGHT and LICENSE files for more details.
 <% html_title t(:label_meeting_plural) %>
 
 <%= render(Meetings::IndexPageHeaderComponent.new(project: @project)) %>
-<%= render(Meetings::IndexSubHeaderComponent.new(query: @query, project: @project)) %>
+<%= render(Meetings::IndexSubHeaderComponent.new(query: @query, project: @project, params:)) %>
 
 <% if @meetings.empty? -%>
   <%= no_results_box %>

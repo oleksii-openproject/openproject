@@ -82,6 +82,10 @@ module Pages
       page.within(".principal-#{user.id}", &)
     end
 
+    def in_user_hover_card(user, &)
+      page.within_test_selector("user-hover-card-#{user.id}", &)
+    end
+
     ##
     # Adds the given user to this project.
     #

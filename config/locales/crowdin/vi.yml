@@ -493,8 +493,12 @@ vi:
     groups:
       member_in_these_groups: "Người dùng này hiện là thành viên của các nhóm sau:"
       no_results_title_text: Người dùng này hiện không phải là thành viên của nhóm nào.
+      summary_with_more: Member of %{names} and %{count_link}.
+      more: "%{count} more"
+      summary: Member of %{names}.
     memberships:
       no_results_title_text: Người dùng này không phải là thành viên của dự án.
+    open_profile: "Open profile"
   page:
     text: "Văn bản"
   placeholder_users:
@@ -637,6 +641,10 @@ vi:
     label_add_x: "Add %{x}"
     label_edit_x: "Edit %{x}"
     label_add_description: "Add description"
+    lag:
+      subject: "Lag"
+      title: "Lag (in days)"
+      caption: "The gap in number of working days in between the two work packages"
     relations:
       label_relates_singular: "related to"
       label_relates_plural: "related to"
@@ -929,6 +937,7 @@ vi:
       messages:
         accepted: "phải được đồng ý"
         after: "phải sau %{date}"
+        after_today: "must be in the future."
         after_or_equal_to: "phải sau hoặc tương đương với %{date}"
         before: "phải trước khi %{date}"
         before_or_equal_to: "phải có trước hay tương đương với %{date}"
@@ -975,6 +984,7 @@ vi:
         not_an_integer: "không phải là một số nguyên"
         not_an_iso_date: "không phải là một ngày hợp lệ. Yêu cầu định dạng: YYYY-MM-DD."
         not_same_project: "không thuộc cùng dự án."
+        datetime_must_be_in_future: "must be in the future."
         odd: "phải là số lẻ"
         regex_match_failed: "không khớp với biểu thức chính quy %{expression}."
         regex_invalid: "có thể không được xác nhận với các biểu hiện thường xuyên liên kết."
@@ -2923,6 +2933,7 @@ vi:
   notice_successful_connection: "Kết nối thành công."
   notice_successful_create: "Tạo thành công."
   notice_successful_delete: "Xóa thành công."
+  notice_successful_cancel: "Successful cancellation."
   notice_successful_update: "Cập nhật thành công."
   notice_successful_update_custom_fields_added_to_project: |
     Cập nhật thành công. Các trường tùy chỉnh của các loại đã kích hoạt sẽ tự động được kích hoạt
@@ -3031,6 +3042,7 @@ vi:
   permission_select_project_modules: "Chọn các mô-đun dự án"
   permission_share_work_packages: "Chia sẻ gói công việc"
   permission_manage_types: "Chọn loại"
+  permission_manage_own_reminders: "Create own reminders"
   permission_view_project: "Xem dự án"
   permission_view_changesets: "Xem các sửa đổi kho trong OpenProject"
   permission_view_commit_author_statistics: "Xem thống kê tác giả cam kết"

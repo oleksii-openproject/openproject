@@ -33,7 +33,7 @@ ko:
         label_activity_show_only_changes: "변경 사항만 표시"
         label_sort_asc: "오래된 순"
         label_sort_desc: "최신 순"
-        label_type_to_comment: "Add a comment. Type @ to notify people."
+        label_type_to_comment: "코멘트를 추가하세요. 사람들에게 알려주려면 @을 입력하세요."
         label_submit_comment: "코멘트 제출"
         changed_on: "- 변경함:"
         created_on: "- 이 패키지를 생성함:"
@@ -240,7 +240,7 @@ ko:
           one: 하위 항목 1개
           other: "하위 항목 %{count}개"
     upsale:
-      custom_field_format_hierarchy: "Need a hierarchy in your custom fields for work packages?"
+      custom_field_format_hierarchy: "작업 패키지의 사용자 지정 필드에 계층 구조가 필요하십니까?"
     text_add_new_custom_field: >
       프로젝트에 새 사용자 지정 필드를 추가하려면 먼저 해당 필드를 만들어야 합니다. 그래야 이 프로젝트에 해당 필드를 추가할 수 있습니다.
     is_enabled_globally: "는 세계적으로 사용 가능합니다."
@@ -267,20 +267,20 @@ ko:
     single: "또는"
   dry_validation:
     errors:
-      int?: "must be an integer."
-      filled?: "must be filled."
-      greater_or_equal_zero: "must be greater or equal to 0."
-      not_found: "not found."
+      int?: "- 정수여야 합니다."
+      filled?: "- 입력해야 합니다."
+      greater_or_equal_zero: "- 0보다 크거나 같아야 합니다."
+      not_found: "- 찾을 수 없습니다."
       rules:
         item:
-          root_item: "cannot be a root item."
-          not_persisted: "must be an already existing item."
+          root_item: "- 루트 항목일 수 없습니다."
+          not_persisted: "- 이미 존재하는 항목이어야 합니다."
         label:
-          not_unique: "must be unique within the same hierarchy level."
+          not_unique: "- 동일한 계층 수준 내에서 고유해야 합니다."
         short:
-          not_unique: "must be unique within the same hierarchy level."
+          not_unique: "- 동일한 계층 수준 내에서 고유해야 합니다."
         parent:
-          not_descendant: "must be a descendant of the hierarchy root."
+          not_descendant: "- 계층 루트의 하위 항목이어야 합니다."
     rules:
       depth: "깊이"
       item: "항목"
@@ -491,8 +491,12 @@ ko:
     groups:
       member_in_these_groups: "이 사용자는 현재 다음 그룹의 멤버입니다:"
       no_results_title_text: 이 사용자는 현재 어떤 그룹의 멤버도 아닙니다.
+      summary_with_more: Member of %{names} and %{count_link}.
+      more: "%{count} more"
+      summary: Member of %{names}.
     memberships:
       no_results_title_text: 이 사용자는 프로젝트의 멤버가 아닙니다.
+    open_profile: "Open profile"
   page:
     text: "텍스트"
   placeholder_users:
@@ -627,64 +631,68 @@ ko:
           no_results_title_text: 현재 사용가능한 버전이 없습니다.
   work_package_relations_tab:
     index:
-      action_bar_title: "Add relations to other work packages to create a link between them."
-      no_results_title_text: There are currently no relations available.
-      blankslate_heading: "No relations"
-      blankslate_description: "This work package does not have any relations yet."
-    label_add_x: "Add %{x}"
-    label_edit_x: "Edit %{x}"
-    label_add_description: "Add description"
+      action_bar_title: "다른 작업 패키지에 관계를 추가하여 이러한 항목 간에 링크를 만드세요."
+      no_results_title_text: 현재 사용 가능한 관계가 없습니다.
+      blankslate_heading: "관계 없음"
+      blankslate_description: "이 작업 패키지에는 아직 관계가 없습니다."
+    label_add_x: "%{x} 추가"
+    label_edit_x: "%{x} 편집"
+    label_add_description: "설명 추가"
+    lag:
+      subject: "지연"
+      title: "지연(일)"
+      caption: "두 작업 패키지 간의 근무일 수 차이"
     relations:
-      label_relates_singular: "related to"
-      label_relates_plural: "related to"
-      label_relates_to_singular: "related to"
-      label_relates_to_plural: "related to"
-      relates_description: "Creates a visible link between the two work packages with no additional effect"
-      relates_to_description: "Creates a visible link between the two work packages with no additional effect"
-      label_precedes_singular: "successor (after)"
-      label_precedes_plural: "successors (after)"
-      precedes_description: "The related work package necessarily needs to start after this one finishes"
-      label_follows_singular: "predecessor (before)"
-      label_follows_plural: "predecessors (before)"
-      follows_description: "The related work package necessarily needs to finish before this one can start"
-      label_child_singular: "child"
-      label_child_plural: "children"
-      child_description: "Makes the related a work package a sub-item of the current (parent) work package"
-      label_blocks_singular: "blocks"
-      label_blocks_plural: "blocks"
-      blocks_description: "The related work package cannot be closed until this one is closed first"
-      label_blocked_singular: "blocked by"
-      label_blocked_plural: "blocked by"
-      label_blocked_by_singular: "blocked by"
-      label_blocked__by_plural: "blocked by"
-      blocked_description: "This work package cannot be closed until the related one is closed first"
-      blocked_by_description: "This work package cannot be closed until the related one is closed first"
-      label_duplicates_singular: "duplicates"
-      label_duplicates_plural: "duplicates"
-      duplicates_description: "This is a copy of the related work package"
-      label_duplicated_singular: "duplicated by"
-      label_duplicated_plural: "duplicated by"
-      label_duplicated_by_singular: "duplicated by"
-      label_duplicated_by_plural: "duplicated by"
-      duplicated_by_description: "The related work package is a copy of this"
-      duplicated_description: "The related work package is a copy of this"
-      label_includes_singular: "includes"
-      label_includes_plural: "includes"
-      includes_description: "Marks the related work package as including this one with no additional effect"
-      label_partof_singular: "part of"
-      label_partof_plural: "part of"
-      label_part_of_singular: "part of"
-      label_part_of_plural: "part of"
-      partof_description: "Marks the related work package as being part of this one with no additional effect"
-      part_of_description: "Marks the related work package as being part of this one with no additional effect"
-      label_requires_singular: "requires"
-      label_requires_plural: "requires"
-      requires_description: "Marks the related work package as a requirement to this one"
-      label_required_singular: "required by"
-      label_required_plural: "required by"
-      required_description: "Marks this work package as being a requirement to the related one"
-      label_parent_singular: "parent"
-      label_parent_plural: "parent"
+      label_relates_singular: "관련 항목"
+      label_relates_plural: "관련 항목"
+      label_relates_to_singular: "관련 항목"
+      label_relates_to_plural: "관련 항목"
+      relates_description: "추가 효과 없이 두 작업 패키지 간에 표시되는 링크를 만듭니다"
+      relates_to_description: "추가 효과 없이 두 작업 패키지 간에 표시되는 링크를 만듭니다"
+      label_precedes_singular: "후임자(이후)"
+      label_precedes_plural: "후임자(이후)"
+      precedes_description: "관련 작업 패키지는 반드시 이 패키지가 완료된 후에 시작되어야 합니다"
+      label_follows_singular: "전임자(이전)"
+      label_follows_plural: "전임자(이전)"
+      follows_description: "이 패키지를 시작하려면 관련 작업 패키지가 반드시 먼저 완료되어야 합니다"
+      label_child_singular: "자식"
+      label_child_plural: "자식"
+      child_description: "관련 작업 패키지를 현재(부모) 작업 패키지의 하위 항목으로 만듭니다"
+      label_blocks_singular: "블록"
+      label_blocks_plural: "블록"
+      blocks_description: "이 패키지가 먼저 종료될 때까지 관련 작업 패키지를 종료할 수 없습니다"
+      label_blocked_singular: "차단한 사용자"
+      label_blocked_plural: "차단한 사용자"
+      label_blocked_by_singular: "차단한 사용자"
+      label_blocked__by_plural: "차단한 사용자"
+      blocked_description: "관련 패키지가 먼저 종료될 때까지 이 작업 패키지를 종료할 수 없습니다"
+      blocked_by_description: "관련 패키지가 먼저 종료될 때까지 이 작업 패키지를 종료할 수 없습니다"
+      label_duplicates_singular: "중복"
+      label_duplicates_plural: "중복"
+      duplicates_description: "관련 작업 패키지의 사본입니다"
+      label_duplicated_singular: "복제한 사용자"
+      label_duplicated_plural: "복제한 사용자"
+      label_duplicated_by_singular: "복제한 사용자"
+      label_duplicated_by_plural: "복제한 사용자"
+      duplicated_by_description: "관련 작업 패키지는 다음의 사본입니다:"
+      duplicated_description: "관련 작업 패키지는 다음의 사본입니다:"
+      label_includes_singular: "포함"
+      label_includes_plural: "포함"
+      includes_description: "관련 작업 패키지를 추가 효과 없이 이 패키지 포함으로 표시합니다"
+      label_partof_singular: "다음의 일부:"
+      label_partof_plural: "다음의 일부:"
+      label_part_of_singular: "다음의 일부:"
+      label_part_of_plural: "다음의 일부:"
+      partof_description: "관련 작업 패키지를 추가 효과 없이 이 패키지의 일부로 표시합니다"
+      part_of_description: "관련 작업 패키지를 추가 효과 없이 이 패키지의 일부로 표시합니다"
+      label_requires_singular: "필수"
+      label_requires_plural: "필수"
+      requires_description: "관련 작업 패키지를 이 패키지에 대한 요구 사항으로 표시합니다"
+      label_required_singular: "다음에 의해 요구됨:"
+      label_required_plural: "다음에 의해 요구됨:"
+      required_description: "이 작업 패키지를 관련 패키지에 대한 요구 사항으로 표시합니다"
+      label_parent_singular: "부모"
+      label_parent_plural: "부모"
   label_invitation: 초대
   account:
     delete: "계정 삭제"
@@ -926,6 +934,7 @@ ko:
       messages:
         accepted: "허용 되어야 합니다."
         after: "은(는) %{date} 후이어야  합니다."
+        after_today: "must be in the future."
         after_or_equal_to: "은(는) %{date} 이후여야 합니다."
         before: "은(는) %{date} 보다 전이어야 합니다."
         before_or_equal_to: "은(는) %{date} 이전이어야 합니다."
@@ -972,6 +981,7 @@ ko:
         not_an_integer: "은(는) 정수가 아닙니다."
         not_an_iso_date: "은(는) 유효한 날짜가 아닙니다. 필요한 형식: YYYY-MM-DD."
         not_same_project: "은(는) 동일한 프로젝트에 속하지 않습니다."
+        datetime_must_be_in_future: "must be in the future."
         odd: "에 홀수를 입력해 주세요"
         regex_match_failed: "%{expression} 정규식과 일치하지 않습니다."
         regex_invalid: "관련 정규식으로 유효성을 확인할 수 없습니다."
@@ -1084,17 +1094,17 @@ ko:
         project/life_cycle_step_definition:
           attributes:
             type:
-              must_be_a_stage_or_gate: "must be either Project::StageDefinition or Project::GateDefinition"
+              must_be_a_stage_or_gate: "- Project::StageDefinition 또는 Project::GateDefinition여야(이어야) 합니다"
         project/life_cycle_step:
           attributes:
             type:
-              must_be_a_stage_or_gate: "must be either Project::Stage or Project::Gate"
-              must_be_a_stage: "must be a Project::Stage"
-              must_be_a_gate: "must be a Project::Gate"
+              must_be_a_stage_or_gate: "- Project::Stage 또는 Project::Gate여야(이어야) 합니다"
+              must_be_a_stage: "- Project::Stage여야(이어야) 합니다"
+              must_be_a_gate: "- Project::Gate여야(이어야) 합니다"
         project/gate:
           attributes:
             base:
-              end_date_not_allowed: "Cannot assign `end_date` to a Project::Gate"
+              end_date_not_allowed: "Project::Gate에 `end_date`을(를) 할당할 수 없습니다"
         query:
           attributes:
             project:
@@ -1863,22 +1873,22 @@ ko:
       hours: 시간
       days: 일
   pdf_generator:
-    page_nr_footer: "Page %{page} of %{total}"
+    page_nr_footer: "%{page}/%{total}페이지"
     dialog:
-      title: Generate PDF
-      submit: Generate
+      title: PDF 생성
+      submit: 생성
       header_right:
-        label: Header right
-        caption: Text to be displayed in the right of the header
+        label: 머리글 오른쪽
+        caption: 머리글 오른쪽에 표시할 텍스트
       footer_center:
-        label: Footer center
-        caption: Text to be displayed in the center of the footer
+        label: 바닥글 가운데
+        caption: 바닥글 가운데에 표시할 텍스트
       hyphenation:
-        label: Hyphenation
-        caption: Break words between lines to improve text justification and readability.
+        label: 하이픈 넣기
+        caption: 라인 사이 단어를 구분하여 텍스트 양쪽 맞춤과 가독성을 개선합니다.
       paper_size:
-        label: Paper size
-        caption: The size of the paper to use for the PDF.
+        label: 용지 크기
+        caption: PDF에 사용할 용지 크기입니다.
   extraction:
     available:
       pdftotext: "Pdftotext 사용 가능(선택적)"
@@ -2237,7 +2247,7 @@ ko:
   label_environment: "환경"
   label_estimates_and_progress: "견적 및 진행률"
   label_equals: "일치함"
-  label_equals_with_descendants: "is any with descendants"
+  label_equals_with_descendants: "하위 항목이 있는 항목"
   label_everywhere: "어디에 있든지"
   label_example: "예"
   label_experimental: "실험"
@@ -2502,8 +2512,8 @@ ko:
   label_related_work_packages: "관련 작업 패키지"
   label_relates: "관련 항목"
   label_relates_to: "관련 항목"
-  label_relation: "Relation"
-  label_relation_actions: "Relation actions"
+  label_relation: "관계"
+  label_relation_actions: "관계 작업"
   label_relation_delete: "관계 삭제"
   label_relation_new: "새 관계"
   label_release_notes: "릴리스 노트"
@@ -2920,6 +2930,7 @@ ko:
   notice_successful_connection: "연결에 성공했습니다."
   notice_successful_create: "생성에 성공했습니다."
   notice_successful_delete: "삭제에 성공했습니다."
+  notice_successful_cancel: "Successful cancellation."
   notice_successful_update: "업데이트에 성공했습니다."
   notice_successful_update_custom_fields_added_to_project: |
     업데이트 성공. 활성화된 유형의 사용자 지정 필드는 작업 패키지 양식에서 자동으로 활성화됩니다. <a href="%{url}" target="_blank">자세히 알아보세요</a>.
@@ -3027,6 +3038,7 @@ ko:
   permission_select_project_modules: "프로젝트 모듈 선택"
   permission_share_work_packages: "작업 패키지 공유"
   permission_manage_types: "유형 선택"
+  permission_manage_own_reminders: "Create own reminders"
   permission_view_project: "프로젝트 보기"
   permission_view_changesets: "OpenProject에서 리포지토리 수정 사항 보기"
   permission_view_commit_author_statistics: "커밋 작성자 통계 보기"

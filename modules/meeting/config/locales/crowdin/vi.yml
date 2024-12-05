@@ -49,10 +49,16 @@ vi:
         presenter: "Người trình bày"
       meeting_section:
         title: "Tiêu đề"
+      recurring_meeting:
+        frequency: "Frequency"
+        interval: "Interval"
+        end_after: "End after"
+        iterations: "Occurrences"
     errors:
       messages:
         invalid_time_format: "không phải giờ hợp lệ. Yêu cầu định dạng: HH:MM"
     models:
+      recurring_meeting: "Recurring meeting"
       structured_meeting: "Cuộc họp (dạng động)"
       meeting_agenda_item: "Mục chương trình nghị sự"
       meeting_agenda: "Các ý chính"
@@ -88,36 +94,61 @@ vi:
   label_meeting_plural: "Những cuộc họp"
   label_meeting_new: "Cuộc họp mới"
   label_meeting_new_dynamic: "New dynamic meeting"
-  label_meeting_create: "Create meeting"
+  label_meeting_new_recurring: "New recurring meeting"
+  label_meeting_create: "Tạo cuộc họp"
   label_meeting_copy: "Copy meeting"
   label_meeting_edit: "Chỉnh sửa cuộc họp"
   label_meeting_agenda: "Chương trình nghị sự"
   label_meeting_minutes: "Biên bản cuộc họp"
   label_meeting_close: "Đóng"
   label_meeting_open: "Mở"
-  label_meeting_index_delete: "Delete"
-  label_meeting_open_this_meeting: "Open this meeting"
+  label_meeting_index_delete: "Xoá"
+  label_meeting_open_this_meeting: "Mở cuộc họp này"
   label_meeting_agenda_close: "Đóng chương trình nghị sự để bắt đầu biên bản cuộc họp"
   label_meeting_date_time: "Ngày/Giờ"
   label_meeting_date_and_time: "Date and time"
   label_meeting_diff: "Sự khác biệt"
+  label_recurring_meeting: "Recurring meeting"
+  label_recurring_meeting_part_of: "Part of a meeting series"
+  label_recurring_meeting_new: "New recurring meeting"
+  label_recurring_meeting_plural: "Recurring meetings"
+  label_template: "Template"
+  label_recurring_meeting_view: "View meeting series"
+  label_recurring_meeting_create: "Create from template"
+  label_recurring_meeting_copy: "Copy as one-off"
+  label_recurring_meeting_cancel: "Cancel this occurrence"
+  label_recurring_meeting_delete: "Delete occurrence"
+  label_recurring_meeting_delete_confirmation: >
+    This meeting is part of a series called %{name}. This will only delete this particular occurrence and not the entire series. Do you want to continue?
+  label_recurring_occurrence_delete_confirmation: >
+    Any meeting information not in the template will be lost. Do you want to continue?
+  label_recurring_meeting_restore: "Restore this occurrence"
+  label_recurring_meeting_series_edit: "Edit meeting series"
+  label_recurring_meeting_series_delete: "Delete meeting series"
+  label_my_meetings: "My meetings"
+  label_all_meetings: "All meetings"
   label_upcoming_meetings: "Các cuộc họp sắp tới"
   label_past_meetings: "Các cuộc họp đã qua"
   label_upcoming_meetings_short: "Sắp tới"
   label_past_meetings_short: "Đã qua"
   label_involvement: "Tham gia"
-  label_upcoming_invitations: "Lời mời sắp tới"
+  label_invitations: "Invitations"
   label_past_invitations: "Lời mời đã qua"
-  label_attendee: "Người tham dự"
-  label_author: "Người tạo"
+  label_attended: "Attended"
+  label_created_by_me: "Created by me"
   label_notify: "Gửi để xem xét"
   label_icalendar: "Gửi iCalendar"
   label_icalendar_download: "Tải xuống sự kiện iCalendar"
+  label_view_meeting_series: "View meeting series"
+  label_meeting_series: "Meeting series"
   label_version: "0886055830 "
   label_time_zone: "Múi giờ"
   label_start_date: "Ngày bắt đầu"
   meeting:
+    participants:
+      template: "These participants will be invited automatically to all future meetings as they are created."
     attachments:
+      template: "These attached files will be included in all future meetings in the series."
       text: "Các tệp đính kèm có sẵn cho tất cả người tham gia cuộc họp. Bạn cũng có thể kéo và thả các tệp này vào ghi chú mục chương trình nghị sự."
     copy:
       title: "Sao chép cuộc họp: %{title}"
@@ -146,6 +177,7 @@ vi:
       classic: "Cổ điển"
       classic_text: "Tổ chức cuộc họp của bạn bằng một chương trình nghị sự và biên bản định dạng văn bản."
       structured: "Dạng động"
+      recurring: "Recurring"
       structured_text: "Tổ chức cuộc họp của bạn dưới dạng danh sách các mục chương trình nghị sự, có thể liên kết chúng với một gói công việc."
       structured_text_copy: "Sao chép một cuộc họp hiện tại sẽ không sao chép các mục chương trình nghị sự liên quan, chỉ sao chép các chi tiết"
     copied: "Sao chép từ Cuộc họp #%{id}"
@@ -154,6 +186,33 @@ vi:
     delete_confirmation: "Xóa phần này cũng sẽ xóa tất cả các mục chương trình nghị sự của nó. Bạn có chắc chắn muốn làm điều này không?"
     placeholder_title: "Phần mới"
     empty_text: "Kéo các mục vào đây hoặc tạo một cái mới"
+  recurring_meeting:
+    interval:
+      instructions: >
+        Enter the number of days or weeks between each occurrence.
+    occurrence:
+      infoline: "This meeting is part of a recurring meeting series."
+    template:
+      label_view_template: "View template"
+      label_edit_template: "Edit template"
+      banner_html: >
+        You are currently editing a template of a meeting series: %{link}. Every new instance of a meeting in this series will use this template. Changes will not affect past or already created meetings.
+    frequency:
+      every_weekday: "Every %{day_of_the_week}"
+      daily: "Daily"
+      working_days: "Working Days"
+      weekly: "Weekly"
+    end_after:
+      specific_date: "A specific date"
+      iterations: "A number of occurrences"
+    starts: "Starts"
+    in_words:
+      daily_interval: "Every %{interval} day"
+      working_days: "Every working day"
+      working_days_interval: "Every %{interval} working day"
+      weekly: "Weekly on %{weekday}"
+      weekly_interval: "Every %{interval} week on %{weekday}"
+      full: "%{base} at %{time}, ends on %{end_date}"
   notice_successful_notification: "Đã gửi thông báo thành công"
   notice_timezone_missing: Chưa đặt múi giờ và %{zone} đã được chọn. Để chọn múi giowf của bạn, nhấn vào đây.
   notice_meeting_updated: "Trang này đã được người khác cập nhật. Tải lại để xem thay đổi."
@@ -212,6 +271,10 @@ vi:
   label_meeting_state_open_html: "<i>Mở</i>"
   label_meeting_state_closed: "Đã đóng"
   label_meeting_state_closed_html: "<i>Đã đóng</i>"
+  label_meeting_state_agenda_created: "Agenda created"
+  label_meeting_state_scheduled: "Scheduled"
+  label_meeting_state_cancelled: "Cancelled"
+  label_meeting_state_skipped: "Skipped"
   label_meeting_reopen_action: "Mở lại cuộc họp"
   label_meeting_close_action: "Đóng cuộc họp"
   text_meeting_open_description: "Cuộc họp này đang mở. Bạn có thể thêm/xóa các mục chương trình nghị sự và chỉnh sửa chúng theo ý muốn. Sau khi cuộc họp kết thúc, hãy đóng nó để khóa lại."

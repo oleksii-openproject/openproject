@@ -16,6 +16,9 @@
           end
         end
         flex.with_row do
+          # @workpackage is not available inside the render_inline_form block
+          # so we need to re-define them here. Figure out solution for this.
+          url = ::API::V3::Utilities::PathHelper::ApiV3Path.work_package_available_relation_candidates(@work_package.id, type: Relation::TYPE_CHILD)
           render_inline_form(f) do |my_form|
             my_form.work_package_autocompleter(
               name: :id,
@@ -24,6 +27,8 @@
               autocomplete_options: {
                 resource: 'work_packages',
                 searchKey: 'subjectOrId',
+                url:,
+                relations: true, # Activates relations fetch mode in the autocomplete
                 openDirectly: false,
                 focusDirectly: true,
                 dropdownPosition: 'bottom',

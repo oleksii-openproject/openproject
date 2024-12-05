@@ -27,13 +27,17 @@
 #++
 
 class Meeting < ApplicationRecord
-  include VirtualAttribute
+  include VirtualStartTime
   include OpenProject::Journal::AttachmentHelper
 
   self.table_name = "meetings"
 
   belongs_to :project
   belongs_to :author, class_name: "User"
+
+  belongs_to :recurring_meeting, optional: true
+  has_one :scheduled_meeting, inverse_of: :meeting
+
   has_one :agenda, dependent: :destroy, class_name: "MeetingAgenda"
   has_one :minutes, dependent: :destroy, class_name: "MeetingMinutes"
   has_many :contents, -> { readonly }, class_name: "MeetingContent"
@@ -46,11 +50,21 @@ class Meeting < ApplicationRecord
   has_many :sections, dependent: :destroy, class_name: "MeetingSection"
   has_many :agenda_items, dependent: :destroy, class_name: "MeetingAgendaItem"
 
-  default_scope do
-    order("#{Meeting.table_name}.start_time DESC")
-  end
+  scope :templated, -> { where(template: true) }
+  scope :not_templated, -> { where(template: false) }
+
+  scope :cancelled, -> { where(state: :cancelled) }
+  scope :not_cancelled, -> { where.not(id: cancelled) }
+
+  scope :not_recurring, -> { where(recurring_meeting_id: nil) }
+  scope :recurring, -> { where.not(id: not_recurring) }
+
   scope :from_tomorrow, -> { where(["start_time >= ?", Date.tomorrow.beginning_of_day]) }
   scope :from_today, -> { where(["start_time >= ?", Time.zone.today.beginning_of_day]) }
+
+  scope :upcoming, -> { where("start_time + (interval '1 hour' * duration) >= ?", Time.current) }
+  scope :past, -> { where("start_time + (interval '1 hour' * duration) < ?", Time.current) }
+
   scope :with_users_by_date, -> {
     order("#{Meeting.table_name}.title ASC")
       .includes({ participants: :user }, :author)
@@ -89,24 +103,14 @@ class Meeting < ApplicationRecord
 
   validates_presence_of :title, :project_id, :duration
 
-  # We only save start_time as an aggregated value of start_date and hour,
-  # but still need start_date and _hour for validation purposes
-  virtual_attribute :start_date do
-    @start_date
-  end
-  virtual_attribute :start_time_hour do
-    @start_time_hour
-  end
-
-  validate :validate_date_and_time
-
-  before_save :update_start_time!
   before_save :add_new_participants_as_watcher
-  after_initialize :set_initial_values
+
   after_update :send_rescheduling_mail, if: -> { saved_change_to_start_time? || saved_change_to_duration? }
 
   enum state: {
     open: 0, # 0 -> default, leave values for future states between open and closed
+    scheduled: 1,
+    cancelled: 4,
     closed: 5
   }
 
@@ -122,21 +126,6 @@ class Meeting < ApplicationRecord
     parts << lock_version
 
     OpenProject::Cache::CacheKey.expand(parts)
-  end
-
-  ##
-  # Return the computed start_time when changed
-  def start_time
-    if parse_start_time?
-      parsed_start_time
-    else
-      super
-    end
-  end
-
-  def start_time=(value)
-    super(value&.to_datetime)
-    update_derived_fields
   end
 
   def start_month
@@ -157,6 +146,10 @@ class Meeting < ApplicationRecord
 
   def text
     agenda.text if agenda.present?
+  end
+
+  def templated?
+    !!template
   end
 
   def author=(user)
@@ -249,81 +242,7 @@ class Meeting < ApplicationRecord
       .where(user_id: available_members)
   end
 
-  protected
-
-  def set_initial_values
-    # set defaults
-    # Start date is set to tomorrow at 10 AM (Current users local time)
-    write_attribute(:start_time, User.current.time_zone.now.at_midnight + 34.hours) if start_time.nil?
-    self.duration ||= 1
-    update_derived_fields
-  end
-
-  def update_derived_fields
-    @start_date = format_time_as_date(start_time, format: "%Y-%m-%d")
-    @start_time_hour = format_time(start_time, include_date: false, format: "%H:%M")
-  end
-
   private
-
-  ##
-  # Validate date and time setters.
-  # If start_time has been changed, check that value.
-  # Otherwise start_{date, time_hour} was used, then validate those
-  def validate_date_and_time
-    if parse_start_time?
-      errors.add :start_date, :not_an_iso_date if parsed_start_date.nil?
-      errors.add :start_time_hour, :invalid_time_format if parsed_start_time_hour.nil?
-    elsif start_time.nil?
-      errors.add :start_time, :invalid
-    end
-  end
-
-  ##
-  # Actually sets the aggregated start_time attribute.
-  def update_start_time!
-    write_attribute(:start_time, start_time)
-  end
-
-  ##
-  # Determines whether new raw values were provided.
-  def parse_start_time?
-    changed.intersect?(%w(start_date start_time_hour))
-  end
-
-  ##
-  # Returns the parse result of both start_date and start_time_hour
-  def parsed_start_time
-    date = parsed_start_date
-    time = parsed_start_time_hour
-
-    return if date.nil? || time.nil?
-
-    Time.zone.local(
-      date.year,
-      date.month,
-      date.day,
-      time.hour,
-      time.min
-    )
-  end
-
-  ##
-  # Enforce ISO 8601 date parsing for the given input string
-  # This avoids weird parsing of dates due to malformed input.
-  def parsed_start_date
-    Date.iso8601(@start_date)
-  rescue ArgumentError
-    nil
-  end
-
-  ##
-  # Enforce HH::MM time parsing for the given input string
-  def parsed_start_time_hour
-    Time.strptime(@start_time_hour, "%H:%M")
-  rescue ArgumentError
-    nil
-  end
 
   def add_new_participants_as_watcher
     participants.select(&:new_record?).each do |p|
@@ -332,12 +251,16 @@ class Meeting < ApplicationRecord
   end
 
   def send_participant_added_mail(participant)
-    if persisted? && Journal::NotificationConfiguration.active?
+    return if templated? || new_record?
+
+    if Journal::NotificationConfiguration.active?
       MeetingMailer.invited(self, participant.user, User.current).deliver_later
     end
   end
 
   def send_rescheduling_mail
+    return if templated? || new_record?
+
     MeetingNotificationService
       .new(self)
       .call :rescheduled,

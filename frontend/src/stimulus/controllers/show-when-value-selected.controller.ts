@@ -14,9 +14,18 @@ export default class OpShowWhenValueSelectedController extends ApplicationContro
   }
 
   private toggleDisabled(evt:InputEvent):void {
-    const value = (evt.target as HTMLInputElement).value;
-    this.effectTargets.forEach((el) => {
-      el.hidden = !(el.dataset.value === value);
+    const input = evt.target as HTMLInputElement;
+    const targetName = input.dataset.targetName;
+
+    this
+      .effectTargets
+      .filter((el) => targetName === el.dataset.targetName)
+      .forEach((el) => {
+        if (el.dataset.notValue) {
+          el.hidden = el.dataset.notValue === input.value;
+        } else {
+          el.hidden = !(el.dataset.value === input.value);
+        }
     });
   }
 }

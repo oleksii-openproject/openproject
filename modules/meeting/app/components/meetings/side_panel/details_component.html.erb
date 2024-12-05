@@ -4,11 +4,18 @@
       section.with_title { t(:label_meeting_details) }
 
       if @meeting.editable?
+        href =
+          if @meeting.template?
+            details_dialog_recurring_meeting_path(@meeting.recurring_meeting)
+          else
+            details_dialog_meeting_path(@meeting)
+          end
+
         section.with_action_icon(
           icon: :gear,
           scheme: :invisible,
           tag: :a,
-          href: details_dialog_meeting_path(@meeting),
+          href:,
           classes: "hide-when-print",
           data: { controller: 'async-dialog' },
           'aria-label': t(:label_meeting_details_edit),
@@ -17,10 +24,38 @@
       end
 
       flex_layout do |details|
-        details.with_row do
-          render_meeting_attribute_row(:calendar) do
-            render(Primer::Beta::Text.new) do
-              format_date(@meeting.start_time)
+        if @meeting.template?
+          details.with_row do
+            render_meeting_attribute_row(:"git-commit") do
+              render(Primer::Beta::Text.new) do
+                @meeting.recurring_meeting.human_frequency
+              end
+            end
+          end
+
+          details.with_row(mt: 2) do
+            render_meeting_attribute_row(:calendar) do
+              render(Primer::Beta::Text.new) do
+                @meeting.recurring_meeting.human_day_of_week
+              end
+            end
+          end if @meeting.recurring_meeting.frequency_weekly?
+        else
+          if @series.present?
+            details.with_row(mb: 2) do
+              render_meeting_attribute_row(:iterations) do
+                render(Primer::Beta::Link.new(href: recurring_meeting_path(@series), target: "_blank")) do
+                  @series.title
+                end
+              end
+            end
+          end
+
+          details.with_row do
+            render_meeting_attribute_row(:calendar) do
+              render(Primer::Beta::Text.new) do
+                format_date(@meeting.start_time)
+              end
             end
           end
         end
@@ -30,7 +65,7 @@
             flex_layout(align_items: :center) do |time|
               time.with_column do
                 render(Primer::Beta::Text.new) do
-                  "#{format_time(@meeting.start_time, include_date: false)} - #{format_time(@meeting.end_time, include_date:false)}"
+                  "#{format_time(@meeting.start_time, include_date: false)} - #{format_time(@meeting.end_time, include_date: false)}"
                 end
               end
 

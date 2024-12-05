@@ -33,7 +33,7 @@ it:
         label_activity_show_only_changes: "Mostra solo le modifiche"
         label_sort_asc: "Più recenti in fondo"
         label_sort_desc: "Più recenti in cima"
-        label_type_to_comment: "Add a comment. Type @ to notify people."
+        label_type_to_comment: "Aggiungi un commento. Digita @ per avvisare le persone."
         label_submit_comment: "Invia commento"
         changed_on: "ha modificato il"
         created_on: "l'ha creata il"
@@ -237,7 +237,7 @@ it:
           one: 1 sottoelemento
           other: "%{count} sottoelementi"
     upsale:
-      custom_field_format_hierarchy: "Need a hierarchy in your custom fields for work packages?"
+      custom_field_format_hierarchy: "Hai bisogno di una gerarchia nei campi personalizzati per le macro-attività?"
     text_add_new_custom_field: >
       Per aggiungere nuovi campi personalizzati a un progetto, è necessario prima crearli.
     is_enabled_globally: "Abilitato a livello globale"
@@ -264,20 +264,20 @@ it:
     single: "oppure"
   dry_validation:
     errors:
-      int?: "must be an integer."
-      filled?: "must be filled."
-      greater_or_equal_zero: "must be greater or equal to 0."
-      not_found: "not found."
+      int?: "deve essere un intero."
+      filled?: "deve essere compilato."
+      greater_or_equal_zero: "deve essere maggiore o uguale a 0."
+      not_found: "non trovato."
       rules:
         item:
-          root_item: "cannot be a root item."
-          not_persisted: "must be an already existing item."
+          root_item: "non può essere un elemento radice."
+          not_persisted: "deve essere un elemento già esistente."
         label:
-          not_unique: "must be unique within the same hierarchy level."
+          not_unique: "deve essere unico all'interno dello stesso livello gerarchico."
         short:
-          not_unique: "must be unique within the same hierarchy level."
+          not_unique: "deve essere unico all'interno dello stesso livello gerarchico."
         parent:
-          not_descendant: "must be a descendant of the hierarchy root."
+          not_descendant: "deve essere un discendente della radice gerarchica."
     rules:
       depth: "Profondità"
       item: "Elemento"
@@ -494,8 +494,12 @@ it:
     groups:
       member_in_these_groups: "Questo utente è attualmente membro dei seguenti gruppi:"
       no_results_title_text: Questo utente al momento non è un membro di alcun gruppo.
+      summary_with_more: Member of %{names} and %{count_link}.
+      more: "%{count} more"
+      summary: Member of %{names}.
     memberships:
       no_results_title_text: Questo utente non è attualmente membro di alcun progetto.
+    open_profile: "Open profile"
   page:
     text: "Testo"
   placeholder_users:
@@ -632,64 +636,68 @@ it:
           no_results_title_text: Al momento non vi sono versioni disponibili.
   work_package_relations_tab:
     index:
-      action_bar_title: "Add relations to other work packages to create a link between them."
-      no_results_title_text: There are currently no relations available.
-      blankslate_heading: "No relations"
-      blankslate_description: "This work package does not have any relations yet."
-    label_add_x: "Add %{x}"
-    label_edit_x: "Edit %{x}"
-    label_add_description: "Add description"
+      action_bar_title: "Aggiungi relazioni ad altre macro-attività per creare un collegamento tra di esse."
+      no_results_title_text: Al momento non vi sono relazioni disponibili.
+      blankslate_heading: "Nessuna relazione"
+      blankslate_description: "Questa macro-attività non ha ancora alcuna relazione."
+    label_add_x: "Aggiungi %{x}"
+    label_edit_x: "Modifica %{x}"
+    label_add_description: "Aggiungi descrizione"
+    lag:
+      subject: "Lag"
+      title: "Lag (in days)"
+      caption: "The gap in number of working days in between the two work packages"
     relations:
-      label_relates_singular: "related to"
-      label_relates_plural: "related to"
-      label_relates_to_singular: "related to"
-      label_relates_to_plural: "related to"
-      relates_description: "Creates a visible link between the two work packages with no additional effect"
-      relates_to_description: "Creates a visible link between the two work packages with no additional effect"
-      label_precedes_singular: "successor (after)"
-      label_precedes_plural: "successors (after)"
-      precedes_description: "The related work package necessarily needs to start after this one finishes"
-      label_follows_singular: "predecessor (before)"
-      label_follows_plural: "predecessors (before)"
-      follows_description: "The related work package necessarily needs to finish before this one can start"
-      label_child_singular: "child"
-      label_child_plural: "children"
-      child_description: "Makes the related a work package a sub-item of the current (parent) work package"
-      label_blocks_singular: "blocks"
-      label_blocks_plural: "blocks"
-      blocks_description: "The related work package cannot be closed until this one is closed first"
-      label_blocked_singular: "blocked by"
-      label_blocked_plural: "blocked by"
-      label_blocked_by_singular: "blocked by"
-      label_blocked__by_plural: "blocked by"
-      blocked_description: "This work package cannot be closed until the related one is closed first"
-      blocked_by_description: "This work package cannot be closed until the related one is closed first"
-      label_duplicates_singular: "duplicates"
-      label_duplicates_plural: "duplicates"
-      duplicates_description: "This is a copy of the related work package"
-      label_duplicated_singular: "duplicated by"
-      label_duplicated_plural: "duplicated by"
-      label_duplicated_by_singular: "duplicated by"
-      label_duplicated_by_plural: "duplicated by"
-      duplicated_by_description: "The related work package is a copy of this"
-      duplicated_description: "The related work package is a copy of this"
-      label_includes_singular: "includes"
-      label_includes_plural: "includes"
-      includes_description: "Marks the related work package as including this one with no additional effect"
-      label_partof_singular: "part of"
-      label_partof_plural: "part of"
-      label_part_of_singular: "part of"
-      label_part_of_plural: "part of"
-      partof_description: "Marks the related work package as being part of this one with no additional effect"
-      part_of_description: "Marks the related work package as being part of this one with no additional effect"
-      label_requires_singular: "requires"
-      label_requires_plural: "requires"
-      requires_description: "Marks the related work package as a requirement to this one"
-      label_required_singular: "required by"
-      label_required_plural: "required by"
-      required_description: "Marks this work package as being a requirement to the related one"
-      label_parent_singular: "parent"
-      label_parent_plural: "parent"
+      label_relates_singular: "correlata con"
+      label_relates_plural: "correlate con"
+      label_relates_to_singular: "correlata con"
+      label_relates_to_plural: "correlate con"
+      relates_description: "Crea un collegamento visibile tra i due macro-attività senza alcun effetto aggiuntivo"
+      relates_to_description: "Crea un collegamento visibile tra i due macro-attività senza alcun effetto aggiuntivo"
+      label_precedes_singular: "successore (dopo)"
+      label_precedes_plural: "successori (dopo)"
+      precedes_description: "La macro-attività correlata deve necessariamente iniziare dopo la conclusione di questa"
+      label_follows_singular: "predecessore (prima)"
+      label_follows_plural: "predecessori (prima)"
+      follows_description: "La macro-attività correlata deve necessariamente terminare prima dell'inizio di questa"
+      label_child_singular: "figlia"
+      label_child_plural: "figlie"
+      child_description: "Rende la macro-attività correlata un sottoelemento della macro-attività corrente (genitore)"
+      label_blocks_singular: "blocca"
+      label_blocks_plural: "blocca"
+      blocks_description: "La relativa macro-attività non può essere chiusa fino a quando questa non sarà chiusa prima"
+      label_blocked_singular: "bloccata da"
+      label_blocked_plural: "bloccate da"
+      label_blocked_by_singular: "bloccata da"
+      label_blocked__by_plural: "bloccate da"
+      blocked_description: "Questa macro-attività non può essere chiusa fino a quando quella correlata non sarà chiusa prima"
+      blocked_by_description: "Questa macro-attività non può essere chiusa fino a quando quella correlata non sarà chiusa prima"
+      label_duplicates_singular: "duplica"
+      label_duplicates_plural: "duplica"
+      duplicates_description: "Questa è una copia della macro-attività correlata"
+      label_duplicated_singular: "duplicata da"
+      label_duplicated_plural: "duplicate da"
+      label_duplicated_by_singular: "duplicata da"
+      label_duplicated_by_plural: "duplicate da"
+      duplicated_by_description: "La macro-attività correlata è una copia di questa"
+      duplicated_description: "La macro-attività correlata è una copia di questa"
+      label_includes_singular: "include"
+      label_includes_plural: "include"
+      includes_description: "Contrassegna la macro-attività correlata come se includesse questa senza alcun effetto aggiuntivo"
+      label_partof_singular: "parte di"
+      label_partof_plural: "parte di"
+      label_part_of_singular: "parte di"
+      label_part_of_plural: "parte di"
+      partof_description: "Contrassegna la macro-attività correlata come se facesse parte di questa senza alcun effetto aggiuntivo"
+      part_of_description: "Contrassegna la macro-attività correlata come se facesse parte di questa senza alcun effetto aggiuntivo"
+      label_requires_singular: "richiede"
+      label_requires_plural: "richiede"
+      requires_description: "Contrassegna la macro-attività correlata come obbligatoria per questa"
+      label_required_singular: "richiesta da"
+      label_required_plural: "richieste da"
+      required_description: "Contrassegna questa macro-attività come obbligatoria per quella correlata"
+      label_parent_singular: "genitore"
+      label_parent_plural: "genitore"
   label_invitation: Invito
   account:
     delete: "Cancella account"
@@ -931,6 +939,7 @@ it:
       messages:
         accepted: "deve essere accettato."
         after: "deve essere successivo al %{date}."
+        after_today: "must be in the future."
         after_or_equal_to: "deve essere successivo o uguale al %{date}."
         before: "deve essere precedente al %{date}."
         before_or_equal_to: "deve essere precedente o uguale al %{date}."
@@ -977,6 +986,7 @@ it:
         not_an_integer: "non è un numero intero."
         not_an_iso_date: "non è una data valida. Formato richiesto: AAAA-MM-GG."
         not_same_project: "non appartiene allo stesso progetto."
+        datetime_must_be_in_future: "must be in the future."
         odd: "deve essere dispari."
         regex_match_failed: "non corrisponde all'espressione regolare %{expression}."
         regex_invalid: "non può essere convalidato con l'espressione regolare associata."
@@ -1089,17 +1099,17 @@ it:
         project/life_cycle_step_definition:
           attributes:
             type:
-              must_be_a_stage_or_gate: "must be either Project::StageDefinition or Project::GateDefinition"
+              must_be_a_stage_or_gate: "deve essere Project::StageDefinition o Project::GateDefinition"
         project/life_cycle_step:
           attributes:
             type:
-              must_be_a_stage_or_gate: "must be either Project::Stage or Project::Gate"
-              must_be_a_stage: "must be a Project::Stage"
-              must_be_a_gate: "must be a Project::Gate"
+              must_be_a_stage_or_gate: "deve essere Project::Stage o Project::Gate"
+              must_be_a_stage: "deve essere un Project::Stage"
+              must_be_a_gate: "deve essere un Project::Gate"
         project/gate:
           attributes:
             base:
-              end_date_not_allowed: "Cannot assign `end_date` to a Project::Gate"
+              end_date_not_allowed: "Impossibile assegnare `end_date` a un Project::Gate"
         query:
           attributes:
             project:
@@ -1896,22 +1906,22 @@ it:
       hours: o
       days: g
   pdf_generator:
-    page_nr_footer: "Page %{page} of %{total}"
+    page_nr_footer: "Pagina %{page} di %{total}"
     dialog:
-      title: Generate PDF
-      submit: Generate
+      title: Genera PDF
+      submit: Genera
       header_right:
-        label: Header right
-        caption: Text to be displayed in the right of the header
+        label: Intestazione a destra
+        caption: Testo da visualizzare a destra dell'intestazione
       footer_center:
-        label: Footer center
-        caption: Text to be displayed in the center of the footer
+        label: Piè di pagina centrale
+        caption: Testo da visualizzare al centro del piè di pagina
       hyphenation:
-        label: Hyphenation
-        caption: Break words between lines to improve text justification and readability.
+        label: Sillabazione
+        caption: Suddividi le parole tra le righe per migliorare la giustificazione e la leggibilità del testo.
       paper_size:
-        label: Paper size
-        caption: The size of the paper to use for the PDF.
+        label: Dimensione del foglio
+        caption: Il formato della carta da utilizzare per il PDF.
   extraction:
     available:
       pdftotext: "Pdfatesto disponibile (opzionale)"
@@ -2270,7 +2280,7 @@ it:
   label_environment: "Ambiente"
   label_estimates_and_progress: "Stime e progressi"
   label_equals: "è"
-  label_equals_with_descendants: "is any with descendants"
+  label_equals_with_descendants: "è qualsiasi con discendenti"
   label_everywhere: "ovunque"
   label_example: "Esempio"
   label_experimental: "Sperimentale"
@@ -2535,8 +2545,8 @@ it:
   label_related_work_packages: "Macro-attività correlate"
   label_relates: "correlato con"
   label_relates_to: "correlato con"
-  label_relation: "Relation"
-  label_relation_actions: "Relation actions"
+  label_relation: "Relazione"
+  label_relation_actions: "Azioni di relazione"
   label_relation_delete: "Eliminare la relazione"
   label_relation_new: "Nuova relazione"
   label_release_notes: "Note di rilascio"
@@ -2954,6 +2964,7 @@ it:
   notice_successful_connection: "Connesso con successo."
   notice_successful_create: "Creato con successo."
   notice_successful_delete: "Cancellato con successo."
+  notice_successful_cancel: "Successful cancellation."
   notice_successful_update: "Aggiornato con successo."
   notice_successful_update_custom_fields_added_to_project: |
     Aggiornamento riuscito. I campi personalizzati dei tipi attivati ​​vengono attivati ​​automaticamente
@@ -3063,6 +3074,7 @@ it:
   permission_select_project_modules: "Seleziona moduli del progetto"
   permission_share_work_packages: "Condividi macro-attività"
   permission_manage_types: "Seleziona i tipi"
+  permission_manage_own_reminders: "Create own reminders"
   permission_view_project: "Visualizza progetti"
   permission_view_changesets: "Visualizza l'archivio revisioni in OpenProject"
   permission_view_commit_author_statistics: "Visualizza le statistiche dell'autore delle modifiche confermate"

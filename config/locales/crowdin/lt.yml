@@ -506,8 +506,12 @@ lt:
     groups:
       member_in_these_groups: "Šis naudotojas šiuo metu yra šių grupių narys:"
       no_results_title_text: Šis naudotojas nėra jokios grupės narys.
+      summary_with_more: Member of %{names} and %{count_link}.
+      more: "%{count} more"
+      summary: Member of %{names}.
     memberships:
       no_results_title_text: Šis naudotojas šiuo metu nėra projekto narys.
+    open_profile: "Open profile"
   page:
     text: "Tekstas"
   placeholder_users:
@@ -656,6 +660,10 @@ lt:
     label_add_x: "Add %{x}"
     label_edit_x: "Edit %{x}"
     label_add_description: "Add description"
+    lag:
+      subject: "Lag"
+      title: "Lag (in days)"
+      caption: "The gap in number of working days in between the two work packages"
     relations:
       label_relates_singular: "related to"
       label_relates_plural: "related to"
@@ -948,6 +956,7 @@ lt:
       messages:
         accepted: "turi būti patvirtinta."
         after: "turi būti po %{date}."
+        after_today: "must be in the future."
         after_or_equal_to: "turi eiti po arba būti lygu %{date}."
         before: "turi eiti prieš %{date}."
         before_or_equal_to: "turi eiti prieš arba būti lygu %{date}."
@@ -994,6 +1003,7 @@ lt:
         not_an_integer: "nėra sveikasis skaičius."
         not_an_iso_date: "nėra tinkama data. Reikalingas formatas: YYYY-MM-DD."
         not_same_project: "nepriklauso tam pačiam projektui."
+        datetime_must_be_in_future: "must be in the future."
         odd: "turi būti nelyginis."
         regex_match_failed: "neatitinka reguliariosios išraiškos %{expression}."
         regex_invalid: "negalėjo būti patvirtintas su susieta reguliaria išraiška."
@@ -3029,6 +3039,7 @@ lt:
   notice_successful_connection: "Sėkmingas susijungimas."
   notice_successful_create: "Sėkmingas sukūrimas."
   notice_successful_delete: "Sėkmingas panaikinimas."
+  notice_successful_cancel: "Successful cancellation."
   notice_successful_update: "Sėkmingai atnaujinta."
   notice_successful_update_custom_fields_added_to_project: |
     Sėkmingas atnaujinimas. Savi aktyvuotų tipų laukai automatiškai aktivuoti darbo paketų formose. <a href="%{url}" target="_blank">Skaitykite daugiau</a>.
@@ -3139,6 +3150,7 @@ lt:
   permission_select_project_modules: "Parinkti projekto modulius"
   permission_share_work_packages: "Bendrinti darbo paketus"
   permission_manage_types: "Pasirinkti tipus"
+  permission_manage_own_reminders: "Create own reminders"
   permission_view_project: "Peržiūrėti projektus"
   permission_view_changesets: "Rodyti repozitorijos pakeitimus OpenProject"
   permission_view_commit_author_statistics: "Peržiūrėti autorių pakeitimų pateikimo statistiką"

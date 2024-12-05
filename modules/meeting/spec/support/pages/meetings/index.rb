@@ -60,6 +60,10 @@ module Pages::Meetings
       page.execute_script("arguments[0].value = arguments[1]", input.native, time)
     end
 
+    def set_end_date(date)
+      fill_in "End date", with: date, fill_options: { clear: :backspace }
+    end
+
     def set_project(project)
       select_autocomplete find("[data-test-selector='project_id']"),
                           query: project.name,
@@ -135,6 +139,18 @@ module Pages::Meetings
 
     def set_sidebar_filter(filter_name)
       submenu.click_item(filter_name)
+    end
+
+    def set_quick_filter(upcoming: true)
+      page.within("#content-body") do
+        if upcoming
+          click_link_or_button "Upcoming"
+        else
+          click_link_or_button "Past"
+        end
+      end
+
+      wait_for_network_idle
     end
 
     def expect_no_meetings_listed

@@ -105,7 +105,7 @@ pt-PT:
     button_update: "Atualizar"
     button_export-pdf: "Transferir PDF"
     button_export-atom: "Transferir Atom"
-    button_generate_pdf: "Generate PDF"
+    button_generate_pdf: "Gerar PDF"
     button_create: "Criar"
     card:
       add_new: "Adicionar novo cartão"
@@ -360,7 +360,7 @@ pt-PT:
           "15_1":
             standard:
               new_features_html: >
-                The release brings various features and improvements for you, e.g. <br> <ul class="%{list_styling_class}"> <li>Custom fields of type hierarchy (Enterprise add-on).</li> <li>Redesign of the Relations tab in work packages.</li> <li>Redesign of the Meetings index page.</li> <li>Manual page breaks in PDF work package exports.</li> <li>Zen mode for project lists.</li> </ul>
+                A versão oferece várias funcionalidades e melhorias, por exemplo, <br> <ul class="%{list_styling_class}"> <li>Campos personalizados de tipo hierárquico (suplemento Enterprise).</li> <li>Reformulação do separador Relações nos pacotes de trabalho.</li> <li>Reformulação da página de índice das Reuniões.</li> <li>Quebras de página manuais nas exportações de pacotes de trabalho em PDF.</li> <li>Modo Zen para listas de projetos.</li> </ul>
     ical_sharing_modal:
       title: "Subscrever o calendário"
       inital_setup_error_message: "Ocorreu um erro ao recuperar os dados."
@@ -576,7 +576,7 @@ pt-PT:
         members: "Convide novos <b>membros</b> para participarem no seu projeto."
         quick_add_button: "Clique no ícone mais (+) no menu de navegação para <b>criar um novo projeto</b> ou <b>convidar colegas</b>."
         sidebar_arrow: "Use a seta de retorno no canto superior esquerdo para voltar ao <b>menu principal</b> do projeto."
-        welcome: "Take a three-minute introduction tour to learn the most <b>important features</b>. <br> We recommend completing the steps until the end. You can restart the tour any time."
+        welcome: "Faça uma visita guiada de 3 minutos para conhecer as <b>funcionalidades mais importantes</b>.<br> Recomendamos que conclua as etapas até ao final. Pode reiniciar a visita a qualquer momento."
         wiki: "Na <b>wiki</b> pode documentar e partilhar conhecimento com a sua equipa."
         backlogs:
           overview: "Faça a gestão do seu trabalho na vista de <b>backlogs</b>."
@@ -621,6 +621,7 @@ pt-PT:
         prioritized: "Priorizado"
         dateAlert: "Alerta de data"
         shared: "Partilhado"
+        reminder: "Reminder"
       date_alerts:
         milestone_date: "Data do marco"
         overdue: "Em atraso"

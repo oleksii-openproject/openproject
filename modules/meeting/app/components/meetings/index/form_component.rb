@@ -32,22 +32,38 @@ module Meetings
     include OpTurbo::Streamable
     include OpPrimer::ComponentHelpers
 
-    def initialize(meeting:, project:, type:)
+    def initialize(meeting:, project:, copy_from: nil)
       super
 
       @meeting = meeting
       @project = project
-      @type = type
+      @copy_from = copy_from
     end
 
     private
 
-    def start_date_initial_value
-      format_time_as_date(@meeting.start_time, format: "%Y-%m-%d")
+    def form_controller
+      if @meeting.is_a?(RecurringMeeting)
+        "/recurring_meetings"
+      else
+        "/meetings"
+      end
     end
 
-    def start_time_initial_value
-      format_time(@meeting.start_time, include_date: false, format: "%H:%M")
+    def form_method
+      if @meeting.new_record?
+        :post
+      else
+        :put
+      end
+    end
+
+    def form_action
+      if @meeting.new_record?
+        :create
+      else
+        :update
+      end
     end
   end
 end

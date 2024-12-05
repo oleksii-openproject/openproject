@@ -124,7 +124,7 @@ vi:
               not_found: "Không tìm thấy %{current_path}."
             set_folders_permissions:
               permission_not_set: không thể thiết lập quyền trên %{path}.
-          error: Đã xảy ra lỗi không mong muốn. Vui lòng đảm bảo rằng phiên bản Nextcloud của bạn có thể truy cập được và kiểm tra nhật ký công nhân OpenProject để biết thêm thông tin
+          error: An unexpected error occurred. Please ensure that your Nextcloud instance is reachable and check OpenProject worker logs for more information
           group_does_not_exist: "%{group} không tồn tại. Kiểm tra cấu hình phiên bản Nextcloud của bạn."
           insufficient_privileges: OpenProject không có đủ quyền để thêm %{user} vào %{group}. Kiểm tra cài đặt nhóm của bạn trong Nextcloud.
           not_allowed: Nextcloud chặn yêu cầu.
@@ -145,7 +145,7 @@ vi:
               not_found: "Không tìm thấy %{current_path}."
             set_folders_permissions:
               permission_not_set: không thể thiết lập quyền trên %{path}.
-          error: Đã xảy ra lỗi không mong muốn. Vui lòng đảm bảo rằng phiên bản Nextcloud của bạn có thể truy cập được và kiểm tra nhật ký công nhân OpenProject để biết thêm thông tin
+          error: An unexpected error occurred. Please ensure that OneDrive/SharePoint is reachable and check OpenProject worker logs for more information
           not_allowed: OpenProject không được phép truy cập ổ đĩa OneDrive của bạn. Vui lòng kiểm tra các quyền được thiết lập trên Ứng dụng Azure.
           unauthorized: OpenProject could not sync with OneDrive. Please check your storage and Azure Application configuration.
           user_does_not_exist: "%{user} không tồn tại trong Nextcloud."

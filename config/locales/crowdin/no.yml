@@ -497,8 +497,12 @@
     groups:
       member_in_these_groups: "Denne brukeren er for øyeblikket medlem av følgende grupper:"
       no_results_title_text: Denne brukeren er for øyeblikket ikke medlem i noen gruppe.
+      summary_with_more: Member of %{names} and %{count_link}.
+      more: "%{count} more"
+      summary: Member of %{names}.
     memberships:
       no_results_title_text: Denne brukeren er for øyeblikket ikke medlem av et prosjekt.
+    open_profile: "Open profile"
   page:
     text: "Tekst"
   placeholder_users:
@@ -642,6 +646,10 @@
     label_add_x: "Add %{x}"
     label_edit_x: "Edit %{x}"
     label_add_description: "Add description"
+    lag:
+      subject: "Lag"
+      title: "Lag (in days)"
+      caption: "The gap in number of working days in between the two work packages"
     relations:
       label_relates_singular: "related to"
       label_relates_plural: "related to"
@@ -934,6 +942,7 @@
       messages:
         accepted: "må aksepteres"
         after: "må være etter %{date}."
+        after_today: "must be in the future."
         after_or_equal_to: "må være etter eller lik %{date}."
         before: "må være før %{date}."
         before_or_equal_to: "må være før eller lik %{date}."
@@ -980,6 +989,7 @@
         not_an_integer: "er ikke et heltall."
         not_an_iso_date: "er ikke en gyldig dato. Påkrevd format: ÅÅÅÅ-MM-DD."
         not_same_project: "hører ikke til samme prosjekt."
+        datetime_must_be_in_future: "must be in the future."
         odd: "må være oddetall."
         regex_match_failed: "samsvarer ikke med det regulære uttrykket %{expression}."
         regex_invalid: "kunne ikke valideres med det tilhørende regulære uttrykket."
@@ -2957,6 +2967,7 @@
   notice_successful_connection: "Vellykket tilkobling."
   notice_successful_create: "Opprettelsen var vellykket."
   notice_successful_delete: "Slettingen var vellykket."
+  notice_successful_cancel: "Successful cancellation."
   notice_successful_update: "Oppdateringen var vellykket."
   notice_successful_update_custom_fields_added_to_project: |
     Vellykket oppdatering. Spesifikke felter for aktiverte typer blir automatisk aktivert
@@ -3066,6 +3077,7 @@
   permission_select_project_modules: "Velg prosjektmoduler"
   permission_share_work_packages: "Del arbeidspakker"
   permission_manage_types: "Velg typer"
+  permission_manage_own_reminders: "Create own reminders"
   permission_view_project: "Vis prosjekter"
   permission_view_changesets: "Se revideringer av lagringssteder i OpenProject"
   permission_view_commit_author_statistics: "Vis statistikk over forfatterbidrag"

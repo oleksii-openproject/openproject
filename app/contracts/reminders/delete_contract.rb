@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) the OpenProject GmbH
+# Copyright (C) 2012-2024 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -26,21 +26,11 @@
 # See COPYRIGHT and LICENSE files for more details.
 #++
 
-class Meeting::StartDate < ApplicationForm
-  form do |meeting_form|
-    meeting_form.text_field(
-      name: :start_date,
-      type: "date",
-      value: @initial_value,
-      placeholder: Meeting.human_attribute_name(:start_date),
-      label: Meeting.human_attribute_name(:start_date),
-      leading_visual: { icon: :calendar },
-      required: true,
-      autofocus: false
-    )
-  end
-
-  def initialize(initial_value: DateTime.now.strftime("%Y-%m-%d"))
-    @initial_value = initial_value
+module Reminders
+  class DeleteContract < ::DeleteContract
+    delete_permission -> {
+      # The user can delete the reminder if they created it
+      model.creator_id == user.id
+    }
   end
 end

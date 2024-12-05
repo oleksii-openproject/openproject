@@ -39,7 +39,7 @@ OpenProject has multiple file format options for exporting work packages, includ
 
 ### PDF export
 
-OpenProject has multiple options for exporting work packages in PDF format. These include table, report and Gantt chart.
+OpenProject has multiple options for exporting work packages in PDF format. These include table, report and Gantt chart. 
 
 #### PDF Table
 
@@ -59,6 +59,9 @@ With PDF Reports, you can export detailed up-to-date work plans for your project
 For each work package, a table of attributes is included, where attributes correspond to the columns you specified for the export. For a [single work package export](#export-single-work-package), attributes are displayed according to the work package form configuration.
 
 The table of attributes is followed by the work package description and, if necessary, custom long text fields, which support [embedded work package and project attributes](../../wysiwyg/#attributes).
+
+> [!TIP]
+> If you used page breaks in work package descriptions, contents will be split into separate pages accordingly. 
 
 > [!NOTE]
 > Embedding of rich text, e.g. descriptions of other work packages, is currently not supported.

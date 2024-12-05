@@ -621,6 +621,7 @@ nl:
         prioritized: "Prioritized"
         dateAlert: "Date alert"
         shared: "Gedeeld"
+        reminder: "Reminder"
       date_alerts:
         milestone_date: "Milestone date"
         overdue: "Te laat"

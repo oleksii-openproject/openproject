@@ -40,7 +40,10 @@ class Queries::Meetings::Filters::InvitedUserFilter < Queries::Meetings::Filters
   end
 
   def where
-    "meeting_participants.user_id IN (#{values.join(',')}) AND meeting_participants.invited"
+    [
+      operator_strategy.sql_for_field(values, MeetingParticipant.table_name, "user_id"),
+      "#{MeetingParticipant.table_name}.invited"
+    ].join(" AND ")
   end
 
   def joins
@@ -49,9 +52,5 @@ class Queries::Meetings::Filters::InvitedUserFilter < Queries::Meetings::Filters
 
   def self.key
     :invited_user_id
-  end
-
-  def available_operators
-    [::Queries::Operators::Equals]
   end
 end

@@ -621,6 +621,7 @@
         prioritized: "Prioritized"
         dateAlert: "Dato varsel"
         shared: "Delt"
+        reminder: "Reminder"
       date_alerts:
         milestone_date: "Milepæl dato"
         overdue: "Forfalt"

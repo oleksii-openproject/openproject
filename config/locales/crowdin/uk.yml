@@ -235,7 +235,7 @@ uk:
           one: 1 піделемент
           other: "Піделементів: %{count}"
     upsale:
-      custom_field_format_hierarchy: "Need a hierarchy in your custom fields for work packages?"
+      custom_field_format_hierarchy: "Потрібно створити ієрархію в користувацьких полях для пакетів робіт?"
     text_add_new_custom_field: >
       Щоб додати нові користувальницькі поля до проекту, спочатку потрібно створити їх, перш ніж ви зможете додати їх до цього проекту.
     is_enabled_globally: "Увімкнено у всьому світі"
@@ -262,20 +262,20 @@ uk:
     single: "або"
   dry_validation:
     errors:
-      int?: "must be an integer."
-      filled?: "must be filled."
-      greater_or_equal_zero: "must be greater or equal to 0."
-      not_found: "not found."
+      int?: "має бути цілим числом."
+      filled?: "має бути заповнено."
+      greater_or_equal_zero: "має дорівнювати нулю або перевищувати його."
+      not_found: "не знайдено."
       rules:
         item:
-          root_item: "cannot be a root item."
-          not_persisted: "must be an already existing item."
+          root_item: "не може бути кореневим елементом."
+          not_persisted: "має бути вже наявним елементом."
         label:
-          not_unique: "must be unique within the same hierarchy level."
+          not_unique: "має бути унікальним у межах одного рівня ієрархії."
         short:
-          not_unique: "must be unique within the same hierarchy level."
+          not_unique: "має бути унікальним у межах одного рівня ієрархії."
         parent:
-          not_descendant: "must be a descendant of the hierarchy root."
+          not_descendant: "має бути нащадком кореня ієрархії."
     rules:
       depth: "Глибина"
       item: "Елемент"
@@ -504,8 +504,12 @@ uk:
     groups:
       member_in_these_groups: "Зараз цей користувач — учасник таких груп:"
       no_results_title_text: Цей користувач зараз не належить до жодної групи.
+      summary_with_more: Member of %{names} and %{count_link}.
+      more: "%{count} more"
+      summary: Member of %{names}.
     memberships:
       no_results_title_text: Цей користувач наразі не є учасником проекту.
+    open_profile: "Open profile"
   page:
     text: "Текст"
   placeholder_users:
@@ -645,64 +649,68 @@ uk:
           no_results_title_text: Наразі немає доступних версій.
   work_package_relations_tab:
     index:
-      action_bar_title: "Add relations to other work packages to create a link between them."
-      no_results_title_text: There are currently no relations available.
-      blankslate_heading: "No relations"
-      blankslate_description: "This work package does not have any relations yet."
-    label_add_x: "Add %{x}"
-    label_edit_x: "Edit %{x}"
-    label_add_description: "Add description"
+      action_bar_title: "Додавайте зв’язки з іншими пакетами робіт."
+      no_results_title_text: Зараз немає доступних зв’язків.
+      blankslate_heading: "Немає зв’язків"
+      blankslate_description: "Цей пакет робіт ще не має зв’язків."
+    label_add_x: "Додати %{x}"
+    label_edit_x: "Редагувати %{x}"
+    label_add_description: "Додати опис"
+    lag:
+      subject: "Затримка"
+      title: "Затримка (у днях)"
+      caption: "Різниця в кількості робочих між двома пакетами робіт"
     relations:
-      label_relates_singular: "related to"
-      label_relates_plural: "related to"
-      label_relates_to_singular: "related to"
-      label_relates_to_plural: "related to"
-      relates_description: "Creates a visible link between the two work packages with no additional effect"
-      relates_to_description: "Creates a visible link between the two work packages with no additional effect"
-      label_precedes_singular: "successor (after)"
-      label_precedes_plural: "successors (after)"
-      precedes_description: "The related work package necessarily needs to start after this one finishes"
-      label_follows_singular: "predecessor (before)"
-      label_follows_plural: "predecessors (before)"
-      follows_description: "The related work package necessarily needs to finish before this one can start"
-      label_child_singular: "child"
-      label_child_plural: "children"
-      child_description: "Makes the related a work package a sub-item of the current (parent) work package"
-      label_blocks_singular: "blocks"
-      label_blocks_plural: "blocks"
-      blocks_description: "The related work package cannot be closed until this one is closed first"
-      label_blocked_singular: "blocked by"
-      label_blocked_plural: "blocked by"
-      label_blocked_by_singular: "blocked by"
-      label_blocked__by_plural: "blocked by"
-      blocked_description: "This work package cannot be closed until the related one is closed first"
-      blocked_by_description: "This work package cannot be closed until the related one is closed first"
-      label_duplicates_singular: "duplicates"
-      label_duplicates_plural: "duplicates"
-      duplicates_description: "This is a copy of the related work package"
-      label_duplicated_singular: "duplicated by"
-      label_duplicated_plural: "duplicated by"
-      label_duplicated_by_singular: "duplicated by"
-      label_duplicated_by_plural: "duplicated by"
-      duplicated_by_description: "The related work package is a copy of this"
-      duplicated_description: "The related work package is a copy of this"
-      label_includes_singular: "includes"
-      label_includes_plural: "includes"
-      includes_description: "Marks the related work package as including this one with no additional effect"
-      label_partof_singular: "part of"
-      label_partof_plural: "part of"
-      label_part_of_singular: "part of"
-      label_part_of_plural: "part of"
-      partof_description: "Marks the related work package as being part of this one with no additional effect"
-      part_of_description: "Marks the related work package as being part of this one with no additional effect"
-      label_requires_singular: "requires"
-      label_requires_plural: "requires"
-      requires_description: "Marks the related work package as a requirement to this one"
-      label_required_singular: "required by"
-      label_required_plural: "required by"
-      required_description: "Marks this work package as being a requirement to the related one"
-      label_parent_singular: "parent"
-      label_parent_plural: "parent"
+      label_relates_singular: "зв’язано з"
+      label_relates_plural: "зв’язано з"
+      label_relates_to_singular: "зв’язано з"
+      label_relates_to_plural: "зв’язано з"
+      relates_description: "Створює видимий зв’язок між двома пакетами робіт без додаткових ефектів"
+      relates_to_description: "Створює видимий зв’язок між двома пакетами робіт без додаткових ефектів"
+      label_precedes_singular: "наступник (після)"
+      label_precedes_plural: "наступники (після)"
+      precedes_description: "Зв’язаний пакет робіт обов’язково має починатися після завершення цього"
+      label_follows_singular: "попередник (до)"
+      label_follows_plural: "попередники (до)"
+      follows_description: "Зв’язаний пакет робіт обов’язково має завершуватися перед початком цього"
+      label_child_singular: "дочірній елемент"
+      label_child_plural: "дочірні елементи"
+      child_description: "Вкладає звʼязаний пакет робіт як піделемент поточного (батьківського) пакета робіт"
+      label_blocks_singular: "блоки"
+      label_blocks_plural: "блоки"
+      blocks_description: "Звʼязаний пакет робіт можна закрити лише після закриття цього"
+      label_blocked_singular: "заблоковано"
+      label_blocked_plural: "заблоковано"
+      label_blocked_by_singular: "заблоковано"
+      label_blocked__by_plural: "заблоковано"
+      blocked_description: "Цей пакет робіт можна закрити лише після закриття звʼязаного з ним"
+      blocked_by_description: "Цей пакет робіт можна закрити лише після закриття звʼязаного з ним"
+      label_duplicates_singular: "дублює"
+      label_duplicates_plural: "дублює"
+      duplicates_description: "Це копія звʼязаного пакета робіт"
+      label_duplicated_singular: "дублюється"
+      label_duplicated_plural: "дублюється"
+      label_duplicated_by_singular: "дублюється"
+      label_duplicated_by_plural: "дублюється"
+      duplicated_by_description: "Звʼязаний пакет робіт є копією цього"
+      duplicated_description: "Звʼязаний пакет робіт є копією цього"
+      label_includes_singular: "включає"
+      label_includes_plural: "включає"
+      includes_description: "Позначає звʼязаний пакет робіт як такий, що включає цей, без додаткового ефекту"
+      label_partof_singular: "належить до"
+      label_partof_plural: "належить до"
+      label_part_of_singular: "належить до"
+      label_part_of_plural: "належить до"
+      partof_description: "Позначає звʼязаний пакет робіт як такий, що належить до цього, без додаткового ефекту"
+      part_of_description: "Позначає звʼязаний пакет робіт як такий, що належить до цього, без додаткового ефекту"
+      label_requires_singular: "вимагає"
+      label_requires_plural: "вимагає"
+      requires_description: "Позначає звʼязаний пакет робіт як обовʼязковий для цього"
+      label_required_singular: "вимагається"
+      label_required_plural: "вимагається"
+      required_description: "Позначає цей робочий пакет як обовʼязковий для звʼязаного з ним"
+      label_parent_singular: "батьківський елемент"
+      label_parent_plural: "батьківський елемент"
   label_invitation: Запрошення
   account:
     delete: "Видалити обліковий запис"
@@ -944,6 +952,7 @@ uk:
       messages:
         accepted: "повинні бути прийняті."
         after: "має бути після %{date}"
+        after_today: "must be in the future."
         after_or_equal_to: "має бути після або рівним %{date}"
         before: "має бути раніше %{date}"
         before_or_equal_to: "має бути до або  %{date}"
@@ -990,6 +999,7 @@ uk:
         not_an_integer: "не є цілим числом"
         not_an_iso_date: "не є дійсною датою. Необхідний формат: YYYY-MM-DD."
         not_same_project: "не належить до одного проекту."
+        datetime_must_be_in_future: "must be in the future."
         odd: "має бути непарним."
         regex_match_failed: "не збігається з регулярним виразом %{expression}."
         regex_invalid: "неможливо перевірити з відповідним регулярним виразом."
@@ -1102,17 +1112,17 @@ uk:
         project/life_cycle_step_definition:
           attributes:
             type:
-              must_be_a_stage_or_gate: "must be either Project::StageDefinition or Project::GateDefinition"
+              must_be_a_stage_or_gate: "має бути Project::StageDefinition або Project::GateDefinition"
         project/life_cycle_step:
           attributes:
             type:
-              must_be_a_stage_or_gate: "must be either Project::Stage or Project::Gate"
-              must_be_a_stage: "must be a Project::Stage"
-              must_be_a_gate: "must be a Project::Gate"
+              must_be_a_stage_or_gate: "має бути Project::Stage або Project::Gate"
+              must_be_a_stage: "має бути Project::Stage"
+              must_be_a_gate: "має бути Project::Gate"
         project/gate:
           attributes:
             base:
-              end_date_not_allowed: "Cannot assign `end_date` to a Project::Gate"
+              end_date_not_allowed: "Неможливо призначити `end_date` для проєкту Project::Gate"
         query:
           attributes:
             project:
@@ -1965,22 +1975,22 @@ uk:
       hours: г
       days: д
   pdf_generator:
-    page_nr_footer: "Page %{page} of %{total}"
+    page_nr_footer: "Сторінка %{page} з %{total}"
     dialog:
-      title: Generate PDF
-      submit: Generate
+      title: Згенерувати PDF
+      submit: Згенерувати
       header_right:
-        label: Header right
-        caption: Text to be displayed in the right of the header
+        label: Верхній колонтитул, справа
+        caption: Текст, що відображається праворуч від верхнього колонтитула
       footer_center:
-        label: Footer center
-        caption: Text to be displayed in the center of the footer
+        label: Нижній колонтитул, центр
+        caption: Текст, що відображається в центрі нижнього колонтитула
       hyphenation:
-        label: Hyphenation
-        caption: Break words between lines to improve text justification and readability.
+        label: Перенесення
+        caption: Переносьте слова між рядками, щоб вирівняти текст і покращити його читабельність.
       paper_size:
-        label: Paper size
-        caption: The size of the paper to use for the PDF.
+        label: Розмір паперу
+        caption: Розмір паперу для PDF-файлу.
   extraction:
     available:
       pdftotext: "Доступний текст PDF (необов'язково)"
@@ -2339,7 +2349,7 @@ uk:
   label_environment: "Навколишнє середовище"
   label_estimates_and_progress: "Оцінки й прогрес виконання"
   label_equals: "є"
-  label_equals_with_descendants: "is any with descendants"
+  label_equals_with_descendants: "– будь-який із нащадками"
   label_everywhere: "скрізь"
   label_example: "Приклад"
   label_experimental: "Експериментальне"
@@ -2604,8 +2614,8 @@ uk:
   label_related_work_packages: "Пов'язані робочі пакети"
   label_relates: "пов'язані з"
   label_relates_to: "пов'язані з"
-  label_relation: "Relation"
-  label_relation_actions: "Relation actions"
+  label_relation: "Зв’язок"
+  label_relation_actions: "Дії зі зв’язками"
   label_relation_delete: "Видалити зв'язок"
   label_relation_new: "Новий зв'язок"
   label_release_notes: "Примітки до випуску"
@@ -3024,6 +3034,7 @@ uk:
   notice_successful_connection: "Підключення успішно встановлене."
   notice_successful_create: "Створення успішно завершене."
   notice_successful_delete: "Видалення успішно завершене."
+  notice_successful_cancel: "Successful cancellation."
   notice_successful_update: "Успішно оновлено."
   notice_successful_update_custom_fields_added_to_project: |
     Оновлення завершено. Користувацькі поля активованих типів автоматично активовано у формі пакета робіт. <a href="%{url}" target="_blank">Докладніше</a>.
@@ -3134,6 +3145,7 @@ uk:
   permission_select_project_modules: "Вибір модулів проекту"
   permission_share_work_packages: "Надати доступ до пакетів робіт"
   permission_manage_types: "Виберіть типи"
+  permission_manage_own_reminders: "Create own reminders"
   permission_view_project: "Перегляд проєктів"
   permission_view_changesets: "Перегляд змін репозиторію (сховища) в OpenProject"
   permission_view_commit_author_statistics: "Перегляд статистики комітів автора"

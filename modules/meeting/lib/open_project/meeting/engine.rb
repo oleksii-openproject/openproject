@@ -44,23 +44,31 @@ module OpenProject::Meeting
                      meeting_agendas: %i[history show diff],
                      meeting_minutes: %i[history show diff],
                      "meetings/menus": %i[show],
-                     work_package_meetings_tab: %i[index count] },
+                     work_package_meetings_tab: %i[index count],
+                     recurring_meetings: %i[index show new create] },
                    permissible_on: :project
         permission :create_meetings,
-                   { meetings: %i[new create copy new_dialog],
-                     "meetings/menus": %i[show] },
+                   {
+                     meetings: %i[new create copy new_dialog],
+                     recurring_meetings: %i[new create copy init],
+                     "meetings/menus": %i[show]
+                   },
                    permissible_on: :project,
                    require: :member,
                    contract_actions: { meetings: %i[create] }
         permission :edit_meetings,
                    {
                      meetings: %i[edit cancel_edit update update_title details_dialog update_details update_participants],
+                     recurring_meetings: %i[edit cancel_edit update update_title details_dialog update_details],
                      work_package_meetings_tab: %i[add_work_package_to_meeting_dialog add_work_package_to_meeting]
                    },
                    permissible_on: :project,
                    require: :member
         permission :delete_meetings,
-                   { meetings: [:destroy] },
+                   {
+                     meetings: [:destroy],
+                     recurring_meetings: %i[destroy delete_scheduled]
+                   },
                    permissible_on: :project,
                    require: :member
         permission :meetings_send_invite,

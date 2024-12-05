@@ -214,7 +214,7 @@ RSpec.describe TypesController do
         get "edit", params: { id: type.id, tab: :settings }
       end
 
-      it { expect(response).to have_http_status(:unprocessable_entity) }
+      it { expect(response).to have_http_status(:ok) }
       it { expect(response).to render_template "edit" }
       it { expect(response).to render_template "types/form/_settings" }
       it { expect(response.body).to have_css "input[@name='type[name]'][@value='My type']" }
@@ -233,7 +233,7 @@ RSpec.describe TypesController do
         get "edit", params: { id: type.id, tab: :projects }
       end
 
-      it { expect(response).to have_http_status(:unprocessable_entity) }
+      it { expect(response).to have_http_status(:ok) }
       it { expect(response).to render_template "edit" }
       it { expect(response).to render_template "types/form/_projects" }
 
@@ -242,7 +242,7 @@ RSpec.describe TypesController do
       }
     end
 
-    describe "POST update" do
+    describe "PATCH update" do
       let(:project2) { create(:project) }
       let(:type) do
         create(:type, name: "My type",
@@ -258,7 +258,7 @@ RSpec.describe TypesController do
         end
 
         before do
-          put :update, params:
+          patch :update, params:
         end
 
         it { expect(response).to be_redirect }
@@ -274,6 +274,21 @@ RSpec.describe TypesController do
         end
       end
 
+      describe "WITH the name being erroneously blank" do
+        let(:params) do
+          { "id" => type.id,
+            "type" => { name: "" },
+            "tab" => "settings" }
+        end
+
+        before do
+          patch :update, params:
+        end
+
+        it { expect(response).to have_http_status(:unprocessable_entity) }
+        it { expect(response).to render_template "edit" }
+      end
+
       describe "WITH projects removed" do
         let(:params) do
           { "id" => type.id,
@@ -282,7 +297,7 @@ RSpec.describe TypesController do
         end
 
         before do
-          put :update, params:
+          patch :update, params:
         end
 
         it { expect(response).to be_redirect }

@@ -50,10 +50,16 @@
         presenter: "Foredragsholder"
       meeting_section:
         title: "Tittel"
+      recurring_meeting:
+        frequency: "Frequency"
+        interval: "Interval"
+        end_after: "End after"
+        iterations: "Occurrences"
     errors:
       messages:
         invalid_time_format: "er ikke et gyldig tidpunkt. Formatet må være HH:MM"
     models:
+      recurring_meeting: "Recurring meeting"
       structured_meeting: "Møte (dynamisk)"
       meeting_agenda_item: "Dagsorden element"
       meeting_agenda: "Saksliste"
@@ -89,6 +95,7 @@
   label_meeting_plural: "Møter"
   label_meeting_new: "Nytt møte"
   label_meeting_new_dynamic: "New dynamic meeting"
+  label_meeting_new_recurring: "New recurring meeting"
   label_meeting_create: "Create meeting"
   label_meeting_copy: "Copy meeting"
   label_meeting_edit: "Redigere møte"
@@ -102,23 +109,47 @@
   label_meeting_date_time: "Dato/klokkeslett"
   label_meeting_date_and_time: "Date and time"
   label_meeting_diff: "Forskjell"
+  label_recurring_meeting: "Recurring meeting"
+  label_recurring_meeting_part_of: "Part of a meeting series"
+  label_recurring_meeting_new: "New recurring meeting"
+  label_recurring_meeting_plural: "Recurring meetings"
+  label_template: "Template"
+  label_recurring_meeting_view: "View meeting series"
+  label_recurring_meeting_create: "Create from template"
+  label_recurring_meeting_copy: "Copy as one-off"
+  label_recurring_meeting_cancel: "Cancel this occurrence"
+  label_recurring_meeting_delete: "Delete occurrence"
+  label_recurring_meeting_delete_confirmation: >
+    This meeting is part of a series called %{name}. This will only delete this particular occurrence and not the entire series. Do you want to continue?
+  label_recurring_occurrence_delete_confirmation: >
+    Any meeting information not in the template will be lost. Do you want to continue?
+  label_recurring_meeting_restore: "Restore this occurrence"
+  label_recurring_meeting_series_edit: "Edit meeting series"
+  label_recurring_meeting_series_delete: "Delete meeting series"
+  label_my_meetings: "My meetings"
+  label_all_meetings: "All meetings"
   label_upcoming_meetings: "Kommende møter"
   label_past_meetings: "Tidligere møter"
   label_upcoming_meetings_short: "Kommende"
   label_past_meetings_short: "Tidligere"
   label_involvement: "Involvering"
-  label_upcoming_invitations: "Kommende invitasjoner"
+  label_invitations: "Invitations"
   label_past_invitations: "Tidligere invitasjoner"
-  label_attendee: "Deltager"
-  label_author: "Skaper"
+  label_attended: "Attended"
+  label_created_by_me: "Created by me"
   label_notify: "Send till gjennomgang"
   label_icalendar: "Send til iCalendar"
   label_icalendar_download: "Last ned iCalendar-hendelse"
+  label_view_meeting_series: "View meeting series"
+  label_meeting_series: "Meeting series"
   label_version: "Versjon"
   label_time_zone: "Tidssone"
   label_start_date: "Startdato"
   meeting:
+    participants:
+      template: "These participants will be invited automatically to all future meetings as they are created."
     attachments:
+      template: "These attached files will be included in all future meetings in the series."
       text: "Vedlagte filer er tilgjengelige for alle møtedeltakere. Du kan også dra og slippe disse inn i til dagsorden."
     copy:
       title: "Kopier møtet %{title}"
@@ -147,6 +178,7 @@
       classic: "Klassisk"
       classic_text: "Organiser møtet ditt i en formattabel tekst agenda og protokoll."
       structured: "Dynamisk"
+      recurring: "Recurring"
       structured_text: "Organiser møtet som en liste over saker, eventuelt knytte dem til en arbeidspakke."
       structured_text_copy: "Kopiering av et møte vil for tiden ikke kopiere de tilknyttede elementene på dagsordenen, bare detaljene"
     copied: "Kopiert fra møte #%{id}"
@@ -155,6 +187,33 @@
     delete_confirmation: "Hvis du sletter denne delen, slettes også dets verdier i alle prosjekter. Er du sikker på at du vil gjøre dette?"
     placeholder_title: "Ny seksjon"
     empty_text: "Dra punkter hit eller opprett et nytt"
+  recurring_meeting:
+    interval:
+      instructions: >
+        Enter the number of days or weeks between each occurrence.
+    occurrence:
+      infoline: "This meeting is part of a recurring meeting series."
+    template:
+      label_view_template: "View template"
+      label_edit_template: "Edit template"
+      banner_html: >
+        You are currently editing a template of a meeting series: %{link}. Every new instance of a meeting in this series will use this template. Changes will not affect past or already created meetings.
+    frequency:
+      every_weekday: "Every %{day_of_the_week}"
+      daily: "Daily"
+      working_days: "Working Days"
+      weekly: "Weekly"
+    end_after:
+      specific_date: "A specific date"
+      iterations: "A number of occurrences"
+    starts: "Starts"
+    in_words:
+      daily_interval: "Every %{interval} day"
+      working_days: "Every working day"
+      working_days_interval: "Every %{interval} working day"
+      weekly: "Weekly on %{weekday}"
+      weekly_interval: "Every %{interval} week on %{weekday}"
+      full: "%{base} at %{time}, ends on %{end_date}"
   notice_successful_notification: "Påminning sendt"
   notice_timezone_missing: Ingen tidssone angis og %{zone} antas. Vennligst klikk her for å velge egen tidssone.
   notice_meeting_updated: "Denne siden er oppdatert av noen andre. Last siden på nytt for å se endringer."
@@ -213,6 +272,10 @@
   label_meeting_state_open_html: "<i>Åpen</i>"
   label_meeting_state_closed: "Stengt"
   label_meeting_state_closed_html: "<i>Stengt</i>"
+  label_meeting_state_agenda_created: "Agenda created"
+  label_meeting_state_scheduled: "Scheduled"
+  label_meeting_state_cancelled: "Cancelled"
+  label_meeting_state_skipped: "Skipped"
   label_meeting_reopen_action: "Gjenåpne møte"
   label_meeting_close_action: "Lukk møtet"
   text_meeting_open_description: "Dette møtet er åpen. Du kan legge til/fjerne punkter på dagsorden og redigere dem etter hvert som du ønsker. Etter at møtet er over, lukk det for å låse det."

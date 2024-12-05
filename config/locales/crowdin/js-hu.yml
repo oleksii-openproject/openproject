@@ -621,6 +621,7 @@ hu:
         prioritized: "Prioritized"
         dateAlert: "Date alert"
         shared: "Megosztva"
+        reminder: "Reminder"
       date_alerts:
         milestone_date: "Milestone date"
         overdue: "Overdue"

@@ -49,10 +49,16 @@ ko:
         presenter: "발표자"
       meeting_section:
         title: "제목"
+      recurring_meeting:
+        frequency: "Frequency"
+        interval: "Interval"
+        end_after: "End after"
+        iterations: "Occurrences"
     errors:
       messages:
         invalid_time_format: "은(는) 유효한 시간이 아닙니다. 필요한 형식: HH:MM"
     models:
+      recurring_meeting: "Recurring meeting"
       structured_meeting: "미팅(다이내믹)"
       meeting_agenda_item: "의제 항목"
       meeting_agenda: "의제"
@@ -87,7 +93,8 @@ ko:
   label_meeting: "미팅"
   label_meeting_plural: "미팅"
   label_meeting_new: "새 미팅"
-  label_meeting_new_dynamic: "New dynamic meeting"
+  label_meeting_new_dynamic: "새로운 다이내믹 미팅"
+  label_meeting_new_recurring: "New recurring meeting"
   label_meeting_create: "미팅 생성"
   label_meeting_copy: "미팅 복사"
   label_meeting_edit: "미팅 편집"
@@ -101,23 +108,47 @@ ko:
   label_meeting_date_time: "날짜/시간"
   label_meeting_date_and_time: "날짜 및 시간"
   label_meeting_diff: "차이"
+  label_recurring_meeting: "Recurring meeting"
+  label_recurring_meeting_part_of: "Part of a meeting series"
+  label_recurring_meeting_new: "New recurring meeting"
+  label_recurring_meeting_plural: "Recurring meetings"
+  label_template: "Template"
+  label_recurring_meeting_view: "View meeting series"
+  label_recurring_meeting_create: "Create from template"
+  label_recurring_meeting_copy: "Copy as one-off"
+  label_recurring_meeting_cancel: "Cancel this occurrence"
+  label_recurring_meeting_delete: "Delete occurrence"
+  label_recurring_meeting_delete_confirmation: >
+    This meeting is part of a series called %{name}. This will only delete this particular occurrence and not the entire series. Do you want to continue?
+  label_recurring_occurrence_delete_confirmation: >
+    Any meeting information not in the template will be lost. Do you want to continue?
+  label_recurring_meeting_restore: "Restore this occurrence"
+  label_recurring_meeting_series_edit: "Edit meeting series"
+  label_recurring_meeting_series_delete: "Delete meeting series"
+  label_my_meetings: "My meetings"
+  label_all_meetings: "All meetings"
   label_upcoming_meetings: "다가오는 이벤트"
   label_past_meetings: "지난 미팅"
   label_upcoming_meetings_short: "예정"
   label_past_meetings_short: "과거"
   label_involvement: "참여"
-  label_upcoming_invitations: "다가오는 초대"
+  label_invitations: "Invitations"
   label_past_invitations: "과거 초대"
-  label_attendee: "참석자"
-  label_author: "만든이"
+  label_attended: "Attended"
+  label_created_by_me: "Created by me"
   label_notify: "검토를 위해 보내기"
   label_icalendar: "iCalendar 보내기"
   label_icalendar_download: "iCalendar 이벤트 다운로드"
+  label_view_meeting_series: "View meeting series"
+  label_meeting_series: "Meeting series"
   label_version: "버전"
   label_time_zone: "표준 시간대"
   label_start_date: "시작일"
   meeting:
+    participants:
+      template: "These participants will be invited automatically to all future meetings as they are created."
     attachments:
+      template: "These attached files will be included in all future meetings in the series."
       text: "첨부된 파일은 모든 미팅 참가자가 사용할 수 있습니다. 이러한 파일을 의제 항목 메모에 끌어다 놓을 수도 있습니다."
     copy:
       title: "미팅 복사: %{title}"
@@ -146,6 +177,7 @@ ko:
       classic: "클래식"
       classic_text: "서식 지정 가능한 텍스트 의제 및 프로토콜로 미팅을 구성하세요."
       structured: "다이내믹"
+      recurring: "Recurring"
       structured_text: "미팅을 의제 항목 목록으로 구성하고, 선택적으로 작업 패키지에 연결합니다."
       structured_text_copy: "미팅을 복사하면 관련 미팅 의제 항목은 현재 복사되지 않고 세부 정보만 복사됩니다"
     copied: "미팅 #%{id}에서 복사됨"
@@ -154,6 +186,33 @@ ko:
     delete_confirmation: "이 섹션을 삭제하면 모든 의제 항목도 삭제됩니다. 계속하시겠습니까?"
     placeholder_title: "새 섹션"
     empty_text: "항목을 여기에 끌어오거나 새로 만들기"
+  recurring_meeting:
+    interval:
+      instructions: >
+        Enter the number of days or weeks between each occurrence.
+    occurrence:
+      infoline: "This meeting is part of a recurring meeting series."
+    template:
+      label_view_template: "View template"
+      label_edit_template: "Edit template"
+      banner_html: >
+        You are currently editing a template of a meeting series: %{link}. Every new instance of a meeting in this series will use this template. Changes will not affect past or already created meetings.
+    frequency:
+      every_weekday: "Every %{day_of_the_week}"
+      daily: "Daily"
+      working_days: "Working Days"
+      weekly: "Weekly"
+    end_after:
+      specific_date: "A specific date"
+      iterations: "A number of occurrences"
+    starts: "Starts"
+    in_words:
+      daily_interval: "Every %{interval} day"
+      working_days: "Every working day"
+      working_days_interval: "Every %{interval} working day"
+      weekly: "Weekly on %{weekday}"
+      weekly_interval: "Every %{interval} week on %{weekday}"
+      full: "%{base} at %{time}, ends on %{end_date}"
   notice_successful_notification: "알림이 전송됨"
   notice_timezone_missing: 표준 시간대가 설정되지 않았으며 %{zone}(으)로 간주됩니다. 해당 표준 시간대를 선택하려면 여기를 클릭하세요.
   notice_meeting_updated: "이 페이지는 다른 사람이 업데이트했습니다. 변경 사항을 보려면 다시 로드하세요."
@@ -212,6 +271,10 @@ ko:
   label_meeting_state_open_html: "<i>열림</i>"
   label_meeting_state_closed: "닫음"
   label_meeting_state_closed_html: "<i>닫힘</i>"
+  label_meeting_state_agenda_created: "Agenda created"
+  label_meeting_state_scheduled: "Scheduled"
+  label_meeting_state_cancelled: "Cancelled"
+  label_meeting_state_skipped: "Skipped"
   label_meeting_reopen_action: "미팅 다시 열기"
   label_meeting_close_action: "미팅 닫기"
   text_meeting_open_description: "이 미팅은 오픈 상태입니다. 의제 항목을 추가/제거하고 원하는 대로 편집할 수 있습니다. 미팅이 끝나면 닫아서 잠그세요."

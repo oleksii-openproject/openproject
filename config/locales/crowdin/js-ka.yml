@@ -621,6 +621,7 @@ ka:
         prioritized: "Prioritized"
         dateAlert: "გაფრთხილების თარიღი"
         shared: "გაზიარებული"
+        reminder: "Reminder"
       date_alerts:
         milestone_date: "Milestone date"
         overdue: "ვადაგადაცილებული"

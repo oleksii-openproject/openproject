@@ -1,0 +1,44 @@
+<%= render(Primer::OpenProject::PageHeader.new) do |header|
+  header.with_title { page_title }
+  header.with_description { page_description }
+  header.with_breadcrumbs(breadcrumb_items)
+
+  header.with_action_button(
+    tag: :a,
+    mobile_label: I18n.t("recurring_meeting.template.label_view_template"),
+    mobile_icon: :eye,
+    size: :medium,
+    href: meeting_path(@meeting.template)
+  ) { I18n.t("recurring_meeting.template.label_view_template") }
+
+  if render_create_button?
+    header.with_action_menu(menu_arguments: { anchor_align: :end },
+                            button_arguments: { icon: "op-kebab-vertical",
+                                                classes: "hide-when-print",
+                                                "aria-label": "Menu",
+                                                data: {
+                                                  "test-selector": "recurring-meeting-action-menu"
+                                                } }) do |menu, _button|
+
+      menu.with_item(
+        label: I18n.t(:label_recurring_meeting_series_edit),
+        icon: :gear,
+        href: details_dialog_recurring_meeting_path(@meeting),
+        tag: :a,
+        content_arguments: {
+          data: { controller: 'async-dialog' },
+        },
+        'aria-label': t(:label_recurring_meeting_series_edit),
+        test_selector: "edit-meeting-details-button",
+      )
+      menu.with_item(
+        label: I18n.t(:label_recurring_meeting_series_delete),
+        href: polymorphic_path([@project, @meeting]),
+        scheme: :danger,
+        form_arguments: {
+          method: :delete, data: { confirm: t("text_are_you_sure"), turbo: 'false' }
+        }
+      )
+    end
+  end
+end %>

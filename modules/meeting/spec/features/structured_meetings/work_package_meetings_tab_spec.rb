@@ -30,7 +30,9 @@ require "spec_helper"
 require_relative "../../support/pages/work_package_meetings_tab"
 require_relative "../../support/pages/structured_meeting/show"
 
-RSpec.describe "Open the Meetings tab", :js do
+RSpec.describe "Open the Meetings tab",
+               :js,
+               :with_cuprite do
   shared_let(:project) { create(:project) }
   shared_let(:work_package) { create(:work_package, project:, subject: "A test work_package") }
 
@@ -256,9 +258,11 @@ RSpec.describe "Open the Meetings tab", :js do
           expect(page).to have_content(meeting_agenda_item_of_second_meeting.notes)
         end
 
-        meeting_containers = page.all("[data-test-selector^='op-meeting-container-']")
-        expect(meeting_containers[0]["data-test-selector"]).to eq("op-meeting-container-#{first_meeting.id}")
-        expect(meeting_containers[1]["data-test-selector"]).to eq("op-meeting-container-#{second_meeting.id}")
+        meeting_containers = page
+          .all("[data-test-selector^='op-meeting-container-']")
+          .map { |container| container["data-test-selector"] } # rubocop:disable Rails/Pluck
+        expect(meeting_containers).to contain_exactly("op-meeting-container-#{first_meeting.id}",
+                                                      "op-meeting-container-#{second_meeting.id}")
       end
     end
 
@@ -339,10 +343,9 @@ RSpec.describe "Open the Meetings tab", :js do
 
           meetings_tab.fill_and_submit_meeting_dialog(
             first_upcoming_meeting,
-            "A very important note added from the meetings tab to the first meeting!"
+            "A very important note added from the meetings tab to the first meeting!",
+            1
           )
-
-          meetings_tab.expect_upcoming_counter_to_be(1)
 
           page.within_test_selector("op-meeting-container-#{first_upcoming_meeting.id}") do
             expect(page).to have_content("A very important note added from the meetings tab to the first meeting!")
@@ -352,10 +355,9 @@ RSpec.describe "Open the Meetings tab", :js do
 
           meetings_tab.fill_and_submit_meeting_dialog(
             second_upcoming_meeting,
-            "A very important note added from the meetings tab to the second meeting!"
+            "A very important note added from the meetings tab to the second meeting!",
+            2
           )
-
-          meetings_tab.expect_upcoming_counter_to_be(2)
 
           page.within_test_selector("op-meeting-container-#{second_upcoming_meeting.id}") do
             expect(page).to have_content("A very important note added from the meetings tab to the second meeting!")
@@ -370,7 +372,8 @@ RSpec.describe "Open the Meetings tab", :js do
 
           meetings_tab.fill_and_submit_meeting_dialog(
             ongoing_meeting,
-            "Some notes to be added"
+            "Some notes to be added",
+            1
           )
 
           meetings_tab.expect_upcoming_counter_to_be(1)
@@ -409,7 +412,9 @@ RSpec.describe "Open the Meetings tab", :js do
           retry_block do
             click_on("Save")
 
-            expect(page).to have_content("Meeting can't be blank")
+            wait_for_network_idle
+
+            raise "Expected error message to be shown" unless page.has_content?("Meeting can't be blank")
           end
         end
 
@@ -421,7 +426,8 @@ RSpec.describe "Open the Meetings tab", :js do
 
           meetings_tab.fill_and_submit_meeting_dialog(
             first_upcoming_meeting,
-            "A very important note added from the meetings tab to the first meeting!"
+            "A very important note added from the meetings tab to the first meeting!",
+            1
           )
 
           meeting_page.visit!

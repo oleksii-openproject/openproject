@@ -39,6 +39,7 @@ class MeetingsController < ApplicationController
   before_action :authorize, except: %i[index new create update_title update_details update_participants change_state new_dialog]
   before_action :authorize_global,
                 only: %i[index new create update_title update_details update_participants change_state new_dialog]
+  before_action :prevent_template_destruction, only: :destroy
 
   helper :watchers
   helper :meeting_contents
@@ -68,12 +69,16 @@ class MeetingsController < ApplicationController
     :meetings
   end
 
-  def show
+  def show # rubocop:disable Metrics/AbcSize
     respond_to do |format|
       format.html do
         html_title "#{t(:label_meeting)}: #{@meeting.title}"
         if @meeting.is_a?(StructuredMeeting)
-          render(Meetings::ShowComponent.new(meeting: @meeting, project: @project), layout: true)
+          if @meeting.state == "cancelled"
+            render_404
+          else
+            render(Meetings::ShowComponent.new(meeting: @meeting, project: @project), layout: true)
+          end
         elsif @meeting.agenda.present? && @meeting.agenda.locked?
           params[:tab] ||= "minutes"
         end
@@ -127,7 +132,7 @@ class MeetingsController < ApplicationController
             component: Meetings::Index::FormComponent.new(
               meeting: @meeting,
               project: @project,
-              type: @copy_from || :new
+              copy_from: @copy_from
             ),
             status: :bad_request
           )
@@ -139,7 +144,10 @@ class MeetingsController < ApplicationController
   end
 
   def new_dialog
-    respond_with_dialog Meetings::Index::DialogComponent.new(meeting: @meeting, project: @project, type: :new)
+    respond_with_dialog Meetings::Index::DialogComponent.new(
+      meeting: @meeting,
+      project: @project
+    )
   end
 
   def new; end
@@ -161,15 +169,31 @@ class MeetingsController < ApplicationController
       end
 
       format.turbo_stream do
-        respond_with_dialog Meetings::Index::DialogComponent.new(meeting: @meeting, project: @project, type: copy_from)
+        respond_with_dialog Meetings::Index::DialogComponent.new(
+          meeting: @meeting,
+          project: @project,
+          copy_from:
+        )
       end
     end
   end
 
-  def destroy
-    @meeting.destroy
-    flash[:notice] = I18n.t(:notice_successful_delete)
-    redirect_to action: "index", project_id: @project
+  def destroy # rubocop:disable Metrics/AbcSize
+    recurring = @meeting.recurring_meeting
+
+    # rubocop:disable Rails/ActionControllerFlashBeforeRender
+    Meetings::DeleteService
+      .new(model: @meeting, user: User.current)
+      .call
+      .on_success { flash[:notice] = recurring ? I18n.t(:notice_successful_cancel) : I18n.t(:notice_successful_delete) }
+      .on_failure { |call| flash[:error] = call.message }
+    # rubocop:enable Rails/ActionControllerFlashBeforeRender
+
+    if recurring
+      redirect_to polymorphic_path([@project, recurring]), status: :see_other
+    else
+      redirect_to polymorphic_path([@project, :meetings]), status: :see_other
+    end
   end
 
   def edit
@@ -306,19 +330,26 @@ class MeetingsController < ApplicationController
       current_user
     ).call(params)
 
-    query = apply_default_filter_if_none_given(query)
-
-    if @project
-      query.where("project_id", "=", @project.id)
-    end
+    apply_default_filter_if_none_given(query)
+    apply_time_filter_and_sort(query)
+    query.where("project_id", "=", @project.id) if @project
 
     query
   end
 
-  def apply_default_filter_if_none_given(query)
-    return query if query.filters.any?
+  def apply_time_filter_and_sort(query)
+    if params[:upcoming] == "false"
+      query.where("time", "=", Queries::Meetings::Filters::TimeFilter::PAST_VALUE)
+      query.order(start_time: :desc)
+    else
+      query.where("time", "=", Queries::Meetings::Filters::TimeFilter::FUTURE_VALUE)
+      query.order(start_time: :asc)
+    end
+  end
 
-    query.where("time", "=", Queries::Meetings::Filters::TimeFilter::FUTURE_VALUE)
+  def apply_default_filter_if_none_given(query)
+    return if query.filters.any?
+
     query.where("invited_user_id", "=", [User.current.id.to_s])
   end
 
@@ -329,9 +360,20 @@ class MeetingsController < ApplicationController
   end
 
   def build_meeting
-    @meeting = Meeting.new
+    @meeting = meeting_class.new
     @meeting.project = @project
     @meeting.author = User.current
+  end
+
+  def meeting_class
+    case params[:type]
+    when "recurring"
+      RecurringMeeting
+    when "structured"
+      StructuredMeeting
+    else
+      Meeting
+    end
   end
 
   def global_upcoming_meetings
@@ -349,7 +391,7 @@ class MeetingsController < ApplicationController
     render_404
   end
 
-  def convert_params
+  def convert_params # rubocop:disable Metrics/AbcSize
     # We do some preprocessing of `meeting_params` that we will store in this
     # instance variable.
     @converted_params = meeting_params.to_h
@@ -365,6 +407,9 @@ class MeetingsController < ApplicationController
     else
       force_defaults
     end
+
+    # Recurring meeting occurrences can only be copied as one-off meetings
+    @converted_params[:recurring_meeting_id] = nil
   end
 
   def meeting_params
@@ -380,15 +425,6 @@ class MeetingsController < ApplicationController
       params
         .require(:structured_meeting)
         .permit(:title, :location, :start_time_hour, :duration, :start_date, :state, :lock_version)
-    end
-  end
-
-  def meeting_type(given_type)
-    case given_type
-    when "dynamic"
-      "StructuredMeeting"
-    else
-      "Meeting"
     end
   end
 
@@ -448,5 +484,9 @@ class MeetingsController < ApplicationController
       copy_attachments: copy_param(:copy_attachments),
       send_notifications: copy_param(:send_notifications)
     }
+  end
+
+  def prevent_template_destruction
+    render_400 if @meeting.templated?
   end
 end

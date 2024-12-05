@@ -28,6 +28,6 @@
 
 class Meeting::Type < ApplicationForm
   form do |meeting_form|
-    meeting_form.hidden(name: :type, value: "StructuredMeeting")
+    meeting_form.hidden(name: :type, value: @builder.object.class.name)
   end
 end

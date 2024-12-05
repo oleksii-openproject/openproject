@@ -39,8 +39,20 @@ FactoryBot.define do
       meeting.project = evaluator.project if evaluator.project
     end
 
-    factory :structured_meeting, class: "StructuredMeeting" do |m|
-      m.sequence(:title) { |n| "Structured meeting #{n}" }
+    factory :structured_meeting, class: "StructuredMeeting" do |structured_meeting|
+      structured_meeting.sequence(:title) { |n| "Structured meeting #{n}" }
+    end
+
+    factory :structured_meeting_template, class: "StructuredMeeting" do |structured_meeting|
+      structured_meeting.sequence(:title) { |n| "Structured meeting template #{n}" }
+      template { true }
+      recurring_meeting
+
+      after(:build) do |template, evaluator|
+        %w[author project start_time].each do |attr|
+          template.send(:"#{attr}=", evaluator.recurring_meeting.send(attr))
+        end
+      end
     end
   end
 end

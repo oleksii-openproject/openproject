@@ -621,6 +621,7 @@ vi:
         prioritized: "được ưu tiên"
         dateAlert: "Cảnh báo ngày"
         shared: "được chia sẻ"
+        reminder: "Reminder"
       date_alerts:
         milestone_date: "Ngày mốc"
         overdue: "Quá hạn"

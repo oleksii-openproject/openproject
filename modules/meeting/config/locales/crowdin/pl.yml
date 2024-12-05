@@ -52,10 +52,16 @@ pl:
         presenter: "Prezenter"
       meeting_section:
         title: "Tytuł"
+      recurring_meeting:
+        frequency: "Frequency"
+        interval: "Interval"
+        end_after: "End after"
+        iterations: "Occurrences"
     errors:
       messages:
         invalid_time_format: "nie jest prawidłowy. Wymagany format to: GG:MM"
     models:
+      recurring_meeting: "Recurring meeting"
       structured_meeting: "Spotkanie (dynamiczne)"
       meeting_agenda_item: "Punkt programu"
       meeting_agenda: "Plan spotkania"
@@ -90,7 +96,8 @@ pl:
   label_meeting: "Spotkanie"
   label_meeting_plural: "Spotkania"
   label_meeting_new: "Nowe spotkanie"
-  label_meeting_new_dynamic: "New dynamic meeting"
+  label_meeting_new_dynamic: "Nowe spotkanie dynamiczne"
+  label_meeting_new_recurring: "New recurring meeting"
   label_meeting_create: "Utwórz spotkanie"
   label_meeting_copy: "Skopiuj spotkanie"
   label_meeting_edit: "Edycja spotkania"
@@ -104,23 +111,47 @@ pl:
   label_meeting_date_time: "Data/Czas"
   label_meeting_date_and_time: "Data i godzina"
   label_meeting_diff: "Różnice"
+  label_recurring_meeting: "Recurring meeting"
+  label_recurring_meeting_part_of: "Part of a meeting series"
+  label_recurring_meeting_new: "New recurring meeting"
+  label_recurring_meeting_plural: "Recurring meetings"
+  label_template: "Template"
+  label_recurring_meeting_view: "View meeting series"
+  label_recurring_meeting_create: "Create from template"
+  label_recurring_meeting_copy: "Copy as one-off"
+  label_recurring_meeting_cancel: "Cancel this occurrence"
+  label_recurring_meeting_delete: "Delete occurrence"
+  label_recurring_meeting_delete_confirmation: >
+    This meeting is part of a series called %{name}. This will only delete this particular occurrence and not the entire series. Do you want to continue?
+  label_recurring_occurrence_delete_confirmation: >
+    Any meeting information not in the template will be lost. Do you want to continue?
+  label_recurring_meeting_restore: "Restore this occurrence"
+  label_recurring_meeting_series_edit: "Edit meeting series"
+  label_recurring_meeting_series_delete: "Delete meeting series"
+  label_my_meetings: "My meetings"
+  label_all_meetings: "All meetings"
   label_upcoming_meetings: "Nadchodzące spotkania"
   label_past_meetings: "Przeszłe spotkania"
   label_upcoming_meetings_short: "Nadchodzące"
   label_past_meetings_short: "Poprzednie"
   label_involvement: "Zaangażowanie"
-  label_upcoming_invitations: "Nadchodzące zaproszenia"
+  label_invitations: "Invitations"
   label_past_invitations: "Poprzednie zaproszenia"
-  label_attendee: "Uczestnik"
-  label_author: "Twórca"
+  label_attended: "Attended"
+  label_created_by_me: "Created by me"
   label_notify: "Wyślij do przeglądu"
   label_icalendar: "Wyślij iCalendar"
   label_icalendar_download: "Pobierz wydarzenie iCalendar"
+  label_view_meeting_series: "View meeting series"
+  label_meeting_series: "Meeting series"
   label_version: "Wersja"
   label_time_zone: "Strefa czasowa"
   label_start_date: "Data rozpoczęcia"
   meeting:
+    participants:
+      template: "These participants will be invited automatically to all future meetings as they are created."
     attachments:
+      template: "These attached files will be included in all future meetings in the series."
       text: "Załączone pliki są dostępne dla wszystkich uczestników spotkania. Można je również przeciągać i upuszczać w notatkach do punktów planu spotkania."
     copy:
       title: "Kopiuj spotkanie: %{title}"
@@ -149,6 +180,7 @@ pl:
       classic: "Klasyczny"
       classic_text: "Zorganizuj spotkanie w formatowanym tekstowym planie spotkania i protokole."
       structured: "Dynamiczne"
+      recurring: "Recurring"
       structured_text: "Zorganizuj spotkanie jako listę punktów planu spotkania, opcjonalnie powiązując je z pakietem roboczym."
       structured_text_copy: "Skopiowanie spotkania nie powoduje obecnie skopiowania powiązanych pozycji planu spotkania, a jedynie szczegółów"
     copied: "Skopiowano ze spotkania #%{id}"
@@ -157,6 +189,33 @@ pl:
     delete_confirmation: "Usunięcie sekcji spowoduje również usunięcie wszystkich jej elementów punktów planu spotkania. Czy na pewno chcesz to zrobić?"
     placeholder_title: "Nowa sekcja"
     empty_text: "Przeciągnij elementy tutaj lub utwórz nowe"
+  recurring_meeting:
+    interval:
+      instructions: >
+        Enter the number of days or weeks between each occurrence.
+    occurrence:
+      infoline: "This meeting is part of a recurring meeting series."
+    template:
+      label_view_template: "View template"
+      label_edit_template: "Edit template"
+      banner_html: >
+        You are currently editing a template of a meeting series: %{link}. Every new instance of a meeting in this series will use this template. Changes will not affect past or already created meetings.
+    frequency:
+      every_weekday: "Every %{day_of_the_week}"
+      daily: "Daily"
+      working_days: "Working Days"
+      weekly: "Weekly"
+    end_after:
+      specific_date: "A specific date"
+      iterations: "A number of occurrences"
+    starts: "Starts"
+    in_words:
+      daily_interval: "Every %{interval} day"
+      working_days: "Every working day"
+      working_days_interval: "Every %{interval} working day"
+      weekly: "Weekly on %{weekday}"
+      weekly_interval: "Every %{interval} week on %{weekday}"
+      full: "%{base} at %{time}, ends on %{end_date}"
   notice_successful_notification: "Powiadomienia wysłane pomyślnie"
   notice_timezone_missing: 'Została ustawiona domyślna strefa czasowa: %{zone}. Aby zmienić strefę czasową, kliknij tutaj.'
   notice_meeting_updated: "Ta strona została zaktualizowana przez kogoś innego. Załaduj ją ponownie, aby wyświetlić zmiany."
@@ -215,6 +274,10 @@ pl:
   label_meeting_state_open_html: "<i>Otwarte</i>"
   label_meeting_state_closed: "Zamknięte"
   label_meeting_state_closed_html: "<i>Zamknięte</i>"
+  label_meeting_state_agenda_created: "Agenda created"
+  label_meeting_state_scheduled: "Scheduled"
+  label_meeting_state_cancelled: "Cancelled"
+  label_meeting_state_skipped: "Skipped"
   label_meeting_reopen_action: "Otwórz ponownie spotkanie"
   label_meeting_close_action: "Zamknij spotkanie"
   text_meeting_open_description: "To spotkanie jest otwarte. Możesz dodać/usunąć elementy planu spotkania i edytować je tak, jak chcesz. Po zakończeniu spotkania zamknij je, aby je zablokować."

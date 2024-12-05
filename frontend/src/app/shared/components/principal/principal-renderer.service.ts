@@ -6,12 +6,19 @@ import idFromLink from 'core-app/features/hal/helpers/id-from-link';
 import { IPrincipal } from 'core-app/core/state/principals/principal.model';
 import { PrincipalLike } from './principal-types';
 import { hrefFromPrincipal, PrincipalType, typeFromHref } from './principal-helper';
+import { PortalOutletTarget } from 'core-app/shared/components/modal/portal-outlet-target.enum';
 
 export type AvatarSize = 'default'|'medium'|'mini';
+
+export interface HoverCardOptions {
+  url?:string;
+  modalTarget?:PortalOutletTarget;
+}
 
 export interface AvatarOptions {
   hide:boolean;
   size:AvatarSize;
+  hoverCard?:HoverCardOptions;
 }
 
 export interface NameOptions {
@@ -99,6 +106,11 @@ export class PrincipalRendererService {
     container.classList.add('op-principal');
     const type = typeFromHref(hrefFromPrincipal(principal)) as PrincipalType;
 
+    // Only actual users provide a hover card with additional info
+    if (type !== 'user') {
+      avatar.hoverCard = undefined;
+    }
+
     if (!avatar.hide) {
       const el = this.renderAvatar(principal, avatar, type);
       container.appendChild(el);
@@ -129,6 +141,8 @@ export class PrincipalRendererService {
     fallback.title = principal.name;
     fallback.textContent = userInitials;
 
+    this.setHoverCardAttributes(fallback, options, principal);
+
     if (type === 'placeholder_user' && colorMode !== colorModes.lightHighContrast) {
       fallback.style.color = colorCode;
       fallback.style.borderColor = colorCode;
@@ -144,7 +158,11 @@ export class PrincipalRendererService {
     return fallback;
   }
 
-  private renderUserAvatar(principal:PrincipalLike|IPrincipal, fallback:HTMLElement, options:AvatarOptions):void {
+  private renderUserAvatar(
+    principal:PrincipalLike|IPrincipal,
+    fallback:HTMLElement,
+    options:AvatarOptions,
+  ):void {
     const url = this.userAvatarUrl(principal);
 
     if (!url) {
@@ -155,6 +173,9 @@ export class PrincipalRendererService {
     image.classList.add('op-principal--avatar');
     image.classList.add('op-avatar');
     image.classList.add(`op-avatar_${options.size}`);
+
+    this.setHoverCardAttributes(image, options, principal);
+
     image.src = url;
     image.title = principal.name;
     image.alt = principal.name;
@@ -168,6 +189,11 @@ export class PrincipalRendererService {
   private userAvatarUrl(principal:PrincipalLike|IPrincipal):string|null {
     const id = principal.id || idFromLink(hrefFromPrincipal(principal));
     return id ? this.apiV3Service.users.id(id).avatar.toString() : null;
+  }
+
+  private userHoverCardUrl(principal:PrincipalLike|IPrincipal):string|null {
+    const id = principal.id || idFromLink(hrefFromPrincipal(principal));
+    return id ? this.pathHelper.userHoverCardPath(id) : null;
   }
 
   private renderName(
@@ -225,5 +251,25 @@ export class PrincipalRendererService {
 
     const last = name[lastSpace + 1]?.toUpperCase();
     return [first, last].join('');
+  }
+
+  private setHoverCardAttributes(element:HTMLElement, options:AvatarOptions, principal:PrincipalLike|IPrincipal):void {
+    const hoverCard = options.hoverCard;
+
+    if (!hoverCard?.url) {
+      // In some cases, there is no URL given although a hover card is expected. For example when the principle
+      // is rendered from an angular template. We try to infer the URL here.
+      const url = this.userHoverCardUrl(principal);
+      if (hoverCard && url) {
+        hoverCard.url = url;
+      } else {
+        return;
+      }
+    }
+
+    element.classList.add('op-hover-card--preview-trigger');
+
+    element.setAttribute('data-hover-card-url', hoverCard.url);
+    element.setAttribute('data-hover-card-target', String(hoverCard.modalTarget || PortalOutletTarget.Default));
   }
 }

@@ -105,7 +105,7 @@ it:
     button_update: "Aggiorna"
     button_export-pdf: "Scarica PDF"
     button_export-atom: "Scarica Atom"
-    button_generate_pdf: "Generate PDF"
+    button_generate_pdf: "Genera PDF"
     button_create: "Crea"
     card:
       add_new: "Aggiungi una nuova carta"
@@ -360,7 +360,7 @@ it:
           "15_1":
             standard:
               new_features_html: >
-                The release brings various features and improvements for you, e.g. <br> <ul class="%{list_styling_class}"> <li>Custom fields of type hierarchy (Enterprise add-on).</li> <li>Redesign of the Relations tab in work packages.</li> <li>Redesign of the Meetings index page.</li> <li>Manual page breaks in PDF work package exports.</li> <li>Zen mode for project lists.</li> </ul>
+                Questa versione offre varie funzionalità e miglioramenti, ad esempio <br> <ul class="%{list_styling_class}"> <li>Campi personalizzati di tipo gerarchia (componente aggiuntivo Enterprise).</li> <li>Riprogettazione della scheda Relazioni nelle macro-attività.</li> <li>Riprogettazione della pagina indice Riunioni.</li> <li>Interruzioni di pagina manuali nelle esportazioni dei PDF delle macro-attività.</li> <li>Modalità Zen per gli elenchi di progetti.</li> </ul>
     ical_sharing_modal:
       title: "Iscriviti al calendario"
       inital_setup_error_message: "Si è verificato un errore recuperando i dati."
@@ -576,7 +576,7 @@ it:
         members: "Invita nuovi <b>membri</b> per entrare al tuo progetto."
         quick_add_button: "Clicca sull'icona più (+) nella navigazione dell'intestazione per <b>creare un nuovo progetto</b> o per <b>invitare colleghi</b>."
         sidebar_arrow: "Utilizza la freccia di ritorno nell'angolo in alto a sinistra per tornare al <b>menu principale</b> del progetto."
-        welcome: "Take a three-minute introduction tour to learn the most <b>important features</b>. <br> We recommend completing the steps until the end. You can restart the tour any time."
+        welcome: "Fai un tour introduttivo di tre minuti per apprendere le <b>funzioni importanti</b>. <br> Consigliamo di completare i passaggi fino alla fine. Puoi riavviare il tour in qualsiasi momento."
         wiki: "Nella <b>wiki</b> puoi documentare e condividere la conoscenza con il tuo team."
         backlogs:
           overview: "Gestisci il tuo lavoro nella vista <b>backlog</b>."
@@ -621,6 +621,7 @@ it:
         prioritized: "Assegnata priorità"
         dateAlert: "Avviso data"
         shared: "Condiviso"
+        reminder: "Reminder"
       date_alerts:
         milestone_date: "Data inizio"
         overdue: "In ritardo"

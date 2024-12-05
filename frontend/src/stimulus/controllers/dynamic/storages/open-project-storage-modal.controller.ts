@@ -36,12 +36,14 @@ export default class OpenProjectStorageModalController extends Controller<HTMLDi
   static values = {
     projectStorageOpenUrl: String,
     redirectUrl: String,
+    subtitleTimeoutText: String,
   };
 
   loadingInterval:number;
   timeoutInterval:number;
   networkErrorHappened:boolean;
   projectStorageOpenUrlValue:string;
+  subtitleTimeoutTextValue:string;
   redirectUrlValue:string;
 
   connect() {
@@ -132,9 +134,7 @@ export default class OpenProjectStorageModalController extends Controller<HTMLDi
       );
     }
     if (waitingSubtitle) {
-      waitingSubtitle.innerHTML = I18n.t(
-        'js.open_project_storage_modal.waiting_subtitle.timeout',
-      );
+      waitingSubtitle.innerHTML = this.subtitleTimeoutTextValue;
     }
   }
 }

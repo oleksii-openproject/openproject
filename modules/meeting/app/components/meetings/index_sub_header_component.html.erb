@@ -4,7 +4,7 @@
   "filter--filters-form-output-format-value": "json",
 })) do |subheader|
   subheader.with_filter_component do
-    render(Meetings::MeetingFilterButtonComponent.new(query: @query, project: @project))
+    render(Meetings::CombinedFilterComponent.new(query: @query, project: @project, params: @params))
   end
 
   if render_create_button?
@@ -25,9 +25,17 @@
 
         menu.with_item(label: I18n.t("meeting.types.structured"),
                        tag: :a,
-                       href: new_dialog_meetings_path(project_id: @project&.id),
+                       href: new_dialog_meetings_path(project_id: @project&.id, type: :structured),
                        content_arguments: { data: { controller: "async-dialog" }}
         )
+
+        if OpenProject::FeatureDecisions.recurring_meetings_active?
+          menu.with_item(label: I18n.t("meeting.types.recurring"),
+                         tag: :a,
+                         href: new_dialog_meetings_path(project_id: @project&.id, type: :recurring),
+                         content_arguments: { data: { controller: "async-dialog" }}
+          )
+        end
 
         menu.with_item(label: I18n.t("meeting.types.classic"),
                        tag: :a,

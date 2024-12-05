@@ -59,6 +59,8 @@ module API
               :activity
             when Changeset
               :revision
+            when ::CustomField::Hierarchy::HierarchyItemAdapter
+              :custom_field_item
             else
               record.class.model_name.singular
             end

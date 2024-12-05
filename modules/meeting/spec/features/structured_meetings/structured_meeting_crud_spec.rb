@@ -63,7 +63,7 @@ RSpec.describe "Structured meetings CRUD",
 
   let(:current_user) { user }
   let(:new_page) { Pages::Meetings::New.new(project) }
-  let(:meeting) { StructuredMeeting.order(id: :asc).last }
+  let(:meeting) { StructuredMeeting.last }
   let(:show_page) { Pages::StructuredMeeting::Show.new(meeting) }
   let(:meetings_page) { Pages::Meetings::Index.new(project:) }
 
@@ -307,7 +307,7 @@ RSpec.describe "Structured meetings CRUD",
     fill_in "Title", with: "Some title"
     click_on "Create meeting"
 
-    new_meeting = StructuredMeeting.reorder(id: :asc).last
+    new_meeting = StructuredMeeting.last
     expect(page).to have_current_path "/projects/#{project.identifier}/meetings/#{new_meeting.id}"
 
     # check for copied agenda items

@@ -497,8 +497,12 @@ fil:
     groups:
       member_in_these_groups: "This user is currently a member of the following groups:"
       no_results_title_text: This user is currently not a member in any group.
+      summary_with_more: Member of %{names} and %{count_link}.
+      more: "%{count} more"
+      summary: Member of %{names}.
     memberships:
       no_results_title_text: Ang user na ito ay kasalukuyang hindi myembro ng proyekto.
+    open_profile: "Open profile"
   page:
     text: "Teksto"
   placeholder_users:
@@ -643,6 +647,10 @@ fil:
     label_add_x: "Add %{x}"
     label_edit_x: "Edit %{x}"
     label_add_description: "Add description"
+    lag:
+      subject: "Lag"
+      title: "Lag (in days)"
+      caption: "The gap in number of working days in between the two work packages"
     relations:
       label_relates_singular: "related to"
       label_relates_plural: "related to"
@@ -935,6 +943,7 @@ fil:
       messages:
         accepted: "kailangang tanggapin."
         after: "dapat ay matapos %{date}."
+        after_today: "must be in the future."
         after_or_equal_to: "dapat ay matapos o katumbas sa %{date}."
         before: "dapat ay bago ang %{date}."
         before_or_equal_to: "dapat ay bago o katumbas sa %{date}."
@@ -981,6 +990,7 @@ fil:
         not_an_integer: "ay hindi integer."
         not_an_iso_date: "ay hindi balido ang petsa. Ang kinakailangan format: YYYY-MM-DD."
         not_same_project: "ay hindi nabibilang sa parehong proyekto."
+        datetime_must_be_in_future: "must be in the future."
         odd: "dapat ay kakaiba."
         regex_match_failed: "does not match the regular expression %{expression}."
         regex_invalid: "hindi pwedeng mapatunayan sa nauugnay na mga regular na ekspresyon."
@@ -2958,6 +2968,7 @@ fil:
   notice_successful_connection: "Matagumpay na ikonekta."
   notice_successful_create: "Matagumpay pagkalikha."
   notice_successful_delete: "Matagumpay ang pagtanggal."
+  notice_successful_cancel: "Successful cancellation."
   notice_successful_update: "Matagumpay nai-update."
   notice_successful_update_custom_fields_added_to_project: |
     Successful update. The custom fields of the activated types are automatically activated
@@ -3067,6 +3078,7 @@ fil:
   permission_select_project_modules: "Piliin ang mga proyektong modyul"
   permission_share_work_packages: "Share work packages"
   permission_manage_types: "Pumili ng mga uri"
+  permission_manage_own_reminders: "Create own reminders"
   permission_view_project: "View projects"
   permission_view_changesets: "Tingnan ang mga repository revision ng OpenProject"
   permission_view_commit_author_statistics: "Tanawin ang commit"

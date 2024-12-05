@@ -84,7 +84,6 @@ module API
           def self.resources(name,
                              except: [],
                              only: %i[index show create_form update_form schema])
-
             (Array(only) - Array(except)).each do |method|
               send(method, name)
             end
@@ -216,7 +215,7 @@ module API
           end
 
           # API::V3::Queries::Filters::QueryFilterInstanceRepresenter need a path derived from a class name.
-          def self.hierarchy_item_filter_adapter(id)
+          def self.hierarchy_item_adapter(id)
             custom_field_item(id)
           end
 

@@ -68,6 +68,26 @@ export class OpModalService {
   }
 
   /**
+   * Checks whether there is currently an active modal. Only shows the requested modal if this is not the case.
+   * Will return null if showing the modal is denied.
+   * @see show
+   */
+  public showIfNotActive<T extends OpModalComponent>(
+    modal:ComponentType<T>,
+    injector:Injector|'global',
+    locals:Record<string, unknown> = {},
+    notFullscreen = false,
+    mobileTopPosition = false,
+    target = PortalOutletTarget.Default,
+  ):Observable<T>|null {
+    if (this.activeModalInstance$.value) {
+      return null;
+    }
+
+    return this.show(modal, injector, locals, notFullscreen, mobileTopPosition, target);
+  }
+
+  /**
    * Open a Modal reference and append it to the portal
    *
    * @param modal The modal component class to show

@@ -36,15 +36,15 @@ uk:
           name: Чорний
       life_cycle_colors:
         item_0:
-          name: PM2 Orange
+          name: Оранжевий PM2
         item_1:
-          name: PM2 Purple
+          name: Фіолетовий PM2
         item_2:
-          name: PM2 Red
+          name: Червоний PM2
         item_3:
-          name: PM2 Magenta
+          name: Пурпуровий PM2
         item_4:
-          name: PM2 Green Yellow
+          name: Зелено-жовтий PM2
       document_categories:
         item_0:
           name: Документація
@@ -83,19 +83,19 @@ uk:
     standard:
       life_cycles:
         item_0:
-          name: Initiating
+          name: Ініціювання
         item_1:
-          name: Ready for Planning
+          name: Готовий до планування
         item_2:
-          name: Planning
+          name: Планування
         item_3:
-          name: Ready for Executing
+          name: Готовий до виконання
         item_4:
-          name: Executing
+          name: Виконання
         item_5:
-          name: Ready for Closing
+          name: Готовий до закриття
         item_6:
-          name: Closing
+          name: Закриття
       priorities:
         item_0:
           name: Низький

@@ -33,11 +33,9 @@ module API
         @count = count
         @query = query
 
-        if group_key.is_a?(Array)
-          group_key = set_links!(group_key)
-        end
-
-        @link = ::API::V3::Utilities::ResourceLinkGenerator.make_link(group_key)
+        @link = ::API::V3::Utilities::ResourceLinkGenerator.make_link(
+          group_key.is_a?(Array) ? set_links!(group_key) : group_key
+        )
 
         super(group_key, current_user:)
       end
@@ -86,10 +84,13 @@ module API
       end
 
       def value
-        if represented == true || represented == false
+        case represented
+        when TrueClass, FalseClass
           represented
+        when Array
+          represented.empty? ? nil : represented.map(&:to_s).sort.join(", ")
         else
-          represented ? represented.to_s : nil
+          represented&.to_s
         end
       end
 

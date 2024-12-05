@@ -62,7 +62,7 @@ pt-PT:
       limit_self_registration: Se estiver ativado, os utilizadores só podem registar-se utilizando este fornecedor se a configuração do fornecedor o permitir.
       display_name: O nome do fornecedor. Este nome será apresentado no botão de início de sessão e na lista de fornecedores.
       tenant: 'Substitua o inquilino predefinido pelo seu próprio inquilino, se aplicável. Consulte <a href=" https://learn.microsoft.com/pt-pt/entra/identity-platform/v2-protocols-oidc#find-your-apps-openid-configuration-document-uri">este artigo</a>.'
-      scope: If you want to request custom scopes, you can add one or multiple scope values separated by spaces here. For more information, see the [OpenID Connect documentation](docs_url).
+      scope: Se pretender solicitar âmbitos personalizados, pode adicionar um ou vários valores de âmbito separados por espaços aqui. Para obter mais informações, consulte a [documentação do OpenID Connect](docs_url).
       post_logout_redirect_uri: O URL para o qual o fornecedor do OpenID Connect deve redirecionar após um pedido de encerramento de sessão.
       claims: >
         Pode solicitar reclamações adicionais para os endpoints userinfo e id token. Consulte [a nossa documentação sobre o OpenID connect](docs_url) para obter mais informações.
@@ -83,7 +83,7 @@ pt-PT:
       metadata_url: Tenho um URL de endpoint de descoberta
       endpoint_url: URL do Endpoint
     providers:
-      label_providers: "Providers"
+      label_providers: "Fornecedores"
       seeded_from_env: "Este fornecedor foi semeado a partir da configuração do ambiente. Não pode ser editado."
       google:
         name: Google

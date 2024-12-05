@@ -88,7 +88,7 @@ class TypesController < ApplicationController
 
       call.on_failure do |result|
         flash[:error] = result.errors.full_messages.join("\n")
-        render_edit_tab(@type)
+        render_edit_tab(@type, status: :unprocessable_entity)
       end
     end
   end
@@ -139,12 +139,12 @@ class TypesController < ApplicationController
                 notice:)
   end
 
-  def render_edit_tab(type)
+  def render_edit_tab(type, status: :ok)
     @tab = params[:tab]
     @projects = Project.all
     @type = type
 
-    render action: :edit, status: :unprocessable_entity
+    render action: :edit, status:
   end
 
   def show_local_breadcrumb
