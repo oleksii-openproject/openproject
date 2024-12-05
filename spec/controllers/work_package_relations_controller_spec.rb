@@ -117,7 +117,7 @@ RSpec.describe WorkPackageRelationsController do
       new_relation = Relation.last
 
       expect(WorkPackageRelationsTab::IndexComponent).to have_received(:new)
-        .with(work_package:, relations: [relation, new_relation], children:)
+        .with(work_package:, relations: [relation, new_relation], children:, scroll_target_id: unrelated_work_package.id)
       expect(controller).to have_received(:replace_via_turbo_stream)
         .with(component: an_instance_of(WorkPackageRelationsTab::IndexComponent))
     end
