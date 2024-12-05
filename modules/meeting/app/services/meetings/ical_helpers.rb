@@ -39,6 +39,7 @@ module Meetings
 
     def build_icalendar(start_time)
       ::Icalendar::Calendar.new.tap do |calendar|
+        calendar.prodid = "-//OpenProject GmbH//#{OpenProject::VERSION}//Meeting//EN"
         ical_timezone = timezone.tzinfo.ical_timezone start_time
         calendar.add_timezone ical_timezone
       end
@@ -63,6 +64,10 @@ module Meetings
 
         event.append_attendee(address)
       end
+    end
+
+    def ical_uid(suffix)
+      "#{Setting.app_title}-#{Setting.host_name}-#{suffix}".dasherize
     end
 
     def ical_datetime(time, timezone_id)
