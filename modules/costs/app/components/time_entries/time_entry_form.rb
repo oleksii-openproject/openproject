@@ -53,7 +53,11 @@ module TimeEntries
                                      }
       end
 
-      f.text_field name: :activity_id, label: "Activity"
+      f.select_list name: :activity_id, label: TimeEntry.human_attribute_name(:activity) do |list|
+        activities.each do |activity|
+          list.option(value: activity.id, label: activity.name)
+        end
+      end
 
       f.text_field name: :comments, label: "Comments"
 
@@ -84,6 +88,10 @@ module TimeEntries
 
     def show_start_and_end_time_fields?
       TimeEntry.can_track_start_and_end_time?
+    end
+
+    def activities
+      TimeEntryActivity.active_in_project(project)
     end
   end
 end
