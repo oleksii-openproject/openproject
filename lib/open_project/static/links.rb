@@ -305,6 +305,9 @@ module OpenProject
               },
               troubleshooting: {
                 href: "https://www.openproject.org/docs/user-guide/file-management/nextcloud-integration/#possible-errors-and-troubleshooting"
+              },
+              health_status: {
+                href: "https://www.openproject.org/docs/system-admin-guide/files/external-file-storages/health-status/"
               }
             },
             ical_docs: {
