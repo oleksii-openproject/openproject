@@ -130,7 +130,10 @@ RSpec.describe "Recurring meetings show",
 
     context "with no scheduled meetings" do
       it "shows the next five occurrences" do
-        get recurring_meeting_path(recurring_meeting)
+        # Assuming we're past today's occurrence
+        Timecop.freeze(Time.zone.today + 11.hours) do
+          get recurring_meeting_path(recurring_meeting)
+        end
 
         (1..5).each do |date|
           expect(page).to have_text format_time(Time.zone.today + date.days + 10.hours)
