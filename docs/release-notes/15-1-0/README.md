@@ -19,11 +19,18 @@ In these Release Notes, we will give an overview of important feature changes an
 
 Enterprise customers can now use a new type of custom field that allows for multi-level selections. This makes it easier for users to organize and navigate complex data in structured, multi-level formats within work packages. The new custom fields of the hierarchy type can be added to work packages and then structured into several lower-level values.
 
-Each custom field of type hierarchy can be given a short name (e.g. B for Berlin).
+Each custom field of type hierarchy can be given a short name (e.g. B for Berlin). This is what custom fields of the hierarchy type look like, using the example of a detailed assignment of workspaces:
 
 ![Example screenshot of custom fields of type hiearchy, displaying different cities as main offices](openproject-15-1-custom-field-hierarchy.jpg)
 
 ### Redesign of the Relations tab in work packages
+
+The Relations tab in work packages has been completely redesigned, including a **new dropdown menu that allows you to directly choose the type of relation**, e.g. if the related work packages is a successor and necessarily needs to start after the selected one finishes. Additionally, you can now add a description to add further information about the relation. Please note that the description will be desplayed on both work packages, below the related other work package.
+
+> [!NOTE]
+> Important information: With this redesign, **you will no longer be able to create new work packages directly on the Relations tab**. Please tell us if you were using this feature a lot. If it will be missed by many users, we will find a way to bring it back.
+
+![Screenshot showing the new Relations tab in a work package](openproject-15-1-relations.png)
 
 ### Redesign of the Meetings index page
 
