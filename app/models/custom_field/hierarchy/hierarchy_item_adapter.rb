@@ -28,13 +28,14 @@
 # See COPYRIGHT and LICENSE files for more details.
 #++
 
-class CustomField::Hierarchy::Item < ApplicationRecord
-  self.table_name = "hierarchical_items"
+class CustomField::Hierarchy::HierarchyItemAdapter
+  delegate :id, :label, :short, :to_s, to: :item
 
-  belongs_to :custom_field
-  has_closure_tree order: "sort_order", numeric_order: true, dont_order_roots: true, dependent: :destroy
+  def initialize(item:) = @item = item
 
-  scope :including_children, -> { includes(children: :children) }
+  def name = @item.label
 
-  def to_s = short.nil? ? label : "#{label} (#{short})"
+  private
+
+  attr_accessor :item
 end

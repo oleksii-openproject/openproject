@@ -40,23 +40,8 @@ module Queries
           def value_objects
             CustomField::Hierarchy::Item
               .where(id: @values)
-              .map { |item| HierarchyItemFilterAdapter.new(item:) }
+              .map { |item| CustomField::Hierarchy::HierarchyItemAdapter.new(item:) }
           end
-        end
-
-        class HierarchyItemFilterAdapter
-          attr_reader :name
-
-          delegate :id, to: :item
-
-          def initialize(item:)
-            @item = item
-            @name = item.label
-          end
-
-          private
-
-          attr_accessor :item
         end
       end
     end
