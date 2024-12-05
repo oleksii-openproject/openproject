@@ -359,7 +359,7 @@ ru:
           "15_1":
             standard:
               new_features_html: >
-                The release brings various features and improvements for you, e.g. <br> <ul class="%{list_styling_class}"> <li>Custom fields of type hierarchy (Enterprise add-on).</li> <li>Redesign of the Relations tab in work packages.</li> <li>Redesign of the Meetings index page.</li> <li>Manual page breaks in PDF work package exports.</li> <li>Zen mode for project lists.</li> </ul>
+                Этот релиз предлагает Вам различные возможности и улучшения, например, <br>. <ul class="%{list_styling_class}"> <li>Пользовательские поля типа иерархии (Enterprise версия).</li> <li>Редизайн вкладки "Связи" в пакетах работ.</li> <li>Редизайн главной страницы "Совещания".</li> <li>Ручные разрывы страниц при экспорте рабочих пакетов в формате PDF.</li> <li>Режим Zen для списков проектов.</li> </ul>
     ical_sharing_modal:
       title: "Подписаться на календарь"
       inital_setup_error_message: "Произошла ошибка при получении данных."
@@ -1194,8 +1194,8 @@ ru:
         zero: "0 дней"
       word:
         one: "1 слово"
-        few: "%{count} words"
-        many: "%{count} words"
+        few: "%{count} слов"
+        many: "%{count} слов"
         other: "%{count} слов"
     zen_mode:
       button_activate: "Включить полноэкранный режим"

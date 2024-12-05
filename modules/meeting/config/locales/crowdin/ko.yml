@@ -87,7 +87,7 @@ ko:
   label_meeting: "미팅"
   label_meeting_plural: "미팅"
   label_meeting_new: "새 미팅"
-  label_meeting_new_dynamic: "New dynamic meeting"
+  label_meeting_new_dynamic: "새로운 다이내믹 미팅"
   label_meeting_create: "미팅 생성"
   label_meeting_copy: "미팅 복사"
   label_meeting_edit: "미팅 편집"

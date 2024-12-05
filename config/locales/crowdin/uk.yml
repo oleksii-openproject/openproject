@@ -263,7 +263,7 @@ uk:
   dry_validation:
     errors:
       int?: "має бути цілим числом."
-      filled?: "повинно бути заповнено."
+      filled?: "має бути заповнено."
       greater_or_equal_zero: "має дорівнювати нулю або перевищувати його."
       not_found: "не знайдено."
       rules:
@@ -275,7 +275,7 @@ uk:
         short:
           not_unique: "має бути унікальним у межах одного рівня ієрархії."
         parent:
-          not_descendant: "має бути дочірнім елементом кореня ієрархії."
+          not_descendant: "має бути нащадком кореня ієрархії."
     rules:
       depth: "Глибина"
       item: "Елемент"
@@ -645,7 +645,7 @@ uk:
           no_results_title_text: Наразі немає доступних версій.
   work_package_relations_tab:
     index:
-      action_bar_title: "Додайте зв’язки з іншими пакетами робіт."
+      action_bar_title: "Додавайте зв’язки з іншими пакетами робіт."
       no_results_title_text: Зараз немає доступних зв’язків.
       blankslate_heading: "Немає зв’язків"
       blankslate_description: "Цей пакет робіт ще не має зв’язків."
@@ -671,19 +671,19 @@ uk:
       label_blocks_singular: "блоки"
       label_blocks_plural: "блоки"
       blocks_description: "Звʼязаний пакет робіт можна закрити лише після закриття цього"
-      label_blocked_singular: "blocked by"
-      label_blocked_plural: "blocked by"
-      label_blocked_by_singular: "blocked by"
-      label_blocked__by_plural: "blocked by"
-      blocked_description: "Цей пакет робіт можна закрити лише після закриття звʼязаного"
-      blocked_by_description: "Цей пакет робіт можна закрити лише після закриття звʼязаного"
-      label_duplicates_singular: "duplicates"
-      label_duplicates_plural: "duplicates"
+      label_blocked_singular: "заблоковано"
+      label_blocked_plural: "заблоковано"
+      label_blocked_by_singular: "заблоковано"
+      label_blocked__by_plural: "заблоковано"
+      blocked_description: "Цей пакет робіт можна закрити лише після закриття звʼязаного з ним"
+      blocked_by_description: "Цей пакет робіт можна закрити лише після закриття звʼязаного з ним"
+      label_duplicates_singular: "дублює"
+      label_duplicates_plural: "дублює"
       duplicates_description: "Це копія звʼязаного пакета робіт"
-      label_duplicated_singular: "duplicated by"
-      label_duplicated_plural: "duplicated by"
-      label_duplicated_by_singular: "duplicated by"
-      label_duplicated_by_plural: "duplicated by"
+      label_duplicated_singular: "дублюється"
+      label_duplicated_plural: "дублюється"
+      label_duplicated_by_singular: "дублюється"
+      label_duplicated_by_plural: "дублюється"
       duplicated_by_description: "Звʼязаний пакет робіт є копією цього"
       duplicated_description: "Звʼязаний пакет робіт є копією цього"
       label_includes_singular: "включає"
@@ -695,11 +695,11 @@ uk:
       label_part_of_plural: "належить до"
       partof_description: "Позначає звʼязаний пакет робіт як такий, що належить до цього, без додаткового ефекту"
       part_of_description: "Позначає звʼязаний пакет робіт як такий, що належить до цього, без додаткового ефекту"
-      label_requires_singular: "requires"
-      label_requires_plural: "requires"
+      label_requires_singular: "вимагає"
+      label_requires_plural: "вимагає"
       requires_description: "Позначає звʼязаний пакет робіт як обовʼязковий для цього"
-      label_required_singular: "required by"
-      label_required_plural: "required by"
+      label_required_singular: "вимагається"
+      label_required_plural: "вимагається"
       required_description: "Позначає цей робочий пакет як обовʼязковий для звʼязаного з ним"
       label_parent_singular: "батьківський елемент"
       label_parent_plural: "батьківський елемент"
@@ -1102,17 +1102,17 @@ uk:
         project/life_cycle_step_definition:
           attributes:
             type:
-              must_be_a_stage_or_gate: "must be either Project::StageDefinition or Project::GateDefinition"
+              must_be_a_stage_or_gate: "має бути Project::StageDefinition або Project::GateDefinition"
         project/life_cycle_step:
           attributes:
             type:
-              must_be_a_stage_or_gate: "must be either Project::Stage or Project::Gate"
-              must_be_a_stage: "must be a Project::Stage"
-              must_be_a_gate: "must be a Project::Gate"
+              must_be_a_stage_or_gate: "має бути Project::Stage або Project::Gate"
+              must_be_a_stage: "має бути Project::Stage"
+              must_be_a_gate: "має бути Project::Gate"
         project/gate:
           attributes:
             base:
-              end_date_not_allowed: "Cannot assign `end_date` to a Project::Gate"
+              end_date_not_allowed: "Неможливо призначити `end_date` для проєкту Project::Gate"
         query:
           attributes:
             project:
@@ -1965,22 +1965,22 @@ uk:
       hours: г
       days: д
   pdf_generator:
-    page_nr_footer: "Page %{page} of %{total}"
+    page_nr_footer: "Сторінка %{page} з %{total}"
     dialog:
-      title: Generate PDF
-      submit: Generate
+      title: Згенерувати PDF
+      submit: Згенерувати
       header_right:
-        label: Header right
-        caption: Text to be displayed in the right of the header
+        label: Верхній колонтитул, справа
+        caption: Текст, що відображається праворуч від верхнього колонтитула
       footer_center:
-        label: Footer center
-        caption: Text to be displayed in the center of the footer
+        label: Нижній колонтитул, центр
+        caption: Текст, що відображається в центрі нижнього колонтитула
       hyphenation:
-        label: Hyphenation
-        caption: Break words between lines to improve text justification and readability.
+        label: Перенесення
+        caption: Переносьте слова між рядками, щоб вирівняти текст і покращити його читабельність.
       paper_size:
-        label: Paper size
-        caption: The size of the paper to use for the PDF.
+        label: Розмір паперу
+        caption: Розмір паперу для PDF-файлу.
   extraction:
     available:
       pdftotext: "Доступний текст PDF (необов'язково)"
@@ -2339,7 +2339,7 @@ uk:
   label_environment: "Навколишнє середовище"
   label_estimates_and_progress: "Оцінки й прогрес виконання"
   label_equals: "є"
-  label_equals_with_descendants: "is any with descendants"
+  label_equals_with_descendants: "– будь-який із нащадками"
   label_everywhere: "скрізь"
   label_example: "Приклад"
   label_experimental: "Експериментальне"
@@ -2604,8 +2604,8 @@ uk:
   label_related_work_packages: "Пов'язані робочі пакети"
   label_relates: "пов'язані з"
   label_relates_to: "пов'язані з"
-  label_relation: "Relation"
-  label_relation_actions: "Relation actions"
+  label_relation: "Зв’язок"
+  label_relation_actions: "Дії зі зв’язками"
   label_relation_delete: "Видалити зв'язок"
   label_relation_new: "Новий зв'язок"
   label_release_notes: "Примітки до випуску"

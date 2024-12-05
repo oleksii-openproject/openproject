@@ -1343,8 +1343,8 @@ ru:
       project: "Проект"
       project_query:
         one: "Список проектов"
-        few: "Project lists"
-        many: "Project lists"
+        few: "Списки проектов"
+        many: "Списки проектов"
         other: "Списки проектов"
       query: "Настраиваемый запрос"
       role:

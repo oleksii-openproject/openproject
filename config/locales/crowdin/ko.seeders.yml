@@ -36,15 +36,15 @@ ko:
           name: 검은색
       life_cycle_colors:
         item_0:
-          name: PM2 Orange
+          name: PM2 주황색
         item_1:
-          name: PM2 Purple
+          name: PM2 보라색
         item_2:
-          name: PM2 Red
+          name: PM2 빨간색
         item_3:
-          name: PM2 Magenta
+          name: PM2 심홍색
         item_4:
-          name: PM2 Green Yellow
+          name: PM2 녹색 노란색
       document_categories:
         item_0:
           name: 설명서
@@ -83,19 +83,19 @@ ko:
     standard:
       life_cycles:
         item_0:
-          name: Initiating
+          name: 시작
         item_1:
-          name: Ready for Planning
+          name: 계획 준비 완료
         item_2:
-          name: Planning
+          name: 계획
         item_3:
-          name: Ready for Executing
+          name: 실행 준비 완료
         item_4:
-          name: Executing
+          name: 실행
         item_5:
-          name: Ready for Closing
+          name: 종료 준비 완료
         item_6:
-          name: Closing
+          name: 종료
       priorities:
         item_0:
           name: 낮음

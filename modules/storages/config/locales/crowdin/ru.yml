@@ -301,7 +301,7 @@ ru:
       application_password: Пароль приложения
       automatically_managed_folders: Автоматически управляемые папки
     label_name: Имя
-    label_new_file_storage: Новая %{provider} хранилище
+    label_new_file_storage: Новое %{provider} хранилище
     label_new_storage: Новое хранилище
     label_no_selected_folder: Папка не выбрана
     label_no_specific_folder: Нет конкретной папки
