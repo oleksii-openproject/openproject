@@ -53,6 +53,17 @@ en:
         rate: "Rate"
       user:
         default_rates: "Default rates"
+      time_entry:
+        project: Project
+        user: User
+        work_package: Work package
+        hours: Hours
+        comments: Comment
+        activity: Activity
+        spent_on: Date
+        start_time: Start time
+        end_time: Finish time
+
     models:
       cost_type:
         one: "Cost type"

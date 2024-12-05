@@ -6,6 +6,7 @@ module TimeEntries
       f.autocompleter(
         name: :user_id,
         label: TimeEntry.human_attribute_name(:user),
+        required: true,
         autocomplete_options: {
           defaultData: true,
           component: "opce-user-autocompleter",
@@ -26,30 +27,36 @@ module TimeEntries
       # https://github.com/opf/openproject/pull/17223/commits/db765ac3862ded78139e6b8827e33cf2b8b3bce8
       f.text_field name: :spent_on,
                    type: "date",
-                   label: "Date"
+                   required: true,
+                   label: TimeEntry.human_attribute_name(:spent_on)
 
       f.group(layout: :horizontal) do |g|
         # TODO: Add a time picker based on the date picker linked above
         g.text_field name: :start_time,
-                     label: "Start time",
+                     required: true,
+                     label: TimeEntry.human_attribute_name(:start_time),
                      data: { "time-entry-target" => "startTimeInput" }
 
         g.text_field name: :end_time,
-                     label: "Finish time",
+                     required: true,
+                     label: TimeEntry.human_attribute_name(:end_time),
                      data: { "time-entry-target" => "endTimeInput" }
       end
 
       f.text_field name: :hours,
-                   label: "Hours",
+                   required: true,
+                   label: TimeEntry.human_attribute_name(:hours),
                    data: { "time-entry-target" => "hoursInput" }
 
       if show_work_package_field?
         f.work_package_autocompleter name: :work_package_id,
-                                     label: "Work package",
+                                     label: TimeEntry.human_attribute_name(:work_package),
                                      autocomplete_options: {
                                        focusDirectly: false,
                                        append_to: "#time-entry-dialog",
-                                       filters: [{ name: "project_id", operator: "=", values: [model.project_id] }]
+                                       filters: [
+                                         { name: "project_id", operator: "=", values: [model.project_id] }
+                                       ]
                                      }
       end
 
@@ -60,7 +67,7 @@ module TimeEntries
         end
       end
 
-      f.text_area name: :comments, label: "Comments"
+      f.text_area name: :comments, label: TimeEntry.human_attribute_name(:comments)
 
       render_custom_fields(form: f)
     end
