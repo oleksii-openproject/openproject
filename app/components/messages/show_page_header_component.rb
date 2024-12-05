@@ -1,4 +1,6 @@
-#-- copyright
+# frozen_string_literal: true
+
+# -- copyright
 # OpenProject is an open source project management software.
 # Copyright (C) the OpenProject GmbH
 #
@@ -24,33 +26,29 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
 # See COPYRIGHT and LICENSE files for more details.
-#++
+# ++
 
-require "support/pages/page"
-require_relative "budget_form"
+module Messages
+  class ShowPageHeaderComponent < ApplicationComponent
+    include OpPrimer::ComponentHelpers
+    include ApplicationHelper
+    include WatchersHelper
 
-module Pages
-  class EditBudget < Page
-    include ::Pages::BudgetForm
-
-    attr_reader :budget_id # budget == budget
-
-    def initialize(budget_id)
-      @budget_id = budget_id
+    def initialize(topic:, message:, forum:, project:)
+      super
+      @topic = topic
+      @message = message
+      @forum = forum
+      @project = project
     end
 
-    def click_copy
-      page.find_test_selector("budget-copy-button").click
-    end
-
-    def click_delete
-      accept_confirm do
-        page.find_test_selector("budget-delete-button").click
-      end
-    end
-
-    def path
-      "/budgets/#{budget_id}"
+    def breadcrumb_items
+      [
+        { href: project_overview_path(@project.id), text: @project.name },
+        { href: project_forums_path(@project), text: t(:label_forum_plural) },
+        { href: project_forum_path(@project, @forum), text: @forum.name },
+        @topic.subject
+      ]
     end
   end
 end
