@@ -394,6 +394,8 @@ module Pages
         within "dialog" do
           click_on "Apply"
         end
+
+        wait_for_network_idle
       end
 
       def expect_no_config_columns(*columns)
