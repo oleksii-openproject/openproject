@@ -69,6 +69,8 @@ module Projects
     def column_value(column)
       if custom_field_column?(column)
         custom_field_column(column)
+      elsif life_cycle_step_column?(column)
+        life_cycle_step_column(column)
       else
         send(column.attribute)
       end
@@ -92,6 +94,15 @@ module Projects
       else
         custom_value
       end
+    end
+
+    def life_cycle_step_column(column)
+      return nil unless user_can_view_project?
+
+      # FIXME: make this efficient
+      ls = Project::LifeCycleStep.find_by(id: column.life_cycle_step.id, project:)
+      # FIXME: we are interested in the start/end date to display values here instead of the name
+      ls&.definition&.name
     end
 
     def created_at
@@ -372,6 +383,10 @@ module Projects
 
     def custom_field_column?(column)
       column.is_a?(::Queries::Projects::Selects::CustomField)
+    end
+
+    def life_cycle_step_column?(column)
+      column.is_a?(::Queries::Projects::Selects::LifeCycleStep)
     end
 
     def current_page
