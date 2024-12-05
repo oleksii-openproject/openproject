@@ -26,33 +26,28 @@
 # See COPYRIGHT and LICENSE files for more details.
 #++
 
-require "spec_helper"
+if ENV["OPENPROJECT_SKIP_DB_ENCODING_CHECK"].blank?
+  icu_incompatible_encodings = %w[
+    EUC_JIS_2004
+    LATIN10
+    MULE_INTERNAL
+    SQL_ASCII
+    WIN874
+  ]
 
-RSpec.describe "Group memberships through groups page", :js, :with_cuprite do
-  shared_let(:admin) { create(:admin) }
-  let!(:project) { create(:project, name: "Project 1", identifier: "project1") }
+  database_encoding = ActiveRecord::Base.connection.select_value("SHOW SERVER_ENCODING")
 
-  let!(:peter) { create(:user, firstname: "Peter", lastname: "Pan") }
+  if database_encoding.in?(icu_incompatible_encodings)
+    abort <<~ERROR
+      INCOMPATIBLE DATABASE ENCODING DETECTED
 
-  let!(:manager) { create(:project_role, name: "Manager") }
+      Your database encoding is #{database_encoding}, which is incompatible with ICU
+      collation used in OpenProject v15.
 
-  let(:members_page) { Pages::Members.new project.identifier }
+      Please check the instructions on how to change database encoding:
+      https://www.openproject.org/docs/installation-and-operations/misc/changing-database-encoding/
 
-  before do
-    allow(User).to receive(:current).and_return admin
-  end
-
-  shared_examples "errors when adding members" do
-    it "adding a role without a principal", :js do
-      members_page.visit!
-      expect_angular_frontend_initialized
-      members_page.add_user! nil, as: "Manager"
-
-      expect(page).to have_text "choose at least one user or group"
-    end
-  end
-
-  context "creating membership with a user" do
-    it_behaves_like "errors when adding members"
+      This check can be skipped by setting environment variable OPENPROJECT_SKIP_DB_ENCODING_CHECK=true
+    ERROR
   end
 end
