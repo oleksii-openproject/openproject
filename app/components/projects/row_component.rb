@@ -104,19 +104,15 @@ module Projects
 
       return nil if ls.blank?
 
-      if ls.end_date
-        "#{helpers.format_date(ls.start_date)} - #{helpers.format_date(ls.end_date)}"
-      else
-        helpers.format_date ls.start_date.to_s
-      end
+      format_date(ls.start_date, ls.end_date)
     end
 
     def created_at
-      helpers.format_date(project.created_at)
+      format_date(project.created_at)
     end
 
     def latest_activity_at
-      helpers.format_date(project.latest_activity_at)
+      format_date(project.latest_activity_at)
     end
 
     def required_disk_space
@@ -397,6 +393,24 @@ module Projects
 
     def current_page
       table.model.current_page.to_s
+    end
+
+    private
+
+    # If only the `start_date` is given, will return a formatted version of that date as string.
+    # When `end_date` is given as well, will return a representation of the date range from start to end.
+    # @example
+    #    format_date(Date.new(2024, 12, 4))
+    #      "04/12/2024"
+    #
+    #    format_date(Date.new(2024, 12, 4), Date.new(2024, 12, 10))
+    #      "04/12/2024 - 10/12/2024"
+    def format_date(start_date, end_date = nil)
+      if end_date.present?
+        "#{helpers.format_date(start_date)} - #{helpers.format_date(end_date)}"
+      else
+        helpers.format_date(start_date)
+      end
     end
   end
 end
