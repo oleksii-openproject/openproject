@@ -17,6 +17,12 @@ In these Release Notes, we will give an overview of important feature changes an
 
 ### Custom fields of type hierarchy (Enterprise add-on)
 
+Enterprise customers can now use a new type of custom field that allows for multi-level selections. This makes it easier for users to organize and navigate complex data in structured, multi-level formats within work packages. The new custom fields of the hierarchy type can be added to work packages and then structured into several lower-level values.
+
+Each custom field of type hierarchy can be given a short name (e.g. B for Berlin).
+
+![Example screenshot of custom fields of type hiearchy, displaying different cities as main offices](openproject-15-1-custom-field-hierarchy.jpg)
+
 ### Redesign of the Relations tab in work packages
 
 ### Redesign of the Meetings index page
@@ -28,7 +34,7 @@ In these Release Notes, we will give an overview of important feature changes an
 
 ## Important technical updates
 
-### Possible locking of seeded admin users, e.g. when using LDAP
+### Possibility to lock seeded admin users, e.g. when using LDAP
 
 <!--more-->
 
