@@ -6,9 +6,9 @@ import {
   OnInit,
   ViewEncapsulation,
 } from '@angular/core';
-import { INotification } from 'core-app/core/state/in-app-notifications/in-app-notification.model';
-import { I18nService } from 'core-app/core/i18n/i18n.service';
 import { TimezoneService } from 'core-app/core/datetime/timezone.service';
+import { I18nService } from 'core-app/core/i18n/i18n.service';
+import { IInAppNotificationDetailsAttribute, INotification } from 'core-app/core/state/in-app-notifications/in-app-notification.model';
 import { WorkPackageResource } from 'core-app/features/hal/resources/work-package-resource';
 import * as moment from 'moment';
 import { Moment } from 'moment';
@@ -49,6 +49,7 @@ export class InAppNotificationDateAlertComponent implements OnInit {
     dueDate: this.I18n.t('js.work_packages.properties.dueDate'),
     date: this.I18n.t('js.notifications.date_alerts.milestone_date'),
     due_today: this.I18n.t('js.notifications.date_alerts.property_today'),
+    note: '', // date alerts do not have notes
   };
 
   constructor(
@@ -71,7 +72,7 @@ export class InAppNotificationDateAlertComponent implements OnInit {
     }
   }
 
-  private deriveDueDate(value:string, property:'startDate'|'dueDate'|'date') {
+  private deriveDueDate(value:string, property:IInAppNotificationDetailsAttribute) {
     const dateValue = this.timezoneService.parseISODate(value).startOf('day');
     const today = moment();
     this.dateIsPast = dateValue.isBefore(today, 'day');

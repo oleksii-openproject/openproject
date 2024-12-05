@@ -29,6 +29,7 @@ export class InAppNotificationEntryComponent implements OnInit {
   workPackage$:Observable<WorkPackageResource>|null = null;
 
   showDateAlert = false;
+  hasReminderAlert = false;
 
   loading$ = this.storeService.query.selectLoading();
 
@@ -62,6 +63,7 @@ export class InAppNotificationEntryComponent implements OnInit {
     const href = this.notification._links.resource?.href;
     this.workPackageId = href && HalResource.matchFromLink(href, 'work_packages');
 
+    this.hasReminderAlert = this.aggregatedNotifications.some((notification) => notification.reason === 'reminder');
     this.showDateAlert = this.hasActiveDateAlert();
     this.buildTranslatedReason();
     this.buildProject();

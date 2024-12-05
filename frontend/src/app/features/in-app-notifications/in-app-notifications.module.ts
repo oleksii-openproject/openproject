@@ -26,6 +26,7 @@ import { DynamicModule } from 'ng-dynamic-component';
 import { InAppNotificationActorsLineComponent } from './entry/actors-line/in-app-notification-actors-line.component';
 import { InAppNotificationDateAlertComponent } from './entry/date-alert/in-app-notification-date-alert.component';
 import { InAppNotificationRelativeTimeComponent } from './entry/relative-time/in-app-notification-relative-time.component';
+import { InAppNotificationReminderAlertComponent } from './entry/reminder-alert/in-app-notification-reminder-alert.component';
 import { InAppNotificationStatusComponent } from './entry/status/in-app-notification-status.component';
 
 @NgModule({
@@ -38,6 +39,7 @@ import { InAppNotificationStatusComponent } from './entry/status/in-app-notifica
     InAppNotificationDateAlertComponent,
     InAppNotificationsDateAlertsUpsaleComponent,
     InAppNotificationRelativeTimeComponent,
+    InAppNotificationReminderAlertComponent,
   ],
   imports: [
     OpSharedModule,

@@ -88,16 +88,22 @@
     <div
       class="op-ian-item--bottom-line"
     >
-      <op-in-app-notification-date-alert
-        *ngIf="showDateAlert"
-        [workPackage]="workPackage"
+      <op-in-app-notification-reminder-alert
+        *ngIf="hasReminderAlert"
         [aggregatedNotifications]="aggregatedNotifications"
-      ></op-in-app-notification-date-alert>
-      <op-in-app-notification-actors-line
-        *ngIf="!showDateAlert"
-        [notification]="notification"
-        [aggregatedNotifications]="aggregatedNotifications"
-      ></op-in-app-notification-actors-line>
+      />
+      <ng-container *ngIf="!hasReminderAlert">
+        <op-in-app-notification-date-alert
+          *ngIf="showDateAlert"
+          [workPackage]="workPackage"
+          [aggregatedNotifications]="aggregatedNotifications"
+        ></op-in-app-notification-date-alert>
+        <op-in-app-notification-actors-line
+          *ngIf="!showDateAlert"
+          [notification]="notification"
+          [aggregatedNotifications]="aggregatedNotifications"
+        ></op-in-app-notification-actors-line>
+      </ng-container>
     </div>
   </ng-container>
   <ng-template #workPackageLoading>
