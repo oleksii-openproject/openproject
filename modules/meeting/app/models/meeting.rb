@@ -50,10 +50,6 @@ class Meeting < ApplicationRecord
   has_many :sections, dependent: :destroy, class_name: "MeetingSection"
   has_many :agenda_items, dependent: :destroy, class_name: "MeetingAgendaItem"
 
-  default_scope do
-    order("#{Meeting.table_name}.start_time DESC")
-  end
-
   scope :templated, -> { where(template: true) }
   scope :not_templated, -> { where(template: false) }
 

@@ -61,7 +61,7 @@ RSpec.describe "Structured meetings participants",
   end
 
   let(:current_user) { user }
-  let(:show_page) { Pages::StructuredMeeting::Show.new(StructuredMeeting.order(id: :asc).last) }
+  let(:show_page) { Pages::StructuredMeeting::Show.new(StructuredMeeting.last) }
 
   before do
     login_as current_user
