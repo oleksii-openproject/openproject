@@ -55,7 +55,8 @@ module TimeEntries
 
       f.select_list name: :activity_id, label: TimeEntry.human_attribute_name(:activity), include_blank: true do |list|
         activities.each do |activity|
-          list.option(value: activity.id, label: activity.name)
+          selected = (model.activity_id == activity.id) || (model.activity_id.blank? && activity.is_default?)
+          list.option(value: activity.id, label: activity.name, selected:)
         end
       end
 
