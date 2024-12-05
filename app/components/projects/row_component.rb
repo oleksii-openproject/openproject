@@ -101,8 +101,14 @@ module Projects
 
       # FIXME: make this efficient
       ls = Project::LifeCycleStep.find_by(id: column.life_cycle_step.id, project:)
-      # FIXME: we are interested in the start/end date to display values here instead of the name
-      ls&.definition&.name
+
+      return nil if ls.blank?
+
+      if ls.end_date
+        "#{helpers.format_date(ls.start_date)} - #{helpers.format_date(ls.end_date)}"
+      else
+        helpers.format_date ls.start_date.to_s
+      end
     end
 
     def created_at
