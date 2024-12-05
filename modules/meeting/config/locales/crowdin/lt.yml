@@ -52,10 +52,16 @@ lt:
         presenter: "Pateikėjas"
       meeting_section:
         title: "Pavadinimas"
+      recurring_meeting:
+        frequency: "Frequency"
+        interval: "Interval"
+        end_after: "End after"
+        iterations: "Occurrences"
     errors:
       messages:
         invalid_time_format: "netinkamas laikas. Reikalingas formatas: HH:MM (pvz.: 10:30)"
     models:
+      recurring_meeting: "Recurring meeting"
       structured_meeting: "Susitikimas (dinaminis)"
       meeting_agenda_item: "Darbotvarkės punktas"
       meeting_agenda: "Dienotvarkė"
@@ -91,6 +97,7 @@ lt:
   label_meeting_plural: "Pasitarimai"
   label_meeting_new: "Naujas pasitarimas"
   label_meeting_new_dynamic: "New dynamic meeting"
+  label_meeting_new_recurring: "New recurring meeting"
   label_meeting_create: "Create meeting"
   label_meeting_copy: "Copy meeting"
   label_meeting_edit: "Redaguoti pasitarimą"
@@ -104,23 +111,47 @@ lt:
   label_meeting_date_time: "Data/Laikas"
   label_meeting_date_and_time: "Date and time"
   label_meeting_diff: "skirt."
+  label_recurring_meeting: "Recurring meeting"
+  label_recurring_meeting_part_of: "Part of a meeting series"
+  label_recurring_meeting_new: "New recurring meeting"
+  label_recurring_meeting_plural: "Recurring meetings"
+  label_template: "Template"
+  label_recurring_meeting_view: "View meeting series"
+  label_recurring_meeting_create: "Create from template"
+  label_recurring_meeting_copy: "Copy as one-off"
+  label_recurring_meeting_cancel: "Cancel this occurrence"
+  label_recurring_meeting_delete: "Delete occurrence"
+  label_recurring_meeting_delete_confirmation: >
+    This meeting is part of a series called %{name}. This will only delete this particular occurrence and not the entire series. Do you want to continue?
+  label_recurring_occurrence_delete_confirmation: >
+    Any meeting information not in the template will be lost. Do you want to continue?
+  label_recurring_meeting_restore: "Restore this occurrence"
+  label_recurring_meeting_series_edit: "Edit meeting series"
+  label_recurring_meeting_series_delete: "Delete meeting series"
+  label_my_meetings: "My meetings"
+  label_all_meetings: "All meetings"
   label_upcoming_meetings: "Artėjantys susirinkimai"
   label_past_meetings: "Įvykę susirinkimai"
   label_upcoming_meetings_short: "Artėjantys"
   label_past_meetings_short: "Buvę"
   label_involvement: "Įsitraukimas"
-  label_upcoming_invitations: "Artėjantys pakvietimai"
+  label_invitations: "Invitations"
   label_past_invitations: "Ankstesni pakvietimai"
-  label_attendee: "Dalyvis"
-  label_author: "Kūrėjas"
+  label_attended: "Attended"
+  label_created_by_me: "Created by me"
   label_notify: "Siųsti peržiūrai"
   label_icalendar: "Siųsti iCalendar formatu"
   label_icalendar_download: "Atsisiųsti iCalendar įvykį"
+  label_view_meeting_series: "View meeting series"
+  label_meeting_series: "Meeting series"
   label_version: "Versija"
   label_time_zone: "Laiko juosta"
   label_start_date: "Pradžios data"
   meeting:
+    participants:
+      template: "These participants will be invited automatically to all future meetings as they are created."
     attachments:
+      template: "These attached files will be included in all future meetings in the series."
       text: "Prisegti failai prieinami visiems susitikimo dalyviams. Taipogi galite nutempti juos į plano elemento pastabas."
     copy:
       title: "Kopijuoti susitikimą: %{title}"
@@ -149,6 +180,7 @@ lt:
       classic: "Klasikinis"
       classic_text: "Organizuokite jūsų susitikimą su formatuojamo teksto darbotvarke ir protokolu."
       structured: "Dinaminis"
+      recurring: "Recurring"
       structured_text: "Organizuokite jūsų susitikimą su darbotvarkės elementų sąrašu, pasirinktinai susiejant juos su darbo paketu."
       structured_text_copy: "Šiuo metu nukopijavus susitikimą, susiję susitikimo elmentai nebus kopijuojami, tik detalės."
     copied: "Nukopijuota iš susitikimo #%{id}"
@@ -157,6 +189,33 @@ lt:
     delete_confirmation: "Ištrynus skiltį taipogi bus ištrinti ir visi jos plano elementai. Ar tikrai norite tai padaryti?"
     placeholder_title: "Nauja skiltis"
     empty_text: "Tempkite elementus čia arba sukurtkite naują"
+  recurring_meeting:
+    interval:
+      instructions: >
+        Enter the number of days or weeks between each occurrence.
+    occurrence:
+      infoline: "This meeting is part of a recurring meeting series."
+    template:
+      label_view_template: "View template"
+      label_edit_template: "Edit template"
+      banner_html: >
+        You are currently editing a template of a meeting series: %{link}. Every new instance of a meeting in this series will use this template. Changes will not affect past or already created meetings.
+    frequency:
+      every_weekday: "Every %{day_of_the_week}"
+      daily: "Daily"
+      working_days: "Working Days"
+      weekly: "Weekly"
+    end_after:
+      specific_date: "A specific date"
+      iterations: "A number of occurrences"
+    starts: "Starts"
+    in_words:
+      daily_interval: "Every %{interval} day"
+      working_days: "Every working day"
+      working_days_interval: "Every %{interval} working day"
+      weekly: "Weekly on %{weekday}"
+      weekly_interval: "Every %{interval} week on %{weekday}"
+      full: "%{base} at %{time}, ends on %{end_date}"
   notice_successful_notification: "Pranešimas sėkmingai išsiųstas"
   notice_timezone_missing: Laiko zona nenustatyta ir %{zone} zona yra rekomenduojama. Kad pasirinktumėte laiko zoną, paspauskite čia.
   notice_meeting_updated: "This page has been updated by someone else. Reload to view changes."
@@ -215,6 +274,10 @@ lt:
   label_meeting_state_open_html: "<i>Atviras</i>"
   label_meeting_state_closed: "Uždarytas"
   label_meeting_state_closed_html: "<i>Uždarytas</i>"
+  label_meeting_state_agenda_created: "Agenda created"
+  label_meeting_state_scheduled: "Scheduled"
+  label_meeting_state_cancelled: "Cancelled"
+  label_meeting_state_skipped: "Skipped"
   label_meeting_reopen_action: "Iš naujo atidaryti susitikimą"
   label_meeting_close_action: "Uždaryti susitikimą"
   text_meeting_open_description: "Šis susitikimas yra atviras. Jūs galite pridėti/išimti darbotvarkės elementus bei juos keisti pagal poreikius. Pasibaigus susitikimui, uždarykite jį, kad užrakintumėte."

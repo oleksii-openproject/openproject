@@ -494,8 +494,12 @@ ca:
     groups:
       member_in_these_groups: "Aquest usuari és actualment membre dels següents grups:"
       no_results_title_text: Aquest usuari no és actualment membre de cap grup.
+      summary_with_more: Member of %{names} and %{count_link}.
+      more: "%{count} more"
+      summary: Member of %{names}.
     memberships:
       no_results_title_text: Aquest usuari no és actualment membre de cap projecte.
+    open_profile: "Open profile"
   page:
     text: "Text"
   placeholder_users:
@@ -935,6 +939,7 @@ ca:
       messages:
         accepted: "hauran de ser acceptats."
         after: "ha de ser després de %{date}."
+        after_today: "must be in the future."
         after_or_equal_to: "ha de ser igual o després de %{date}."
         before: "ha de ser abans de %{date}."
         before_or_equal_to: "ha de ser igual o abans de %{date}."
@@ -981,6 +986,7 @@ ca:
         not_an_integer: "no és un enter."
         not_an_iso_date: "no és una data vàlida. Format requerit: AAAA-MM-DD."
         not_same_project: "no pertany al mateix projecte."
+        datetime_must_be_in_future: "must be in the future."
         odd: "ha de ser senar."
         regex_match_failed: "no coincideix amb l'expressió regular %{expression}."
         regex_invalid: "no s'ha pogut validar amb l'expressió regular associada."
@@ -2955,6 +2961,7 @@ ca:
   notice_successful_connection: "S'ha connectat correctament."
   notice_successful_create: "Creat correctament."
   notice_successful_delete: "Esborrat correctament."
+  notice_successful_cancel: "Successful cancellation."
   notice_successful_update: "S'ha modificat correctament."
   notice_successful_update_custom_fields_added_to_project: |
     Actualitzat correctament. Els camps personalitzats dels estils activats s'activen automàticament en el formulari del paquet de treball. <a href="%{url}" target="_blank">Veure més</a>.
@@ -3063,6 +3070,7 @@ ca:
   permission_select_project_modules: "Selecciona els mòduls del projecte"
   permission_share_work_packages: "Share work packages"
   permission_manage_types: "Seleccioneu tipus"
+  permission_manage_own_reminders: "Create own reminders"
   permission_view_project: "Veure projectes"
   permission_view_changesets: "Veure les revisions del repositori a OpenProject"
   permission_view_commit_author_statistics: "Veure les estadístiques de commits de l'autor"

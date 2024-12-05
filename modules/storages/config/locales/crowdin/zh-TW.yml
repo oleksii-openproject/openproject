@@ -124,7 +124,7 @@ zh-TW:
               not_found: "%{current_path} 沒有找到。"
             set_folders_permissions:
               permission_not_set: 無法在 %{path} 上設定權限。
-          error: 發生意外錯誤。請確保您的 Nextcloud 實例可以連線，並檢查 OpenProject Worker 日誌以取得更多資訊。
+          error: An unexpected error occurred. Please ensure that your Nextcloud instance is reachable and check OpenProject worker logs for more information
           group_does_not_exist: "%{group} 不存在。請檢查您的 Nextcloud 實例配置。"
           insufficient_privileges: OpenProject 沒有足夠的權限將 %{user} 加入 %{group}。請檢查 Nextcloud 中的群組設定。
           not_allowed: Nextcloud 封鎖該請求。
@@ -145,7 +145,7 @@ zh-TW:
               not_found: "%{current_path} 沒有找到。"
             set_folders_permissions:
               permission_not_set: 無法在 %{path} 上設定權限。
-          error: 發生意外錯誤。請確保您的 Nextcloud 可以連線，並檢查 OpenProject 日誌以取得更多資訊。
+          error: An unexpected error occurred. Please ensure that OneDrive/SharePoint is reachable and check OpenProject worker logs for more information
           not_allowed: OpenProject 不允許存取您的 OneDrive 磁碟機。請檢查 Azure 應用程式上設定的權限。
           unauthorized: OpenProject 無法與 OneDrive 同步。請檢查您的儲存空間和 Azure 應用程式設定。
           user_does_not_exist: "%{user} 在 Nextcloud 中不存在。"

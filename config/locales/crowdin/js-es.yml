@@ -621,6 +621,7 @@ es:
         prioritized: "Priorizado"
         dateAlert: "Alerta de fecha"
         shared: "Compartido"
+        reminder: "Reminder"
       date_alerts:
         milestone_date: "Fecha de hito"
         overdue: "Vencido"

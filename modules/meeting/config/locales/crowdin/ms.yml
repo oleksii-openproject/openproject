@@ -49,10 +49,16 @@ ms:
         presenter: "Penyampai"
       meeting_section:
         title: "Tajuk"
+      recurring_meeting:
+        frequency: "Frequency"
+        interval: "Interval"
+        end_after: "End after"
+        iterations: "Occurrences"
     errors:
       messages:
         invalid_time_format: "bukan masa yang sah. Format yang diperlukan: JJ:MM"
     models:
+      recurring_meeting: "Recurring meeting"
       structured_meeting: "Mesyuarat (dinamik)"
       meeting_agenda_item: "Item agenda"
       meeting_agenda: "Agenda"
@@ -88,6 +94,7 @@ ms:
   label_meeting_plural: "Mesyuarat-mesyuarat"
   label_meeting_new: "Mesyuarat Baharu"
   label_meeting_new_dynamic: "New dynamic meeting"
+  label_meeting_new_recurring: "New recurring meeting"
   label_meeting_create: "Create meeting"
   label_meeting_copy: "Copy meeting"
   label_meeting_edit: "Edit Mesyuarat"
@@ -101,23 +108,47 @@ ms:
   label_meeting_date_time: "Tarikh/Masa"
   label_meeting_date_and_time: "Date and time"
   label_meeting_diff: "Beza"
+  label_recurring_meeting: "Recurring meeting"
+  label_recurring_meeting_part_of: "Part of a meeting series"
+  label_recurring_meeting_new: "New recurring meeting"
+  label_recurring_meeting_plural: "Recurring meetings"
+  label_template: "Template"
+  label_recurring_meeting_view: "View meeting series"
+  label_recurring_meeting_create: "Create from template"
+  label_recurring_meeting_copy: "Copy as one-off"
+  label_recurring_meeting_cancel: "Cancel this occurrence"
+  label_recurring_meeting_delete: "Delete occurrence"
+  label_recurring_meeting_delete_confirmation: >
+    This meeting is part of a series called %{name}. This will only delete this particular occurrence and not the entire series. Do you want to continue?
+  label_recurring_occurrence_delete_confirmation: >
+    Any meeting information not in the template will be lost. Do you want to continue?
+  label_recurring_meeting_restore: "Restore this occurrence"
+  label_recurring_meeting_series_edit: "Edit meeting series"
+  label_recurring_meeting_series_delete: "Delete meeting series"
+  label_my_meetings: "My meetings"
+  label_all_meetings: "All meetings"
   label_upcoming_meetings: "Mesyuarat akan datang"
   label_past_meetings: "Mesyuarat lalu"
   label_upcoming_meetings_short: "Akan Datang"
   label_past_meetings_short: "Lalu"
   label_involvement: "Penglibatan"
-  label_upcoming_invitations: "Jemputan akan datang"
+  label_invitations: "Invitations"
   label_past_invitations: "Jemputan yang lepas"
-  label_attendee: "Penghadir"
-  label_author: "Pencipta"
+  label_attended: "Attended"
+  label_created_by_me: "Created by me"
   label_notify: "Hantar untuk semakan"
   label_icalendar: "Hantar iCalendar\n"
   label_icalendar_download: "Muat turun peristiwa dalam iCalendar"
+  label_view_meeting_series: "View meeting series"
+  label_meeting_series: "Meeting series"
   label_version: "Versi"
   label_time_zone: "Zon waktu"
   label_start_date: "Tarikh mula"
   meeting:
+    participants:
+      template: "These participants will be invited automatically to all future meetings as they are created."
     attachments:
+      template: "These attached files will be included in all future meetings in the series."
       text: "Fail yang dilampirkan tersedia kepada semua peserta mesyuarat. Anda juga boleh menarik dan melepaskannya ke dalam nota item agenda."
     copy:
       title: "Salin mesyuarat: %{title}"
@@ -146,6 +177,7 @@ ms:
       classic: "Klasik"
       classic_text: "Aturkan mesyuarat anda dalam agenda teks yang boleh diformat dan diprotokol."
       structured: "Dinamik"
+      recurring: "Recurring"
       structured_text: "Aturkan mesyuarat anda sebagai senarai butiran agenda, pautkannya ke pakej kerja secara pilihan."
       structured_text_copy: "Menyalin mesyuarat pada masa ini tidak akan menyalin item agenda mesyuarat yang berkaitan, hanya butiran sahaja"
     copied: "Disalin daripada Mesyuarat #%{id}"
@@ -154,6 +186,33 @@ ms:
     delete_confirmation: "Memadam bahagian ini akan memadam setiap item agenda juga. Adakah anda pasti anda ingin berbuat demikian?"
     placeholder_title: "Bahagian baharu"
     empty_text: "Tarik item ke sini atau cipta yang baharu"
+  recurring_meeting:
+    interval:
+      instructions: >
+        Enter the number of days or weeks between each occurrence.
+    occurrence:
+      infoline: "This meeting is part of a recurring meeting series."
+    template:
+      label_view_template: "View template"
+      label_edit_template: "Edit template"
+      banner_html: >
+        You are currently editing a template of a meeting series: %{link}. Every new instance of a meeting in this series will use this template. Changes will not affect past or already created meetings.
+    frequency:
+      every_weekday: "Every %{day_of_the_week}"
+      daily: "Daily"
+      working_days: "Working Days"
+      weekly: "Weekly"
+    end_after:
+      specific_date: "A specific date"
+      iterations: "A number of occurrences"
+    starts: "Starts"
+    in_words:
+      daily_interval: "Every %{interval} day"
+      working_days: "Every working day"
+      working_days_interval: "Every %{interval} working day"
+      weekly: "Weekly on %{weekday}"
+      weekly_interval: "Every %{interval} week on %{weekday}"
+      full: "%{base} at %{time}, ends on %{end_date}"
   notice_successful_notification: "Pemberitahuan berjaya dihantar"
   notice_timezone_missing: Tiada zon waktu yang ditetapkan dan %{zone} adalah diandaikan. Untuk pilih zon waktu anda, sila klik sini.
   notice_meeting_updated: "This page has been updated by someone else. Reload to view changes."
@@ -212,6 +271,10 @@ ms:
   label_meeting_state_open_html: "<i>Buka</i>"
   label_meeting_state_closed: "Ditutup"
   label_meeting_state_closed_html: "<i>Ditutup</i>"
+  label_meeting_state_agenda_created: "Agenda created"
+  label_meeting_state_scheduled: "Scheduled"
+  label_meeting_state_cancelled: "Cancelled"
+  label_meeting_state_skipped: "Skipped"
   label_meeting_reopen_action: "Buka semula mesyuarat"
   label_meeting_close_action: "Tutup mesyuarat"
   text_meeting_open_description: "Mesyuarat ini dibuka. Anda boleh tambah/keluarkan item agenda dan mengeditnya mengikut kesukaan anda. Setelah mesyuarat berakhir, tutup untuk menguncinya."

@@ -620,6 +620,7 @@ pt-BR:
         prioritized: "Priorizado"
         dateAlert: "Alerta de data"
         shared: "Compartilhado"
+        reminder: "Reminder"
       date_alerts:
         milestone_date: "Data de marco"
         overdue: "Atrasado"

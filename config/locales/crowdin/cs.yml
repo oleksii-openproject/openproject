@@ -509,8 +509,12 @@ cs:
     groups:
       member_in_these_groups: "Tento uživatel je v současné době členem následujících skupin:"
       no_results_title_text: Tento uživatel není v současné době členem žádné skupiny.
+      summary_with_more: Member of %{names} and %{count_link}.
+      more: "%{count} more"
+      summary: Member of %{names}.
     memberships:
       no_results_title_text: Tento uživatel není v současné době členem projektu.
+    open_profile: "Open profile"
   page:
     text: "Text"
   placeholder_users:
@@ -955,6 +959,7 @@ cs:
       messages:
         accepted: "musí být přijato."
         after: "musí být po %{date}."
+        after_today: "must be in the future."
         after_or_equal_to: "musí být po nebo rovno %{date}."
         before: "musí být před %{date}."
         before_or_equal_to: "musí být před nebo rovno %{date}."
@@ -1001,6 +1006,7 @@ cs:
         not_an_integer: "není celé číslo."
         not_an_iso_date: "není platné datum. Požadovaný formát: RRRR-MM-DD."
         not_same_project: "nepatří do stejného projektu."
+        datetime_must_be_in_future: "must be in the future."
         odd: "musí být liché."
         regex_match_failed: "neodpovídá regulárnímu výrazu %{expression}."
         regex_invalid: "nelze ověřit s přidruženým regulárním výrazem."
@@ -3035,6 +3041,7 @@ cs:
   notice_successful_connection: "Úspěšné připojení."
   notice_successful_create: "Úspěšné vytvoření."
   notice_successful_delete: "Úspěšné odstranění."
+  notice_successful_cancel: "Successful cancellation."
   notice_successful_update: "Úspěšná aktualizace."
   notice_successful_update_custom_fields_added_to_project: |
     Úspěšná aktualizace. Vlastní pole aktivovaných typů jsou automaticky aktivována
@@ -3146,6 +3153,7 @@ cs:
   permission_select_project_modules: "Vyberte moduly projektu"
   permission_share_work_packages: "Sdílet pracovní balíčky"
   permission_manage_types: "Vyberte typy"
+  permission_manage_own_reminders: "Create own reminders"
   permission_view_project: "Zobrazit projekty"
   permission_view_changesets: "Zobrazit revize repozitáře v OpenProject"
   permission_view_commit_author_statistics: "Zobrazit statistiky autora commitu"

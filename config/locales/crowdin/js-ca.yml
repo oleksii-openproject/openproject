@@ -621,6 +621,7 @@ ca:
         prioritized: "Prioritized"
         dateAlert: "Alerta per dates"
         shared: "Compartida"
+        reminder: "Reminder"
       date_alerts:
         milestone_date: "Data de fita"
         overdue: "Vençut"

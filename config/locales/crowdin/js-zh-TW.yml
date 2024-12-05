@@ -619,6 +619,7 @@ zh-TW:
         prioritized: "已優先"
         dateAlert: "日期提醒"
         shared: "參與"
+        reminder: "Reminder"
       date_alerts:
         milestone_date: "里程碑日期"
         overdue: "逾期"

@@ -490,8 +490,12 @@ zh-TW:
     groups:
       member_in_these_groups: "此用戶當前是以下群組的成員："
       no_results_title_text: 這個使用者目前不是任何群組的成員
+      summary_with_more: Member of %{names} and %{count_link}.
+      more: "%{count} more"
+      summary: Member of %{names}.
     memberships:
       no_results_title_text: 這個使用者目前不是任何專案的成員
+    open_profile: "Open profile"
   page:
     text: "文字"
   placeholder_users:
@@ -928,6 +932,7 @@ zh-TW:
       messages:
         accepted: "必須被接受"
         after: "必須在 %{date} 之後"
+        after_today: "must be in the future."
         after_or_equal_to: "必須在 %{date} 以後"
         before: "必須在 %{date} 之前"
         before_or_equal_to: "必須在 %{date} 以前"
@@ -974,6 +979,7 @@ zh-TW:
         not_an_integer: "不是整數"
         not_an_iso_date: "不是有效日期。所需格式：YYYY-MM-DD。"
         not_same_project: "不屬於相同的專案"
+        datetime_must_be_in_future: "must be in the future."
         odd: "必須是奇數"
         regex_match_failed: "與正則表達式 %{expression} 不匹配。"
         regex_invalid: "不能被相關聯的正則運算式驗證。"
@@ -2921,6 +2927,7 @@ zh-TW:
   notice_successful_connection: "連接成功"
   notice_successful_create: "建立成功"
   notice_successful_delete: "刪除成功"
+  notice_successful_cancel: "Successful cancellation."
   notice_successful_update: "更新成功"
   notice_successful_update_custom_fields_added_to_project: |
     更新成功。相關類型之專案，此客製欄位會自動啟動。<a href="%{url}" target="_blank">看更多</a>。
@@ -3028,6 +3035,7 @@ zh-TW:
   permission_select_project_modules: "選擇專案的模組"
   permission_share_work_packages: "參與工作項目"
   permission_manage_types: "選擇類型"
+  permission_manage_own_reminders: "Create own reminders"
   permission_view_project: "檢視專案"
   permission_view_changesets: "在 OpenProject 檢視版本庫修訂"
   permission_view_commit_author_statistics: "檢視 Commit 的作者統計資訊"

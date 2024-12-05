@@ -621,6 +621,7 @@ it:
         prioritized: "Assegnata priorità"
         dateAlert: "Avviso data"
         shared: "Condiviso"
+        reminder: "Reminder"
       date_alerts:
         milestone_date: "Data inizio"
         overdue: "In ritardo"

@@ -508,8 +508,12 @@ sl:
     groups:
       member_in_these_groups: "Ta uporabnik je trenutno član naslednjih skupin:"
       no_results_title_text: Ta uporabnik trenutno ni član v nobeni skupini.
+      summary_with_more: Member of %{names} and %{count_link}.
+      more: "%{count} more"
+      summary: Member of %{names}.
     memberships:
       no_results_title_text: Ta uporabnik trenutno ni član projekta.
+    open_profile: "Open profile"
   page:
     text: "Besedilo"
   placeholder_users:
@@ -952,6 +956,7 @@ sl:
       messages:
         accepted: "mora biti sprejeto."
         after: "mora biti po %{date}."
+        after_today: "must be in the future."
         after_or_equal_to: "mora biti po ali enako %{date}."
         before: "mora biti pred %{date}."
         before_or_equal_to: "mora biti pred ali enako %{date}."
@@ -998,6 +1003,7 @@ sl:
         not_an_integer: "ni celo število. "
         not_an_iso_date: "neveljaven čas. Potreben format: YYYY-MM-DD."
         not_same_project: "ne pripada istemu projektu"
+        datetime_must_be_in_future: "must be in the future."
         odd: "mora biti liho. "
         regex_match_failed: "does not match the regular expression %{expression}."
         regex_invalid: "ni bilo mogoče potrditi s pripadajočim stalnim izrazom."
@@ -3033,6 +3039,7 @@ sl:
   notice_successful_connection: "Povezava uspela."
   notice_successful_create: "Ustvarjanje uspelo."
   notice_successful_delete: "Uspešen izbris."
+  notice_successful_cancel: "Successful cancellation."
   notice_successful_update: "Posodobitev uspela."
   notice_successful_update_custom_fields_added_to_project: |
     Successful update. The custom fields of the activated types are automatically activated
@@ -3144,6 +3151,7 @@ sl:
   permission_select_project_modules: "Izberi module projekta"
   permission_share_work_packages: "Share work packages"
   permission_manage_types: "Izberi vrste"
+  permission_manage_own_reminders: "Create own reminders"
   permission_view_project: "View projects"
   permission_view_changesets: "Oglejte si revizije repozitorija v OpenProject"
   permission_view_commit_author_statistics: "Oglejte si statistiko avtorjev"

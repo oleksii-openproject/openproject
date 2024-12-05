@@ -621,6 +621,7 @@ lt:
         prioritized: "Prioritized"
         dateAlert: "Datos įspėjimas"
         shared: "Bendrinta"
+        reminder: "Reminder"
       date_alerts:
         milestone_date: "Gairės data"
         overdue: "Vėluojama"

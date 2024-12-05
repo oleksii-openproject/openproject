@@ -497,8 +497,12 @@ sv:
     groups:
       member_in_these_groups: "This user is currently a member of the following groups:"
       no_results_title_text: This user is currently not a member in any group.
+      summary_with_more: Member of %{names} and %{count_link}.
+      more: "%{count} more"
+      summary: Member of %{names}.
     memberships:
       no_results_title_text: Denna användare är för närvarande inte medlem i något projekt.
+    open_profile: "Open profile"
   page:
     text: "Text"
   placeholder_users:
@@ -938,6 +942,7 @@ sv:
       messages:
         accepted: "måste accepteras."
         after: "måste vara efter %{date}."
+        after_today: "must be in the future."
         after_or_equal_to: "måste vara efter eller lika med %{date}."
         before: "måste vara innan %{date}."
         before_or_equal_to: "måste vara före eller lika med %{date}."
@@ -984,6 +989,7 @@ sv:
         not_an_integer: "är inte ett heltal."
         not_an_iso_date: "är inte ett giltigt datum. Använd formatet ÅÅÅÅ-MM-DD."
         not_same_project: "tillhör inte samma projekt."
+        datetime_must_be_in_future: "must be in the future."
         odd: "måste vara udda."
         regex_match_failed: "does not match the regular expression %{expression}."
         regex_invalid: "kunde inte valideras med det associerade reguljära uttrycket."
@@ -2961,6 +2967,7 @@ sv:
   notice_successful_connection: "Lyckad anslutning."
   notice_successful_create: "Skapades utan problem."
   notice_successful_delete: "Raderades utan problem."
+  notice_successful_cancel: "Successful cancellation."
   notice_successful_update: "Uppdaterades utan problem."
   notice_successful_update_custom_fields_added_to_project: |
     Successful update. The custom fields of the activated types are automatically activated
@@ -3070,6 +3077,7 @@ sv:
   permission_select_project_modules: "Välj projektmoduler"
   permission_share_work_packages: "Share work packages"
   permission_manage_types: "Välj typer"
+  permission_manage_own_reminders: "Create own reminders"
   permission_view_project: "View projects"
   permission_view_changesets: "Visa databasrevisioner i OpenProject"
   permission_view_commit_author_statistics: "Visa statistik över incheckningar per författare"

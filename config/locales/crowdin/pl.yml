@@ -506,8 +506,12 @@ pl:
     groups:
       member_in_these_groups: "Ten użytkownik jest obecnie członkiem następujących grup:"
       no_results_title_text: Ten użytkownik nie jest obecnie członkiem żadnej grupy.
+      summary_with_more: Member of %{names} and %{count_link}.
+      more: "%{count} more"
+      summary: Member of %{names}.
     memberships:
       no_results_title_text: Użytkownik jeszcze nie jest członkiem projektu.
+    open_profile: "Open profile"
   page:
     text: "Tekst"
   placeholder_users:
@@ -952,6 +956,7 @@ pl:
       messages:
         accepted: "musi być zaakceptowane."
         after: "musi być po %{date}."
+        after_today: "must be in the future."
         after_or_equal_to: "musi być po lub równe %{date}."
         before: "musi być przed %{date}."
         before_or_equal_to: "musi być przed lub równe %{date}."
@@ -998,6 +1003,7 @@ pl:
         not_an_integer: "nie jest liczbą całkowitą."
         not_an_iso_date: "wprowadzono nieprawidłową datę. Wymagany format: RRRR-MM-DD."
         not_same_project: "nie należy do tego samego projektu."
+        datetime_must_be_in_future: "must be in the future."
         odd: "musi być nieparzyste."
         regex_match_failed: "nie pasuje do wyrażenia regularnego %{expression}."
         regex_invalid: "nie może być zastosowany z zastosowanym wyrażeniem regularnym."
@@ -3032,6 +3038,7 @@ pl:
   notice_successful_connection: "Połączenie zakończone sukcesem."
   notice_successful_create: "Tworzenie zakończone sukcesem."
   notice_successful_delete: "Usuwanie zakończone sukcesem."
+  notice_successful_cancel: "Successful cancellation."
   notice_successful_update: "Aktualizacja zakończona sukcesem."
   notice_successful_update_custom_fields_added_to_project: |
     Pomyślna aktualizacja. Pola własne aktywowanych typów są automatycznie włączane
@@ -3143,6 +3150,7 @@ pl:
   permission_select_project_modules: "Wybieranie modułów projektu"
   permission_share_work_packages: "Udostępnij pakiety robocze"
   permission_manage_types: "Select types"
+  permission_manage_own_reminders: "Create own reminders"
   permission_view_project: "Wyświetl projekty"
   permission_view_changesets: "Zobacz repozytorium poprawek OpenProject"
   permission_view_commit_author_statistics: "Widok statystyk autorów"

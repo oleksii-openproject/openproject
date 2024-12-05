@@ -497,8 +497,12 @@ fi:
     groups:
       member_in_these_groups: "This user is currently a member of the following groups:"
       no_results_title_text: This user is currently not a member in any group.
+      summary_with_more: Member of %{names} and %{count_link}.
+      more: "%{count} more"
+      summary: Member of %{names}.
     memberships:
       no_results_title_text: Tämä käyttäjä ei ole projektin jäsen.
+    open_profile: "Open profile"
   page:
     text: "Teksti"
   placeholder_users:
@@ -939,6 +943,7 @@ fi:
       messages:
         accepted: "täytyy olla hyväksytty."
         after: "on oltava myöhemmin kuin %{date}."
+        after_today: "must be in the future."
         after_or_equal_to: "on oltava %{date} tai myöhempi."
         before: "on oltava ennen %{date}."
         before_or_equal_to: "on oltava %{date} tai sitä ennen."
@@ -985,6 +990,7 @@ fi:
         not_an_integer: "ei ole kokonaisluku."
         not_an_iso_date: "ei ole kelvollinen päivämäärä. Vaadittava muoto: VVVV-KK-PP."
         not_same_project: "ei kuulu samaan projektiin."
+        datetime_must_be_in_future: "must be in the future."
         odd: "täytyy olla pariton."
         regex_match_failed: "does not match the regular expression %{expression}."
         regex_invalid: "could not be validated with the associated regular expression."
@@ -2962,6 +2968,7 @@ fi:
   notice_successful_connection: "Yhteyden muodostus onnistui."
   notice_successful_create: "Luonti onnistui."
   notice_successful_delete: "Poisto onnistui."
+  notice_successful_cancel: "Successful cancellation."
   notice_successful_update: "Päivitys onnistui."
   notice_successful_update_custom_fields_added_to_project: |
     Successful update. The custom fields of the activated types are automatically activated
@@ -3071,6 +3078,7 @@ fi:
   permission_select_project_modules: "Valitse projektin modulit"
   permission_share_work_packages: "Share work packages"
   permission_manage_types: "Valitse tyypit"
+  permission_manage_own_reminders: "Create own reminders"
   permission_view_project: "View projects"
   permission_view_changesets: "Näytä muutosryhmät"
   permission_view_commit_author_statistics: "Tarkastele tilastoja tekijöistä"

@@ -620,6 +620,7 @@ zh-CN:
         prioritized: "已优先"
         dateAlert: "日期提醒"
         shared: "已共享"
+        reminder: "Reminder"
       date_alerts:
         milestone_date: "里程碑日期"
         overdue: "逾期"

@@ -620,6 +620,7 @@ de:
         prioritized: "Priorisiert"
         dateAlert: "Datums-Erinnerung"
         shared: "Geteilt"
+        reminder: "Reminder"
       date_alerts:
         milestone_date: "Datum des Meilensteins"
         overdue: "Überfällig"

@@ -50,10 +50,16 @@ ca:
         presenter: "Presentador"
       meeting_section:
         title: "Títol"
+      recurring_meeting:
+        frequency: "Frequency"
+        interval: "Interval"
+        end_after: "End after"
+        iterations: "Occurrences"
     errors:
       messages:
         invalid_time_format: "no és una hora vàlida. El format requerit és: HH:MM"
     models:
+      recurring_meeting: "Recurring meeting"
       structured_meeting: "Reunió (dinàmica)"
       meeting_agenda_item: "Element d'agenda"
       meeting_agenda: "Agenda"
@@ -89,6 +95,7 @@ ca:
   label_meeting_plural: "Reunions"
   label_meeting_new: "Nova reunió"
   label_meeting_new_dynamic: "New dynamic meeting"
+  label_meeting_new_recurring: "New recurring meeting"
   label_meeting_create: "Create meeting"
   label_meeting_copy: "Copy meeting"
   label_meeting_edit: "Editar reunió"
@@ -102,23 +109,47 @@ ca:
   label_meeting_date_time: "Data/Hora"
   label_meeting_date_and_time: "Date and time"
   label_meeting_diff: "Diferència"
+  label_recurring_meeting: "Recurring meeting"
+  label_recurring_meeting_part_of: "Part of a meeting series"
+  label_recurring_meeting_new: "New recurring meeting"
+  label_recurring_meeting_plural: "Recurring meetings"
+  label_template: "Template"
+  label_recurring_meeting_view: "View meeting series"
+  label_recurring_meeting_create: "Create from template"
+  label_recurring_meeting_copy: "Copy as one-off"
+  label_recurring_meeting_cancel: "Cancel this occurrence"
+  label_recurring_meeting_delete: "Delete occurrence"
+  label_recurring_meeting_delete_confirmation: >
+    This meeting is part of a series called %{name}. This will only delete this particular occurrence and not the entire series. Do you want to continue?
+  label_recurring_occurrence_delete_confirmation: >
+    Any meeting information not in the template will be lost. Do you want to continue?
+  label_recurring_meeting_restore: "Restore this occurrence"
+  label_recurring_meeting_series_edit: "Edit meeting series"
+  label_recurring_meeting_series_delete: "Delete meeting series"
+  label_my_meetings: "My meetings"
+  label_all_meetings: "All meetings"
   label_upcoming_meetings: "Pròximes reunions"
   label_past_meetings: "Reunions passades"
   label_upcoming_meetings_short: "Pròximes"
   label_past_meetings_short: "Passades"
   label_involvement: "Implicació"
-  label_upcoming_invitations: "Pròximes invitacions"
+  label_invitations: "Invitations"
   label_past_invitations: "Invitacions passades"
-  label_attendee: "Assistent"
-  label_author: "Creador"
+  label_attended: "Attended"
+  label_created_by_me: "Created by me"
   label_notify: "Envia per revisar"
   label_icalendar: "Envia iCalendar"
   label_icalendar_download: "Descarregueu esdeveniment d'iCalendar"
+  label_view_meeting_series: "View meeting series"
+  label_meeting_series: "Meeting series"
   label_version: "Versió"
   label_time_zone: "Zona horària"
   label_start_date: "Data d'inici"
   meeting:
+    participants:
+      template: "These participants will be invited automatically to all future meetings as they are created."
     attachments:
+      template: "These attached files will be included in all future meetings in the series."
       text: "Els fitxers adjunts estan disponibles per a tots els participants de la reunió. També podeu arrossegar-los i deixar-los anar a les notes dels punts de l'agenda."
     copy:
       title: "Copia la reunió: %{title}"
@@ -147,6 +178,7 @@ ca:
       classic: "Clàssica"
       classic_text: "Organitzeu la vostra reunió en una agenda i un protocol de text formatejables."
       structured: "Dinàmica"
+      recurring: "Recurring"
       structured_text: "Organitza la vostra reunió com una llista d'elements de l'agenda, enllaçant-los opcionalment a un paquet de treball."
       structured_text_copy: "Actualment en copiar una reunió  no es copiaran els elements associats a l'agenda de la reunió, només els detalls."
     copied: "Copiat de la reunió #%{id}"
@@ -155,6 +187,33 @@ ca:
     delete_confirmation: "Deleting the section will also delete all of its agenda items. Are you sure you want to do this?"
     placeholder_title: "Nova secció"
     empty_text: "Arrossega els elements aquí o crea un de nou"
+  recurring_meeting:
+    interval:
+      instructions: >
+        Enter the number of days or weeks between each occurrence.
+    occurrence:
+      infoline: "This meeting is part of a recurring meeting series."
+    template:
+      label_view_template: "View template"
+      label_edit_template: "Edit template"
+      banner_html: >
+        You are currently editing a template of a meeting series: %{link}. Every new instance of a meeting in this series will use this template. Changes will not affect past or already created meetings.
+    frequency:
+      every_weekday: "Every %{day_of_the_week}"
+      daily: "Daily"
+      working_days: "Working Days"
+      weekly: "Weekly"
+    end_after:
+      specific_date: "A specific date"
+      iterations: "A number of occurrences"
+    starts: "Starts"
+    in_words:
+      daily_interval: "Every %{interval} day"
+      working_days: "Every working day"
+      working_days_interval: "Every %{interval} working day"
+      weekly: "Weekly on %{weekday}"
+      weekly_interval: "Every %{interval} week on %{weekday}"
+      full: "%{base} at %{time}, ends on %{end_date}"
   notice_successful_notification: "Notificació enviada correctament"
   notice_timezone_missing: No s'ha configurat la zona horària i la %{zone} és assumida. Per seleccionar la teva zona horària, si us plau, fes clic aquí.
   notice_meeting_updated: "This page has been updated by someone else. Reload to view changes."
@@ -213,6 +272,10 @@ ca:
   label_meeting_state_open_html: "<i>Obre</i>"
   label_meeting_state_closed: "Tancada"
   label_meeting_state_closed_html: "<i>Tancat</i>"
+  label_meeting_state_agenda_created: "Agenda created"
+  label_meeting_state_scheduled: "Scheduled"
+  label_meeting_state_cancelled: "Cancelled"
+  label_meeting_state_skipped: "Skipped"
   label_meeting_reopen_action: "Reobrir reunió"
   label_meeting_close_action: "Tancar reunió"
   text_meeting_open_description: "Aquesta reunió està oberta. Pots afegir o eliminar elements de l'agenda i editar-los lliurement. Al final de la reunió, tanca-la per bloquejar-la."

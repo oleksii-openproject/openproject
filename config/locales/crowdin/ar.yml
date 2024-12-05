@@ -521,8 +521,12 @@ ar:
     groups:
       member_in_these_groups: "This user is currently a member of the following groups:"
       no_results_title_text: This user is currently not a member in any group.
+      summary_with_more: Member of %{names} and %{count_link}.
+      more: "%{count} more"
+      summary: Member of %{names}.
     memberships:
       no_results_title_text: هذا المستخدم حالياً ليس عضواً في المشروع.
+    open_profile: "Open profile"
   page:
     text: "النص"
   placeholder_users:
@@ -971,6 +975,7 @@ ar:
       messages:
         accepted: "يجب أن تقبل."
         after: "يجب أن يكون بعد %{date}."
+        after_today: "must be in the future."
         after_or_equal_to: "يجب أن يكون بعد أو ما يعادل %{date}."
         before: "يجب أن يكون قبل %{date}."
         before_or_equal_to: "يجب أن يكون قبل أو يساوي %{date}."
@@ -1017,6 +1022,7 @@ ar:
         not_an_integer: "ليس عدداً صحيحاً."
         not_an_iso_date: "ليس تاريخًا صالحًا. الشكل المطلوب: YYYY-MM-DD."
         not_same_project: "لا ينتمي إلى نفس المشروع."
+        datetime_must_be_in_future: "must be in the future."
         odd: "يجب أن يكون فردي."
         regex_match_failed: "does not match the regular expression %{expression}."
         regex_invalid: "could not be validated with the associated regular expression."
@@ -3110,6 +3116,7 @@ ar:
   notice_successful_connection: "اتصال ناجح."
   notice_successful_create: "إنشاء ناجح."
   notice_successful_delete: "حذف ناجح."
+  notice_successful_cancel: "Successful cancellation."
   notice_successful_update: "تحديث ناجح."
   notice_successful_update_custom_fields_added_to_project: |
     Successful update. The custom fields of the activated types are automatically activated
@@ -3223,6 +3230,7 @@ ar:
   permission_select_project_modules: "حدد وحدات المشروع"
   permission_share_work_packages: "Share work packages"
   permission_manage_types: "حدد أنواع"
+  permission_manage_own_reminders: "Create own reminders"
   permission_view_project: "View projects"
   permission_view_changesets: "عرض مستودع التنقيحات في أوبينبروجيكت"
   permission_view_commit_author_statistics: "عرض إحصائيات المؤلِّف المنفّذة"

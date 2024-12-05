@@ -124,7 +124,7 @@
               not_found: "%{current_path} ble ikke funnet."
             set_folders_permissions:
               permission_not_set: kunne ikke sette tillatelser på %{path}.
-          error: Det oppstod en uventet feil. Sørg for at din Nextcloud forekomst er tilgjengelig og sjekk OpenProject logger for mer informasjon
+          error: An unexpected error occurred. Please ensure that your Nextcloud instance is reachable and check OpenProject worker logs for more information
           group_does_not_exist: "%{group} does not exist. Check your Nextcloud instance configuration."
           insufficient_privileges: OpenProject har ikke nok rettigheter til å legge til %{user} til %{group}. Sjekk gruppeinnstillinger i Nextcloud.
           not_allowed: Nextcloud blokkerer forespørselen.
@@ -145,7 +145,7 @@
               not_found: "%{current_path} ble ikke funnet."
             set_folders_permissions:
               permission_not_set: kunne ikke sette tillatelser på %{path}.
-          error: Det oppstod en uventet feil. Sørg for at din Nextcloud forekomst er tilgjengelig og sjekk OpenProject logger for mer informasjon
+          error: An unexpected error occurred. Please ensure that OneDrive/SharePoint is reachable and check OpenProject worker logs for more information
           not_allowed: OpenProject har ikke fått tilgang til din OneDrive stasjon. Vennligst sjekk tillatelsene som er angitt i Azure appen.
           unauthorized: OpenProject could not sync with OneDrive. Please check your storage and Azure Application configuration.
           user_does_not_exist: "%{user} finnes ikke i Nextcloud."

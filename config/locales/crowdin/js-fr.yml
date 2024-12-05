@@ -621,6 +621,7 @@ fr:
         prioritized: "Priorisé"
         dateAlert: "Alarmes"
         shared: "Partagé"
+        reminder: "Reminder"
       date_alerts:
         milestone_date: "Date jalon"
         overdue: "En retard"

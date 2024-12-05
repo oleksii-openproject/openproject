@@ -494,8 +494,12 @@ es:
     groups:
       member_in_these_groups: "Este usuario es miembro actualmente de los grupos siguientes:"
       no_results_title_text: Este usuario no es miembro actualmente de ningún grupo.
+      summary_with_more: Member of %{names} and %{count_link}.
+      more: "%{count} more"
+      summary: Member of %{names}.
     memberships:
       no_results_title_text: El usuario no es actualmente un miembro del proyecto.
+    open_profile: "Open profile"
   page:
     text: "Texto"
   placeholder_users:
@@ -936,6 +940,7 @@ es:
       messages:
         accepted: "debe ser aceptado."
         after: "debe ser después de %{date}."
+        after_today: "must be in the future."
         after_or_equal_to: "debe ser después de o igual a %{date}."
         before: "debe ser antes de %{date}."
         before_or_equal_to: "debe ser antes o igual a %{date}."
@@ -982,6 +987,7 @@ es:
         not_an_integer: "No es un entero."
         not_an_iso_date: "no es una fecha válida. Requiere formato: AAAA-MM-DD."
         not_same_project: "no pertenecen a un mismo proyecto."
+        datetime_must_be_in_future: "must be in the future."
         odd: "debe ser impar."
         regex_match_failed: "no coincide con la expresión regular %{expression}."
         regex_invalid: "no se pudo validar con la expresión regular asociada."
@@ -2959,6 +2965,7 @@ es:
   notice_successful_connection: "Conexión exitosa."
   notice_successful_create: "Creación exitosa."
   notice_successful_delete: "Eliminado con éxito."
+  notice_successful_cancel: "Successful cancellation."
   notice_successful_update: "Actualización correcta."
   notice_successful_update_custom_fields_added_to_project: |
     Actualización correcta. Los campos personalizados de los tipos ya activados se activan automáticamente en el formulario de paquete de trabajo. <a href="%{url}" target="_blank">Ver más</a>.
@@ -3067,6 +3074,7 @@ es:
   permission_select_project_modules: "Seleccionar módulos de proyecto"
   permission_share_work_packages: "Compartir paquetes de trabajo"
   permission_manage_types: "Seleccionar Tipos"
+  permission_manage_own_reminders: "Create own reminders"
   permission_view_project: "Ver proyectos"
   permission_view_changesets: "Ver las revisiones del repositorio en OpenProject"
   permission_view_commit_author_statistics: "Ver estadísticas del commit del autor"

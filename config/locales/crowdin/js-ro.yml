@@ -620,6 +620,7 @@ ro:
         prioritized: "Prioritized"
         dateAlert: "Alertă dată"
         shared: "Partajat"
+        reminder: "Reminder"
       date_alerts:
         milestone_date: "Dată etapă"
         overdue: "Restanțe"

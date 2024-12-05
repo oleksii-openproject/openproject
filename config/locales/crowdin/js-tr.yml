@@ -620,6 +620,7 @@ tr:
         prioritized: "Prioritized"
         dateAlert: "Tarih uyarısı"
         shared: "Shared"
+        reminder: "Reminder"
       date_alerts:
         milestone_date: "Kilometre taşı tarihi"
         overdue: "Süresi geçmiş"

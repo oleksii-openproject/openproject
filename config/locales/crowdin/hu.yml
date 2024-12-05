@@ -496,8 +496,12 @@ hu:
     groups:
       member_in_these_groups: "A felhasználó a következő csoportoknak a tagja:"
       no_results_title_text: A falhasználó egyik csoportnak se a tagja
+      summary_with_more: Member of %{names} and %{count_link}.
+      more: "%{count} more"
+      summary: Member of %{names}.
     memberships:
       no_results_title_text: Ez a felhasználó jelenleg nem tagja egy projektnek sem.
+    open_profile: "Open profile"
   page:
     text: "Szöveg"
   placeholder_users:
@@ -936,6 +940,7 @@ hu:
       messages:
         accepted: "el kell fogadni."
         after: "későbbinek kell lennie, mint %{date}."
+        after_today: "must be in the future."
         after_or_equal_to: "későbbinek vagy egyenlőnek kell lennie, mint %{date}."
         before: "korábbinak kell lennie, mint %{date}."
         before_or_equal_to: "korábbinak vagy egyenlőnek kell lennie, mint %{date}."
@@ -982,6 +987,7 @@ hu:
         not_an_integer: "ez nem egy szám."
         not_an_iso_date: "nem érvényes dátum. A szükséges formátum ÉÉÉÉ-HH-NN."
         not_same_project: "nem azonos projekthez tartozik."
+        datetime_must_be_in_future: "must be in the future."
         odd: "páratlan kell legyen."
         regex_match_failed: "does not match the regular expression %{expression}."
         regex_invalid: "nem lehet a hozzárendelt reguláris kifejezéssel ellenőrizni."
@@ -2958,6 +2964,7 @@ hu:
   notice_successful_connection: "Sikeresen létrejött a kapcsolat."
   notice_successful_create: "Sikeres létrehozás."
   notice_successful_delete: "Sikeres törlés."
+  notice_successful_cancel: "Successful cancellation."
   notice_successful_update: "Sikeres frissítés."
   notice_successful_update_custom_fields_added_to_project: |
     Sikeres frissítés. Az aktivált típusok egyéni mezői automatikusan aktiválódnak
@@ -3067,6 +3074,7 @@ hu:
   permission_select_project_modules: "Projekt modulok kiválasztása"
   permission_share_work_packages: "Share work packages"
   permission_manage_types: "Jelölje ki a típust"
+  permission_manage_own_reminders: "Create own reminders"
   permission_view_project: "View projects"
   permission_view_changesets: "Tároló verziók megtekintése az OpenProject-ben"
   permission_view_commit_author_statistics: "Szerző,statisztika megtekintése"

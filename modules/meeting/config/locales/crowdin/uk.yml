@@ -52,10 +52,16 @@ uk:
         presenter: "Доповідач"
       meeting_section:
         title: "Назва "
+      recurring_meeting:
+        frequency: "Frequency"
+        interval: "Interval"
+        end_after: "End after"
+        iterations: "Occurrences"
     errors:
       messages:
         invalid_time_format: "не є допустимим часом. Необхідний формат: HH:MM"
     models:
+      recurring_meeting: "Recurring meeting"
       structured_meeting: "Нарада (динамічна)"
       meeting_agenda_item: "Порядок денний"
       meeting_agenda: "Порядок денний"
@@ -91,6 +97,7 @@ uk:
   label_meeting_plural: "Зустрічі"
   label_meeting_new: "Нова зустріч"
   label_meeting_new_dynamic: "Нова динамічна нарада"
+  label_meeting_new_recurring: "New recurring meeting"
   label_meeting_create: "Створити нараду"
   label_meeting_copy: "Копіювати нараду"
   label_meeting_edit: "Редагувати збори"
@@ -104,23 +111,47 @@ uk:
   label_meeting_date_time: "Дата, час"
   label_meeting_date_and_time: "Дата й час"
   label_meeting_diff: "Відмінність"
+  label_recurring_meeting: "Recurring meeting"
+  label_recurring_meeting_part_of: "Part of a meeting series"
+  label_recurring_meeting_new: "New recurring meeting"
+  label_recurring_meeting_plural: "Recurring meetings"
+  label_template: "Template"
+  label_recurring_meeting_view: "View meeting series"
+  label_recurring_meeting_create: "Create from template"
+  label_recurring_meeting_copy: "Copy as one-off"
+  label_recurring_meeting_cancel: "Cancel this occurrence"
+  label_recurring_meeting_delete: "Delete occurrence"
+  label_recurring_meeting_delete_confirmation: >
+    This meeting is part of a series called %{name}. This will only delete this particular occurrence and not the entire series. Do you want to continue?
+  label_recurring_occurrence_delete_confirmation: >
+    Any meeting information not in the template will be lost. Do you want to continue?
+  label_recurring_meeting_restore: "Restore this occurrence"
+  label_recurring_meeting_series_edit: "Edit meeting series"
+  label_recurring_meeting_series_delete: "Delete meeting series"
+  label_my_meetings: "My meetings"
+  label_all_meetings: "All meetings"
   label_upcoming_meetings: "Майбутні заходи"
   label_past_meetings: "Минулі заходи"
   label_upcoming_meetings_short: "Майбутні"
   label_past_meetings_short: "Минулі"
   label_involvement: "Участь"
-  label_upcoming_invitations: "Майбутні запрошення"
+  label_invitations: "Invitations"
   label_past_invitations: "Минулі запрошення"
-  label_attendee: "Учасник"
-  label_author: "Автор"
+  label_attended: "Attended"
+  label_created_by_me: "Created by me"
   label_notify: "Надіслати на розгляд"
   label_icalendar: "Надіслати iCalendar"
   label_icalendar_download: "Завантажити подію iCalendar"
+  label_view_meeting_series: "View meeting series"
+  label_meeting_series: "Meeting series"
   label_version: "Версія"
   label_time_zone: "Часовий пояс"
   label_start_date: "Дата початку"
   meeting:
+    participants:
+      template: "These participants will be invited automatically to all future meetings as they are created."
     attachments:
+      template: "These attached files will be included in all future meetings in the series."
       text: "Прикріплені файли доступні всім учасникам наради. Ви також можете перетягнути їх у примітки до пунктів порядку денного."
     copy:
       title: "Копіювати нараду: %{title}"
@@ -149,6 +180,7 @@ uk:
       classic: "Класична"
       classic_text: "Організуйте нараду у вигляді порядку денного й протоколу в текстовому форматі з підтримкою редагування."
       structured: "Динамічна"
+      recurring: "Recurring"
       structured_text: "Організуйте нараду у вигляді переліку пунктів порядку денного, за бажанням пов’язавши їх із пакетом робіт."
       structured_text_copy: "Зараз копіювання наради стосується лише докладних даних про неї, але не пов’язаних пунктів її порядку денного"
     copied: "Скопійовано з наради #%{id} "
@@ -157,6 +189,33 @@ uk:
     delete_confirmation: "Видалення цього розділу також призведе до видалення його елементів порядку денного. Ви впевнені?"
     placeholder_title: "Новий розділ"
     empty_text: "Перетягніть елементи сюди або створіть новий"
+  recurring_meeting:
+    interval:
+      instructions: >
+        Enter the number of days or weeks between each occurrence.
+    occurrence:
+      infoline: "This meeting is part of a recurring meeting series."
+    template:
+      label_view_template: "View template"
+      label_edit_template: "Edit template"
+      banner_html: >
+        You are currently editing a template of a meeting series: %{link}. Every new instance of a meeting in this series will use this template. Changes will not affect past or already created meetings.
+    frequency:
+      every_weekday: "Every %{day_of_the_week}"
+      daily: "Daily"
+      working_days: "Working Days"
+      weekly: "Weekly"
+    end_after:
+      specific_date: "A specific date"
+      iterations: "A number of occurrences"
+    starts: "Starts"
+    in_words:
+      daily_interval: "Every %{interval} day"
+      working_days: "Every working day"
+      working_days_interval: "Every %{interval} working day"
+      weekly: "Weekly on %{weekday}"
+      weekly_interval: "Every %{interval} week on %{weekday}"
+      full: "%{base} at %{time}, ends on %{end_date}"
   notice_successful_notification: "Повідомлення успішно надіслано"
   notice_timezone_missing: Часовий пояс не встановлено і %{zone} передбачається. Щоб вибрати часовий пояс, натисніть тут.
   notice_meeting_updated: "Цю сторінку оновив інший користувач. Перезавантажте її, щоб побачити зміни."
@@ -215,6 +274,10 @@ uk:
   label_meeting_state_open_html: "<i>Відкрита</i>"
   label_meeting_state_closed: "Закрито"
   label_meeting_state_closed_html: "<i>Закрита</i>"
+  label_meeting_state_agenda_created: "Agenda created"
+  label_meeting_state_scheduled: "Scheduled"
+  label_meeting_state_cancelled: "Cancelled"
+  label_meeting_state_skipped: "Skipped"
   label_meeting_reopen_action: "Відкрити зустріч знову"
   label_meeting_close_action: "Закрити зустріч"
   text_meeting_open_description: "Це відкрита нарада. Ви можете додавати або вилучати пункти порядку денного й редагувати їх. Коли нарада завершиться, закрийте її, щоб заблокувати."

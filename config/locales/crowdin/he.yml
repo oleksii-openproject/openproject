@@ -509,8 +509,12 @@ he:
     groups:
       member_in_these_groups: "This user is currently a member of the following groups:"
       no_results_title_text: This user is currently not a member in any group.
+      summary_with_more: Member of %{names} and %{count_link}.
+      more: "%{count} more"
+      summary: Member of %{names}.
     memberships:
       no_results_title_text: This user is currently not a member of a project.
+    open_profile: "Open profile"
   page:
     text: "טקסט"
   placeholder_users:
@@ -955,6 +959,7 @@ he:
       messages:
         accepted: "must be accepted."
         after: "must be after %{date}."
+        after_today: "must be in the future."
         after_or_equal_to: "must be after or equal to %{date}."
         before: "must be before %{date}."
         before_or_equal_to: "must be before or equal to %{date}."
@@ -1001,6 +1006,7 @@ he:
         not_an_integer: "is not an integer."
         not_an_iso_date: "is not a valid date. Required format: YYYY-MM-DD."
         not_same_project: "doesn't belong to the same project."
+        datetime_must_be_in_future: "must be in the future."
         odd: "must be odd."
         regex_match_failed: "does not match the regular expression %{expression}."
         regex_invalid: "could not be validated with the associated regular expression."
@@ -3036,6 +3042,7 @@ he:
   notice_successful_connection: "Successful connection."
   notice_successful_create: "Successful creation."
   notice_successful_delete: "Successful deletion."
+  notice_successful_cancel: "Successful cancellation."
   notice_successful_update: "Successful update."
   notice_successful_update_custom_fields_added_to_project: |
     Successful update. The custom fields of the activated types are automatically activated
@@ -3147,6 +3154,7 @@ he:
   permission_select_project_modules: "Select project modules"
   permission_share_work_packages: "Share work packages"
   permission_manage_types: "Select types"
+  permission_manage_own_reminders: "Create own reminders"
   permission_view_project: "View projects"
   permission_view_changesets: "View repository revisions in OpenProject"
   permission_view_commit_author_statistics: "View commit author statistics"

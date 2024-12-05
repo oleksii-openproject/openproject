@@ -494,8 +494,12 @@ nl:
     groups:
       member_in_these_groups: "Deze gebruiker is momenteel lid van de volgende groepen:"
       no_results_title_text: Deze gebruiker is momenteel geen lid in een groep.
+      summary_with_more: Member of %{names} and %{count_link}.
+      more: "%{count} more"
+      summary: Member of %{names}.
     memberships:
       no_results_title_text: Deze gebruiker is momenteel geen lid van een project.
+    open_profile: "Open profile"
   page:
     text: "Tekst"
   placeholder_users:
@@ -936,6 +940,7 @@ nl:
       messages:
         accepted: "moet geaccepteerd worden."
         after: "moet na %{date} zijn."
+        after_today: "must be in the future."
         after_or_equal_to: "moet gelijk aan of na %{date} zijn."
         before: "moet voor %{date} zijn."
         before_or_equal_to: "moet voor of gelijk zijn aan %{date}."
@@ -982,6 +987,7 @@ nl:
         not_an_integer: "is niet een geheel getal."
         not_an_iso_date: "is geen geldige datum. Vereist formaat: JJJJ-MM-DD."
         not_same_project: "hoort niet bij hetzelfde project."
+        datetime_must_be_in_future: "must be in the future."
         odd: "moet oneven zijn."
         regex_match_failed: "does not match the regular expression %{expression}."
         regex_invalid: "kon niet worden gevalideerd met de bijbehorende reguliere expressie."
@@ -2958,6 +2964,7 @@ nl:
   notice_successful_connection: "Geslaagde verbinding."
   notice_successful_create: "Aanmaak geslaagd."
   notice_successful_delete: "Verwijdering geslaagd."
+  notice_successful_cancel: "Successful cancellation."
   notice_successful_update: "Succesvolle wijziging."
   notice_successful_update_custom_fields_added_to_project: |
     Succesvolle update. Aangepaste velden van de geactiveerde types worden automatisch geactiveerd
@@ -3067,6 +3074,7 @@ nl:
   permission_select_project_modules: "Selecteer project modules"
   permission_share_work_packages: "Share work packages"
   permission_manage_types: "Selecteer typen"
+  permission_manage_own_reminders: "Create own reminders"
   permission_view_project: "Bekijk projecten"
   permission_view_changesets: "Bekijk opslagplaats wijzigingen in OpenProject"
   permission_view_commit_author_statistics: "Bekijk de commit auteur statistieken"

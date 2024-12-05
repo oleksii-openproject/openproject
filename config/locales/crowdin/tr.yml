@@ -497,8 +497,12 @@ tr:
     groups:
       member_in_these_groups: "Bu kullanıcı şu anda aşağıdaki grupların bir üyesidir:"
       no_results_title_text: Bu kullanıcı şu anda hiçbir gruba üye değil.
+      summary_with_more: Member of %{names} and %{count_link}.
+      more: "%{count} more"
+      summary: Member of %{names}.
     memberships:
       no_results_title_text: Bu kullanıcı şuan için bir proje üyesi değil.
+    open_profile: "Open profile"
   page:
     text: "Metin"
   placeholder_users:
@@ -937,6 +941,7 @@ tr:
       messages:
         accepted: "kabul edilmelidir."
         after: "%{date} sonra olması gerekir."
+        after_today: "must be in the future."
         after_or_equal_to: "%{date} için eşit veya sonra olmalı."
         before: "%{date}'dan daha önce olması gerekir."
         before_or_equal_to: "%{date}} tarihinden önce veya ona eşit olmalıdır."
@@ -983,6 +988,7 @@ tr:
         not_an_integer: "bir tamsayı değil."
         not_an_iso_date: "geçerli bir tarih değil. Gerekli biçim:: YYYY-AA-GG."
         not_same_project: "aynı projeye ait değil."
+        datetime_must_be_in_future: "must be in the future."
         odd: "tek sayı olmalı."
         regex_match_failed: "%{expression} düzenli ifadesiyle eşleşmiyor."
         regex_invalid: "atanmış düzenli ifadeler ile doğrulanamadı."
@@ -2959,6 +2965,7 @@ tr:
   notice_successful_connection: "Bağlantı başarılı."
   notice_successful_create: "Oluşturma başarılı."
   notice_successful_delete: "Silme başarılı."
+  notice_successful_cancel: "Successful cancellation."
   notice_successful_update: "Güncelleme başarılı."
   notice_successful_update_custom_fields_added_to_project: |
     Başarılı güncelleme. Etkinleştirilen türlerin özel alanları, iş paketi formunda otomatik olarak etkinleştirilir. <a href="%{url}" target="_blank">Daha fazlasını görün</a>.
@@ -3067,6 +3074,7 @@ tr:
   permission_select_project_modules: "Proje modülleri seçmek"
   permission_share_work_packages: "Share work packages"
   permission_manage_types: "İş paketi türlerini seçmek"
+  permission_manage_own_reminders: "Create own reminders"
   permission_view_project: "View projects"
   permission_view_changesets: "OpenProject'de depo revizyonlarını görüntüle"
   permission_view_commit_author_statistics: "Yazar istatistiklerini inceleyin"

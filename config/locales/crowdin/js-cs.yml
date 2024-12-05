@@ -620,6 +620,7 @@ cs:
         prioritized: "Prioritní"
         dateAlert: "Upozornění na datum"
         shared: "Sdíleno"
+        reminder: "Reminder"
       date_alerts:
         milestone_date: "Datum milníku"
         overdue: "Po termínu"

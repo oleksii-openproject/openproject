@@ -621,6 +621,7 @@ pl:
         prioritized: "Ma priorytet"
         dateAlert: "Alert dotyczący daty"
         shared: "Udostępniono"
+        reminder: "Reminder"
       date_alerts:
         milestone_date: "Data  kamienia milowego"
         overdue: "Przekroczony termin"

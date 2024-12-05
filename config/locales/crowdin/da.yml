@@ -495,8 +495,12 @@ da:
     groups:
       member_in_these_groups: "This user is currently a member of the following groups:"
       no_results_title_text: This user is currently not a member in any group.
+      summary_with_more: Member of %{names} and %{count_link}.
+      more: "%{count} more"
+      summary: Member of %{names}.
     memberships:
       no_results_title_text: This user is currently not a member of a project.
+    open_profile: "Open profile"
   page:
     text: "Tekst"
   placeholder_users:
@@ -937,6 +941,7 @@ da:
       messages:
         accepted: "skal accepteres."
         after: "skal være senere end %{date}."
+        after_today: "must be in the future."
         after_or_equal_to: "skal være tidligst %{date}."
         before: "skal være før %{date}."
         before_or_equal_to: "skal være senest %{date}."
@@ -983,6 +988,7 @@ da:
         not_an_integer: "er ikke et heltal."
         not_an_iso_date: "is not a valid date. Required format: YYYY-MM-DD."
         not_same_project: "hører ikke til samme projekt."
+        datetime_must_be_in_future: "must be in the future."
         odd: "skal være ulige."
         regex_match_failed: "does not match the regular expression %{expression}."
         regex_invalid: "could not be validated with the associated regular expression."
@@ -2960,6 +2966,7 @@ da:
   notice_successful_connection: "Forbindelse gennemført."
   notice_successful_create: "Oprettelse gennemført."
   notice_successful_delete: "Sletning gennemført."
+  notice_successful_cancel: "Successful cancellation."
   notice_successful_update: "Opdatering gennemført."
   notice_successful_update_custom_fields_added_to_project: |
     Successful update. The custom fields of the activated types are automatically activated
@@ -3069,6 +3076,7 @@ da:
   permission_select_project_modules: "Vælg projektmoduler"
   permission_share_work_packages: "Share work packages"
   permission_manage_types: "Vælg typer"
+  permission_manage_own_reminders: "Create own reminders"
   permission_view_project: "View projects"
   permission_view_changesets: "View repository revisions in OpenProject"
   permission_view_commit_author_statistics: "Vis statistik for tilknyttet forfatter"

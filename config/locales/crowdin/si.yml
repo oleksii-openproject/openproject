@@ -497,8 +497,12 @@ si:
     groups:
       member_in_these_groups: "This user is currently a member of the following groups:"
       no_results_title_text: This user is currently not a member in any group.
+      summary_with_more: Member of %{names} and %{count_link}.
+      more: "%{count} more"
+      summary: Member of %{names}.
     memberships:
       no_results_title_text: මෙම පරිශීලකයා දැනට ව්යාපෘතියක සාමාජිකයෙකු නොවේ.
+    open_profile: "Open profile"
   page:
     text: "පෙළ"
   placeholder_users:
@@ -939,6 +943,7 @@ si:
       messages:
         accepted: "පිළිගත යුතුය."
         after: "must be after %{date}."
+        after_today: "must be in the future."
         after_or_equal_to: "%{date}ට පසුව හෝ සමාන විය යුතුය."
         before: "must be before %{date}."
         before_or_equal_to: "%{date}ට පෙර හෝ සමාන විය යුතුය."
@@ -985,6 +990,7 @@ si:
         not_an_integer: "පූර්ණ සංඛ්යාලයක් නොවේ."
         not_an_iso_date: "වලංගු දිනයක් නොවේ. අවශ්ය ආකෘතිය: YYY-MM-DD."
         not_same_project: "එකම ව්යාපෘතියට අයත් නොවේ."
+        datetime_must_be_in_future: "must be in the future."
         odd: "අමුතු විය යුතුය."
         regex_match_failed: "does not match the regular expression %{expression}."
         regex_invalid: "ආශ්රිත නිත්ය ප්රකාශනය සමඟ වලංගු කළ නොහැකි විය."
@@ -2962,6 +2968,7 @@ si:
   notice_successful_connection: "සාර්ථක සම්බන්ධතාවයක්."
   notice_successful_create: "සාර්ථක නිර්මාණය."
   notice_successful_delete: "සාර්ථක මකාදැමීම."
+  notice_successful_cancel: "Successful cancellation."
   notice_successful_update: "සාර්ථක යාවත්කාලීන කිරීම."
   notice_successful_update_custom_fields_added_to_project: |
     Successful update. The custom fields of the activated types are automatically activated
@@ -3071,6 +3078,7 @@ si:
   permission_select_project_modules: "ව්යාපෘති මොඩියුල තෝරන්න"
   permission_share_work_packages: "Share work packages"
   permission_manage_types: "වර්ග තෝරන්න"
+  permission_manage_own_reminders: "Create own reminders"
   permission_view_project: "View projects"
   permission_view_changesets: "OpenProject හි නිධි සංශෝධන බලන්න"
   permission_view_commit_author_statistics: "කතෘ සංඛ්යා ලේඛන බලන්න"

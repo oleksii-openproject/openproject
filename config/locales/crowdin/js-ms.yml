@@ -621,6 +621,7 @@ ms:
         prioritized: "Prioritized"
         dateAlert: "Peringatan tarikh"
         shared: "Telah dikongsi"
+        reminder: "Reminder"
       date_alerts:
         milestone_date: "Tarikh pencapaian"
         overdue: "Tertangguh"

@@ -497,8 +497,12 @@ bg:
     groups:
       member_in_these_groups: "В момента този потребител е член на следните групи:"
       no_results_title_text: В момента този потребител не е член на нито една група.
+      summary_with_more: Member of %{names} and %{count_link}.
+      more: "%{count} more"
+      summary: Member of %{names}.
     memberships:
       no_results_title_text: Този потребител в момента не е член на проекта.
+    open_profile: "Open profile"
   page:
     text: "Текст"
   placeholder_users:
@@ -939,6 +943,7 @@ bg:
       messages:
         accepted: "трябва да бъде одобрено."
         after: "трябва да бъде след %{date}."
+        after_today: "must be in the future."
         after_or_equal_to: "трябва да бъде след или равно на %{date}."
         before: "трябва да бъде преди %{date}."
         before_or_equal_to: "трябва да бъде преди или е равно на %{date}."
@@ -985,6 +990,7 @@ bg:
         not_an_integer: "не е цяло число."
         not_an_iso_date: "не е валидна дата. Изискван формат: ГГГГ-ММ-ДД."
         not_same_project: "не принадлежат към един и същ проект."
+        datetime_must_be_in_future: "must be in the future."
         odd: "трябва да бъде нечетен."
         regex_match_failed: "не съответства на регулярния израз %{expression}."
         regex_invalid: "не може да бъде валидиран със съответния регулярен израз."
@@ -2962,6 +2968,7 @@ bg:
   notice_successful_connection: "Успешна връзка."
   notice_successful_create: "Успешно създаване."
   notice_successful_delete: "Успешно изтриване."
+  notice_successful_cancel: "Successful cancellation."
   notice_successful_update: "Успешно обновяване."
   notice_successful_update_custom_fields_added_to_project: |
     Успешна актуализация. Потребителските полета на активираните типове се активират автоматично
@@ -3071,6 +3078,7 @@ bg:
   permission_select_project_modules: "Избор модули на проекта"
   permission_share_work_packages: "Споделяне на работни пакети"
   permission_manage_types: "Изберете видове"
+  permission_manage_own_reminders: "Create own reminders"
   permission_view_project: "Преглед на проекти"
   permission_view_changesets: "Преглед на ревизиите на хранилището в OpenProject"
   permission_view_commit_author_statistics: "Преглед статистиката за авторите на ангажименти"

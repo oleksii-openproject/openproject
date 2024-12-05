@@ -50,10 +50,16 @@ ka:
         presenter: "Presenter"
       meeting_section:
         title: "სათაური"
+      recurring_meeting:
+        frequency: "Frequency"
+        interval: "Interval"
+        end_after: "End after"
+        iterations: "Occurrences"
     errors:
       messages:
         invalid_time_format: "is not a valid time. Required format: HH:MM"
     models:
+      recurring_meeting: "Recurring meeting"
       structured_meeting: "Meeting (dynamic)"
       meeting_agenda_item: "განრიგის პუნქტი"
       meeting_agenda: "დღის განრიგი"
@@ -89,6 +95,7 @@ ka:
   label_meeting_plural: "შეხვედრები"
   label_meeting_new: "ახალი შეხვედრა"
   label_meeting_new_dynamic: "New dynamic meeting"
+  label_meeting_new_recurring: "New recurring meeting"
   label_meeting_create: "Create meeting"
   label_meeting_copy: "Copy meeting"
   label_meeting_edit: "შეხვედრის ჩასწორება"
@@ -102,23 +109,47 @@ ka:
   label_meeting_date_time: "თარიღი / დრო"
   label_meeting_date_and_time: "Date and time"
   label_meeting_diff: "სხვაობა"
+  label_recurring_meeting: "Recurring meeting"
+  label_recurring_meeting_part_of: "Part of a meeting series"
+  label_recurring_meeting_new: "New recurring meeting"
+  label_recurring_meeting_plural: "Recurring meetings"
+  label_template: "Template"
+  label_recurring_meeting_view: "View meeting series"
+  label_recurring_meeting_create: "Create from template"
+  label_recurring_meeting_copy: "Copy as one-off"
+  label_recurring_meeting_cancel: "Cancel this occurrence"
+  label_recurring_meeting_delete: "Delete occurrence"
+  label_recurring_meeting_delete_confirmation: >
+    This meeting is part of a series called %{name}. This will only delete this particular occurrence and not the entire series. Do you want to continue?
+  label_recurring_occurrence_delete_confirmation: >
+    Any meeting information not in the template will be lost. Do you want to continue?
+  label_recurring_meeting_restore: "Restore this occurrence"
+  label_recurring_meeting_series_edit: "Edit meeting series"
+  label_recurring_meeting_series_delete: "Delete meeting series"
+  label_my_meetings: "My meetings"
+  label_all_meetings: "All meetings"
   label_upcoming_meetings: "Upcoming meetings"
   label_past_meetings: "გასული შეხვედრები"
   label_upcoming_meetings_short: "მომავალი"
   label_past_meetings_short: "წარს"
   label_involvement: "ჩარეულობა"
-  label_upcoming_invitations: "Upcoming invitations"
+  label_invitations: "Invitations"
   label_past_invitations: "Past invitations"
-  label_attendee: "დამსწრე"
-  label_author: "შემქმნელი"
+  label_attended: "Attended"
+  label_created_by_me: "Created by me"
   label_notify: "Send for review"
   label_icalendar: "'iCalendar'-ის გაგზავნა"
   label_icalendar_download: "Download iCalendar event"
+  label_view_meeting_series: "View meeting series"
+  label_meeting_series: "Meeting series"
   label_version: "ვერსია"
   label_time_zone: "დროის სარტყელი"
   label_start_date: "დაწყების თარიღი"
   meeting:
+    participants:
+      template: "These participants will be invited automatically to all future meetings as they are created."
     attachments:
+      template: "These attached files will be included in all future meetings in the series."
       text: "Attached files are available to all meeting participants. You can also drag and drop these into agenda item notes."
     copy:
       title: "Copy meeting: %{title}"
@@ -147,6 +178,7 @@ ka:
       classic: "კლასიკური"
       classic_text: "Organize your meeting in a formattable text agenda and protocol."
       structured: "დინამიკური"
+      recurring: "Recurring"
       structured_text: "Organize your meeting as a list of agenda items, optionally linking them to a work package."
       structured_text_copy: "Copying a meeting will currently not copy the associated meeting agenda items, just the details"
     copied: "Copied from Meeting #%{id}"
@@ -155,6 +187,33 @@ ka:
     delete_confirmation: "Deleting the section will also delete all of its agenda items. Are you sure you want to do this?"
     placeholder_title: "New section"
     empty_text: "Drag items here or create a new one"
+  recurring_meeting:
+    interval:
+      instructions: >
+        Enter the number of days or weeks between each occurrence.
+    occurrence:
+      infoline: "This meeting is part of a recurring meeting series."
+    template:
+      label_view_template: "View template"
+      label_edit_template: "Edit template"
+      banner_html: >
+        You are currently editing a template of a meeting series: %{link}. Every new instance of a meeting in this series will use this template. Changes will not affect past or already created meetings.
+    frequency:
+      every_weekday: "Every %{day_of_the_week}"
+      daily: "Daily"
+      working_days: "Working Days"
+      weekly: "Weekly"
+    end_after:
+      specific_date: "A specific date"
+      iterations: "A number of occurrences"
+    starts: "Starts"
+    in_words:
+      daily_interval: "Every %{interval} day"
+      working_days: "Every working day"
+      working_days_interval: "Every %{interval} working day"
+      weekly: "Weekly on %{weekday}"
+      weekly_interval: "Every %{interval} week on %{weekday}"
+      full: "%{base} at %{time}, ends on %{end_date}"
   notice_successful_notification: "Notification sent successfully"
   notice_timezone_missing: No time zone is set and %{zone} is assumed. To choose your time zone, please click here.
   notice_meeting_updated: "This page has been updated by someone else. Reload to view changes."
@@ -213,6 +272,10 @@ ka:
   label_meeting_state_open_html: "<i>Open</i>"
   label_meeting_state_closed: "დახურულია"
   label_meeting_state_closed_html: "<i>Closed</i>"
+  label_meeting_state_agenda_created: "Agenda created"
+  label_meeting_state_scheduled: "Scheduled"
+  label_meeting_state_cancelled: "Cancelled"
+  label_meeting_state_skipped: "Skipped"
   label_meeting_reopen_action: "შეხვედრის თავიდან გახსნა"
   label_meeting_close_action: "შეხვედრის დახურვა"
   text_meeting_open_description: "This meeting is open. You can add/remove agenda items and edit them as you please. After the meeting is over, close it to lock it."
