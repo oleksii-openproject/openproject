@@ -17,7 +17,7 @@
                                 size: :medium,
                                 href: url_for({ action: 'quote', id: @topic }),
                                 aria: { label: I18n.t(:button_delete) },
-                                data: { 'action': 'forum-messages#quote' },
+                                data: { 'action': 'forum-messages#quote', test_selector: "message-quote-button" },
                                 title: t(:button_quote)) do |button|
         button.with_leading_visual_icon(icon: :quote)
         t(:button_quote)
