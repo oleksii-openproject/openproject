@@ -44,7 +44,10 @@ FactoryBot.define do
     after(:create) do |recurring_meeting, evaluator|
       project = evaluator.project
       recurring_meeting.project = project
-      recurring_meeting.template = create(:structured_meeting_template, recurring_meeting:, project:)
+      recurring_meeting.template = create(:structured_meeting_template,
+                                          author: recurring_meeting.author,
+                                          recurring_meeting:,
+                                          project:)
     end
   end
 end
