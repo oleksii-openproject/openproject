@@ -42,10 +42,10 @@ export default class FormController extends Controller<HTMLFormElement> {
   }
 
   generateExportURL():string {
-    const formatURL = this.element.getAttribute('action') as string;
+    const actionURL = this.element.getAttribute('action') as string;
     const searchParams = this.getExportParams();
-    const append = formatURL.includes('?') ? '&' : '?';
-    return `${formatURL}${append}${searchParams.toString()}`
+    const append = actionURL.includes('?') ? '&' : '?';
+    return `${actionURL}${append}${searchParams.toString()}`;
   }
 
   submitForm(evt:CustomEvent) {
