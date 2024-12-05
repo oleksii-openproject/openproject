@@ -25,6 +25,8 @@ class CostQuery::PDF::TimesheetGenerator
   def initialize(query, project)
     @query = query
     @project = project
+    @total_page_nr = nil
+    @page_count = 0
     setup_page!
   end
 
@@ -69,13 +71,17 @@ class CostQuery::PDF::TimesheetGenerator
 
   def setup_page!
     self.pdf = get_pdf
-    @page_count = 0
     configure_page_size!(:portrait)
     pdf.title = heading
   end
 
   def generate!
     render_doc
+    if wants_total_page_nrs?
+      @total_page_nr = pdf.page_count
+      setup_page! # clear current pdf
+      render_doc
+    end
     pdf.render
   rescue StandardError => e
     Rails.logger.error { "Failed to generate PDF: #{e} #{e.message}}." }
@@ -327,6 +333,14 @@ class CostQuery::PDF::TimesheetGenerator
     pdf.move_down(H2_MARGIN_BOTTOM)
   end
 
+  def footer_date
+    if pdf.page_number == 1
+      format_time(Time.zone.now)
+    else
+      format_date(Time.zone.now)
+    end
+  end
+
   def format_hours(hours)
     return "" if hours < 0
 
@@ -361,6 +375,10 @@ class CostQuery::PDF::TimesheetGenerator
   end
 
   def with_cover?
+    true
+  end
+
+  def wants_total_page_nrs?
     true
   end
 end
