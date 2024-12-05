@@ -37,7 +37,8 @@
       },
       button_arguments: {
         icon: "op-kebab-vertical",
-        "aria-label": t(:label_more)
+        "aria-label": t(:label_more),
+        test_selector: "project-settings-more-menu"
       }
     ) do |menu|
       if @project.copy_allowed?
@@ -73,7 +74,10 @@
           tag: :a,
           label: t("project.template.#{label}"),
           href: project_templated_path(@project),
-          content_arguments: { data: { method: @project.templated ? :delete : :post } }
+          content_arguments: {
+            data: { method: @project.templated ? :delete : :post },
+            test_selector: "project-settings--mark-template"
+          }
         ) do |item|
           item.with_leading_visual_icon(icon: @project.templated ? :"file-removed" : :"file-added")
         end
