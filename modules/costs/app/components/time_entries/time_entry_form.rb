@@ -53,13 +53,13 @@ module TimeEntries
                                      }
       end
 
-      f.select_list name: :activity_id, label: TimeEntry.human_attribute_name(:activity) do |list|
+      f.select_list name: :activity_id, label: TimeEntry.human_attribute_name(:activity), include_blank: true do |list|
         activities.each do |activity|
           list.option(value: activity.id, label: activity.name)
         end
       end
 
-      f.text_field name: :comments, label: "Comments"
+      f.text_area name: :comments, label: "Comments"
 
       render_custom_fields(form: f)
     end
