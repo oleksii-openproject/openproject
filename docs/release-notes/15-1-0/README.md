@@ -60,6 +60,10 @@ Here is how zen mode for project lists looks like:
 
 ### Possibility to lock seeded admin users, e.g. when using LDAP
 
+Administrators of automated deployments can now choose to skip the automatically integrated creation of an admin user. This is useful if you have set up an LDAP or SSO integration – such as those used for openDesk environments – and you want to prevent the admin user from logging in. Administrators no longer have to manually disable this automatically created admin user and thus run the risk of forgetting to do so, which would pose a security risk.
+
+Read more about [seeding through environment for OpenProject configuration in our Installation & operations guide](../../installation-and-operations/configuration/#seeding-through-environment)
+
 <!--more-->
 
 ## Bug fixes and changes
