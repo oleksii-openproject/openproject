@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 #-- copyright
 # OpenProject is an open source project management software.
 # Copyright (C) the OpenProject GmbH
@@ -28,38 +26,28 @@
 # See COPYRIGHT and LICENSE files for more details.
 #++
 
-class WorkPackageRelationsTab::WorkPackageRelationDialogComponent < ApplicationComponent
-  include ApplicationHelper
-  include OpTurbo::Streamable
-  include OpPrimer::ComponentHelpers
+if ENV["OPENPROJECT_SKIP_DB_ENCODING_CHECK"].blank?
+  icu_incompatible_encodings = %w[
+    EUC_JIS_2004
+    LATIN10
+    MULE_INTERNAL
+    SQL_ASCII
+    WIN874
+  ]
 
-  I18N_NAMESPACE = "work_package_relations_tab"
-  DIALOG_ID = "work-package-relation-dialog"
-  FORM_ID = "work-package-relation-form"
+  database_encoding = ActiveRecord::Base.connection.select_value("SHOW SERVER_ENCODING")
 
-  attr_reader :relation, :work_package
+  if database_encoding.in?(icu_incompatible_encodings)
+    abort <<~ERROR
+      INCOMPATIBLE DATABASE ENCODING DETECTED
 
-  def initialize(work_package:, relation:)
-    super()
+      Your database encoding is #{database_encoding}, which is incompatible with ICU
+      collation used in OpenProject v15.
 
-    @relation = relation
-    @work_package = work_package
-  end
+      Please check the instructions on how to change database encoding:
+      https://www.openproject.org/docs/installation-and-operations/misc/changing-database-encoding/
 
-  private
-
-  def dialog_title
-    relative_label = relation.label_for(work_package)
-    relation_label = t("#{I18N_NAMESPACE}.relations.#{relative_label}_singular")
-
-    if relation.persisted?
-      t("#{I18N_NAMESPACE}.label_edit_x", x: relation_label)
-    else
-      t("#{I18N_NAMESPACE}.label_add_x", x: relation_label)
-    end
-  end
-
-  def body_classes
-    @relation.persisted? ? nil : "Overlay-body_autocomplete_height"
+      This check can be skipped by setting environment variable OPENPROJECT_SKIP_DB_ENCODING_CHECK=true
+    ERROR
   end
 end
