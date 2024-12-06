@@ -50,6 +50,11 @@ With our work package export feature, people can generate good looking PDFs. Som
 
 ### Zen mode for project lists
 
+Zen mode allows users to focus on a certain page, as all other menu items and elements are hidden and the page is displayed in full screen. OpenProject already offers zen mode for other modules like Work packages, Boards, Gantt charts or Calendar – and with version 15.1 also for project lists.
+
+Here is how zen mode for project lists looks like:
+
+![Example screenshot of a project list in zen mode](openproject-15-1-zen-mode-highlighted.png)
 
 ## Important technical updates
 
