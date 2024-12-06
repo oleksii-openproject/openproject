@@ -41,7 +41,9 @@ module Queries::Meetings
     end
 
     def default_scope
-      Meeting.visible(user)
+      Meeting
+        .visible(user)
+        .unscope(:order)
     end
   end
 end
