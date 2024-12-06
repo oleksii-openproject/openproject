@@ -34,9 +34,9 @@ import flatpickr from 'flatpickr';
 export default class TimeEntryController extends Controller {
   static targets = ['startTimeInput', 'endTimeInput', 'hoursInput'];
 
-  declare readonly startTimeInputTarget:HTMLInputElement;
-  declare readonly endTimeInputTarget:HTMLInputElement;
-  declare readonly hoursInputTarget:HTMLInputElement;
+  declare readonly startTimeInputTarget: HTMLInputElement;
+  declare readonly endTimeInputTarget: HTMLInputElement;
+  declare readonly hoursInputTarget: HTMLInputElement;
 
   startTimeInputTargetConnected() {
     this.initTimePicker(this.startTimeInputTarget);
@@ -46,7 +46,33 @@ export default class TimeEntryController extends Controller {
     this.initTimePicker(this.endTimeInputTarget);
   }
 
-  initTimePicker(field:HTMLInputElement) {
+  dateChanged() {
+    const startTimeParts = this.startTimeInputTarget.value.split(':');
+    const endTimeParts = this.endTimeInputTarget.value.split(':');
+
+    const startTime = parseInt(startTimeParts[0], 10) * 60 + parseInt(startTimeParts[1], 10);
+    const endTime = parseInt(endTimeParts[0], 10) * 60 + parseInt(endTimeParts[1], 10);
+
+    this.toggleEndPlusOneDayCapion(endTime < startTime);
+  }
+
+  toggleEndPlusOneDayCapion(show: boolean) {
+    const formControl = this.endTimeInputTarget.closest('.FormControl') as HTMLElement;
+
+    if (show) {
+      const span = document.createElement('span');
+      span.className = 'FormControl-caption';
+      span.innerText = '+1 day';
+      formControl.append(span);
+    } else {
+      const caption = formControl.querySelector('.FormControl-caption');
+      if (caption) {
+        caption.remove();
+      }
+    }
+  }
+
+  initTimePicker(field: HTMLInputElement) {
     flatpickr(field, {
       enableTime: true,
       noCalendar: true,
@@ -54,6 +80,9 @@ export default class TimeEntryController extends Controller {
       time_24hr: true,
       static: true,
       appendTo: document.querySelector('#time-entry-dialog') as HTMLElement,
+      onChange: () => {
+        this.dateChanged();
+      },
     });
   }
 }
