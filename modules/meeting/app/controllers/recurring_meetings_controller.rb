@@ -36,14 +36,15 @@ class RecurringMeetingsController < ApplicationController
 
   def show # rubocop:disable Metrics/AbcSize
     @direction = params[:direction]
-    if params[:direction] == "past"
+    if @direction == "past"
+      max_count = @recurring_meeting.scheduled_instances(upcoming: false).count
+      @count = [(params[:count].to_i + 5), max_count].min
       @meetings = @recurring_meeting
-        .scheduled_instances(upcoming: false)
-        .page(page_param)
-        .per_page(per_page_param)
+        .scheduled_instances(upcoming: false).limit(@count)
     else
-      @meetings = upcoming_meetings
-      @total_count = @recurring_meeting.remaining_occurrences.count - @meetings.count
+      max_count = @recurring_meeting.remaining_occurrences.count
+      @count = [(params[:count].to_i + 5), max_count].min
+      @meetings = upcoming_meetings(count: @count)
     end
 
     respond_to do |format|
@@ -154,13 +155,13 @@ class RecurringMeetingsController < ApplicationController
 
   private
 
-  def upcoming_meetings
+  def upcoming_meetings(count:)
     meetings = @recurring_meeting
       .scheduled_instances(upcoming: true)
       .index_by(&:start_time)
 
     merged = @recurring_meeting
-      .scheduled_occurrences(limit: 5)
+      .scheduled_occurrences(limit: count)
       .map do |start_time|
       meetings.delete(start_time) || scheduled_meeting(start_time)
     end

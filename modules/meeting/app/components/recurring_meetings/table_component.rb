@@ -30,12 +30,33 @@
 
 module RecurringMeetings
   class TableComponent < ::OpPrimer::BorderBoxTableComponent
-    options :current_project
+    options :current_project, :count, :direction
 
     columns :start_time, :relative_time, :last_edited, :status, :create
 
     def has_actions?
       true
+    end
+
+    def has_footer? # rubocop:disable Metrics/AbcSize
+      return false unless recurring_meeting
+
+      if options[:direction] == "past"
+        past_meetings = recurring_meeting&.scheduled_instances(upcoming: false)
+        return false if past_meetings.nil?
+
+        past_meetings.count - options[:count] > 0
+      else
+        meetings = recurring_meeting&.remaining_occurrences
+        return false if meetings.nil?
+
+        meetings.count - options[:count] > 0
+      end
+    end
+
+    def footer
+      render RecurringMeetings::FooterComponent.new(meeting: recurring_meeting, project: options[:current_project],
+                                                    count: options[:count], direction: options[:direction])
     end
 
     def header_args(column)
@@ -62,6 +83,12 @@ module RecurringMeetings
 
     def columns
       @columns ||= headers.map(&:first)
+    end
+
+    def recurring_meeting
+      return if model.blank?
+
+      @recurring_meeting ||= model.first.recurring_meeting
     end
   end
 end
