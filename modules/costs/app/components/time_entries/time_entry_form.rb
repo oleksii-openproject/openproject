@@ -34,11 +34,13 @@ module TimeEntries
         g.text_field name: :start_time,
                      required: true,
                      label: TimeEntry.human_attribute_name(:start_time),
+                     value: model.start_timestamp&.strftime("%H:%M"),
                      data: { "time-entry-target" => "startTimeInput" }
 
         g.text_field name: :end_time,
                      required: true,
                      label: TimeEntry.human_attribute_name(:end_time),
+                     value: model.end_timestamp&.strftime("%H:%M"),
                      data: { "time-entry-target" => "endTimeInput" }
       end
 

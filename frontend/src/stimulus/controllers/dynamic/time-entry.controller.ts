@@ -29,16 +29,31 @@
  */
 
 import { Controller } from '@hotwired/stimulus';
+import flatpickr from 'flatpickr';
 
 export default class TimeEntryController extends Controller {
   static targets = ['startTimeInput', 'endTimeInput', 'hoursInput'];
 
   declare readonly startTimeInputTarget:HTMLInputElement;
   declare readonly endTimeInputTarget:HTMLInputElement;
-  declare readonly choursInputTarget:HTMLInputElement;
+  declare readonly hoursInputTarget:HTMLInputElement;
 
   startTimeInputTargetConnected() {
-    // console.log('We have a start input');
-    this.startTimeInputTarget.value = '12:00';
+    this.initTimePicker(this.startTimeInputTarget);
+  }
+
+  endTimeInputTargetConnected() {
+    this.initTimePicker(this.endTimeInputTarget);
+  }
+
+  initTimePicker(field:HTMLInputElement) {
+    flatpickr(field, {
+      enableTime: true,
+      noCalendar: true,
+      dateFormat: 'H:i',
+      time_24hr: true,
+      static: true,
+      appendTo: document.querySelector('#time-entry-dialog') as HTMLElement,
+    });
   }
 }
