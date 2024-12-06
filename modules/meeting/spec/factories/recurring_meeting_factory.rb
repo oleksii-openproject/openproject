@@ -47,9 +47,9 @@ FactoryBot.define do
 
       # create template
       template = create(:structured_meeting_template,
-                                          author: recurring_meeting.author,
-                                          recurring_meeting:,
-                                          project:)
+                        author: recurring_meeting.author,
+                        recurring_meeting:,
+                        project:)
 
       # create agenda item
       create(:meeting_agenda_item, meeting: template, title: "My template item")
