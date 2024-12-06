@@ -26,30 +26,34 @@
 # See COPYRIGHT and LICENSE files for more details.
 #++
 
-FactoryBot.define do
-  factory :recurring_meeting, class: "RecurringMeeting" do |m|
-    author factory: :user
-    project
-    start_time { Date.tomorrow + 10.hours }
-    end_date { 1.year.from_now }
-    duration { 1.0 }
-    frequency { "weekly" }
-    interval { 1 }
-    iterations { 10 }
-    end_after { "specific_date" }
+module MeetingAgendaItems
+  class BlankSlateComponent < ApplicationComponent
+    include ApplicationHelper
+    include OpTurbo::Streamable
+    include OpPrimer::ComponentHelpers
 
-    location { "https://some-url.com" }
-    m.sequence(:title) { |n| "Meeting series #{n}" }
+    attr_reader :meeting
 
-    after(:create) do |recurring_meeting, evaluator|
-      project = evaluator.project
-      recurring_meeting.project = project
+    def initialize(meeting:)
+      super
 
-      # create template
-      template = create(:structured_meeting_template, recurring_meeting:, project:)
+      @meeting = meeting
+    end
 
-      # create agenda item
-      create(:meeting_agenda_item, meeting: template, title: "My template item")
+    delegate :template?, to: :meeting
+
+    def title
+      if template?
+        t(:"recurring_meeting.template.blank_title")
+      else
+        t(:text_meeting_empty_heading)
+      end
+    end
+
+    def can_finalize_template?
+      template? &&
+        User.current.allowed_in_project?(:create_meetings, @meeting.project) &&
+        @meeting.recurring_meeting.scheduled_meetings.none?
     end
   end
 end

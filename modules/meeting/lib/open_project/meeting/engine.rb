@@ -50,7 +50,7 @@ module OpenProject::Meeting
         permission :create_meetings,
                    {
                      meetings: %i[new create copy new_dialog],
-                     recurring_meetings: %i[new create copy init],
+                     recurring_meetings: %i[new create copy init template_completed],
                      "meetings/menus": %i[show]
                    },
                    permissible_on: :project,

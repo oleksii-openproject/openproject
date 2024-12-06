@@ -61,6 +61,7 @@ Rails.application.routes.draw do
       get :details_dialog
       post :init
       post :delete_scheduled
+      post :template_completed
     end
   end
 
