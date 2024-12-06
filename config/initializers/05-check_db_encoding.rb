@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 #-- copyright
 # OpenProject is an open source project management software.
 # Copyright (C) the OpenProject GmbH
@@ -28,8 +26,28 @@
 # See COPYRIGHT and LICENSE files for more details.
 #++
 
-FactoryBot.define do
-  factory :hierarchy_item, class: "CustomField::Hierarchy::Item" do
-    sequence(:label) { |n| "Item #{n}" }
+if ENV["OPENPROJECT_SKIP_DB_ENCODING_CHECK"].blank?
+  icu_incompatible_encodings = %w[
+    EUC_JIS_2004
+    LATIN10
+    MULE_INTERNAL
+    SQL_ASCII
+    WIN874
+  ]
+
+  database_encoding = ActiveRecord::Base.connection.select_value("SHOW SERVER_ENCODING")
+
+  if database_encoding.in?(icu_incompatible_encodings)
+    abort <<~ERROR
+      INCOMPATIBLE DATABASE ENCODING DETECTED
+
+      Your database encoding is #{database_encoding}, which is incompatible with ICU
+      collation used in OpenProject v15.
+
+      Please check the instructions on how to change database encoding:
+      https://www.openproject.org/docs/installation-and-operations/misc/changing-database-encoding/
+
+      This check can be skipped by setting environment variable OPENPROJECT_SKIP_DB_ENCODING_CHECK=true
+    ERROR
   end
 end
