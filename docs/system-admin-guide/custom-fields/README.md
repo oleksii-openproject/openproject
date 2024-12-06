@@ -30,21 +30,24 @@ Depending on the module, for which the new custom field is being  created, sligh
 1. Custom field **Name**, which will appear as the attribute name on the work package form.
 2. Choose a **Format** of the custom field, e.g. text, list, date, boolean. You can choose between the following formats for custom fields:
 
-![custom fields format](image-20200122112806127.png)
+![Custom fields formats in OpenProject](openproject_system_guide_new_custom_field_formats.png)
 
-3. Specify the **minimal and maximal length**. If a 0 is chosen, no restriction will be imposed on the length of the custom field.
-4. **Regular expression** specifying which values are allowed for the custom field.
-5. **Default value** will be used as a default value for the custom field.
-6. Set if the new custom field should be a **required** field.
-7. Specify if the new custom field should be **used for all projects**. This means the custom field will be active for all projects and does not need to be activated separately per project.
-8. Specify if the new custom field should be **used as a filter for work packages**. See [here](../../user-guide/work-packages/work-package-table-configuration/#filter-work-packages) how to filter work packages.
-9. Specify if the new custom field should be **searchable** via the global search.
-10. **Save** the new custom field.
+> [!TIP]
+> Depending on the format of the custom field, the fields to specify vary.
+4. Specify the **minimal and maximal length**. If a 0 is chosen, no restriction will be imposed on the length of the custom field.
+5. **Regular expression** specifying which values are allowed for the custom field.
+6. **Default value** will be used as a default value for the custom field.
+7. Set if the new custom field should be a **required** field.
+8. Specify if the new custom field should be **used for all projects**. This means the custom field will be active for all projects and does not need to be activated separately per project.
+9. Specify if the new custom field should be **used as a filter for work packages**. See [here](../../user-guide/work-packages/work-package-table-configuration/#filter-work-packages) how to filter work packages.
+10. Specify if the new custom field should be **searchable** via the global search.
+11. **Save** the new custom field.
+
+
 
 ## Assign a custom field to a work package type and project
 
 > [!IMPORTANT]
->
 > Custom fields need to be activated per work package type and added to a project. Work package custom fields are only visible when two conditions are met:
 >
 > 1. Custom field has been added to the work package type (form configuration).
@@ -84,12 +87,20 @@ To **delete** a custom field, click on the delete icon next to the respective cu
 
 ## Create a multi-select custom field
 
-For work package custom fields of type **List** and **User** you may also select **multi-select custom fields** to select more than one value at once.
+For work package custom fields of type **List**, **User**, **Version** and **Hierarchy** you may also select **multi-select custom fields** to select more than one value at once.
 
-To create a multi-select custom field follow the same steps as you would when [creating a standard custom field](#add-a-new-custom-field). Select format **List, User or Version** and check the option *Allow multi-select*.
+To create a multi-select custom field follow the same steps as you would when [creating a standard custom field](#add-a-new-custom-field). Select format **List**, **User**, **Version** or **Hierarchy **and check the option *Allow multi-select*.
 
-![Sys-admin-multi-select-custom-field](system-admin-allow-multi-select.png)
+![Allow multi-select values for a custom field in OpenProject](system-admin-allow-multi-select.png)
 
 When using multi-select custom fields, you can add as many options as required. The cross icon next to an option will remove it from the selection. The check mark will save your changes.
 
 ![Multi select custom field in a work package](system-guide-custom-field-work-package.png)
+
+## Create a Hierarchy custom field (Enterprise add-on)
+
+> [!NOTE]
+> Custom fields with type Hierarchy are an Enterprise add-on. Click here for more information on the [OpenProject Enterprise edition](https://www.openproject.org/enterprise-edition/).
+
+Hierarchy custom fields allow organizing hierarchical structures in work packages by making use of multi-level select lists. To create a custom field of type Hierarchy follow the same steps as you would when [creating a standard custom field](#add-a-new-custom-field) and select **Hierarchy** format. Select the 
+
