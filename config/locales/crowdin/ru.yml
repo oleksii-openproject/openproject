@@ -508,12 +508,12 @@ ru:
     groups:
       member_in_these_groups: "Этот пользователь в настоящее время является членом следующих групп:"
       no_results_title_text: Этот пользователь в настоящее время не является членом какой-либо группы.
-      summary_with_more: Member of %{names} and %{count_link}.
-      more: "%{count} more"
-      summary: Member of %{names}.
+      summary_with_more: Член %{names} и %{count_link}.
+      more: "ещё %{count}"
+      summary: Член %{names}.
     memberships:
       no_results_title_text: Этот пользователь в данный момент в проекте не участвует.
-    open_profile: "Open profile"
+    open_profile: "Открыть профиль"
   page:
     text: "Текст"
   placeholder_users:
@@ -958,7 +958,7 @@ ru:
       messages:
         accepted: "нужно подтвердить."
         after: "должно быть после %{date}."
-        after_today: "must be in the future."
+        after_today: "должно быть в будущем."
         after_or_equal_to: "должна быть после или ровно %{date}."
         before: "должны быть до %{date}."
         before_or_equal_to: "должны быть до или ровно %{date}."
@@ -1005,7 +1005,7 @@ ru:
         not_an_integer: "не является целым числом."
         not_an_iso_date: "недопустимая дата. Требуемый формат: гггг-мм-дд."
         not_same_project: "не принадлежит тому же проекту."
-        datetime_must_be_in_future: "must be in the future."
+        datetime_must_be_in_future: "должно быть в будущем."
         odd: "должно быть нечетным."
         regex_match_failed: "не соответствует регулярному выражению %{expression}."
         regex_invalid: "не может быть проверен связанным регулярным выражением."
@@ -3040,7 +3040,7 @@ ru:
   notice_successful_connection: "Подключение выполнено."
   notice_successful_create: "Создание выполнено."
   notice_successful_delete: "Удаление выполнено."
-  notice_successful_cancel: "Successful cancellation."
+  notice_successful_cancel: "Отмена прошла успешно."
   notice_successful_update: "Обновление выполнено."
   notice_successful_update_custom_fields_added_to_project: |
     Успешное обновление. Пользовательские поля активированных типов автоматически активируются
@@ -3152,7 +3152,7 @@ ru:
   permission_select_project_modules: "Выбор модулей проекта"
   permission_share_work_packages: "Поделиться пакетами работ"
   permission_manage_types: "Выберите типы"
-  permission_manage_own_reminders: "Create own reminders"
+  permission_manage_own_reminders: "Создать собственные напоминания"
   permission_view_project: "Просмотр проектов"
   permission_view_changesets: "Просмотр изменений репозитория в OpenProject"
   permission_view_commit_author_statistics: "Посмотреть статистику автора, внесшего свою часть работы"
