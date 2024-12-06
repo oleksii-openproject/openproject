@@ -44,6 +44,10 @@ Here's an example screenshot of the redesigned Meetings index page:
 
 ### Manual page breaks in PDF work package exports
 
+With our work package export feature, people can generate good looking PDFs. Sometimes, however, the page break comes at an inconvenient place. With version 15.1, users can now force a manual page break in the work package description. This ensures, for example, that a signature can always be inserted on the correct page.
+
+![Example of a work package description with an employee conctract and inserted page breaks](openproject-15-1-page-break-contract-highlighted.png)
+
 ### Zen mode for project lists
 
 
